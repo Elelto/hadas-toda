@@ -1,0 +1,364 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&family=Heebo:wght@300;400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Rubik', 'Heebo', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  color: var(--dark);
+  direction: rtl;
+  line-height: 1.6;
+  font-size: 17px;
+  letter-spacing: 0.2px;
+  overflow-x: hidden;
+  font-weight: 300;
+}
+
+:root {
+  /* Primary color - Teal/Turquoise */
+  --primary: #2a9d8f;
+  --primary-dark: #1e7168;
+  --primary-light: #57c4b8;
+  
+  /* Secondary color - Warm Sand */
+  --secondary: #e9c46a;
+  --secondary-dark: #d4b054;
+  --secondary-light: #f2d791;
+  
+  /* Accent color - Terracotta */
+  --accent: #e76f51;
+  --accent-dark: #c85a3e;
+  --accent-light: #f19579;
+  
+  /* Neutrals */
+  --light: #f8f9fa;
+  --light-hover: #e9ecef;
+  --dark: #264653;
+  --dark-light: #546a76;
+  --border: #dee2e6;
+  
+  /* Feedback colors */
+  --success: #52b788;
+  --success-light: #95d5b2;
+  --warning: #f8961e;
+  --error: #e63946;
+  
+  /* Base colors */
+  --text-color: #264653;
+  --background-color: #ffffff;
+  
+  /* Effects */
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+  --shadow-strong: 0 10px 40px rgba(0, 0, 0, 0.1);
+  --shadow-inset: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+  --transition: all 0.3s ease;
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-light));
+  --gradient-accent: linear-gradient(135deg, var(--accent), var(--accent-light));
+}
+
+h1, h2, h3, h4, h5 {
+  color: var(--dark);
+  margin-bottom: 0.5em;
+  font-weight: 500;
+  font-family: 'Rubik', sans-serif;
+  line-height: 1.3;
+}
+
+h1 {
+  font-size: 3.2rem;
+  position: relative;
+  display: inline-block;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  font-weight: 500;
+  color: var(--primary-dark);
+}
+
+h1:after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 0;
+  width: 40px;
+  height: 4px;
+  background-color: var(--secondary);
+  border-radius: 2px;
+}
+
+h2 {
+  font-size: 2.2rem;
+  position: relative;
+  display: inline-block;
+  color: var(--primary-dark);
+  font-weight: 400;
+  letter-spacing: -0.5px;
+  margin-bottom: 1.2em;
+}
+
+h2:after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 30px;
+  height: 3px;
+  background-color: var(--secondary);
+  border-radius: 2px;
+}
+
+h3 {
+  font-size: 1.6rem;
+  color: var(--primary-dark);
+  font-weight: 500;
+  margin-bottom: 0.8em;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+a:hover {
+  color: var(--primary-dark);
+}
+
+.container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+section {
+  padding: 5rem 0;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+  padding-top: 80px; /* Space for fixed header */
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.9rem 2.8rem;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-weight: 500;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-family: 'Rubik', sans-serif;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.btn:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background-color: var(--primary-dark);
+  transition: width 0.3s ease;
+  z-index: -1;
+}
+
+.btn:hover {
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-strong);
+}
+
+.btn:hover:before {
+  width: 100%;
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  box-shadow: none;
+}
+
+.btn-secondary:before {
+  background-color: var(--primary);
+}
+
+.btn-secondary:hover {
+  color: white;
+  box-shadow: var(--shadow);
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  padding: 2.5rem;
+  transition: var(--transition);
+  border: none;
+  position: relative;
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.card:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--gradient-primary);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-strong);
+}
+
+/* Section styling */
+.section-title {
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+  display: inline-block;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: 500;
+  color: var(--primary-dark);
+}
+
+.section-title:after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 3px;
+  background-color: var(--secondary);
+  border-radius: 2px;
+}
+
+.section-subtitle {
+  font-size: 1.1rem;
+  color: var(--dark-light);
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 3rem;
+  font-weight: 300;
+}
+
+/* Grid layouts */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Hero section */
+.hero {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  padding: 5rem 0;
+}
+
+.hero-content {
+  max-width: 600px;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+/* Quote styling */
+.quote {
+  font-size: 1.5rem;
+  font-style: italic;
+  color: var(--dark);
+  text-align: center;
+  max-width: 800px;
+  margin: 3rem auto;
+  position: relative;
+  padding: 3rem 2rem;
+  background-color: rgba(42, 157, 143, 0.05);
+  border-radius: 8px;
+}
+
+.quote:before,
+.quote:after {
+  content: '"';
+  font-size: 5rem;
+  color: var(--secondary);
+  opacity: 0.2;
+  position: absolute;
+  font-family: Georgia, serif;
+}
+
+.quote:before {
+  top: -10px;
+  right: 20px;
+}
+
+.quote:after {
+  bottom: -40px;
+  left: 20px;
+}
+
+.quote-author {
+  line-height: 1.6;
+  font-weight: 300;
+  margin-top: 1rem;
+  font-size: 1rem;
+  color: var(--dark-light);
+}
+
+.quote-author {
+  font-size: 1rem;
+  color: var(--dark-light);
+  text-align: center;
+  margin-top: 1rem;
+  font-style: normal;
+}
+
+/* Simple fade transition */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
