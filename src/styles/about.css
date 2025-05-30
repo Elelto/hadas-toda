@@ -13,7 +13,7 @@
   overflow: hidden;
 }
 
-.about-hero:before {
+/* .about-hero:before {
   content: '';
   position: absolute;
   top: 0;
@@ -22,7 +22,7 @@
   height: 4px;
   background: var(--gradient-primary);
   z-index: 1;
-}
+} */
 
 .about-hero:after {
   content: '';

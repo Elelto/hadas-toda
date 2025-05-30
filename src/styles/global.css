@@ -134,7 +134,7 @@ a {
   text-decoration: none;
   transition: var(--transition);
   font-weight: 500;
-  border-bottom: 1px solid transparent;
+  border-bottom: none;
 }
 
 a:focus {
