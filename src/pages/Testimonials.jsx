@@ -4,23 +4,40 @@ import '../styles/testimonials.css';
 
 const testimonials = [
   { 
-    name: 'אמא של יואב', 
-    text: 'הדס עזרה לבן שלי להתגבר על קשיי ההיגוי שלו בסבלנות ובמקצועיות. היא ידעה בדיוק איך לגשת אליו ולהפוך את הטיפול לחוויה נעימה.',
-    childName: 'יואב',
-    childAge: 6
+    name: 'אמא של אורי',
+    text: 'הגענו להדס עם קשיי היגוי של אורי. המקצועיות, הסבלנות והגישה המדהימה של הדס הפכו את הטיפול לחוויה חיובית עבורו ועבורנו. השיפור ניכר ואנחנו מודים מאוד!',
+    childName: 'אורי',
+    childAge: 6,
+    childGender: 'בן'
   },
   { 
-    name: 'דנה, אמא של רותם', 
-    text: 'הרגשנו שינוי משמעותי כבר לאחר מספר מפגשים. הדס הצליחה ליצור קשר מיוחד עם הבת שלנו ולהתאים את הטיפול בדיוק לצרכים שלה. ממליצה בחום!',
+    name: 'דניאל כהן',
+    text: 'סבלתי מצרידות כרונית שהפריעה לי מאוד בחיי היום-יום. הטיפול אצל הדס היה נקודת מפנה. היא אבחנה במדויק את מקור הבעיה ובנתה תוכנית טיפול אישית ויעילה. היום הקול שלי נקי וחזק מתמיד. תודה ענקית!',
+    childName: null,
+    childAge: null,
+    childGender: null
+  },
+  { 
+    name: 'דנה, אמא של רותם',
+    text: 'הרגשנו שינוי משמעותי בהתפתחות השפה של רותם כבר לאחר מספר מפגשים. הדס הצליחה ליצור קשר מיוחד עם הבת שלנו ולהתאים את הטיפול בדיוק לצרכים שלה. ממליצה בחום!',
     childName: 'רותם',
-    childAge: 4
+    childAge: 4,
+    childGender: 'בת'
+  },
+  {
+    name: 'מאיה לוי, מרצה',
+    text: 'כמרצה, הקול שלי הוא כלי עבודה מרכזי. לאחר תקופה של עומס קולי, התחלתי לחוות קשיים. הדס, במקצועיות רבה, לימדה אותי טכניקות להפקת קול נכונה, תרגילי חיזוק ושמירה על בריאות הקול. אני מרגישה הבדל עצום.',
+    childName: null,
+    childAge: null,
+    childGender: null
   },
   { 
-    name: 'משפחת כהן', 
-    text: 'הדס היא קלינאית תקשורת מקצועית ומסורה. הטיפול היה מותאם אישית לבתנו והיא הצליחה ליצור סביבה מוגנת ומקדמת עבורה. התקדמנו משמעותית בזכותה.',
+    name: 'משפחת כהן',
+    text: 'הדס היא קלינאית תקשורת מקצועית ומסורה. הטיפול היה מותאם אישית לבתנו והיא הצליחה ליצור סביבה מוגנת ומקדמת עבורה. התקדמנו משמעותית בזכותה בתחום השפתי והתקשורתי.',
     childName: 'נועה',
-    childAge: 5
-  },
+    childAge: 5,
+    childGender: 'בת'
+  }
 ];
 
 export default function Testimonials() {
@@ -29,9 +46,9 @@ export default function Testimonials() {
       <div className="container">
         <section className="testimonials-section">
           <div className="testimonials-header">
-            <h1 className="testimonials-title">מטופלים מספרים</h1>
+            <h1 className="testimonials-title">הקול שלנו: סיפורי הצלחה מהקליניקה</h1>
             <p className="section-subtitle">
-              החוויות של הורים וילדים שעברו טיפול אצלי
+              מטופלים מכל הגילאים משתפים איך הטיפול עזר להם להתגבר על אתגרי קול, צרידות, שפה ודיבור.
             </p>
           </div>
           
@@ -50,8 +67,8 @@ export default function Testimonials() {
                       {testimonial.name}
                     </div>
                     <div className="author-details">
-                      {testimonial.childName ? `הורה של ${testimonial.childName}, בן/בת ${testimonial.childAge}` : ''}
-                    </div>
+                        {testimonial.childName && testimonial.childGender ? `הורה של ${testimonial.childName}, ${testimonial.childGender} ${testimonial.childAge}` : (testimonial.childName ? `הורה של ${testimonial.childName}, גיל ${testimonial.childAge}` : '')}
+                      </div>
                   </div>
                 </div>
               </div>
@@ -59,12 +76,12 @@ export default function Testimonials() {
           </div>
           
           <div className="share-testimonial">
-            <h2 className="share-title">רוצים לשתף את החוויה שלכם?</h2>
+            <h2 className="share-title">גם הקול שלכם יכול להישמע!</h2>
             <p className="share-description">
-              אשמח לשמוע על החוויה שלכם בטיפול ולהוסיף את ההמלצה שלכם לאתר
+              אני מזמינה אתכם לשתף את סיפור ההצלחה האישי שלכם – בין אם מדובר בהתגברות על צרידות, שיפור יכולות הדיבור, או כל אתגר תקשורתי אחר. המלצתכם יכולה לעזור לאחרים.
             </p>
             <Link to="/contact" className="btn">
-              דברו איתי
+              שתפו את החוויה שלכם
             </Link>
           </div>
         </section>
