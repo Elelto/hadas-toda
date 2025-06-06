@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react';
-import emailjs from '@emailjs/browser';
+import { init, send } from '@emailjs/browser';
 import '../styles/contact.css';
 
 // התחל את השירות של EmailJS עם המפתח הציבורי
-emailjs.init("l9xXgXVINGFdgI8KJ");
+init("l9xXgXVINGFdgI8KJ");
 
 export default function Contact() {
   const form = useRef();
@@ -40,8 +40,7 @@ export default function Contact() {
     };
     
     // שליחת הפנייה
-    emailjs
-      .send(serviceID, templateID, mainParams, publicKey)
+    send(serviceID, templateID, mainParams, publicKey)
       .then((result) => {
         console.log('פנייה נשלחה בהצלחה:', result.text);
         
@@ -60,8 +59,7 @@ export default function Contact() {
         const replyTemplateID = 'template_vmm0l2g';  // תבנית האישור
         
         // שליחת האישור
-        emailjs
-          .send(serviceID, replyTemplateID, replyParams, publicKey)
+        send(serviceID, replyTemplateID, replyParams, publicKey)
           .then((replyResult) => {
             console.log('אישור נשלח לפונה:', replyResult.text);
             setSuccess(true);
