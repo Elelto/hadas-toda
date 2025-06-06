@@ -3,7 +3,7 @@ import emailjs from '@emailjs/browser';
 import '../styles/contact.css';
 
 // התחל את השירות של EmailJS עם המפתח הציבורי
-emailjs.init("k7SxyE2trMVXhAE_C");
+emailjs.init("your_actual_public_key");
 
 export default function Contact() {
   const form = useRef();
@@ -25,7 +25,7 @@ export default function Contact() {
     // הגדרת פרטי EmailJS
     const serviceID = 'service_zm8sd32';
     const templateID = 'template_abcdxis';
-    const publicKey = 'k7SxyE2trMVXhAE_C';
+    const publicKey = 'your_actual_public_key';
 
     // שליחת הפנייה לבעל האתר
     const mainParams = {
