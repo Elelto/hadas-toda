@@ -168,6 +168,30 @@ export default function Contact() {
     setOpenFaq(openFaq === index ? null : index);
   };
 
+  // Add a meta tag to ensure proper viewport settings
+  useEffect(() => {
+    // Check if the viewport meta tag exists
+    let viewportMeta = document.querySelector('meta[name="viewport"]');
+    
+    // If it doesn't exist, create it
+    if (!viewportMeta) {
+      viewportMeta = document.createElement('meta');
+      viewportMeta.name = 'viewport';
+      document.head.appendChild(viewportMeta);
+    }
+    
+    // Set the content attribute to ensure proper mobile scaling
+    viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0';
+    
+    // Cleanup function
+    return () => {
+      // Restore original viewport settings when component unmounts
+      if (viewportMeta) {
+        viewportMeta.content = 'width=device-width, initial-scale=1.0';
+      }
+    };
+  }, []);
+  
   return (
     <div className="contact-page">
       <div className="contact-hero">
@@ -183,7 +207,7 @@ export default function Contact() {
           <div className="contact-container">
             <div className="contact-info-card">
               <div className="info-title-wrapper">
-                <h2 className="info-title">פרטי התקשרות</h2>
+                <h2 className="info-title" id="contact-details-title">פרטי התקשרות</h2>
               </div>
               
               <div className="contact-details">
@@ -215,14 +239,14 @@ export default function Contact() {
                   <div className="contact-icon">📍</div>
                   <div className="contact-text">
                     <span className="contact-label">כתובת</span>
-                    <a href="https://maps.google.com/?q=רחוב+יהודה+הנשיא+19+בני+ברק" target="_blank" rel="noopener noreferrer" className="contact-link location-link">רחוב יהודה הנשיא 19, בני ברק <span className="map-icon">🗺️</span></a>
+                    <a href="https://maps.google.com/?q=שיכון+ג+בני+ברק" target="_blank" rel="noopener noreferrer" className="contact-link location-link">שיכון ג', בני ברק <span className="map-icon">🗺️</span></a>
                   </div>
                 </div>
                 
                 <div className="contact-map">
                   <iframe 
                     title="מיקום הקליניקה"
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3380.2736732062824!2d34.8307231!3d32.0851097!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x151d4a3d5c6a2c65%3A0x3c96c0c09a01c8ad!2z15nXlNeV15PXlCDXlNeg16nXmdeQIDE5LCDXkdeg15kg15HXqNen!5e0!3m2!1siw!2sil!4v1654000000000!5m2!1siw!2sil"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13520.846147508547!2d34.82549323022461!3d32.08510975!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x151d4a3f1f2b099d%3A0x2677dd5d196b8718!2z16nXmdeZ15XXnyDXkSfigJwsINeR16DXmSDXkdeo16c!5e0!3m2!1siw!2sil!4v1717998118455!5m2!1siw!2sil"
                     width="100%"
                     height="200"
                     style={{ border: 0, borderRadius: '8px', marginTop: '1.5rem' }}
@@ -235,7 +259,7 @@ export default function Contact() {
                 <div className="contact-social">
                   <h3 className="social-title">עקבו אחרי</h3>
                   <div className="social-links">
-                    <a href="https://www.facebook.com/profile.php?id=100063556809402" target="_blank" rel="noopener noreferrer" className="social-link" aria-label="פייסבוק">
+                    <a href="https://www.facebook.com/profile.php?id=61566802899787" target="_blank" rel="noopener noreferrer" className="social-link" aria-label="פייסבוק">
                       <div className="social-icon">f</div>
                     </a>
                     <a href="https://www.instagram.com/hadas_toda/" target="_blank" rel="noopener noreferrer" className="social-link" aria-label="אינסטגרם">

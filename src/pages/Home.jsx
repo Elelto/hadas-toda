@@ -27,9 +27,28 @@ export default function Home() {
             <p className="hero-description">
               נעים להכיר, אני הדס. אני מלווה ילדים ומבוגרים במסעם לשיפור התקשורת והביטחון העצמי. בין אם מדובר באתגרי שפה והיגוי אצל ילדים, או בצרידות וקשיי קול אצל מבוגרים – אני כאן כדי להקשיב, לאבחן ולהתאים תוכנית טיפול אישית שתביא לתוצאות.
             </p>
-            <Link to="/contact" className="btn hero-cta">
-              בואו נדבר
-            </Link>
+            <div className="hero-buttons">
+              <Link to="/contact" className="btn hero-cta">
+                קביעת פגישת ייעוץ
+              </Link>
+              <Link to="/services" className="btn-secondary btn">
+                לגלות עוד על הטיפולים
+              </Link>
+            </div>
+            <div className="hero-highlights">
+              <div className="highlight-item">
+                <span className="highlight-number">10+</span>
+                <span className="highlight-text">שנות ניסיון</span>
+              </div>
+              <div className="highlight-item">
+                <span className="highlight-number">100+</span>
+                <span className="highlight-text">מטופלים מרוצים</span>
+              </div>
+              <div className="highlight-item">
+                <span className="highlight-number">M.A</span>
+                <span className="highlight-text">תואר שני בקלינאות תקשורת</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -38,10 +57,24 @@ export default function Home() {
       <section className="home-testimonials">
         <div className="container">
           <h2 className="section-title">קולות מהקליניקה</h2>
-          <div className="quote">
-            "אחרי שנים של צרידות כרונית, הגעתי להדס וסוף סוף מצאתי מענה. הטיפול המקצועי והיחס האישי החזירו לי את הקול ואת שמחת החיים."
-            <div className="quote-author">– יעל, מורה</div>
+          <p className="section-subtitle">מה אומרים המטופלים שלי על הטיפול והתוצאות</p>
+          
+          <div className="testimonials-carousel">
+            <div className="testimonial-card">
+              <div className="quote">
+                "אחרי שנים של צרידות כרונית, הגעתי להדס וסוף סוף מצאתי מענה. הטיפול המקצועי והיחס האישי החזירו לי את הקול ואת שמחת החיים."
+                <div className="quote-author">– יעל, מורה</div>
+              </div>
+            </div>
+            
+            <div className="testimonial-card">
+              <div className="quote">
+                "הבן שלי התקשה מאוד עם היגוי נכון של הרבה צלילים. אחרי מספר חודשים עם הדס, השיפור היה מדהים. היא ידעה בדיוק איך לגשת אליו ולגרום לו לשתף פעולה."
+                <div className="quote-author">– רונית, אמא לילד בן 5</div>
+              </div>
+            </div>
           </div>
+          
           <div className="testimonials-cta">
             <Link to="/testimonials" className="btn-secondary btn">
               עוד סיפורי הצלחה
@@ -54,13 +87,50 @@ export default function Home() {
       <section className="home-services">
         <div className="container">
           <h2 className="section-title">תחומי המומחיות שלי</h2>
-          <div className="treatment-areas-grid">
-            {treatmentAreas.map((area, index) => (
-              <div key={index} className="treatment-area-item">
-                {area}
+          <p className="section-subtitle">מגוון השירותים המקצועיים שאני מציעה לילדים ומבוגרים</p>
+          
+          <div className="services-categories">
+            <div className="service-category">
+              <h3 className="category-title">שירותי קול</h3>
+              <div className="treatment-areas-grid">
+                <div className="treatment-area-item">
+                  <span className="treatment-icon">🗣️</span>
+                  טיפול בצרידות ובעיות קול
+                </div>
+                <div className="treatment-area-item">
+                  <span className="treatment-icon">🎭</span>
+                  שיקום קולי מקצועי
+                </div>
+                <div className="treatment-area-item">
+                  <span className="treatment-icon">🎤</span>
+                  ליווי קולי (מורים, מרצים)
+                </div>
               </div>
-            ))}
+            </div>
+            
+            <div className="service-category">
+              <h3 className="category-title">שירותי שפה ודיבור</h3>
+              <div className="treatment-areas-grid">
+                <div className="treatment-area-item">
+                  <span className="treatment-icon">📊</span>
+                  אבחון וטיפול בעיכוב שפתי
+                </div>
+                <div className="treatment-area-item">
+                  <span className="treatment-icon">🔤</span>
+                  טיפול בשיבושי היגוי
+                </div>
+                <div className="treatment-area-item">
+                  <span className="treatment-icon">🧩</span>
+                  שיפור יכולות ארגון מסר ושליפה
+                </div>
+                <div className="treatment-area-item">
+                  <span className="treatment-icon">✏️</span>
+                  הכנה לכיתה א׳ – היבטים שפתיים ותקשורתיים
+                </div>
+              </div>
+            </div>
           </div>
+          
           <div className="services-cta">
             <Link to="/services" className="btn-secondary btn">
               פירוט נוסף על הטיפולים
@@ -72,9 +142,13 @@ export default function Home() {
       {/* Quote */}
       <section className="home-quote">
         <div className="container">
-          <div className="quote">
-            "קול הוא הגשר בין הנשמה לעולם."
-            {/* <div className="quote-author">- אמרה ידועה</div> */}
+          <div className="quote-wrapper">
+            <div className="quote-decoration left"></div>
+            <div className="quote">
+              "קול הוא הגשר בין הנשמה לעולם."
+              <div className="quote-author"></div>
+            </div>
+            <div className="quote-decoration right"></div>
           </div>
         </div>
       </section>

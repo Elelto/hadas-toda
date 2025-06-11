@@ -24,7 +24,7 @@ export default function Footer() {
               <div className="contact-name">הדס תודה קלינאית תקשורת</div>
               <a href="tel:0506796209" className="contact-link">050-6796209</a>
               <a href="mailto:hadas-toda@gmail.com" className="contact-link">hadas-toda@gmail.com</a>
-              <div className="contact-address">בני ברק יהודה הנשיא 19</div>
+              <div className="contact-address">שיכון ג' בני ברק</div>
             </div>
           </div>
           
