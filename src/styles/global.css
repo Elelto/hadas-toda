@@ -37,35 +37,35 @@ img {
 }
 
 :root {
-  /* Logo Palette */
-  --viola: #c891ac;
-  --nepal: #94acbc;
-  --turkish-rose: #be7090;
-  --athens-gray: #e9e6ed;
-  --puce: #c37c94;
-  --chatelle: #d0bfd5;
-  --lily: #d0b3cc;
-  --snuff: #d4cae4;
-  --melanie: #e5c7d4;
-  --cadet-blue: #a4b3c3;
+  /* Color Palette */
+  --mischka: #e9e6ec;
+  --bouquet: #b97ba0;
+  --hoki: #658ba4;
+  --night-shadz: #a73764;
+  --lavender-gray: #cbb9d6;
+  --cadillac: #ac4c74;
+  --chatelle: #bab3c6;
+  --bali-hai: #87a0b7;
+  --melanie: #e4becb;
+  --blush: #b44470;
 
   /* Brand Colors */
-  --primary: var(--turkish-rose);
-  --primary-dark: #a3567a;
-  --primary-light: #e5c7d4;
-  --secondary: var(--nepal);
-  --secondary-dark: #7891a3;
-  --secondary-light: #c8d2d9;
-  --accent: var(--viola);
-  --accent-dark: #a86b8d;
-  --accent-light: #d0b3cc;
+  --primary: var(--bouquet);
+  --primary-dark: var(--night-shadz);
+  --primary-light: var(--melanie);
+  --secondary: var(--hoki);
+  --secondary-dark: #282a2b; /* keeping shark color for dark text */
+  --secondary-light: var(--bali-hai);
+  --accent: var(--cadillac);
+  --accent-dark: var(--blush);
+  --accent-light: var(--chatelle);
 
   /* Neutrals */
-  --light: var(--athens-gray);
+  --light: var(--mischka);
   --light-hover: #f4f2f7;
-  --dark: #3f3c50;
+  --dark: #282a2b; /* keeping shark color for dark text */
   --dark-light: #7b768b;
-  --border: #cfc6d9;
+  --border: var(--lavender-gray);
 
   /* Feedback colors */
   --success: #52b788;

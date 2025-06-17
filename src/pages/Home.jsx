@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import heroImage from '../assets/logo.jpg'; // יש להחליף בתמונה מתאימה
+import heroImage from '../assets/logo.png'; // יש להחליף בתמונה מתאימה
 import '../styles/home.css';
 
 export default function Home() {

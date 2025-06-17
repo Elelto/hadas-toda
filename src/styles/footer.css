@@ -1,6 +1,6 @@
 /* Footer Styles */
 .site-footer {
-  background: var(--dark);
+  background: var(--shark);
   border-top: none;
   padding: 5em 0 2em;
   margin-top: 5em;
@@ -15,7 +15,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: var(--gradient-primary);
+  background: linear-gradient(to right, var(--bouquet), var(--melanie));
 }
 
 .footer-content {
@@ -57,7 +57,7 @@
   transform: translateX(-50%);
   width: 40px;
   height: 3px;
-  background-color: var(--secondary);
+  background-color: var(--hoki);
   border-radius: 2px;
 }
 
@@ -79,7 +79,7 @@
 }
 
 .contact-link {
-  color: var(--secondary);
+  color: var(--hoki);
   text-decoration: none;
   transition: var(--transition);
   position: relative;
@@ -88,7 +88,7 @@
 }
 
 .contact-link:hover {
-  color: var(--secondary-light);
+  color: var(--bali-hai);
 }
 
 .contact-link:after {
@@ -98,7 +98,7 @@
   left: 0;
   right: 0;
   height: 1px;
-  background-color: var(--secondary);
+  background-color: var(--hoki);
   transform: scaleX(0);
   transition: transform 0.3s ease;
 }
@@ -140,7 +140,7 @@
   left: 0;
   right: 0;
   height: 2px;
-  background-color: var(--secondary);
+  background-color: var(--hoki);
   transform: scaleX(0);
   transition: transform 0.3s ease;
   transform-origin: right;
