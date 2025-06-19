@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import heroImage from '../assets/logo.png'; // יש להחליף בתמונה מתאימה
 import '../styles/home.css';
+import blogPosts from '../data/blogPosts';
 
 export default function Home() {
   // תחומי טיפול
@@ -172,6 +173,47 @@ export default function Home() {
                 קראו עוד על הגישה שלי
               </Link>
             </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Blog Preview */}
+      <section className="home-blog">
+        <div className="container">
+          <h2 className="section-title">הבלוג המקצועי</h2>
+          <p className="section-subtitle">מאמרים, טיפים וחידושים בתחום קלינאות התקשורת</p>
+          
+          <div className="blog-preview-grid">
+            {blogPosts.slice(0, 2).map(post => (
+              <div className="blog-preview-card" key={post.id}>
+                <div className="blog-preview-image">
+                  <img src={post.image} alt={post.title} />
+                  {post.categories.map(cat => (
+                    <span key={cat} className={`blog-category ${cat}`}>
+                      {cat === 'voice' && 'קול'}
+                      {cat === 'speech' && 'דיבור'}
+                      {cat === 'language' && 'שפה'}
+                      {cat === 'children' && 'ילדים'}
+                      {cat === 'adults' && 'מבוגרים'}
+                    </span>
+                  ))}
+                </div>
+                <div className="blog-preview-content">
+                  <h3 className="blog-preview-title">{post.title}</h3>
+                  <p className="blog-preview-date">{post.date}</p>
+                  <p className="blog-preview-excerpt">{post.excerpt}</p>
+                  <Link to={`/blog/${post.slug}`} className="blog-read-more">
+                    המשך קריאה
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          <div className="blog-preview-cta">
+            <Link to="/blog" className="btn-secondary btn">
+              לכל המאמרים בבלוג
+            </Link>
           </div>
         </div>
       </section>

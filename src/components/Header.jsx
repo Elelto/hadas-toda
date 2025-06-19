@@ -31,6 +31,7 @@ export default function Header() {
     { path: '/', label: 'ראשי' },
     { path: '/services', label: 'תחומי טיפול' },
     { path: '/about', label: 'קצת עליי' },
+    { path: '/blog', label: 'בלוג מקצועי' },
     { path: '/testimonials', label: 'מטופלים מספרים' },
     { path: '/contact', label: 'דברו איתי' }
   ];

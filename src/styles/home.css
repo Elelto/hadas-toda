@@ -398,6 +398,139 @@
   }
 }
 
+/* Blog Section */
+.home-blog {
+  padding: 60px 0;
+  background-color: #f9f9f9;
+}
+
+.blog-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 30px;
+  margin: 40px 0;
+}
+
+.blog-preview-card {
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.blog-preview-card:hover {
+  transform: translateY(-5px);
+}
+
+.blog-preview-image {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.blog-preview-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.blog-preview-card:hover .blog-preview-image img {
+  transform: scale(1.05);
+}
+
+.blog-category {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 4px 10px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  color: white;
+  background-color: var(--primary-color);
+  z-index: 1;
+}
+
+.blog-category.voice {
+  background-color: #e74c3c;
+}
+
+.blog-category.speech {
+  background-color: #3498db;
+}
+
+.blog-category.language {
+  background-color: #2ecc71;
+}
+
+.blog-category.children {
+  background-color: #9b59b6;
+}
+
+.blog-category.adults {
+  background-color: #f39c12;
+}
+
+.blog-preview-content {
+  padding: 20px;
+}
+
+.blog-preview-title {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+  color: var(--night-shadz);
+}
+
+.blog-preview-date {
+  font-size: 0.85rem;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.blog-preview-excerpt {
+  font-size: 0.95rem;
+  margin-bottom: 15px;
+  line-height: 1.5;
+  color: var(--dark);
+}
+
+.blog-read-more {
+  display: inline-block;
+  color: var(--night-shadz);
+  font-weight: 600;
+  text-decoration: none;
+  position: relative;
+}
+
+.blog-read-more::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  right: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--night-shadz);
+  transition: width 0.3s ease;
+}
+
+.blog-read-more:hover::after {
+  width: 100%;
+  right: auto;
+  left: 0;
+}
+
+.blog-preview-cta {
+  text-align: center;
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .blog-preview-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* About Section */
 .home-about {
   padding: 100px 0;
