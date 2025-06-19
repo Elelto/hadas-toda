@@ -2,17 +2,35 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Page Not Found</title>
+    <title>הדס תודה - קלינאית תקשורת</title>
     <script type="text/javascript">
-      // Redirect all requests to index.html, preserving the path
-      var pathname = window.location.pathname;
-      var search = window.location.search || '';
-      var hash = window.location.hash || '';
-      var redirectTo = '/index.html?redirect=' + encodeURIComponent(pathname + search + hash);
-      window.location.replace(redirectTo);
+      // Single Page Apps for GitHub Pages
+      // MIT License
+      // https://github.com/rafgraph/spa-github-pages
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&')
+          }).join('?');
+          window.history.replaceState(null, null,
+              l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      }(window.location))
+      
+      // Redirect to the homepage and let React Router handle the routing
+      var segmentCount = 0; // Use 0 for custom domain
+      var l = window.location;
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        l.pathname.split('/').slice(0, 1 + segmentCount).join('/') + '/?/' +
+        l.pathname.slice(1).split('/').slice(segmentCount).join('/').replace(/&/g, '~and~') +
+        (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+        l.hash
+      );
     </script>
   </head>
   <body>
-    <h1>Redirecting…</h1>
+    <h2 style="text-align:center; font-family: Arial, sans-serif; direction: rtl;">מעבירים אותך לדף המבוקש...</h2>
   </body>
 </html>
