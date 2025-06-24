@@ -1,0 +1,34 @@
+# הגדרות בסיסיות
+backend:
+  name: git-gateway
+  branch: main
+
+# הגדרת בדיקה מקומית ללא צורך בהתחברות
+local_backend: true
+
+# הגדרות מדיה
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+# הגדרת שפה
+locale: 'he'
+
+# הגדרות עורך
+slug:
+  encoding: "ascii"
+  clean_accents: true
+
+# אוספים
+collections:
+  - name: "blog"
+    label: "פוסטים בבלוג"
+    folder: "src/content/blog"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "כותרת", name: "title", widget: "string" }
+      - { label: "תאריך פרסום", name: "date", widget: "datetime" }
+      - { label: "תקציר", name: "excerpt", widget: "text" }
+      - { label: "תמונת נושא", name: "image", widget: "image" }
+      - { label: "קטגוריות", name: "categories", widget: "list", required: false }
+      - { label: "תוכן הפוסט", name: "body", widget: "markdown" }

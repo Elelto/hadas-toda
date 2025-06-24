@@ -1,0 +1,25 @@
+# הגדרות Netlify
+[build]
+  publish = "dist"
+  command = "npm run build"
+
+# הגדרות עבור שרת ה-proxy המקומי
+[dev]
+  framework = "vite"
+  command = "npm run dev"
+  port = 8888
+  targetPort = 5173
+  publish = "dist"
+  autoLaunch = true
+
+# הגדרות עבור ממשק הניהול
+[[redirects]]
+  from = "/admin/*"
+  to = "/admin/:splat"
+  status = 200
+
+# הגדרות עבור קבצי מדיה
+[[redirects]]
+  from = "/images/*"
+  to = "/images/:splat"
+  status = 200

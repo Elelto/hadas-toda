@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ניהול תוכן - הדס תודה</title>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin-rtl.css">
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+</head>
+<body>
+  <!-- האלמנט הזה חיוני לרנדור של ה-CMS -->
+  <div id="nc-root"></div>
+
+  <!-- טעינת ה-CMS עם הגדרות מותאמות -->
+  <script src="https://unpkg.com/@decapcms/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <script src="config.js"></script>
+  <script>
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", user => {
+        if (!user) {
+          window.netlifyIdentity.on("login", () => {
+            document.location.href = "/admin/";
+          });
+        }
+      });
+      
+      // טיפול בטוקן הזמנה
+      const hash = window.location.hash;
+      if (hash && hash.includes('invite_token')) {
+        const token = hash.replace('#invite_token=', '');
+        window.netlifyIdentity.open('signup');
+        window.netlifyIdentity.gotrue.acceptInvite(token, true)
+          .then(() => {
+            console.log('הזמנה התקבלה בהצלחה');
+          })
+          .catch(err => {
+            console.error('שגיאה בקבלת ההזמנה:', err);
+            window.netlifyIdentity.open('signup');
+          });
+      }
+    }
+  </script>
+</body>
+</html>

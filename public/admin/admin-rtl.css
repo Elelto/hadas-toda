@@ -1,0 +1,70 @@
+/* עיצוב RTL לממשק הניהול */
+body {
+  direction: rtl;
+  font-family: 'Assistant', sans-serif;
+  text-align: right;
+}
+
+/* תיקונים לממשק הניהול */
+.css-1gj57a0-SidebarContainer-card,
+.css-v758ki-AppMainContainer,
+.css-12b66la-AppHeaderContent,
+.css-104dqk8-AppHeaderButton-button-buttonActive-buttonActive-buttonActive-buttonActive-AppHeaderButton,
+.css-12yqrwa-AppHeaderNavLink-AppHeaderButton-button-buttonActive-buttonActive-buttonActive-buttonActive-AppHeaderButton,
+.css-1f7nhiq-CollectionMain,
+.css-1hvrgvd-CollectionTopContainer-card-cardTop,
+.css-16b5p1f-ToolbarSectionMain-toolbarSection,
+.css-1vkkw1i-ControlContainer,
+.css-p5sjac-CollectionContainer {
+  direction: rtl;
+}
+
+/* תיקון למיקום כפתורים */
+.css-12b66la-AppHeaderContent {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+/* תיקון למיקום תפריט צד */
+.css-1gj57a0-SidebarContainer-card {
+  margin-right: 0;
+  margin-left: 20px;
+}
+
+/* תיקון לשדות טקסט */
+.css-1vkkw1i-ControlContainer input,
+.css-1vkkw1i-ControlContainer textarea {
+  text-align: right;
+}
+
+/* תיקון לכותרות */
+.css-1hvrgvd-CollectionTopContainer-card-cardTop h1,
+.css-1hvrgvd-CollectionTopContainer-card-cardTop h2 {
+  text-align: right;
+}
+
+/* תיקון לרשימות */
+ul, ol {
+  padding-right: 20px;
+  padding-left: 0;
+}
+
+/* תיקון לתפריטים */
+.css-1h3mxdv-DropdownList {
+  text-align: right;
+}
+
+/* תיקון לכפתורי פעולות */
+.css-1965a3p-ControlContainer {
+  flex-direction: row-reverse;
+}
+
+/* תיקון לעורך מרקדאון */
+.css-1iy7j11-MarkdownToolbar {
+  direction: ltr;
+}
+
+/* תיקון לתצוגת קדימון */
+.css-1ia5ude-PreviewPaneContainer-ControlPaneContainer {
+  direction: rtl;
+}
