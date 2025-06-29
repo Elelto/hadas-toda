@@ -15,11 +15,17 @@
 # הגדרות עבור ממשק הניהול
 [[redirects]]
   from = "/admin/*"
-  to = "/admin/:splat"
+  to = "/admin/index.html"
   status = 200
 
 # הגדרות עבור קבצי מדיה
 [[redirects]]
   from = "/images/*"
   to = "/images/:splat"
+  status = 200
+
+# הגדרת ברירת מחדל לכל הנתיבים האחרים
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
   status = 200
