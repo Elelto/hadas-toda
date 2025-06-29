@@ -3,6 +3,9 @@ import '../styles/global.css';
 import '../styles/admin.css';
 import netlifyIdentity from 'netlify-identity-widget';
 
+// Force CSS reload
+const adminCssUrl = new URL('../styles/admin.css', import.meta.url).href;
+
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
@@ -62,6 +65,26 @@ const Admin = () => {
     setIsAuthenticated(false);
     setUser(null);
   };
+
+  // Add CSS directly to the component
+  useEffect(() => {
+    // Create a link element for the admin CSS
+    const linkElement = document.createElement('link');
+    linkElement.rel = 'stylesheet';
+    linkElement.href = adminCssUrl;
+    linkElement.id = 'admin-css-link';
+    
+    // Add it to the document head
+    document.head.appendChild(linkElement);
+    
+    // Clean up function
+    return () => {
+      const existingLink = document.getElementById('admin-css-link');
+      if (existingLink) {
+        document.head.removeChild(existingLink);
+      }
+    };
+  }, []);
 
   return (
     <div className="admin-container">
