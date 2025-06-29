@@ -13,8 +13,7 @@
   <div id="nc-root"></div>
 
   <!-- טעינת ה-CMS עם הגדרות מותאמות -->
-  <script src="https://unpkg.com/@decapcms/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-  <script src="config.js"></script>
+  <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
   <script>
     if (window.netlifyIdentity) {
       window.netlifyIdentity.on("init", user => {
@@ -24,21 +23,6 @@
           });
         }
       });
-      
-      // טיפול בטוקן הזמנה
-      const hash = window.location.hash;
-      if (hash && hash.includes('invite_token')) {
-        const token = hash.replace('#invite_token=', '');
-        window.netlifyIdentity.open('signup');
-        window.netlifyIdentity.gotrue.acceptInvite(token, true)
-          .then(() => {
-            console.log('הזמנה התקבלה בהצלחה');
-          })
-          .catch(err => {
-            console.error('שגיאה בקבלת ההזמנה:', err);
-            window.netlifyIdentity.open('signup');
-          });
-      }
     }
   </script>
 </body>
