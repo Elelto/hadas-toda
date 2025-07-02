@@ -3,7 +3,7 @@ title: הפרעות קשב וריכוז והשפעתן על התפתחות הש�
 date: 2025-03-05
 excerpt: "כיצד הפרעות קשב וריכוז משפיעות על התפתחות השפה והתקשורת אצל ילדים,
   וכיצד ניתן לסייע להם להתמודד עם האתגרים? "
-image: /images/blog/adhd-language.jpg
+image: /images/uploads/copilot_20250702_220759.png
 categories:
   - language
   - children
