@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/blog.css';
-import blogPosts from '../data/blogPostsData';
+import blogPosts from '../data/blogPosts';
 
 export default function Blog() {
   const [filter, setFilter] = useState('all');

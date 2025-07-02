@@ -19,5 +19,5 @@ export default defineConfig({
         admin: resolve(__dirname, 'public/admin/index.html'),
       },
     },
-  },
+  }
 });
