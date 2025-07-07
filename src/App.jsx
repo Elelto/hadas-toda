@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -27,6 +27,8 @@ function App() {
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/dashboard" element={<Admin />} />
+            {/* Redirect /admin/ to the Netlify CMS admin interface */}
+            <Route path="/admin/*" element={<Navigate to="/admin/index.html" replace />} />
           </Routes>
         </main>
         <Footer />
