@@ -22,13 +22,13 @@ export default function Home() {
       {/* Hero Section */}
       <section className="home-hero">
         <div className="container">
-          <div className="hero-content">
-            <h1 className="hero-title">הדס תודה</h1>
-            <h2 className="hero-subtitle">קלינאית תקשורת מומחית לשפה, דיבור וקול</h2>
-            <p className="hero-description">
+          <div className="hero-content" data-aos="fade-up">
+            <h1 className="hero-title" data-aos="fade-down" data-aos-delay="200">הדס תודה</h1>
+            <h2 className="hero-subtitle" data-aos="fade-down" data-aos-delay="400">קלינאית תקשורת מומחית לשפה, דיבור וקול</h2>
+            <p className="hero-description" data-aos="fade-up" data-aos-delay="600">
               נעים להכיר, אני הדס. אני מלווה ילדים ומבוגרים במסעם לשיפור התקשורת והביטחון העצמי. בין אם מדובר באתגרי שפה והיגוי אצל ילדים, או בצרידות וקשיי קול אצל מבוגרים – אני כאן כדי להקשיב, לאבחן ולהתאים תוכנית טיפול אישית שתביא לתוצאות.
             </p>
-            <div className="hero-buttons">
+            <div className="hero-buttons" data-aos="fade-up" data-aos-delay="800">
               <Link to="/contact" className="btn hero-cta">
                 קביעת פגישת ייעוץ
               </Link>
@@ -36,7 +36,7 @@ export default function Home() {
                 לגלות עוד על הטיפולים
               </Link>
             </div>
-            <div className="hero-highlights">
+            <div className="hero-highlights" data-aos="fade-up" data-aos-delay="1000">
               <div className="highlight-item">
                 <span className="highlight-number">10+</span>
                 <span className="highlight-text">שנות ניסיון</span>
@@ -57,18 +57,18 @@ export default function Home() {
       {/* Testimonials Preview */}
       <section className="home-testimonials">
         <div className="container">
-          <h2 className="section-title">קולות מהקליניקה</h2>
-          <p className="section-subtitle">מה אומרים המטופלים שלי על הטיפול והתוצאות</p>
+          <h2 className="section-title" data-aos="fade-up">קולות מהקליניקה</h2>
+          <p className="section-subtitle" data-aos="fade-up" data-aos-delay="200">מה אומרים המטופלים שלי על הטיפול והתוצאות</p>
           
           <div className="testimonials-carousel">
-            <div className="testimonial-card">
+            <div className="testimonial-card" data-aos="fade-right" data-aos-delay="400">
               <div className="quote">
                 "אחרי שנים של צרידות כרונית, הגעתי להדס וסוף סוף מצאתי מענה. הטיפול המקצועי והיחס האישי החזירו לי את הקול ואת שמחת החיים."
                 <div className="quote-author">– יעל, מורה</div>
               </div>
             </div>
             
-            <div className="testimonial-card">
+            <div className="testimonial-card" data-aos="fade-left" data-aos-delay="600">
               <div className="quote">
                 "הבן שלי התקשה מאוד עם היגוי נכון של הרבה צלילים. אחרי מספר חודשים עם הדס, השיפור היה מדהים. היא ידעה בדיוק איך לגשת אליו ולגרום לו לשתף פעולה."
                 <div className="quote-author">– רונית, אמא לילד בן 5</div>
@@ -76,7 +76,7 @@ export default function Home() {
             </div>
           </div>
           
-          <div className="testimonials-cta">
+          <div className="testimonials-cta" data-aos="fade-up" data-aos-delay="800">
             <Link to="/testimonials" className="btn-secondary btn">
               עוד סיפורי הצלחה
             </Link>
@@ -87,11 +87,11 @@ export default function Home() {
       {/* Treatment Areas */}
       <section className="home-services">
         <div className="container">
-          <h2 className="section-title">תחומי המומחיות שלי</h2>
-          <p className="section-subtitle">מגוון השירותים המקצועיים שאני מציעה לילדים ומבוגרים</p>
+          <h2 className="section-title" data-aos="fade-up">תחומי המומחיות שלי</h2>
+          <p className="section-subtitle" data-aos="fade-up" data-aos-delay="200">מגוון השירותים המקצועיים שאני מציעה לילדים ומבוגרים</p>
           
           <div className="services-categories">
-            <div className="service-category">
+            <div className="service-category" data-aos="fade-right" data-aos-delay="400">
               <h3 className="category-title">שירותי קול</h3>
               <div className="treatment-areas-grid">
                 <div className="treatment-area-item">
@@ -109,7 +109,7 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="service-category">
+            <div className="service-category" data-aos="fade-left" data-aos-delay="600">
               <h3 className="category-title">שירותי שפה ודיבור</h3>
               <div className="treatment-areas-grid">
                 <div className="treatment-area-item">
@@ -132,7 +132,7 @@ export default function Home() {
             </div>
           </div>
           
-          <div className="services-cta">
+          <div className="services-cta" data-aos="fade-up" data-aos-delay="800">
             <Link to="/services" className="btn-secondary btn">
               פירוט נוסף על הטיפולים
             </Link>
@@ -143,7 +143,7 @@ export default function Home() {
       {/* Quote */}
       <section className="home-quote">
         <div className="container">
-          <div className="quote-wrapper">
+          <div className="quote-wrapper" data-aos="zoom-in">
             <div className="quote-decoration left"></div>
             <div className="quote">
               "קול הוא הגשר בין הנשמה לעולם."
@@ -157,8 +157,8 @@ export default function Home() {
       {/* About Preview */}
       <section className="home-about">
         <div className="container">
-          <h2 className="section-title">נעים להכיר, אני הדס</h2>
-          <div className="about-preview">
+          <h2 className="section-title" data-aos="fade-up">נעים להכיר, אני הדס</h2>
+          <div className="about-preview" data-aos="fade-up" data-aos-delay="200">
             <p>
               שמי הדס תודה, קלינאית תקשורת (M.A) עם תשוקה אמיתית לעזור לאנשים למצוא את קולם – תרתי משמע. אני מאמינה שביכולתה של תקשורת טובה לפתוח דלתות, לבנות גשרים ולהעצים כל אדם.
             </p>
@@ -168,7 +168,7 @@ export default function Home() {
             <p>
               בקליניקה שלי, כל מטופל מקבל יחס אישי ותוכנית טיפול המותאמת בדיוק עבורו. אני משלבת ידע מקצועי עדכני עם גישה יצירתית ורגישה, כדי להפוך את התהליך הטיפולי לחוויה חיובית ומקדמת.
             </p>
-            <div className="about-cta">
+            <div className="about-cta" data-aos="fade-up" data-aos-delay="400">
               <Link to="/about" className="btn-secondary btn">
                 קראו עוד על הגישה שלי
               </Link>
@@ -180,12 +180,12 @@ export default function Home() {
       {/* Blog Preview */}
       <section className="home-blog">
         <div className="container">
-          <h2 className="section-title">הבלוג המקצועי</h2>
-          <p className="section-subtitle">מאמרים, טיפים וחידושים בתחום קלינאות התקשורת</p>
+          <h2 className="section-title" data-aos="fade-up">הבלוג המקצועי</h2>
+          <p className="section-subtitle" data-aos="fade-up" data-aos-delay="200">מאמרים, טיפים וחידושים בתחום קלינאות התקשורת</p>
           
           <div className="blog-preview-grid">
-            {blogPosts.slice(0, 2).map(post => (
-              <div className="blog-preview-card" key={post.id}>
+            {blogPosts.slice(0, 2).map((post, index) => (
+              <div className="blog-preview-card" key={post.id} data-aos="fade-up" data-aos-delay={400 + (index * 200)}>
                 <div className="blog-preview-image">
                   <img src={post.image} alt={post.title} />
                   {post.categories.map(cat => (
@@ -210,7 +210,7 @@ export default function Home() {
             ))}
           </div>
           
-          <div className="blog-preview-cta">
+          <div className="blog-preview-cta" data-aos="fade-up" data-aos-delay="800">
             <Link to="/blog" className="btn-secondary btn">
               לכל המאמרים בבלוג
             </Link>

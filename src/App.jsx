@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -11,8 +11,35 @@ import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import Admin from './pages/Admin';
 import './styles/global.css';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 function App() {
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      once: false,
+      mirror: true,
+      offset: 50,
+      delay: 0,
+      easing: 'ease-out-cubic',
+      anchorPlacement: 'top-bottom',
+      throttleDelay: 99,
+      debounceDelay: 50
+    });
+    
+    // רענון AOS כאשר החלון משנה גודל
+    const handleResize = () => {
+      AOS.refresh();
+    };
+    
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   return (
     <Router>
       <div className="app-container">

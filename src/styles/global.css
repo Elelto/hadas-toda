@@ -20,6 +20,7 @@ body {
   font-weight: 300;
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
+  scroll-behavior: smooth;
 }
 
 img {
@@ -87,6 +88,7 @@ img {
   --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-light));
   --gradient-accent: linear-gradient(135deg, var(--accent), var(--accent-light));
   --gradient-secondary: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+}
 
 h1, h2, h3, h4, h5 {
   color: var(--dark);
@@ -479,4 +481,28 @@ main {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+/* AOS optimizations for fast scrolling */
+[data-aos] {
+  pointer-events: none;
+}
+
+[data-aos].aos-animate {
+  pointer-events: auto;
+}
+
+/* Ensure smooth transitions */
+* {
+  will-change: auto;
+}
+
+/* Optimize for performance */
+[data-aos="fade-up"],
+[data-aos="fade-down"],
+[data-aos="fade-left"],
+[data-aos="fade-right"],
+[data-aos="zoom-in"] {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
 }

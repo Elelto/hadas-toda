@@ -46,15 +46,15 @@ export default function Testimonials() {
       <div className="container">
         <section className="testimonials-section">
           <div className="testimonials-header">
-            <h1 className="testimonials-title">הקול שלנו: סיפורי הצלחה מהקליניקה</h1>
-            <p className="section-subtitle">
+            <h1 className="testimonials-title" data-aos="fade-down">הקול שלנו: סיפורי הצלחה מהקליניקה</h1>
+            <p className="section-subtitle" data-aos="fade-up" data-aos-delay="200">
               מטופלים מכל הגילאים משתפים איך הטיפול עזר להם להתגבר על אתגרי קול, צרידות, שפה ודיבור.
             </p>
           </div>
           
           <div className="testimonials-grid">
             {testimonials.map((testimonial, index) => (
-              <div key={index} className="testimonial-card">
+              <div key={index} className="testimonial-card" data-aos="fade-up" data-aos-delay={300 + (index * 100)}>
                 <div className="testimonial-quote-mark">"</div>
                 
                 <p className="testimonial-text">
@@ -75,7 +75,7 @@ export default function Testimonials() {
             ))}
           </div>
           
-          <div className="share-testimonial">
+          <div className="share-testimonial" data-aos="zoom-in" data-aos-delay="800">
             <h2 className="share-title">גם הקול שלכם יכול להישמע!</h2>
             <p className="share-description">
               אני מזמינה אתכם לשתף את סיפור ההצלחה האישי שלכם – בין אם מדובר בהתגברות על צרידות, שיפור יכולות הדיבור, או כל אתגר תקשורתי אחר. המלצתכם יכולה לעזור לאחרים.

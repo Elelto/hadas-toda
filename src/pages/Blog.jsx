@@ -25,15 +25,15 @@ export default function Blog() {
     <div className="blog-page">
       <section className="blog-hero">
         <div className="container">
-          <h1 className="page-title">הבלוג המקצועי</h1>
-          <p className="page-subtitle">מאמרים, טיפים וחידושים בתחום קלינאות התקשורת</p>
+          <h1 className="page-title" data-aos="fade-down">הבלוג המקצועי</h1>
+          <p className="page-subtitle" data-aos="fade-up" data-aos-delay="200">מאמרים, טיפים וחידושים בתחום קלינאות התקשורת</p>
         </div>
       </section>
       
       <section className="blog-content">
         <div className="container">
           {/* סינון לפי קטגוריות */}
-          <div className="blog-filters">
+          <div className="blog-filters" data-aos="fade-up" data-aos-delay="300">
             <div className="filter-label">סינון לפי נושא:</div>
             <div className="filter-options">
               {categories.map(category => (
@@ -51,8 +51,8 @@ export default function Blog() {
           {/* רשימת המאמרים */}
           <div className="blog-posts-grid">
             {filteredPosts.length > 0 ? (
-              filteredPosts.map(post => (
-                <div className="blog-card" key={post.id}>
+              filteredPosts.map((post, index) => (
+                <div className="blog-card" key={post.id} data-aos="fade-up" data-aos-delay={400 + (index * 50)}>
                   <div className="blog-card-image">
                     <img src={post.image} alt={post.title} />
                     {post.categories.map(cat => (

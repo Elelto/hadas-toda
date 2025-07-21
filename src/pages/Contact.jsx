@@ -196,8 +196,8 @@ export default function Contact() {
     <div className="contact-page">
       <div className="contact-hero">
         <div className="container">
-          <h1 className="contact-title">יצירת קשר</h1>
-          <p className="contact-subtitle">להתייעצות, שאלות או קביעת פגישה – אשמח לשוחח!</p>
+          <h1 className="contact-title" data-aos="fade-down">יצירת קשר</h1>
+          <p className="contact-subtitle" data-aos="fade-up" data-aos-delay="300">להתייעצות, שאלות או קביעת פגישה – אשמח לשוחח!</p>
         </div>
       </div>
       
@@ -205,12 +205,12 @@ export default function Contact() {
         <section className="contact-section">
           
           <div className="contact-container">
-            <div className="contact-info-card">
+            <div className="contact-info-card" data-aos="fade-right">
               <div className="info-title-wrapper">
-                <h2 className="info-title" id="contact-details-title">פרטי התקשרות</h2>
+                <h2 className="info-title" id="contact-details-title" data-aos="fade-up" data-aos-delay="200">פרטי התקשרות</h2>
               </div>
               
-              <div className="contact-details">
+              <div className="contact-details" data-aos="fade-up" data-aos-delay="400">
                 <div className="contact-item">
                   <div className="contact-icon">☎️</div>
                   <div className="contact-text">
@@ -243,7 +243,7 @@ export default function Contact() {
                   </div>
                 </div>
                 
-                <div className="contact-map">
+                <div className="contact-map" data-aos="zoom-in" data-aos-delay="600">
                   <iframe 
                     title="מיקום הקליניקה"
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13520.846147508547!2d34.82549323022461!3d32.08510975!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x151d4a3f1f2b099d%3A0x2677dd5d196b8718!2z16nXmdeZ15XXnyDXkSfigJwsINeR16DXmSDXkdeo16c!5e0!3m2!1siw!2sil!4v1717998118455!5m2!1siw!2sil"
@@ -256,7 +256,7 @@ export default function Contact() {
                   ></iframe>
                 </div>
                 
-                <div className="contact-social">
+                <div className="contact-social" data-aos="fade-up" data-aos-delay="800">
                   <h3 className="social-title">עקבו אחרי</h3>
                   <div className="social-links">
                     <a href="https://www.facebook.com/profile.php?id=61566802899787" target="_blank" rel="noopener noreferrer" className="social-link" aria-label="פייסבוק">
@@ -270,9 +270,9 @@ export default function Contact() {
               </div>
             </div>
             
-            <div className="contact-form-card">
-              <h2 className="form-title">שלח/י הודעה</h2>
-              <form className="contact-form" ref={form} onSubmit={handleSubmit}>
+            <div className="contact-form-card" data-aos="fade-left">
+              <h2 className="form-title" data-aos="fade-up" data-aos-delay="200">שלח/י הודעה</h2>
+              <form className="contact-form" ref={form} onSubmit={handleSubmit} data-aos="fade-up" data-aos-delay="400">
                 <div className="form-group">
                   <label htmlFor="user_name" className="form-label">שם</label>
                   <input 
@@ -361,8 +361,8 @@ export default function Contact() {
         
         <section className="faq-section">
           <div className="container">
-            <h2 className="faq-title">שאלות נפוצות</h2>
-            <div className="faq-container">
+            <h2 className="faq-title" data-aos="fade-up">שאלות נפוצות</h2>
+            <div className="faq-container" data-aos="fade-up" data-aos-delay="200">
               <div className={`faq-item ${openFaq === 0 ? 'active' : ''}`} onClick={() => toggleFaq(0)}>
                 <div className="faq-question">
                   <span>מה משך הטיפול?</span>
