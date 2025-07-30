@@ -64,8 +64,8 @@ img {
   /* Neutrals */
   --light: var(--mischka);
   --light-hover: #f4f2f7;
-  --dark: #282a2b; /* keeping shark color for dark text */
-  --dark-light: #7b768b;
+  --dark: #1a1a1a; /* שחור עז לטקסט */
+  --dark-light: #4a4a4a;
   --border: var(--lavender-gray);
 
   /* Feedback colors */
@@ -75,7 +75,7 @@ img {
   --error: #e63946;
 
   /* Base colors */
-  --text-color: #3f3c50;
+  --text-color: #1a1a1a;
   --background-color: #fff;
 
   /* Effects */
