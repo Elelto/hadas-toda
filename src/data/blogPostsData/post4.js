@@ -7,7 +7,7 @@ const post4 = {
   slug: "bilingual-language-development",
   date: "10 באפריל, 2025",
   excerpt: "האם חשיפה לשתי שפות גורמת לעיכוב שפתי? מדריך להורים לילדים דו-לשוניים, מיתוסים נפוצים והמלצות מקצועיות.",
-  image: "/images/blog/bilingual-children.jpg",
+  image: "/images/uploads/copilot_20250730_100616.png",
   categories: ["language", "children", "research"],
   content: `
 <p>בעידן הגלובלי, ילדים רבים גדלים בסביבה דו-לשונית או רב-לשונית. הורים רבים חוששים שחשיפה לשתי שפות תגרום לעיכוב שפתי או בלבול. מה באמת אומר המחקר?</p>

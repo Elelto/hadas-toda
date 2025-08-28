@@ -7,7 +7,7 @@ const post7 = {
   slug: "early-intervention-language-disorders",
   date: "20 באפריל, 2025",
   excerpt: "אבחון וטיפול מוקדם בהפרעות שפה ותקשורת משפרים משמעותית את סיכויי ההצלחה. מה היתרונות של התערבות מוקדמת ומהם עקרונותיה?",
-  image: "/images/blog/early-intervention.jpg",
+  image: "/images/uploads/copilot_20250730_102941.png",
   categories: ["language", "children", "tips"],
   content: `
 <p>התערבות מוקדמת בהפרעות שפה ותקשורת נחשבת לאחד הגורמים המשמעותיים ביותר לשיפור התפקוד השפתי והחברתי של ילדים עם קשיים. מחקרים רבים מראים כי טיפול המתחיל בגיל צעיר מוביל לתוצאות טובות יותר בטווח הארוך.</p>

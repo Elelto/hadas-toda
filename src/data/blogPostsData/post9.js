@@ -7,7 +7,7 @@ const post9 = {
   slug: "voice-disorders-children",
   date: "25 באפריל, 2025",
   excerpt: "צרידות, קול מחוספס או אובדן קול זמני - מהם הסימנים להפרעות קול אצל ילדים, מה הגורמים וכיצד מטפלים?",
-  image: "/images/blog/voice-disorders-children.jpg",
+  image: "/images/uploads/copilot_20250730_112908.png",
   categories: ["voice", "children", "tips"],
   content: `
 <p>הפרעות קול בילדות הן תופעה נפוצה, המתבטאת בצרידות, קול מחוספס, עייפות קולית או אובדן קול זמני. לעיתים מדובר בתופעה חולפת, אך לעיתים יש צורך בהתערבות מקצועית.</p>

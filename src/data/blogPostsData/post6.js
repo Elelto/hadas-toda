@@ -7,7 +7,7 @@ const post6 = {
   slug: "tbi-speech-rehabilitation",
   date: "15 באפריל, 2025",
   excerpt: "פגיעות ראש טראומטיות עלולות לגרום להפרעות דיבור ותקשורת. כיצד מתבצע תהליך השיקום ומהם הגורמים המשפיעים על הצלחתו?",
-  image: "/images/blog/tbi-rehabilitation.jpg",
+  image: "/images/uploads/copilot_20250730_101857.png",
   categories: ["rehabilitation", "adults", "research"],
   content: `
 <p>חבלה מוחית טראומטית (TBI) היא פגיעה במוח הנגרמת כתוצאה מתאונה, נפילה, פגיעת ספורט או אירוע אחר. פגיעות אלו עלולות להשפיע על מגוון רחב של תפקודים, בהם דיבור, הבנה, קריאה, כתיבה ותקשורת חברתית.</p>

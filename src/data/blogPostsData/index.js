@@ -1,7 +1,6 @@
 // קובץ זה נוצר אוטומטית על ידי סקריפט update-blog-data.js
 // אין לערוך אותו ידנית כי השינויים יימחקו בפעם הבאה שהסקריפט ירוץ
 
-import post17 from './post17';
 import post16 from './post16';
 import post15 from './post15';
 import post14 from './post14';
@@ -20,7 +19,6 @@ import post2 from './post2';
 import post1 from './post1';
 
 const blogPosts = [
-  post17,
   post16,
   post15,
   post14,

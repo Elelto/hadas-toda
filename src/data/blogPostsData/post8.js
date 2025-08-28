@@ -7,7 +7,7 @@ const post8 = {
   slug: "language-development-delay",
   date: "20 באפריל, 2025",
   excerpt: "כיצד לזהות איחור בהתפתחות שפה אצל פעוטות, מתי כדאי לפנות לאבחון וכיצד לעודד התפתחות שפתית תקינה",
-  image: "/images/blog/language-development.jpg",
+  image: "/images/uploads/copilot_20250730_103605.png",
   categories: ["language", "children", "development"],
   content: `
 <p>התפתחות השפה היא אחד התהליכים המרתקים והמשמעותיים בהתפתחות הילד. כהורים, אנו עוקבים בהתרגשות אחר המילים הראשונות והמשפטים המתארכים, אך לעתים עולות דאגות כאשר ההתפתחות אינה תואמת את הציפיות או את קצב ההתפתחות של ילדים אחרים.</p>

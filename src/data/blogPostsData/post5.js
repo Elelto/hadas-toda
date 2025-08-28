@@ -7,7 +7,7 @@ const post5 = {
   slug: "stroke-communication-rehabilitation",
   date: "10 באפריל, 2025",
   excerpt: "כיצד מתמודדים עם קשיי תקשורת לאחר שבץ מוחי? מדריך מקיף לשיקום, טיפול ותמיכה במטופלים ובני משפחותיהם",
-  image: "/images/blog/stroke-rehab.jpg",
+  image: "/images/uploads/copilot_20250730_101329.png",
   categories: ["rehabilitation", "adults", "communication"],
   content: `
 <p>שבץ מוחי עלול לגרום לשינויים משמעותיים ביכולות התקשורת, החל מקשיים קלים בשליפת מילים ועד לאובדן מוחלט של יכולת הדיבור. שיקום תקשורתי הוא חלק חיוני בתהליך ההחלמה, ומטרתו לסייע למטופל לשקם את יכולות התקשורת או לפתח אסטרטגיות חלופיות.</p>
