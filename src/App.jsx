@@ -18,15 +18,20 @@ import 'aos/dist/aos.css';
 function App() {
   useEffect(() => {
     AOS.init({
-      duration: 800,
-      once: false,
-      mirror: true,
-      offset: 50,
+      duration: 600,
+      once: true,
+      mirror: false,
+      offset: 120,
       delay: 0,
       easing: 'ease-out-cubic',
       anchorPlacement: 'top-bottom',
-      throttleDelay: 99,
-      debounceDelay: 50
+      throttleDelay: 200,
+      debounceDelay: 100,
+      disable: function() {
+        // השבת AOS במכשירים עם בעיות ביצועים
+        const maxWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+        return maxWidth < 768 && /iPad|iPhone|iPod/.test(navigator.userAgent);
+      }
     });
     
     // רענון AOS כאשר החלון משנה גודל

@@ -192,6 +192,9 @@
   max-width: 1200px;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .services-info:before {
@@ -211,8 +214,6 @@
   font-size: 2rem;
   position: relative;
   display: inline-block;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
 .info-title:after {

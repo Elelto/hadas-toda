@@ -168,30 +168,6 @@ export default function Contact() {
     setOpenFaq(openFaq === index ? null : index);
   };
 
-  // Add a meta tag to ensure proper viewport settings
-  useEffect(() => {
-    // Check if the viewport meta tag exists
-    let viewportMeta = document.querySelector('meta[name="viewport"]');
-    
-    // If it doesn't exist, create it
-    if (!viewportMeta) {
-      viewportMeta = document.createElement('meta');
-      viewportMeta.name = 'viewport';
-      document.head.appendChild(viewportMeta);
-    }
-    
-    // Set the content attribute to ensure proper mobile scaling
-    viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0';
-    
-    // Cleanup function
-    return () => {
-      // Restore original viewport settings when component unmounts
-      if (viewportMeta) {
-        viewportMeta.content = 'width=device-width, initial-scale=1.0';
-      }
-    };
-  }, []);
-  
   return (
     <div className="contact-page">
       <div className="contact-hero">

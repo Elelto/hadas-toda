@@ -65,7 +65,8 @@
   content: '';
   position: absolute;
   bottom: -15px;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
   width: 80px;
   height: 4px;
   background: var(--hoki);
@@ -137,6 +138,30 @@
   font-weight: 600;
   color: var(--night-shadz);
   margin-bottom: 0.3rem;
+  transition: all 0.3s ease;
+}
+
+.highlight-number.counter {
+  display: inline-block;
+  min-width: 60px;
+  text-align: center;
+}
+
+.highlight-number.counter.animated {
+  animation: pulse 0.5s ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+    color: var(--bouquet);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .highlight-text {
@@ -247,6 +272,9 @@
   box-shadow: var(--shadow);
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .service-category:before {
@@ -266,8 +294,6 @@
   text-align: center;
   position: relative;
   display: inline-block;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
 .treatment-areas-grid {

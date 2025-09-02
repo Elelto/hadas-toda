@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import heroImage from '../assets/logo.png'; // יש להחליף בתמונה מתאימה
 import '../styles/home.css';
@@ -16,6 +16,80 @@ export default function Home() {
     'שיפור יכולות ארגון מסר ושליפה',
     'הכנה לכיתה א\' – היבטים שפתיים ותקשורתיים'
   ];
+
+  const counterRefs = useRef([]);
+
+  // Counter animation function
+  const animateCounter = (element, target, duration = 2500) => {
+    const startTime = performance.now();
+    let lastValue = 0;
+    
+    // Smoother easing function
+    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+    
+    const animate = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // Apply easing
+      const easedProgress = easeOutCubic(progress);
+      const rawValue = easedProgress * target;
+      
+      // Smooth interpolation to avoid jumps
+      const currentValue = Math.round(rawValue);
+      
+      // Only update if value changed to avoid flickering
+      if (currentValue !== lastValue || progress >= 1) {
+        lastValue = currentValue;
+        
+        // Handle different number formats
+        if (target === 10) {
+          element.textContent = currentValue + '+';
+        } else if (target === 100) {
+          element.textContent = currentValue + '+';
+        } else if (target === 'MA') {
+          element.textContent = 'M.A';
+        } else {
+          element.textContent = currentValue;
+        }
+      }
+      
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+    
+    requestAnimationFrame(animate);
+  };
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const element = entry.target;
+          const targetValue = element.dataset.target;
+          
+          if (targetValue && !element.classList.contains('animated')) {
+            element.classList.add('animated');
+            
+            if (targetValue === 'MA') {
+              // For M.A, just show the text without animation
+              element.textContent = 'M.A';
+            } else {
+              element.textContent = '0'; // Set initial display value to 0
+              animateCounter(element, parseInt(targetValue));
+            }
+          }
+        }
+      });
+    }, { threshold: 0.5 });
+
+    counterRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div className="home-page">
@@ -38,15 +112,33 @@ export default function Home() {
             </div>
             <div className="hero-highlights" data-aos="fade-up" data-aos-delay="1000">
               <div className="highlight-item">
-                <span className="highlight-number">10+</span>
+                <span 
+                  className="highlight-number counter" 
+                  ref={(el) => counterRefs.current[0] = el}
+                  data-target="10"
+                >
+                  0
+                </span>
                 <span className="highlight-text">שנות ניסיון</span>
               </div>
               <div className="highlight-item">
-                <span className="highlight-number">100+</span>
+                <span 
+                  className="highlight-number counter" 
+                  ref={(el) => counterRefs.current[1] = el}
+                  data-target="100"
+                >
+                  0
+                </span>
                 <span className="highlight-text">מטופלים מרוצים</span>
               </div>
               <div className="highlight-item">
-                <span className="highlight-number">M.A</span>
+                <span 
+                  className="highlight-number counter" 
+                  ref={(el) => counterRefs.current[2] = el}
+                  data-target="MA"
+                >
+                  0
+                </span>
                 <span className="highlight-text">תואר שני בקלינאות תקשורת</span>
               </div>
             </div>
