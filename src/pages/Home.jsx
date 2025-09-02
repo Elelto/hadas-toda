@@ -276,7 +276,7 @@ export default function Home() {
           <p className="section-subtitle" data-aos="fade-up" data-aos-delay="200">מאמרים, טיפים וחידושים בתחום קלינאות התקשורת</p>
           
           <div className="blog-preview-grid">
-            {blogPosts.slice(0, 2).map((post, index) => (
+            {blogPosts.slice(0, 3).map((post, index) => (
               <div className="blog-preview-card" key={post.id} data-aos="fade-up" data-aos-delay={400 + (index * 200)}>
                 <div className="blog-preview-image">
                   <img src={post.image} alt={post.title} />

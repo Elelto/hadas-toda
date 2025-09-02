@@ -42,7 +42,7 @@
 }
 
 .footer-heading {
-  color: #000;
+  color: var(--blush);
   margin: 0 0 1.2em;
   font-size: 1.6em;
   font-weight: 500;
@@ -74,7 +74,7 @@
 
 .contact-name {
   font-weight: 500;
-  color: #000;
+  color: var(--blush);
   margin-bottom: 0.5em;
 }
 
