@@ -247,7 +247,9 @@ export default function Contact() {
             </div>
             
             <div className="contact-form-card" data-aos="fade-left">
-              <h2 className="form-title" data-aos="fade-up" data-aos-delay="200">שלח/י הודעה</h2>
+              <div className="form-title-wrapper">
+                <h2 className="form-title" data-aos="fade-up" data-aos-delay="200">שלח/י הודעה</h2>
+              </div>
               <form className="contact-form" ref={form} onSubmit={handleSubmit} data-aos="fade-up" data-aos-delay="400">
                 <div className="form-group">
                   <label htmlFor="user_name" className="form-label">שם</label>
@@ -337,7 +339,9 @@ export default function Contact() {
         
         <section className="faq-section">
           <div className="container">
-            <h2 className="faq-title" data-aos="fade-up">שאלות נפוצות</h2>
+            <div className="faq-title-wrapper">
+              <h2 className="faq-title" data-aos="fade-up">שאלות נפוצות</h2>
+            </div>
             <div className="faq-container" data-aos="fade-up" data-aos-delay="200">
               <div className={`faq-item ${openFaq === 0 ? 'active' : ''}`} onClick={() => toggleFaq(0)}>
                 <div className="faq-question">

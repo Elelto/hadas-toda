@@ -298,9 +298,20 @@
 
 .treatment-areas-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 25px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem 3rem;
   margin-top: 2rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 768px) {
+  .treatment-areas-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    max-width: 400px;
+  }
 }
 
 .treatment-area-item {
@@ -616,10 +627,6 @@
   
   .hero-subtitle {
     font-size: 1.6rem;
-  }
-  
-  .treatment-areas-grid {
-    grid-template-columns: 1fr 1fr;
   }
 }
 
