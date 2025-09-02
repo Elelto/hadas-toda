@@ -91,8 +91,6 @@
 
 .hero-cta {
   margin-top: 20px;
-  font-size: 1rem;
-  padding: 1rem 2.5rem;
 }
 
 .hero-buttons {
@@ -101,11 +99,65 @@
   margin-top: 1.5rem;
 }
 
-@media (max-width: 576px) {
-  .hero-buttons {
-    flex-direction: column;
-    gap: 0.8rem;
-  }
+/* Complete reset and standardization for hero buttons */
+.hero-buttons .btn,
+.hero-buttons .btn-secondary {
+  /* Reset all inherited properties */
+  all: unset;
+  
+  /* Identical base properties */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: 48px;
+  padding: 0 24px;
+  margin: 0;
+  
+  /* Typography */
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  
+  /* Layout */
+  box-sizing: border-box;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  /* Positioning */
+  position: relative;
+  z-index: 1;
+}
+
+/* Primary button styling */
+.hero-buttons .btn:not(.btn-secondary) {
+  background: linear-gradient(to right, var(--primary), var(--primary-dark));
+  color: white;
+  border: 2px solid transparent;
+}
+
+/* Secondary button styling */
+.hero-buttons .btn-secondary {
+  background: transparent;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+}
+
+/* Hover effects */
+.hero-buttons .btn:not(.btn-secondary):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.hero-buttons .btn-secondary:hover {
+  background: var(--primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .hero-highlights {

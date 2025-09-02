@@ -23,7 +23,7 @@ export default function Footer() {
             <div className="contact-info">
               <div className="contact-name">הדס תודה קלינאית תקשורת</div>
               <a href="tel:0506796209" className="contact-link">050-6796209</a>
-              <a href="mailto:hadas-toda.info@gmail.com" className="contact-link">hadas-toda.info@gmail.com</a>
+              <a href="mailto:hadas.toda.info@gmail.com" className="contact-link">hadas.toda.info@gmail.com</a>
               <div className="contact-address">שיכון ג' בני ברק</div>
             </div>
           </div>

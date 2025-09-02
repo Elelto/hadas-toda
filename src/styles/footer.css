@@ -79,7 +79,7 @@
 }
 
 .contact-link {
-  color: var(--primary);
+  color: var(--blush) !important;
   text-decoration: none;
   transition: var(--transition);
   position: relative;
@@ -96,7 +96,7 @@
 }
 
 .contact-link:hover {
-  color: var(--bali-hai);
+  color: var(--blush) !important;
 }
 
 .contact-link:after {

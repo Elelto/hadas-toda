@@ -209,7 +209,7 @@ main {
   padding: 0.8em 1.8em;
   background: linear-gradient(to right, var(--primary), var(--primary-dark));
   color: white;
-  border: none;
+  border: 2px solid transparent;
   border-radius: 8px;
   font-weight: 600;
   font-size: 1rem;
@@ -225,6 +225,7 @@ main {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
 }
 
 @media (max-width: 576px) {
@@ -272,6 +273,14 @@ main {
   box-shadow: none;
   font-weight: 600;
   border-radius: 6px;
+  padding: 0.8em 1.8em;
+  box-sizing: border-box;
+}
+
+@media (max-width: 576px) {
+  .btn-secondary {
+    padding: 0.7em 1.5em;
+  }
 }
 
 .btn-secondary:hover, .btn-secondary:focus {
