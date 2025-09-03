@@ -3,6 +3,14 @@
   publish = "dist"
   command = "npm run build"
 
+# הגדרות משתני סביבה לפרודקשן
+[build.environment]
+  # משתני סביבה יוגדרו בממשק Netlify
+  # VITE_OPENAI_API_KEY = "your_api_key_here"
+  # VITE_AI_MODEL = "gpt-3.5-turbo"
+  # VITE_AI_MAX_TOKENS = "1000"
+  # VITE_AI_TEMPERATURE = "0.7"
+
 # הגדרות עבור שרת ה-proxy המקומי
 [dev]
   framework = "vite"

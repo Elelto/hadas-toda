@@ -87,7 +87,7 @@ export default function AIAssessment() {
       
       console.log('📊 הערכת איכות מידע:', informationQuality);
       
-      if (informationQuality.isReadyForAssessment || questionCount >= 6) {
+      if (informationQuality.isReadyForAssessment || questionCount >= 8) {
         console.log('🏁 מסיים אבחון...');
         
         if (useAI) {

@@ -18,13 +18,17 @@
     "@emailjs/browser": "^4.4.1",
     "aos": "^2.3.4",
     "browserify-fs": "^1.0.0",
+    "buffer": "^6.0.3",
     "gray-matter": "^4.0.3",
     "netlify-identity-widget": "^1.9.2",
-    "openai": "^5.17.0",
+    "openai": "^5.19.1",
     "path-browserify": "^1.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^7.6.1"
+  },
+  "serverDependencies": {
+    "openai": "^5.17.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.0.0",

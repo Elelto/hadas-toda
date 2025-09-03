@@ -1,16 +1,18 @@
 // שירות AI מתקדם לאבחון קלינאות תקשורת
 class SpeechTherapyAIService {
   constructor() {
+    // עכשיו משתמשים ב-Netlify Functions במקום קריאה ישירה ל-OpenAI
+    this.functionURL = '/.netlify/functions/ai-assessment';
     this.apiKey = import.meta.env.VITE_OPENAI_API_KEY;
     // כפה שימוש ב-gpt-3.5-turbo עד שיהיה גישה ל-gpt-4
     this.model = 'gpt-3.5-turbo';
-    this.baseURL = 'https://api.openai.com/v1/chat/completions';
+    // this.baseURL = 'https://api.openai.com/v1/chat/completions';
     
     console.log(`🤖 משתמש במודל: ${this.model}`);
     
     // בסיס ידע מקצועי
     this.knowledgeBase = {
-      systemPrompt: `אתה מומחה בקלינאות תקשורת עם התמחות בתחומים הבאים:
+      systemPrompt: `את הדס תודה, קלינאית תקשורת מנוסה ומומחית עם התמחות בתחומים הבאים:
       
       1. הפרעות קול וצרידות (Voice Disorders):
          - צרידות כרונית ואקוטית
@@ -34,15 +36,16 @@ class SpeechTherapyAIService {
          - הפסקות לא רצוניות
          - קשיי שטף במבוגרים וילדים
       
-      הנחיות לאבחון:
-      - תן תשובות מקצועיות ומדויקות
-      - התבסס על ראיות מחקריות
-      - ספק המלצות מעשיות
+      הסגנון שלך כהדס תודה:
+      - דבר בגוף ראשון נקבה ("אני מבינה", "אני ממליצה")
+      - השתמש בשפה חמה, אמפתית ומקצועית
+      - היה ישירה ומעשית
+      - תן תשובות מקצועיות המבוססות על ניסיון קליני
       - שמור על רגישות ואמפתיה
       - הדגש שזהו אבחון ראשוני בלבד
       - המלץ על פגישה מקצועית במקרים הרלוונטיים
       
-      תמיד ענה בעברית ובצורה ברורה ונגישה.`,
+      תמיד ענה בעברית בסגנון אישי וחם של הדס תודה.`,
       
       assessmentCategories: {
         voice: 'בעיות קול וצרידות',
@@ -53,15 +56,64 @@ class SpeechTherapyAIService {
     };
   }
 
-  // בדיקת זמינות API
-  async checkAPIAvailability() {
-    if (!this.apiKey) {
-      console.warn('⚠️ API Key חסר - נופל למצב fallback');
-      throw new Error('API Key not configured');
+  // יצירת שאלה דינמית בשיחה
+  async generateDynamicQuestion(prompt, conversationHistory) {
+    try {
+      const response = await fetch(this.functionURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'generateQuestion',
+          data: { conversationHistory }
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const result = await response.json();
+      return result;
+      
+    } catch (error) {
+      console.error('Dynamic question generation error:', error);
+      return {
+        success: false,
+        error: error.message
+      };
     }
-    
-    console.log('🔑 API Key נמצא, מנסה להתחבר ל-OpenAI...');
-    return true;
+  }
+
+  // יצירת אבחון סופי
+  async generateFinalAssessment(conversationHistory) {
+    try {
+      const response = await fetch(this.functionURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'generateAssessment',
+          data: { conversationHistory }
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const result = await response.json();
+      return result;
+      
+    } catch (error) {
+      console.error('Assessment generation error:', error);
+      return {
+        success: false,
+        error: error.message
+      };
+    }
   }
 
   // יצירת prompt מותאם לאבחון
@@ -283,7 +335,6 @@ class SpeechTherapyAIService {
   // יצירת שאלה דינמית בשיחה
   async generateDynamicQuestion(prompt, conversationHistory) {
     try {
-      await this.checkAPIAvailability();
       
       // בניית הקשר השיחה עם דגש על תשובות המשתמש
       const userResponses = conversationHistory.filter(msg => msg.type === 'user');
@@ -299,80 +350,120 @@ class SpeechTherapyAIService {
         `${msg.type === 'ai' ? 'קלינאי' : 'מטופל'}: ${msg.content}`
       ).join('\n');
       
-      const fullPrompt = `אתה קלינאי תקשורת מנוסה. צור שאלת המשך מותאמת אישית על בסיס התשובה האחרונה של המטופל.
+      const fullPrompt = `You are Hadas Toda, an experienced speech therapist. Generate a short, focused follow-up question based on the patient's last response.
 
-=== התשובה האחרונה של המטופל ===
+=== Patient's last response ===
 "${lastUserResponse}"
 
-=== השיחה המלאה עד כה ===
+=== Full conversation so far ===
 ${conversationContext}
 
-=== שאלות שכבר נשאלו (אסור לחזור עליהן בדיוק!) ===
+=== Questions already asked (DO NOT repeat similar questions!) ===
 - ${previousQuestions}
 
-=== הוראות חשובות ===
-1. **קרא בעיון את התשובה האחרונה** - זה הדבר הכי חשוב!
-2. אם המטופל כתב רק "הי" או תשובה כללית - שאל שאלת פתיחה בסיסית על הבעיה
-3. אם המטופל הזכיר בעיה ספציפית - התמקד בדיוק בזה שהוא אמר
-4. אם המטופל הזכיר גיל/מצב/סימפטום - שאל עליו בדיוק
-5. **אסור לחזור על שאלות זהות או דומות מאוד לקודמות!**
-6. אם השאלה דומה לקודמת - נסח אותה אחרת או שאל על היבט אחר
-7. השתמש בשפה אמפתית ומקצועית
+=== CRITICAL INSTRUCTIONS ===
+1. **If patient wrote "הי" (hi) or similar - DO NOT assume any specific problem**
+2. **Start with OPEN-ENDED questions to identify the actual problem**
+3. **DO NOT assume stuttering, voice problems, or any specific issue**
+4. **Ask what brings them to speech therapy assessment**
+5. **Let the patient tell you their problem first**
+6. **Only ask specific questions AFTER they mention their problem**
 
-דוגמאות:
-- אם המטופל כתב "הי" → "שלום! מה הביא אותך לפנות לייעוץ בנושא תקשורת ודיבור?"
-- אם המטופל כתב "יש לי בעיה בדיבור" → "אני מבין. איך הבעיה בדיבור מתבטאת? האם זה קושי בהגייה, בקצב, או משהו אחר?"
-- אם המטופל כתב "הילד שלי בן 5 לא מדבר טוב" → "מה בדיוק אתה מבחין בדיבור של הילד בן ה-5? האם זה קושי בהגיית מילים מסוימות?"
+For initial conversation (when patient says "hi" or similar):
+- "יש לך בעיה בדיבור או בקול?" (Do you have speech or voice problems?)
+- "מה הביא אותך לאבחון תקשורת?" (What brought you to communication assessment?)
+- "איך אני יכולה לעזור לך?" (How can I help you?)
+- "יש לך קושי מסוים בתקשורת?" (Do you have any communication difficulty?)
 
-החזר רק את השאלה, ללא הסברים.`;
+ONLY ask specific questions AFTER patient mentions their problem:
+- If they say "stuttering" → ask about when it started, which sounds, etc.
+- If they say "voice problems" → ask about hoarseness, when it happens, etc.
+- If they say "speech problems" → ask about specific sounds, clarity, etc.
 
-      const response = await fetch(this.baseURL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`
-        },
-        body: JSON.stringify({
-          model: this.model,
-          messages: [
-            {
-              role: 'system',
-              content: this.knowledgeBase.systemPrompt
-            },
-            {
-              role: 'user',
-              content: fullPrompt
-            }
-          ],
-          max_tokens: 200,
-          temperature: 0.8
-        })
-      });
+WRONG examples (NEVER do this!):
+- "מהם המצבים בהם את נתקעת?" (assuming stuttering without patient mentioning it)
+- Assuming any specific problem before patient describes it
+- Asking detailed questions about problems not yet mentioned
 
-      console.log('📡 Response status:', response.status);
-      console.log('📡 Response headers:', response.headers);
+Return ONLY a general question to identify what problem the patient has.`;
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('❌ API Error details:', errorText);
-        
-        // טיפול מיוחד בשגיאת מכסה
-        if (response.status === 429) {
-          console.warn('⚠️ חרגת מהמכסה של OpenAI - נופל למצב fallback');
-          throw new Error('QUOTA_EXCEEDED');
+      // בפיתוח מקומי - נסה קודם Netlify Function, אם לא עובד נפול ל-OpenAI ישיר
+      try {
+        const response = await fetch(this.functionURL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            action: 'generateQuestion',
+            prompt: fullPrompt,
+            conversationHistory: conversationHistory
+          })
+        });
+
+        console.log('📡 Function Response status:', response.status);
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            return {
+              success: true,
+              question: data.question,
+              timestamp: new Date().toISOString()
+            };
+          }
         }
         
-        throw new Error(`API Error: ${response.status} - ${errorText}`);
-      }
+        // אם הגענו לכאן, Netlify Function לא עובדת - נפול ל-OpenAI ישיר
+        console.warn('⚠️ Netlify Function לא זמינה, נופל ל-OpenAI ישיר');
+        throw new Error('FUNCTION_NOT_AVAILABLE');
+        
+      } catch (functionError) {
+        console.warn('⚠️ Netlify Function נכשלה:', functionError.message);
+        
+        // fallback ל-OpenAI ישיר (רק בפיתוח מקומי)
+        if (this.apiKey && this.apiKey !== 'your_openai_api_key_here') {
+          console.log('🔄 נופל ל-OpenAI ישיר...');
+          
+          const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${this.apiKey}`
+            },
+            body: JSON.stringify({
+              model: this.model,
+              messages: [
+                {
+                  role: 'system',
+                  content: this.knowledgeBase.systemPrompt
+                },
+                {
+                  role: 'user',
+                  content: fullPrompt
+                }
+              ],
+              max_tokens: 200,
+              temperature: 0.8
+            })
+          });
 
-      const data = await response.json();
-      const question = data.choices[0].message.content.trim();
-      
-      return {
-        success: true,
-        question: question,
-        timestamp: new Date().toISOString()
-      };
+          if (!response.ok) {
+            throw new Error(`OpenAI API Error: ${response.status}`);
+          }
+
+          const data = await response.json();
+          const question = data.choices[0].message.content.trim();
+          
+          return {
+            success: true,
+            question: question,
+            timestamp: new Date().toISOString()
+          };
+        }
+        
+        throw functionError;
+      }
       
     } catch (error) {
       console.error('Dynamic question generation error:', error);
@@ -387,7 +478,6 @@ ${conversationContext}
   // יצירת אבחון סופי מהשיחה
   async generateFinalAssessment(conversationHistory) {
     try {
-      await this.checkAPIAvailability();
       
       // בניית תקציר השיחה
       const conversationSummary = conversationHistory.map(msg => 
@@ -418,55 +508,86 @@ ${conversationSummary}
 
 חשוב: זהו אבחון ראשוני בלבד ואינו מחליף אבחון מקצועי מקיף.`;
 
-      const response = await fetch(this.baseURL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`
-        },
-        body: JSON.stringify({
-          model: this.model,
-          messages: [
-            {
-              role: 'system',
-              content: this.knowledgeBase.systemPrompt
-            },
-            {
-              role: 'user',
-              content: prompt
-            }
-          ],
-          max_tokens: 800,
-          temperature: 0.7,
-          response_format: { type: "json_object" }
-        })
-      });
+      // בפיתוח מקומי - נסה קודם Netlify Function, אם לא עובד נפול ל-OpenAI ישיר
+      try {
+        const response = await fetch(this.functionURL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            action: 'generateAssessment',
+            prompt: prompt,
+            conversationHistory: conversationHistory
+          })
+        });
 
-      console.log('📡 Response status:', response.status);
-      console.log('📡 Response headers:', response.headers);
+        console.log('📡 Function Response status:', response.status);
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('❌ API Error details:', errorText);
-        
-        // טיפול מיוחד בשגיאת מכסה
-        if (response.status === 429) {
-          console.warn('⚠️ חרגת מהמכסה של OpenAI - נופל למצב fallback');
-          throw new Error('QUOTA_EXCEEDED');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            return {
+              success: true,
+              assessment: data.assessment,
+              timestamp: new Date().toISOString(),
+              model: this.model
+            };
+          }
         }
         
-        throw new Error(`API Error: ${response.status} - ${errorText}`);
-      }
+        // אם הגענו לכאן, Netlify Function לא עובדת - נפול ל-OpenAI ישיר
+        console.warn('⚠️ Netlify Function לא זמינה, נופל ל-OpenAI ישיר');
+        throw new Error('FUNCTION_NOT_AVAILABLE');
+        
+      } catch (functionError) {
+        console.warn('⚠️ Netlify Function נכשלה:', functionError.message);
+        
+        // fallback ל-OpenAI ישיר (רק בפיתוח מקומי)
+        if (this.apiKey && this.apiKey !== 'your_openai_api_key_here') {
+          console.log('🔄 נופל ל-OpenAI ישיר...');
+          
+          const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${this.apiKey}`
+            },
+            body: JSON.stringify({
+              model: this.model,
+              messages: [
+                {
+                  role: 'system',
+                  content: this.knowledgeBase.systemPrompt
+                },
+                {
+                  role: 'user',
+                  content: prompt
+                }
+              ],
+              max_tokens: 800,
+              temperature: 0.7,
+              response_format: { type: "json_object" }
+            })
+          });
 
-      const data = await response.json();
-      const assessment = JSON.parse(data.choices[0].message.content);
-      
-      return {
-        success: true,
-        assessment: assessment,
-        timestamp: new Date().toISOString(),
-        model: this.model
-      };
+          if (!response.ok) {
+            throw new Error(`OpenAI API Error: ${response.status}`);
+          }
+
+          const data = await response.json();
+          const assessment = JSON.parse(data.choices[0].message.content);
+          
+          return {
+            success: true,
+            assessment: assessment,
+            timestamp: new Date().toISOString(),
+            model: this.model
+          };
+        }
+        
+        throw functionError;
+      }
       
     } catch (error) {
       console.error('Final assessment generation error:', error);
@@ -532,7 +653,7 @@ ${conversationSummary}
     
     return {
       score,
-      isReadyForAssessment: score >= 60,
+      isReadyForAssessment: score >= 80,
       missingInfo: {
         basicProblem: !hasBasicProblem,
         specificSymptoms: !hasSpecificSymptoms,
