@@ -285,23 +285,46 @@ class SpeechTherapyAIService {
     try {
       await this.checkAPIAvailability();
       
-      // בניית הקשר השיחה
+      // בניית הקשר השיחה עם דגש על תשובות המשתמש
+      const userResponses = conversationHistory.filter(msg => msg.type === 'user');
+      const lastUserResponse = userResponses[userResponses.length - 1]?.content || '';
+      
+      // איסוף שאלות קודמות למניעת חזרות
+      const previousQuestions = conversationHistory
+        .filter(msg => msg.type === 'ai')
+        .map(msg => msg.content)
+        .join('\n- ');
+      
       const conversationContext = conversationHistory.map(msg => 
         `${msg.type === 'ai' ? 'קלינאי' : 'מטופל'}: ${msg.content}`
       ).join('\n');
       
-      const fullPrompt = `${prompt}
+      const fullPrompt = `אתה קלינאי תקשורת מנוסה. צור שאלת המשך מותאמת אישית על בסיס התשובה האחרונה של המטופל.
 
-הקשר השיחה עד כה:
+=== התשובה האחרונה של המטופל ===
+"${lastUserResponse}"
+
+=== השיחה המלאה עד כה ===
 ${conversationContext}
 
-צור שאלת המשך טבעית ומקצועית שתעזור לחדד את האבחון. השאלה צריכה להיות:
-1. ממוקדת ורלוונטית לתשובות הקודמות
-2. מקצועית אך נגישה
-3. אמפתית וחמה
-4. מותאמת לגיל ולמצב המתואר
+=== שאלות שכבר נשאלו (אסור לחזור עליהן בדיוק!) ===
+- ${previousQuestions}
 
-החזר רק את טקסט השאלה, ללא הסברים נוספים.`;
+=== הוראות חשובות ===
+1. **קרא בעיון את התשובה האחרונה** - זה הדבר הכי חשוב!
+2. אם המטופל כתב רק "הי" או תשובה כללית - שאל שאלת פתיחה בסיסית על הבעיה
+3. אם המטופל הזכיר בעיה ספציפית - התמקד בדיוק בזה שהוא אמר
+4. אם המטופל הזכיר גיל/מצב/סימפטום - שאל עליו בדיוק
+5. **אסור לחזור על שאלות זהות או דומות מאוד לקודמות!**
+6. אם השאלה דומה לקודמת - נסח אותה אחרת או שאל על היבט אחר
+7. השתמש בשפה אמפתית ומקצועית
+
+דוגמאות:
+- אם המטופל כתב "הי" → "שלום! מה הביא אותך לפנות לייעוץ בנושא תקשורת ודיבור?"
+- אם המטופל כתב "יש לי בעיה בדיבור" → "אני מבין. איך הבעיה בדיבור מתבטאת? האם זה קושי בהגייה, בקצב, או משהו אחר?"
+- אם המטופל כתב "הילד שלי בן 5 לא מדבר טוב" → "מה בדיוק אתה מבחין בדיבור של הילד בן ה-5? האם זה קושי בהגיית מילים מסוימות?"
+
+החזר רק את השאלה, ללא הסברים.`;
 
       const response = await fetch(this.baseURL, {
         method: 'POST',
@@ -453,6 +476,80 @@ ${conversationSummary}
         assessment: null
       };
     }
+  }
+
+  // הערכת איכות המידע לאבחון
+  evaluateInformationQuality(conversationHistory) {
+    const userResponses = conversationHistory.filter(msg => msg.type === 'user');
+    
+    let score = 0;
+    let hasBasicProblem = false;
+    let hasSpecificSymptoms = false;
+    let hasContextInfo = false;
+    let hasDuration = false;
+    let hasImpact = false;
+    
+    const allUserText = userResponses.map(msg => msg.content.toLowerCase()).join(' ');
+    
+    // בדיקת מידע בסיסי על הבעיה
+    const problemKeywords = ['בעיה', 'קושי', 'לא מדבר', 'גמגום', 'לשון', 'הגייה', 'דיבור', 'קול'];
+    if (problemKeywords.some(keyword => allUserText.includes(keyword))) {
+      hasBasicProblem = true;
+      score += 20;
+    }
+    
+    // בדיקת סימפטומים ספציפיים
+    const symptomKeywords = ['צרידות', 'קשורה', 'לא ברור', 'מהיר', 'איטי', 'חזק', 'חלש', 'נעלם'];
+    if (symptomKeywords.some(keyword => allUserText.includes(keyword))) {
+      hasSpecificSymptoms = true;
+      score += 25;
+    }
+    
+    // בדיקת מידע הקשרי (גיל, מצב, סביבה)
+    const contextKeywords = ['בן', 'בת', 'ילד', 'עבודה', 'בית ספר', 'חברים', 'משפחה', 'מורה'];
+    if (contextKeywords.some(keyword => allUserText.includes(keyword))) {
+      hasContextInfo = true;
+      score += 20;
+    }
+    
+    // בדיקת משך הבעיה
+    const durationKeywords = ['שנה', 'חודש', 'שבוע', 'מתי', 'התחיל', 'זמן', 'לאחרונה'];
+    if (durationKeywords.some(keyword => allUserText.includes(keyword))) {
+      hasDuration = true;
+      score += 15;
+    }
+    
+    // בדיקת השפעה על החיים
+    const impactKeywords = ['מפריע', 'קשה', 'ביטחון', 'חברתי', 'לימודים', 'עבודה', 'תקשורת'];
+    if (impactKeywords.some(keyword => allUserText.includes(keyword))) {
+      hasImpact = true;
+      score += 20;
+    }
+    
+    // בונוס לתשובות מפורטות
+    const avgResponseLength = userResponses.reduce((sum, msg) => sum + msg.content.length, 0) / userResponses.length;
+    if (avgResponseLength > 20) score += 10;
+    
+    return {
+      score,
+      isReadyForAssessment: score >= 60,
+      missingInfo: {
+        basicProblem: !hasBasicProblem,
+        specificSymptoms: !hasSpecificSymptoms,
+        contextInfo: !hasContextInfo,
+        duration: !hasDuration,
+        impact: !hasImpact
+      },
+      details: {
+        hasBasicProblem,
+        hasSpecificSymptoms,
+        hasContextInfo,
+        hasDuration,
+        hasImpact,
+        responseCount: userResponses.length,
+        avgResponseLength: Math.round(avgResponseLength)
+      }
+    };
   }
 }
 

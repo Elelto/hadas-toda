@@ -29,41 +29,17 @@ export default function AIAssessment() {
     
     if (useAI) {
       try {
-        const initialPrompt = `
-אתה קלינאי תקשורת מומחה של הדס טודה. תפקידך לבצע אבחון ראשוני מקיף באמצעות שיחה טבעית.
-
-התמחויות של הדס:
-- הפרעות קול וצרידות (ילדים ומבוגרים)
-- טיפול בדיבור ושפה
-- הפרעות הגייה
-- טיפול בגמגום
-- עיכובי שפה
-- שיקום קול למקצועות דיבור (מורים, מרצים)
-- הכנה לכיתה א' (היבטי שפה)
-
-הנחיות לשיחה:
-1. התחל בשאלה פתוחה וחמה
-2. שאל שאלות המשך מותאמות לתשובות
-3. התמקד בבעיה הספציפית
-4. אסוף מידע על: גיל, תחום הבעיה, חומרת הבעיה, משך הבעיה
-5. שאל 4-6 שאלות מקסימום
-6. היה אמפתי ומקצועי
-
-התחל עכשיו בשאלה ראשונה:
-        `;
-
-        const response = await aiService.generateDynamicQuestion(initialPrompt, []);
+        // שאלה ראשונה קבועה ומותאמת
+        const initialQuestion = "שלום! אני כאן כדי לעזור לך עם אבחון ראשוני בתחום התקשורת. מה מביא אותך אליי היום? ספר/י לי על הבעיה או הדאגה שלך.";
         
-        if (response.success) {
-          setCurrentQuestion(response.question);
-          setConversationHistory([{
-            type: 'ai',
-            content: response.question,
-            timestamp: new Date()
-          }]);
-        } else {
-          throw new Error('Failed to start AI assessment');
-        }
+        setCurrentQuestion(initialQuestion);
+        setConversationHistory([{
+          type: 'ai',
+          content: initialQuestion,
+          timestamp: new Date()
+        }]);
+        
+        console.log('🤖 התחיל אבחון AI עם שאלה ראשונה קבועה');
       } catch (error) {
         console.error('Error starting AI assessment:', error);
         // Fallback למערכת מקומית
@@ -104,8 +80,14 @@ export default function AIAssessment() {
     console.log(`🔍 מצב נוכחי: ${useAI ? 'AI' : 'Fallback'}, שאלה מספר: ${questionCount + 1}`);
 
     try {
-      // בדיקה אם צריך לסיים את האבחון
-      if (questionCount >= 4) {
+      // בדיקה אם צריך לסיים את האבחון - על בסיס איכות המידע
+      const informationQuality = useAI ? 
+        aiService.evaluateInformationQuality(newHistory) : 
+        { isReadyForAssessment: questionCount >= 4, score: questionCount * 20 };
+      
+      console.log('📊 הערכת איכות מידע:', informationQuality);
+      
+      if (informationQuality.isReadyForAssessment || questionCount >= 6) {
         console.log('🏁 מסיים אבחון...');
         
         if (useAI) {
@@ -116,7 +98,8 @@ export default function AIAssessment() {
             console.log('✅ אבחון AI הצליח!', assessmentResult.assessment);
             setFinalAssessment({
               ...assessmentResult.assessment,
-              isAIGenerated: true
+              isAIGenerated: true,
+              informationScore: informationQuality.score
             });
             setIsCompleted(true);
             setIsProcessing(false);
@@ -131,43 +114,43 @@ export default function AIAssessment() {
           setIsProcessing(false);
           return;
         }
-      } else {
-        // שאלת המשך
-        console.log('➡️ יוצר שאלת המשך...');
+      }
+
+      // המשך השיחה - יצירת שאלה חדשה
+      console.log('➡️ יוצר שאלת המשך...');
+      
+      if (useAI) {
+        console.log('🤖 מנסה שאלת AI...');
+        const nextQuestionResponse = await aiService.generateDynamicQuestion(
+          `על בסיס השיחה עד כה, צור שאלת המשך מותאמת ומקצועית. זו שאלה מספר ${questionCount + 1} מתוך 5.`,
+          newHistory
+        );
         
-        if (useAI) {
-          console.log('🤖 מנסה שאלת AI...');
-          const nextQuestionResponse = await aiService.generateDynamicQuestion(
-            `על בסיס השיחה עד כה, צור שאלת המשך מותאמת ומקצועית. זו שאלה מספר ${questionCount + 1} מתוך 5.`,
-            newHistory
-          );
-          
-          if (nextQuestionResponse.success) {
-            console.log('✅ שאלת AI הצליחה!', nextQuestionResponse.question);
-            setCurrentQuestion(nextQuestionResponse.question);
-            setConversationHistory([...newHistory, {
-              type: 'ai',
-              content: nextQuestionResponse.question,
-              timestamp: new Date()
-            }]);
-            setIsProcessing(false);
-            return;
-          } else {
-            console.log('❌ שאלת AI נכשלה:', nextQuestionResponse.error);
-            throw new Error('Failed to generate AI question');
-          }
-        } else {
-          console.log('🔧 משתמש בשאלה fallback מקומית');
-          const nextQuestion = fallbackQuestions[questionCount + 1] || "תודה על התשובות. האם יש עוד משהו חשוב שתרצה לשתף?";
-          setCurrentQuestion(nextQuestion);
+        if (nextQuestionResponse.success) {
+          console.log('✅ שאלת AI הצליחה!', nextQuestionResponse.question);
+          setCurrentQuestion(nextQuestionResponse.question);
           setConversationHistory([...newHistory, {
             type: 'ai',
-            content: nextQuestion,
+            content: nextQuestionResponse.question,
             timestamp: new Date()
           }]);
           setIsProcessing(false);
           return;
+        } else {
+          console.log('❌ שאלת AI נכשלה:', nextQuestionResponse.error);
+          throw new Error('Failed to generate AI question');
         }
+      } else {
+        console.log('🔧 משתמש בשאלה fallback מקומית');
+        const nextQuestion = fallbackQuestions[questionCount + 1] || "תודה על התשובות. האם יש עוד משהו חשוב שתרצה לשתף?";
+        setCurrentQuestion(nextQuestion);
+        setConversationHistory([...newHistory, {
+          type: 'ai',
+          content: nextQuestion,
+          timestamp: new Date()
+        }]);
+        setIsProcessing(false);
+        return;
       }
     } catch (error) {
       console.error('💥 שגיאה בעיבוד תשובה:', error);
