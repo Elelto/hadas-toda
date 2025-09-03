@@ -1,74 +1,96 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const useScrollVelocity = () => {
   const [scrollVelocity, setScrollVelocity] = useState(0);
-  const [scrollDirection, setScrollDirection] = useState('down');
+  const [scrollDirection, setScrollDirection] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
+  const [waveOffset, setWaveOffset] = useState(0);
   
   const lastScrollY = useRef(0);
-  const lastTimestamp = useRef(Date.now());
+  const lastTimestamp = useRef(0);
   const velocityHistory = useRef([]);
   const scrollTimeout = useRef(null);
-  const rafId = useRef(null);
-
-  const smoothVelocity = useCallback((newVelocity) => {
-    // Keep history of last 5 velocity measurements for smoothing
-    velocityHistory.current.push(newVelocity);
-    if (velocityHistory.current.length > 5) {
-      velocityHistory.current.shift();
-    }
-    
-    // Calculate average velocity for smoother animations
-    const avgVelocity = velocityHistory.current.reduce((sum, v) => sum + v, 0) / velocityHistory.current.length;
-    return Math.min(Math.abs(avgVelocity), 10); // Cap at 10 for performance
-  }, []);
-
-  const updateScrollVelocity = useCallback(() => {
-    const currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
-    const currentTime = Date.now();
-    
-    const deltaY = currentScrollY - lastScrollY.current;
-    const deltaTime = currentTime - lastTimestamp.current;
-    
-    if (deltaTime > 0) {
-      const rawVelocity = Math.abs(deltaY) / deltaTime;
-      const smoothedVelocity = smoothVelocity(rawVelocity);
-      
-      setScrollVelocity(smoothedVelocity);
-      setScrollDirection(deltaY > 0 ? 'down' : 'up');
-      setIsScrolling(true);
-      
-      // Clear existing timeout
-      if (scrollTimeout.current) {
-        clearTimeout(scrollTimeout.current);
-      }
-      
-      // Set scrolling to false after 150ms of no scroll
-      scrollTimeout.current = setTimeout(() => {
-        setIsScrolling(false);
-        setScrollVelocity(0);
-        velocityHistory.current = [];
-      }, 150);
-    }
-    
-    lastScrollY.current = currentScrollY;
-    lastTimestamp.current = currentTime;
-  }, [smoothVelocity]);
-
-  const handleScroll = useCallback(() => {
-    if (rafId.current) {
-      cancelAnimationFrame(rafId.current);
-    }
-    
-    rafId.current = requestAnimationFrame(updateScrollVelocity);
-  }, [updateScrollVelocity]);
+  const offsetAnimation = useRef(null);
 
   useEffect(() => {
-    // Initialize values
-    lastScrollY.current = window.pageYOffset || document.documentElement.scrollTop;
-    lastTimestamp.current = Date.now();
-    
-    // Add passive event listener for better performance
+    const startGentleOffset = (velocity, direction) => {
+      if (offsetAnimation.current) {
+        cancelAnimationFrame(offsetAnimation.current);
+      }
+      
+      let startTime = null;
+      const duration = 600;
+      const maxOffset = Math.min(velocity * 20, 15) * direction; // עדין יותר
+      
+      const animate = (timestamp) => {
+        if (!startTime) startTime = timestamp;
+        const progress = (timestamp - startTime) / duration;
+        
+        if (progress < 1) {
+          // Smooth easing - רך וטבעי
+          const easeProgress = 1 - Math.pow(1 - progress, 3);
+          const currentOffset = maxOffset * (1 - easeProgress);
+          setWaveOffset(currentOffset);
+          
+          offsetAnimation.current = requestAnimationFrame(animate);
+        } else {
+          setWaveOffset(0);
+        }
+      };
+      
+      offsetAnimation.current = requestAnimationFrame(animate);
+    };
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const currentTime = performance.now();
+      
+      if (lastTimestamp.current === 0) {
+        lastTimestamp.current = currentTime;
+        lastScrollY.current = currentScrollY;
+        return;
+      }
+
+      const deltaY = currentScrollY - lastScrollY.current;
+      const deltaTime = currentTime - lastTimestamp.current;
+      
+      if (deltaTime > 0) {
+        const velocity = Math.abs(deltaY / deltaTime);
+        const direction = deltaY > 0 ? 1 : -1;
+        
+        // Update velocity history for smoothing
+        velocityHistory.current.push(velocity);
+        if (velocityHistory.current.length > 5) {
+          velocityHistory.current.shift();
+        }
+        
+        // Calculate smoothed velocity
+        const smoothedVelocity = velocityHistory.current.reduce((a, b) => a + b, 0) / velocityHistory.current.length;
+        
+        setScrollVelocity(Math.min(smoothedVelocity, 2));
+        setScrollDirection(direction);
+        setIsScrolling(true);
+        
+        // Start gentle wave offset animation
+        startGentleOffset(smoothedVelocity, direction);
+        
+        // Clear existing timeout
+        if (scrollTimeout.current) {
+          clearTimeout(scrollTimeout.current);
+        }
+        
+        // Set new timeout for scroll end
+        scrollTimeout.current = setTimeout(() => {
+          setIsScrolling(false);
+          setScrollVelocity(0);
+          setScrollDirection(0);
+        }, 150);
+      }
+      
+      lastScrollY.current = currentScrollY;
+      lastTimestamp.current = currentTime;
+    };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
     
     return () => {
@@ -76,38 +98,32 @@ const useScrollVelocity = () => {
       if (scrollTimeout.current) {
         clearTimeout(scrollTimeout.current);
       }
-      if (rafId.current) {
-        cancelAnimationFrame(rafId.current);
+      if (offsetAnimation.current) {
+        cancelAnimationFrame(offsetAnimation.current);
       }
     };
-  }, [handleScroll]);
+  }, []); 
 
-  // Helper functions for animation calculations
-  const getAnimationSpeed = useCallback(() => {
-    // Base speed is 3s, gets faster with scroll velocity
-    const baseSpeed = 3;
-    const speedMultiplier = Math.max(0.5, 1 - (scrollVelocity * 0.1));
-    return baseSpeed * speedMultiplier;
-  }, [scrollVelocity]);
+  // Helper functions for components
+  const getAnimationSpeed = () => {
+    const baseSpeed = 1;
+    const velocityMultiplier = Math.min(scrollVelocity * 2, 3);
+    return baseSpeed + velocityMultiplier;
+  };
 
-  const getWaveIntensity = useCallback(() => {
-    // Returns intensity between 0.5 and 2 based on scroll velocity
-    return Math.min(2, 0.5 + (scrollVelocity * 0.15));
-  }, [scrollVelocity]);
-
-  const getScrollOffset = useCallback(() => {
-    // Returns scroll-based offset for wave phase shifting
-    const currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
-    return (currentScrollY * 0.001) % (Math.PI * 2);
-  }, []);
+  const getWaveIntensity = () => {
+    const baseIntensity = 1;
+    const velocityIntensity = Math.min(scrollVelocity * 1.5, 2);
+    return baseIntensity + velocityIntensity;
+  };
 
   return {
     scrollVelocity,
     scrollDirection,
     isScrolling,
+    waveOffset,
     getAnimationSpeed,
-    getWaveIntensity,
-    getScrollOffset
+    getWaveIntensity
   };
 };
 

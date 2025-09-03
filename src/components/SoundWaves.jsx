@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import '../styles/sound-waves.css';
+import useScrollVelocity from '../hooks/useScrollVelocity';
 
 const SoundWaves = ({ 
   variant = 'background', 
@@ -10,6 +11,15 @@ const SoundWaves = ({
   className = '',
   style = {}
 }) => {
+  const { 
+    scrollVelocity, 
+    scrollDirection, 
+    isScrolling, 
+    waveOffset,
+    getAnimationSpeed, 
+    getWaveIntensity
+  } = useScrollVelocity();
+
   const svgRef = useRef(null);
   const [scrollY, setScrollY] = useState(0);
 
@@ -24,6 +34,23 @@ const SoundWaves = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, [scrollResponsive]);
 
+  useEffect(() => {
+    if (!scrollResponsive || !svgRef.current) return;
+
+    const svg = svgRef.current;
+    const animationSpeed = getAnimationSpeed();
+    const waveIntensity = getWaveIntensity();
+
+    // Apply dynamic CSS variables for scroll-responsive animations
+    svg.style.setProperty('--scroll-velocity', scrollVelocity);
+    svg.style.setProperty('--scroll-direction', scrollDirection);
+    svg.style.setProperty('--animation-speed', animationSpeed);
+    svg.style.setProperty('--wave-intensity', waveIntensity);
+    svg.style.setProperty('--wave-offset', `${waveOffset}px`);
+    svg.style.setProperty('--is-scrolling', isScrolling ? '1' : '0');
+
+  }, [scrollResponsive, scrollVelocity, scrollDirection, isScrolling, waveOffset, getAnimationSpeed, getWaveIntensity]);
+
   const generateWavePath = (width, height, amplitude, frequency, phase = 0, scrollOffset = 0) => {
     const points = [];
     const step = width / 100;
@@ -35,7 +62,7 @@ const SoundWaves = ({
       points.push(`${x},${y}`);
     }
     
-    return `M ${points.join(' L ')} L ${width},${height} L 0,${height} Z`;
+    return `M ${points.join(' L ')}`;
   };
 
   const generateSeparatorPath = (width, height, amplitude, frequency, phase = 0) => {
@@ -67,10 +94,13 @@ const SoundWaves = ({
     return (
       <svg 
         ref={svgRef}
-        className={`sound-waves sound-waves--${variant} sound-waves--${intensity} sound-waves--${color} sound-waves--${effect} ${className}`}
+        className={`sound-waves sound-waves--${variant} sound-waves--${intensity} sound-waves--${color} sound-waves--${effect} ${scrollResponsive ? 'sound-waves--scroll-responsive' : ''} ${className}`}
         style={style}
-        viewBox="0 0 1200 400"
+        data-scrolling={isScrolling}
+        data-scroll-direction={scrollDirection}
+        data-momentum={Math.abs(waveOffset)}
         preserveAspectRatio="none"
+        viewBox="0 0 1200 400"
         width="100%"
         height="100%"
       >
@@ -85,19 +115,25 @@ const SoundWaves = ({
         {/* Background wave layers */}
         <path
           d={generateWavePath(1200, 400, 30, 2, 0, scrollOffset)}
-          fill={`url(#waveGradient-${Date.now()})`}
+          fill="none"
+          stroke={`url(#waveGradient-${Date.now()})`}
+          strokeWidth="3"
           className="wave-layer wave-layer--1"
         />
         <path
           d={generateWavePath(1200, 400, 20, 3, 0.5, scrollOffset * 0.8)}
-          fill="#00bcd4"
-          fillOpacity="0.3"
+          fill="none"
+          stroke="#00bcd4"
+          strokeWidth="2"
+          strokeOpacity="0.7"
           className="wave-layer wave-layer--2"
         />
         <path
           d={generateWavePath(1200, 400, 15, 4, 1, scrollOffset * 0.6)}
-          fill="#26c6da"
-          fillOpacity="0.2"
+          fill="none"
+          stroke="#26c6da"
+          strokeWidth="1.5"
+          strokeOpacity="0.5"
           className="wave-layer wave-layer--3"
         />
       </svg>
@@ -108,10 +144,13 @@ const SoundWaves = ({
     return (
       <svg 
         ref={svgRef}
-        className={`sound-waves sound-waves--${variant} sound-waves--${intensity} sound-waves--${color} sound-waves--${effect} ${className}`}
+        className={`sound-waves sound-waves--${variant} sound-waves--${intensity} sound-waves--${color} sound-waves--${effect} ${scrollResponsive ? 'sound-waves--scroll-responsive' : ''} ${className}`}
         style={style}
-        viewBox="0 0 1200 100"
+        data-scrolling={isScrolling}
+        data-scroll-direction={scrollDirection}
+        data-momentum={Math.abs(waveOffset)}
         preserveAspectRatio="none"
+        viewBox="0 0 1200 100"
         width="100%"
         height="100%"
       >
@@ -137,8 +176,11 @@ const SoundWaves = ({
     return (
       <svg 
         ref={svgRef}
-        className={`sound-waves sound-waves--${variant} sound-waves--${intensity} sound-waves--${color} sound-waves--${effect} ${className}`}
+        className={`sound-waves sound-waves--${variant} sound-waves--${intensity} sound-waves--${color} sound-waves--${effect} ${scrollResponsive ? 'sound-waves--scroll-responsive' : ''} ${className}`}
         style={style}
+        data-scrolling={isScrolling}
+        data-scroll-direction={scrollDirection}
+        data-momentum={Math.abs(waveOffset)}
         viewBox="0 0 300 200"
       >
         <path

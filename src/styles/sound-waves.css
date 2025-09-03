@@ -126,22 +126,140 @@
   stroke-dashoffset: 200;
 }
 
-/* Scroll-Responsive Animations */
-.sound-waves[style*="--scroll-velocity"] .wave-layer {
-  animation-name: waveFlowScroll;
-  animation-duration: calc(var(--animation-speed) * 1s);
-  transform: scale(calc(1 + var(--scroll-intensity) * 0.1));
+/* Scroll-Responsive Animations - Gentle Wave Push */
+.sound-waves--scroll-responsive .wave-layer {
+  animation-name: waveFlow;
+  animation-duration: calc(var(--animation-speed, 1) * 1s);
+  animation-timing-function: ease-in-out;
+  transform: translateX(var(--wave-offset, 0px));
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.sound-waves[style*="--scroll-velocity"] .separator-wave {
-  animation-name: separatorPulseScroll;
-  animation-duration: calc(var(--animation-speed) * 1s);
-  stroke-width: calc(2px + var(--scroll-intensity) * 1px);
+.sound-waves--scroll-responsive .wave-layer--1 {
+  animation-duration: calc(var(--animation-speed, 1) * 1.2s);
+  transform: translateX(calc(var(--wave-offset, 0px) * 1.0));
 }
 
-.sound-waves[style*="--scroll-velocity"] .connector-wave {
-  animation-name: connectorFlowScroll;
-  animation-duration: calc(var(--animation-speed) * 1s);
+.sound-waves--scroll-responsive .wave-layer--2 {
+  animation-duration: calc(var(--animation-speed, 1) * 1.5s);
+  transform: translateX(calc(var(--wave-offset, 0px) * 0.7));
+}
+
+.sound-waves--scroll-responsive .wave-layer--3 {
+  animation-duration: calc(var(--animation-speed, 1) * 1.8s);
+  transform: translateX(calc(var(--wave-offset, 0px) * 0.4));
+}
+
+/* Elastic Wave Animation with Momentum */
+@keyframes waveFlowElastic {
+  0% {
+    transform: translateX(0px) scaleY(1) translateZ(0);
+    opacity: calc(0.8 * var(--wave-intensity, 1));
+  }
+  25% {
+    transform: translateX(calc(-15px + var(--elastic-offset, 0px) * 0.5)) 
+               scaleY(calc(1.05 + var(--momentum, 0) * 0.1)) 
+               translateZ(0);
+    opacity: calc(0.9 * var(--wave-intensity, 1));
+  }
+  50% {
+    transform: translateX(calc(var(--elastic-offset, 0px) * 0.8)) 
+               scaleY(calc(0.95 + var(--momentum, 0) * 0.05)) 
+               translateZ(0);
+    opacity: calc(1.0 * var(--wave-intensity, 1));
+  }
+  75% {
+    transform: translateX(calc(15px + var(--elastic-offset, 0px) * 0.3)) 
+               scaleY(calc(1.05 + var(--momentum, 0) * 0.1)) 
+               translateZ(0);
+    opacity: calc(0.9 * var(--wave-intensity, 1));
+  }
+  100% {
+    transform: translateX(calc(var(--elastic-offset, 0px) * 0.1)) 
+               scaleY(1) 
+               translateZ(0);
+    opacity: calc(0.8 * var(--wave-intensity, 1));
+  }
+}
+
+/* Momentum-based scaling effect */
+.sound-waves--scroll-responsive[data-scrolling="true"] .wave-layer {
+  animation-play-state: running;
+  transform: translateX(var(--elastic-offset, 0px)) 
+             scale(var(--momentum-scale, 1)) 
+             scaleY(calc(1 + var(--momentum, 0) * 0.2));
+}
+
+/* Direction-based wave distortion */
+.sound-waves--scroll-responsive[data-scroll-direction="1"] .wave-layer {
+  transform: translateX(calc(var(--elastic-offset, 0px) + 10px)) 
+             scale(var(--momentum-scale, 1)) 
+             skewX(calc(var(--momentum, 0) * 2deg));
+}
+
+.sound-waves--scroll-responsive[data-scroll-direction="-1"] .wave-layer {
+  transform: translateX(calc(var(--elastic-offset, 0px) - 10px)) 
+             scale(var(--momentum-scale, 1)) 
+             skewX(calc(var(--momentum, 0) * -2deg));
+}
+
+/* Enhanced separator waves with elastic effect */
+.sound-waves--scroll-responsive .separator-wave {
+  animation-name: separatorPulseElastic;
+  animation-duration: calc(var(--animation-speed, 1) * 0.8s);
+  transform: translateX(var(--elastic-offset, 0px)) scale(var(--momentum-scale, 1));
+  stroke-width: calc(2 + var(--momentum, 0) * 1);
+}
+
+@keyframes separatorPulseElastic {
+  0% {
+    transform: translateX(0px) scaleX(1) translateZ(0);
+    opacity: calc(0.6 * var(--wave-intensity, 1));
+  }
+  50% {
+    transform: translateX(var(--elastic-offset, 0px)) 
+               scaleX(calc(1.1 + var(--momentum, 0) * 0.2)) 
+               translateZ(0);
+    opacity: calc(0.8 * var(--wave-intensity, 1));
+  }
+  100% {
+    transform: translateX(calc(var(--elastic-offset, 0px) * 0.2)) 
+               scaleX(1) 
+               translateZ(0);
+    opacity: calc(0.6 * var(--wave-intensity, 1));
+  }
+}
+
+/* Enhanced connector waves with momentum */
+.sound-waves--scroll-responsive .connector-wave {
+  animation-name: connectorFlowElastic;
+  animation-duration: calc(var(--animation-speed, 1) * 1s);
+  transform: translateX(var(--elastic-offset, 0px)) scale(var(--momentum-scale, 1));
+}
+
+@keyframes connectorFlowElastic {
+  0% {
+    transform: translateX(0px) rotate(0deg) translateZ(0);
+    opacity: calc(0.7 * var(--wave-intensity, 1));
+  }
+  33% {
+    transform: translateX(calc(var(--elastic-offset, 0px) * 0.7)) 
+               rotate(calc(var(--momentum, 0) * 5deg)) 
+               translateZ(0);
+    opacity: calc(0.9 * var(--wave-intensity, 1));
+  }
+  66% {
+    transform: translateX(calc(var(--elastic-offset, 0px) * 0.3)) 
+               rotate(calc(var(--momentum, 0) * -3deg)) 
+               translateZ(0);
+    opacity: calc(1.0 * var(--wave-intensity, 1));
+  }
+  100% {
+    transform: translateX(calc(var(--elastic-offset, 0px) * 0.1)) 
+               rotate(0deg) 
+               translateZ(0);
+    opacity: calc(0.7 * var(--wave-intensity, 1));
+  }
 }
 
 /* Keyframe Animations */
