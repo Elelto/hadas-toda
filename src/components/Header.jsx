@@ -30,6 +30,7 @@ export default function Header() {
   const navItems = [
     { path: '/', label: 'ראשי' },
     { path: '/services', label: 'תחומי טיפול' },
+    { path: '/ai-assessment', label: 'אבחון חכם', isNew: true },
     { path: '/about', label: 'קצת עליי' },
     { path: '/blog', label: 'בלוג מקצועי' },
     { path: '/testimonials', label: 'מטופלים מספרים' },
@@ -67,9 +68,10 @@ export default function Header() {
             <Link 
               key={item.path}
               to={item.path} 
-              className={`nav-link ${location.pathname === item.path ? 'active' : ''}`}
+              className={`nav-link ${location.pathname === item.path ? 'active' : ''} ${item.isNew ? 'new-feature' : ''}`}
             >
               {item.label}
+              {item.isNew && <span className="new-badge">חדש!</span>}
             </Link>
           ))}
         </nav>
@@ -82,10 +84,11 @@ export default function Header() {
             <Link 
               key={item.path}
               to={item.path} 
-              className={`mobile-nav-link ${location.pathname === item.path ? 'active' : ''}`}
+              className={`mobile-nav-link ${location.pathname === item.path ? 'active' : ''} ${item.isNew ? 'new-feature' : ''}`}
               onClick={() => setIsMenuOpen(false)}
             >
               {item.label}
+              {item.isNew && <span className="new-badge">חדש!</span>}
             </Link>
           ))}
         </div>

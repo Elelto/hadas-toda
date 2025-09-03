@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import heroImage from '../assets/logo.png'; // יש להחליף בתמונה מתאימה
+import SoundWaves from '../components/SoundWaves';
 import '../styles/home.css';
 import blogPosts from '../data/blogPosts';
 
@@ -95,6 +96,13 @@ export default function Home() {
     <div className="home-page">
       {/* Hero Section */}
       <section className="home-hero">
+        <SoundWaves 
+          variant="background" 
+          intensity="medium" 
+          color="primary" 
+          effect="subtle"
+          scrollResponsive={true}
+        />
         <div className="container">
           <div className="hero-content" data-aos="fade-up">
             <h1 className="hero-title" data-aos="fade-down" data-aos-delay="200">הדס תודה</h1>
@@ -105,6 +113,10 @@ export default function Home() {
             <div className="hero-buttons" data-aos="fade-up" data-aos-delay="800">
               <Link to="/contact" className="btn hero-cta">
                 קביעת פגישת ייעוץ
+              </Link>
+              <Link to="/ai-assessment" className="btn-ai-assessment btn">
+                🤖 אבחון ראשוני חכם
+                <span className="ai-badge">חדש!</span>
               </Link>
               <Link to="/services" className="btn-secondary btn">
                 לגלות עוד על הטיפולים
@@ -146,8 +158,16 @@ export default function Home() {
         </div>
       </section>
 
+
       {/* Testimonials Preview */}
       <section className="home-testimonials">
+        <SoundWaves 
+          variant="background" 
+          intensity="low" 
+          color="secondary" 
+          effect="subtle"
+          scrollResponsive={true}
+        />
         <div className="container">
           <h2 className="section-title" data-aos="fade-up">קולות מהקליניקה</h2>
           <p className="section-subtitle" data-aos="fade-up" data-aos-delay="200">מה אומרים המטופלים שלי על הטיפול והתוצאות</p>
@@ -176,8 +196,16 @@ export default function Home() {
         </div>
       </section>
 
+
       {/* Treatment Areas */}
       <section className="home-services">
+        <SoundWaves 
+          variant="background" 
+          intensity="low" 
+          color="accent" 
+          effect="subtle"
+          scrollResponsive={true}
+        />
         <div className="container">
           <h2 className="section-title" data-aos="fade-up">תחומי המומחיות שלי</h2>
           <p className="section-subtitle" data-aos="fade-up" data-aos-delay="200">מגוון השירותים המקצועיים שאני מציעה לילדים ומבוגרים</p>

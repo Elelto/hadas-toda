@@ -1,0 +1,410 @@
+/* Sound Waves CSS - Performance Optimized Animations */
+
+/* CSS Custom Properties for Dynamic Control */
+.sound-waves {
+  --wave-color-start: #00bcd4;
+  --wave-color-mid: #26c6da;
+  --wave-color-end: #4dd0e1;
+  --wave-stroke-color: #00acc1;
+  --scroll-velocity: 0;
+  --scroll-intensity: 1;
+  --animation-speed: 3s;
+  --scroll-direction: 1;
+}
+
+/* Color Variants */
+.sound-waves--primary {
+  --wave-color-start: #00bcd4;
+  --wave-color-mid: #26c6da;
+  --wave-color-end: #4dd0e1;
+  --wave-stroke-color: #00acc1;
+}
+
+.sound-waves--secondary {
+  --wave-color-start: #0097a7;
+  --wave-color-mid: #00acc1;
+  --wave-color-end: #00bcd4;
+  --wave-stroke-color: #006064;
+}
+
+.sound-waves--accent {
+  --wave-color-start: #4dd0e1;
+  --wave-color-mid: #80deea;
+  --wave-color-end: #b2ebf2;
+  --wave-stroke-color: #26c6da;
+}
+
+/* Base Sound Waves Styling */
+.sound-waves {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+  will-change: transform;
+}
+
+/* Make sure waves are visible */
+.sound-waves svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Background Waves */
+.sound-waves--background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  min-height: 300px;
+}
+
+/* Separator Waves */
+.sound-waves--separator {
+  width: 100%;
+  height: 60px;
+  margin: 2rem 0;
+  display: block;
+}
+
+/* Connector Waves */
+.sound-waves--connector {
+  width: 200px;
+  height: 100px;
+  margin: 1rem auto;
+  display: block;
+}
+
+/* Wave Layer Animations */
+.wave-layer {
+  animation: waveMove ease-in-out infinite;
+  transform-origin: center;
+}
+
+.wave-layer--1 {
+  animation-delay: 0s;
+  opacity: 0.8;
+  animation-duration: 8s;
+}
+
+.wave-layer--2 {
+  animation-delay: -2s;
+  opacity: 0.6;
+  animation-duration: 10s;
+}
+
+.wave-layer--3 {
+  animation-delay: -4s;
+  opacity: 0.4;
+  animation-duration: 12s;
+}
+
+/* Separator Wave Animations */
+.separator-wave {
+  animation: separatorMove 2s ease-in-out infinite;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.separator-wave--1 {
+  animation-delay: 0s;
+}
+
+.separator-wave--2 {
+  animation-delay: -0.5s;
+  opacity: 0.7;
+}
+
+/* Connector Wave Animation */
+.connector-wave {
+  will-change: stroke-dasharray, stroke-dashoffset;
+  animation: connectorFlow 4s ease-in-out infinite;
+  stroke-linecap: round;
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+}
+
+/* Scroll-Responsive Animations */
+.sound-waves[style*="--scroll-velocity"] .wave-layer {
+  animation-name: waveFlowScroll;
+  animation-duration: calc(var(--animation-speed) * 1s);
+  transform: scale(calc(1 + var(--scroll-intensity) * 0.1));
+}
+
+.sound-waves[style*="--scroll-velocity"] .separator-wave {
+  animation-name: separatorPulseScroll;
+  animation-duration: calc(var(--animation-speed) * 1s);
+  stroke-width: calc(2px + var(--scroll-intensity) * 1px);
+}
+
+.sound-waves[style*="--scroll-velocity"] .connector-wave {
+  animation-name: connectorFlowScroll;
+  animation-duration: calc(var(--animation-speed) * 1s);
+}
+
+/* Keyframe Animations */
+@keyframes waveMove {
+  0% {
+    transform: translateX(0px) scaleY(1);
+  }
+  25% {
+    transform: translateX(-15px) scaleY(1.05);
+  }
+  50% {
+    transform: translateX(0px) scaleY(0.95);
+  }
+  75% {
+    transform: translateX(15px) scaleY(1.05);
+  }
+  100% {
+    transform: translateX(0px) scaleY(1);
+  }
+}
+
+@keyframes waveFlow {
+  0% {
+    transform: translateX(0px) scaleY(1) translateZ(0);
+    opacity: 0.8;
+  }
+  25% {
+    transform: translateX(-30px) scaleY(1.2) translateZ(0);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateX(0px) scaleY(0.8) translateZ(0);
+    opacity: 0.6;
+  }
+  75% {
+    transform: translateX(30px) scaleY(1.2) translateZ(0);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateX(0px) scaleY(1) translateZ(0);
+    opacity: 0.8;
+  }
+}
+
+@keyframes waveFlowScroll {
+  0%, 100% {
+    transform: translateX(0) scaleY(calc(1 + var(--scroll-intensity) * 0.1));
+    opacity: calc(var(--base-opacity, 0.8) * var(--scroll-intensity));
+  }
+  25% {
+    transform: translateX(calc(-10px * var(--scroll-direction))) scaleY(calc(1.05 + var(--scroll-intensity) * 0.1));
+    opacity: calc(var(--base-opacity, 0.8) * var(--scroll-intensity) * 1.2);
+  }
+  50% {
+    transform: translateX(0) scaleY(calc(0.95 + var(--scroll-intensity) * 0.1));
+    opacity: calc(var(--base-opacity, 0.8) * var(--scroll-intensity));
+  }
+  75% {
+    transform: translateX(calc(10px * var(--scroll-direction))) scaleY(calc(1.05 + var(--scroll-intensity) * 0.1));
+    opacity: calc(var(--base-opacity, 0.8) * var(--scroll-intensity) * 1.2);
+  }
+}
+
+@keyframes separatorPulse {
+  0%, 100% {
+    stroke-width: 2px;
+    opacity: 1;
+    transform: scaleY(1) translateZ(0);
+  }
+  50% {
+    stroke-width: 4px;
+    opacity: 0.6;
+    transform: scaleY(1.2) translateZ(0);
+  }
+}
+
+@keyframes separatorPulseScroll {
+  0%, 100% {
+    stroke-width: calc(2px + var(--scroll-intensity) * 1px);
+    opacity: var(--scroll-intensity);
+    transform: scaleY(1);
+  }
+  50% {
+    stroke-width: calc(3px + var(--scroll-intensity) * 1.5px);
+    opacity: calc(var(--scroll-intensity) * 0.8);
+    transform: scaleY(calc(1 + var(--scroll-intensity) * 0.2));
+  }
+}
+
+@keyframes connectorFlow {
+  0% {
+    stroke-dashoffset: 200;
+  }
+  50% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -200;
+  }
+}
+
+@keyframes connectorFlowScroll {
+  0% {
+    stroke-dashoffset: calc(200px * var(--scroll-direction));
+    stroke-width: calc(2px + var(--scroll-intensity) * 0.5px);
+  }
+  50% {
+    stroke-dashoffset: 0;
+    stroke-width: calc(2.5px + var(--scroll-intensity) * 1px);
+  }
+  100% {
+    stroke-dashoffset: calc(-200px * var(--scroll-direction));
+    stroke-width: calc(2px + var(--scroll-intensity) * 0.5px);
+  }
+}
+
+/* Intensity Variants */
+.sound-waves--low {
+  --base-opacity: 0.4;
+}
+
+.sound-waves--low .wave-layer {
+  animation-duration: 4s;
+}
+
+.sound-waves--medium {
+  --base-opacity: 0.6;
+}
+
+.sound-waves--medium .wave-layer {
+  animation-duration: 3s;
+}
+
+.sound-waves--high {
+  --base-opacity: 0.8;
+}
+
+.sound-waves--high .wave-layer {
+  animation-duration: 2s;
+}
+
+/* Effect Variants */
+.sound-waves--subtle {
+  opacity: 0.6;
+  filter: blur(0.5px);
+}
+
+.sound-waves--prominent {
+  opacity: 1;
+  filter: drop-shadow(0 0 10px rgba(0, 188, 212, 0.3));
+}
+
+.sound-waves--glow {
+  filter: drop-shadow(0 0 20px rgba(0, 188, 212, 0.5)) 
+          drop-shadow(0 0 40px rgba(0, 188, 212, 0.3));
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .sound-waves--background {
+    height: 200px;
+  }
+  
+  .sound-waves--separator {
+    height: 40px;
+    margin: 1rem 0;
+  }
+  
+  .sound-waves--connector {
+    width: 150px;
+    height: 80px;
+  }
+  
+  /* Reduce animation intensity on mobile for performance */
+  .wave-layer {
+    animation-duration: calc(var(--animation-speed) * 1.5);
+  }
+  
+  .sound-waves--glow {
+    filter: drop-shadow(0 0 10px rgba(0, 188, 212, 0.3));
+  }
+}
+
+@media (max-width: 480px) {
+  .sound-waves--separator {
+    height: 30px;
+  }
+  
+  .sound-waves--connector {
+    width: 120px;
+    height: 60px;
+  }
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+  .sound-waves--background {
+    bottom: 0;
+    top: auto;
+    transform: translateY(0);
+  }
+  
+  .wave-layer {
+    animation-duration: calc(var(--base-duration, 8s) * 1.5);
+  }
+  
+  .wave-layer--1 {
+    animation-duration: 12s;
+  }
+  
+  .wave-layer--2 {
+    animation-duration: 15s;
+  }
+  
+  .wave-layer--3 {
+    animation-duration: 18s;
+  }
+}
+
+@media (max-width: 480px) {
+  .sound-waves--background {
+    height: 120px;
+    bottom: 0;
+    top: auto;
+  }
+  
+  .wave-layer {
+    opacity: 0.6;
+  }
+  
+  .wave-layer--1 {
+    opacity: 0.6;
+  }
+  
+  .wave-layer--2 {
+    opacity: 0.4;
+  }
+  
+  .wave-layer--3 {
+    opacity: 0.3;
+  }
+}
+
+/* Accessibility - Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .sound-waves * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Performance Optimizations */
+.sound-waves,
+.sound-waves * {
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* GPU Acceleration for smooth animations */
+.wave-layer,
+.separator-wave,
+.connector-wave {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+}
