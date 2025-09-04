@@ -333,8 +333,12 @@ class SpeechTherapyAIService {
   }
 
   // יצירת שאלה דינמית בשיחה
-  async generateDynamicQuestion(prompt, conversationHistory) {
+  async generateDynamicQuestion(conversationHistory) {
     try {
+      // בדיקה שיש conversationHistory
+      if (!conversationHistory || !Array.isArray(conversationHistory)) {
+        throw new Error('conversationHistory is required and must be an array');
+      }
       
       // בניית הקשר השיחה עם דגש על תשובות המשתמש
       const userResponses = conversationHistory.filter(msg => msg.type === 'user');
@@ -601,6 +605,16 @@ ${conversationSummary}
 
   // הערכת איכות המידע לאבחון
   evaluateInformationQuality(conversationHistory) {
+    // בדיקה שיש conversationHistory
+    if (!conversationHistory || !Array.isArray(conversationHistory)) {
+      return {
+        score: 0,
+        isReadyForAssessment: false,
+        missingInfo: { basicProblem: true, severity: true, duration: true, context: true },
+        details: { hasBasicProblem: false, hasSeverity: false, hasDuration: false, hasContext: false }
+      };
+    }
+    
     const userResponses = conversationHistory.filter(msg => msg.type === 'user');
     
     let score = 0;
