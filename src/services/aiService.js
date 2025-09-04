@@ -57,7 +57,7 @@ class SpeechTherapyAIService {
   }
 
   // יצירת שאלה דינמית בשיחה
-  async generateDynamicQuestion(prompt, conversationHistory) {
+  async generateDynamicQuestion(conversationHistory) {
     try {
       const response = await fetch(this.functionURL, {
         method: 'POST',

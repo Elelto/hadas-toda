@@ -122,7 +122,6 @@ export default function AIAssessment() {
       if (useAI) {
         console.log('🤖 מנסה שאלת AI...');
         const nextQuestionResponse = await aiService.generateDynamicQuestion(
-          `על בסיס השיחה עד כה, צור שאלת המשך מותאמת ומקצועית. זו שאלה מספר ${questionCount + 1} מתוך 5.`,
           newHistory
         );
         
