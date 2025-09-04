@@ -52,6 +52,19 @@ exports.handler = async (event, context) => {
       };
     }
 
+    // בדיקה אם יש body בבקשה
+    if (!event.body) {
+      console.error('Missing request body');
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ 
+          error: 'Missing request body'
+        }),
+      };
+    }
+
+    console.log('Request body:', event.body);
     const { action, data } = JSON.parse(event.body);
 
     switch (action) {
