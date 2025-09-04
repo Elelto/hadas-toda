@@ -1,6 +1,11 @@
 // Netlify Function לטיפול ב-AI Assessment בצד השרת
 const OpenAI = require('openai');
 
+// בדיקה אם API Key קיים
+if (!process.env.OPENAI_API_KEY) {
+  console.error('OPENAI_API_KEY is not configured');
+}
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -33,6 +38,19 @@ exports.handler = async (event, context) => {
   }
 
   try {
+    // בדיקה אם API Key קיים
+    if (!process.env.OPENAI_API_KEY) {
+      console.error('OPENAI_API_KEY is missing in environment variables');
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ 
+          error: 'API Key not configured',
+          details: 'OPENAI_API_KEY environment variable is missing'
+        }),
+      };
+    }
+
     const { action, data } = JSON.parse(event.body);
 
     switch (action) {
