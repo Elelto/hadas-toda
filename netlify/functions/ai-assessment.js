@@ -82,6 +82,19 @@ exports.handler = async (event, context) => {
 // יצירת שאלה דינמית
 async function generateQuestion(data, headers) {
   try {
+    // בדיקה אם data קיים ויש לו conversationHistory
+    if (!data || !data.conversationHistory) {
+      console.error('Missing conversationHistory in data:', data);
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({
+          success: false,
+          error: 'Missing conversationHistory in request data'
+        }),
+      };
+    }
+    
     const { conversationHistory } = data;
     
     const userResponses = conversationHistory.filter(msg => msg.type === 'user');
@@ -156,6 +169,19 @@ ${conversationContext}
 // יצירת אבחון סופי
 async function generateAssessment(data, headers) {
   try {
+    // בדיקה אם data קיים ויש לו conversationHistory
+    if (!data || !data.conversationHistory) {
+      console.error('Missing conversationHistory in data:', data);
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({
+          success: false,
+          error: 'Missing conversationHistory in request data'
+        }),
+      };
+    }
+    
     const { conversationHistory } = data;
     
     const conversationContext = conversationHistory.map(msg => 
