@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import aiService from '../services/aiService';
+import SpeechTherapyAIService from '../services/aiService';
 import '../styles/ai-assessment.css';
+
+// יצירת instance של השירות
+const aiService = new SpeechTherapyAIService();
 
 export default function AIAssessment() {
   const [conversationHistory, setConversationHistory] = useState([]);
@@ -137,20 +140,22 @@ export default function AIAssessment() {
           return;
         } else {
           console.log('❌ שאלת AI נכשלה:', nextQuestionResponse.error);
-          throw new Error('Failed to generate AI question');
+          console.log('🔧 נופל לשאלה fallback בגלל שגיאה');
+          // לא זורקים שגיאה - פשוט נופלים לשאלה fallback
         }
-      } else {
-        console.log('🔧 משתמש בשאלה fallback מקומית');
-        const nextQuestion = fallbackQuestions[questionCount + 1] || "תודה על התשובות. האם יש עוד משהו חשוב שתרצה לשתף?";
-        setCurrentQuestion(nextQuestion);
-        setConversationHistory([...newHistory, {
-          type: 'ai',
-          content: nextQuestion,
-          timestamp: new Date()
-        }]);
-        setIsProcessing(false);
-        return;
       }
+      
+      // קוד fallback משותף - גם אם AI נכשל וגם אם לא משתמשים ב-AI
+      console.log('🔧 משתמש בשאלה fallback מקומית');
+      const nextQuestion = fallbackQuestions[questionCount + 1] || "תודה על התשובות. האם יש עוד משהו חשוב שתרצה לשתף?";
+      setCurrentQuestion(nextQuestion);
+      setConversationHistory([...newHistory, {
+        type: 'ai',
+        content: nextQuestion,
+        timestamp: new Date()
+      }]);
+      setIsProcessing(false);
+      return;
     } catch (error) {
       console.error('💥 שגיאה בעיבוד תשובה:', error);
       

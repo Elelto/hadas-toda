@@ -57,6 +57,12 @@ class SpeechTherapyAIService {
 
   // יצירת שאלה דינמית בשיחה
   async generateDynamicQuestion(conversationHistory) {
+    // בסביבת פיתוח, ננסה קודם קריאה ישירה ל-OpenAI API
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      console.log('🔧 סביבת פיתוח - מנסה קריאה ישירה ל-OpenAI');
+      return await this.generateQuestionDirectly(conversationHistory);
+    }
+    
     try {
       const response = await fetch(this.functionURL, {
         method: 'POST',
@@ -88,6 +94,12 @@ class SpeechTherapyAIService {
 
   // יצירת אבחון סופי
   async generateFinalAssessment(conversationHistory) {
+    // בסביבת פיתוח, ננסה קודם קריאה ישירה ל-OpenAI API
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      console.log('🔧 סביבת פיתוח - מנסה אבחון ישיר ב-OpenAI');
+      return await this.generateAssessmentDirectly(conversationHistory);
+    }
+    
     try {
       const response = await fetch(this.functionURL, {
         method: 'POST',
@@ -109,12 +121,190 @@ class SpeechTherapyAIService {
       
     } catch (error) {
       console.error('Assessment generation error:', error);
+      // fallback לאבחון מקומי במקרה של שגיאה
+      return this.generateLocalFallbackAssessment(conversationHistory);
+    }
+  }
+
+  // קריאה ישירה ל-OpenAI בסביבת פיתוח
+  async generateQuestionDirectly(conversationHistory) {
+    if (!this.apiKey) {
+      console.log('❌ אין API Key - נופל ל-fallback');
+      return {
+        success: false,
+        error: 'No API key available',
+        question: null
+      };
+    }
+
+    try {
+      const userResponses = conversationHistory
+        .filter(msg => msg.type === 'user')
+        .map(msg => msg.content);
+
+      const prompt = `${this.knowledgeBase.systemPrompt}
+
+היסטוריית השיחה עד כה:
+${conversationHistory.map(msg => `${msg.type === 'user' ? 'מטופל' : 'הדס'}: ${msg.content}`).join('\n')}
+
+על בסיס השיחה עד כה, צור שאלה המשך אחת קצרה וממוקדת (עד 15 מילים) שתעזור לאסוף מידע חשוב נוסף לאבחון. השאלה צריכה להיות:
+- ספציפית ומעשית
+- קשורה לתחום המומחיות שלך
+- עוזרת להבין את הבעיה טוב יותר
+- בעברית פשוטה וברורה
+
+השב רק עם השאלה, ללא הסברים נוספים.`;
+
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: this.model,
+          messages: [
+            {
+              role: 'user',
+              content: prompt
+            }
+          ],
+          max_tokens: 100,
+          temperature: 0.7
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`OpenAI API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const question = data.choices[0]?.message?.content?.trim();
+
+      if (!question) {
+        throw new Error('No question generated');
+      }
+
+      console.log('✅ שאלה נוצרה בהצלחה:', question);
+      return {
+        success: true,
+        question: question
+      };
+
+    } catch (error) {
+      console.error('❌ שגיאה בקריאה ישירה ל-OpenAI:', error);
       return {
         success: false,
         error: error.message,
-        assessment: null
+        question: null
       };
     }
+  }
+
+  // אבחון ישיר ב-OpenAI לסביבת פיתוח
+  async generateAssessmentDirectly(conversationHistory) {
+    if (!this.apiKey) {
+      console.log('❌ אין API Key - נופל ל-fallback');
+      return this.generateLocalFallbackAssessment(conversationHistory);
+    }
+
+    try {
+      const prompt = `${this.knowledgeBase.systemPrompt}
+
+היסטוריית השיחה המלאה:
+${conversationHistory.map(msg => `${msg.type === 'user' ? 'מטופל' : 'הדס'}: ${msg.content}`).join('\n')}
+
+על בסיס השיחה המלאה, צור אבחון ראשוני מקצועי בפורמט JSON הבא:
+{
+  "summary": "סיכום קצר של הבעיה והממצאים העיקריים",
+  "category": "קטגוריית הבעיה (קול/דיבור/שפה/שטף)",
+  "urgency": "רמת דחיפות (נמוכה/בינונית/גבוהה)",
+  "recommendations": ["המלצה 1", "המלצה 2", "המלצה 3"],
+  "nextSteps": "הצעדים הבאים המומלצים",
+  "notes": "הערות נוספות חשובות"
+}
+
+השב רק עם ה-JSON, ללא טקסט נוסף.`;
+
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: this.model,
+          messages: [
+            {
+              role: 'user',
+              content: prompt
+            }
+          ],
+          max_tokens: 500,
+          temperature: 0.3
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`OpenAI API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const assessmentText = data.choices[0]?.message?.content?.trim();
+
+      if (!assessmentText) {
+        throw new Error('No assessment generated');
+      }
+
+      const assessment = JSON.parse(assessmentText);
+      console.log('✅ אבחון נוצר בהצלחה:', assessment);
+      
+      return {
+        success: true,
+        assessment: assessment
+      };
+
+    } catch (error) {
+      console.error('❌ שגיאה באבחון ישיר:', error);
+      return this.generateLocalFallbackAssessment(conversationHistory);
+    }
+  }
+
+  // אבחון fallback מקומי לסביבת פיתוח
+  generateLocalFallbackAssessment(conversationHistory) {
+    const userResponses = conversationHistory
+      .filter(msg => msg.type === 'user')
+      .map(msg => msg.content);
+    
+    const allText = userResponses.join(' ').toLowerCase();
+    
+    // זיהוי בסיסי של סוג הבעיה
+    let category = 'כללי';
+    let urgency = 'בינונית';
+    
+    if (allText.includes('קול') || allText.includes('צרוד')) {
+      category = 'בעיות קול';
+    } else if (allText.includes('גמגום') || allText.includes('נתקע')) {
+      category = 'שטף דיבור';
+    } else if (allText.includes('דיבור') || allText.includes('הגייה')) {
+      category = 'דיבור והיגוי';
+    }
+    
+    return {
+      success: true,
+      assessment: {
+        summary: `על בסיס המידע שסופק, נראה שמדובר בבעיה בתחום ${category}. זהו אבחון ראשוני בלבד.`,
+        category: category,
+        urgency: urgency,
+        recommendations: [
+          'מומלץ לפנות לקלינאית תקשורת מקצועית לאבחון מדויק',
+          'ניתן להתחיל בתרגילים בסיסיים בבית',
+          'חשוב לתעד את הבעיה ומתי היא מתרחשת'
+        ],
+        nextSteps: 'קביעת פגישה לאבחון מקצועי מפורט',
+        notes: 'אבחון זה בוצע במצב fallback ואינו מחליף אבחון מקצועי'
+      }
+    };
   }
 
   // יצירת שאלות דינמיות
