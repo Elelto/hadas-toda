@@ -13,6 +13,7 @@ export default function AIAssessment() {
   const [isCompleted, setIsCompleted] = useState(false);
   const [finalAssessment, setFinalAssessment] = useState(null);
   const [questionCount, setQuestionCount] = useState(0);
+  const [informationQuality, setInformationQuality] = useState({ score: 0, isReadyForAssessment: false });
   const [assessmentStarted, setAssessmentStarted] = useState(false);
   const [useAI, setUseAI] = useState(false); // התחל עם fallback
   
@@ -130,13 +131,16 @@ export default function AIAssessment() {
 
     try {
       // בדיקה אם צריך לסיים את האבחון - על בסיס איכות המידע
-      const informationQuality = useAI ? 
+      const currentInformationQuality = useAI ? 
         aiService.evaluateInformationQuality(newHistory) : 
         { isReadyForAssessment: questionCount >= 4, score: questionCount * 20 };
       
-      console.log('📊 הערכת איכות מידע:', informationQuality);
+      // עדכון state של איכות המידע
+      setInformationQuality(currentInformationQuality);
       
-      if (informationQuality.isReadyForAssessment || questionCount >= 8) {
+      console.log('📊 הערכת איכות מידע:', currentInformationQuality);
+      
+      if (currentInformationQuality.isReadyForAssessment || questionCount >= 8) {
         console.log('🏁 מסיים אבחון...');
         
         if (useAI) {
@@ -148,7 +152,7 @@ export default function AIAssessment() {
             setFinalAssessment({
               ...assessmentResult.assessment,
               isAIGenerated: true,
-              informationScore: informationQuality.score
+              informationScore: currentInformationQuality.score
             });
             setIsCompleted(true);
             setIsProcessing(false);
@@ -427,8 +431,26 @@ export default function AIAssessment() {
         <div className="ai-powered-badge">
           <span>⚡ מופעל על ידי בינה מלאכותית</span>
         </div>
-        <div className="progress-indicator">
-          שאלה {questionCount + 1} מתוך 5-6
+        <div className="information-quality-meter">
+          <div className="meter-header">
+            <span className="meter-title">איכות המידע לאבחון</span>
+            <span className="meter-score">{Math.round(informationQuality.score)}%</span>
+          </div>
+          <div className="meter-bar">
+            <div 
+              className={`meter-fill ${informationQuality.score >= 60 ? 'ready' : informationQuality.score >= 40 ? 'partial' : 'low'}`}
+              style={{ width: `${Math.min(informationQuality.score, 100)}%` }}
+            ></div>
+          </div>
+          <div className="meter-status">
+            {informationQuality.score >= 60 ? (
+              <span className="status-ready">✅ מספיק מידע לאבחון</span>
+            ) : informationQuality.score >= 40 ? (
+              <span className="status-partial">⚡ נאסף מידע חלקי</span>
+            ) : (
+              <span className="status-low">📝 נדרש מידע נוסף</span>
+            )}
+          </div>
         </div>
       </div>
 

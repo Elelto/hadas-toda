@@ -1064,15 +1064,80 @@
   cursor: not-allowed;
 }
 
-/* מחוון התקדמות */
-.progress-indicator {
-  background: rgba(255, 255, 255, 0.9);
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
+/* מד איכות המידע */
+.information-quality-meter {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.meter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.meter-title {
   font-size: 0.9rem;
-  color: var(--primary);
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
+
+.meter-score {
+  font-size: 1.1rem;
+  color: white;
+  font-weight: 700;
+}
+
+.meter-bar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.meter-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.meter-fill.low {
+  background: linear-gradient(90deg, #ff6b6b, #ff8e8e);
+}
+
+.meter-fill.partial {
+  background: linear-gradient(90deg, #ffd93d, #ffed4e);
+}
+
+.meter-fill.ready {
+  background: linear-gradient(90deg, #51cf66, #69db7c);
+}
+
+.meter-status {
+  text-align: center;
+}
+
+.status-ready {
+  color: #51cf66;
   font-weight: 600;
-  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.status-partial {
+  color: #ffd93d;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.status-low {
+  color: #ff8e8e;
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
 /* תקציר השיחה בתוצאות */
