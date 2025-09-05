@@ -315,7 +315,7 @@ export default function AIAssessment() {
           </div>
           
           <div className="intro-content">
-            <p>שלום! אני מערכת AI מתקדמת שפותחה במיוחד עבור הדס טודה.</p>
+            <p>שלום! אני מערכת AI מתקדמת שפותחה במיוחד עבור הדס תודה.</p>
             <p>אבצע עמך שיחה אישית ומותאמת לזיהוי אתגרים תקשורתיים.</p>
             
             <div className="ai-toggle-section">
