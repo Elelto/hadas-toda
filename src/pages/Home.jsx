@@ -115,7 +115,7 @@ export default function Home() {
                 קביעת פגישת ייעוץ
               </Link>
               <Link to="/ai-assessment" className="btn-ai-assessment btn">
-                🤖 אבחון ראשוני חכם
+              ⚡ אבחון ראשוני חכם 
                 <span className="ai-badge">חדש!</span>
               </Link>
               <Link to="/services" className="btn-secondary btn">

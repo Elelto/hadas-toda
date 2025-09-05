@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import SpeechTherapyAIService from '../services/aiService';
 import '../styles/ai-assessment.css';
 
@@ -15,6 +15,46 @@ export default function AIAssessment() {
   const [questionCount, setQuestionCount] = useState(0);
   const [assessmentStarted, setAssessmentStarted] = useState(false);
   const [useAI, setUseAI] = useState(false); // התחל עם fallback
+  
+  // Ref לקונטיינר השיחה
+  const conversationEndRef = useRef(null);
+  const textareaRef = useRef(null);
+
+  // פונקציה לגלילה אוטומטית לתחתית השיחה
+  const scrollToBottom = () => {
+    // גלילה בתוך קונטיינר השיחה
+    if (conversationEndRef.current) {
+      conversationEndRef.current.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'end'
+      });
+    }
+    
+    // גלילה גם בחלון הדפדפן לוודא שהקונטיינר נראה
+    setTimeout(() => {
+      const conversationContainer = document.querySelector('.conversation-container');
+      if (conversationContainer) {
+        conversationContainer.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }
+    }, 100);
+  };
+
+  // גלילה אוטומטית כשההיסטוריה משתנה
+  useEffect(() => {
+    // עיכוב קצר כדי לוודא שהתוכן נטען לפני הגלילה
+    const timer = setTimeout(() => {
+      scrollToBottom();
+      // החזרת פוקוס ל-textarea אחרי גלילה
+      if (textareaRef.current && !isProcessing) {
+        textareaRef.current.focus();
+      }
+    }, 200);
+    
+    return () => clearTimeout(timer);
+  }, [conversationHistory, isProcessing]);
 
   // שאלות fallback מקומיות
   const fallbackQuestions = [
@@ -27,6 +67,9 @@ export default function AIAssessment() {
 
   // התחלת השיחה
   const startAssessment = async () => {
+    // גלילה לראש הדף
+    window.scrollTo(0, 0);
+    
     setIsProcessing(true);
     setAssessmentStarted(true);
     
@@ -42,7 +85,7 @@ export default function AIAssessment() {
           timestamp: new Date()
         }]);
         
-        console.log('🤖 התחיל אבחון AI עם שאלה ראשונה קבועה');
+        console.log('⚡ התחיל אבחון AI עם שאלה ראשונה קבועה');
       } catch (error) {
         console.error('Error starting AI assessment:', error);
         // Fallback למערכת מקומית
@@ -70,9 +113,12 @@ export default function AIAssessment() {
   const handleUserResponse = async () => {
     if (!userInput.trim()) return;
 
+    const currentInput = userInput; // שמירת הקלט הנוכחי
+    setUserInput(''); // ריקון השדה מיד אחרי הלחיצה
+
     const newHistory = [...conversationHistory, {
       type: 'user',
-      content: userInput,
+      content: currentInput, // שימוש בקלט השמור
       timestamp: new Date()
     }];
     
@@ -94,7 +140,7 @@ export default function AIAssessment() {
         console.log('🏁 מסיים אבחון...');
         
         if (useAI) {
-          console.log('🤖 מנסה אבחון AI...');
+          console.log('⚡ מנסה אבחון AI...');
           const assessmentResult = await aiService.generateFinalAssessment(newHistory);
           
           if (assessmentResult.success) {
@@ -123,7 +169,7 @@ export default function AIAssessment() {
       console.log('➡️ יוצר שאלת המשך...');
       
       if (useAI) {
-        console.log('🤖 מנסה שאלת AI...');
+        console.log('⚡ מנסה שאלת AI...');
         const nextQuestionResponse = await aiService.generateDynamicQuestion(
           newHistory
         );
@@ -176,7 +222,6 @@ export default function AIAssessment() {
       }
     }
 
-    setUserInput('');
     setIsProcessing(false);
   };
 
@@ -235,7 +280,7 @@ export default function AIAssessment() {
         <div className="assessment-results">
           <h2>סיכום האבחון החכם</h2>
           <div className="ai-powered-badge">
-            <span>🤖 מופעל על ידי בינה מלאכותית</span>
+            <span>⚡ מופעל על ידי בינה מלאכותית</span>
           </div>
           
           <div className="conversation-summary">
@@ -311,7 +356,7 @@ export default function AIAssessment() {
         <div className="assessment-intro">
           <h1>אבחון חכם מותאם אישית</h1>
           <div className="ai-powered-badge">
-            <span>🤖 מופעל על ידי בינה מלאכותית</span>
+            <span>⚡ מופעל על ידי בינה מלאכותית</span>
           </div>
           
           <div className="intro-content">
@@ -343,7 +388,7 @@ export default function AIAssessment() {
                     onChange={() => setUseAI(true)}
                   />
                   <span className="toggle-text">
-                    <strong>🤖 מצב AI מתקדם</strong>
+                    <strong>⚡ מצב AI מתקדם</strong>
                     <br />
                     שיחה אישית עם בינה מלאכותית
                   </span>
@@ -380,7 +425,7 @@ export default function AIAssessment() {
       <div className="assessment-header">
         <h1>שיחה עם המערכת החכמה</h1>
         <div className="ai-powered-badge">
-          <span>🤖 מופעל על ידי בינה מלאכותית</span>
+          <span>⚡ מופעל על ידי בינה מלאכותית</span>
         </div>
         <div className="progress-indicator">
           שאלה {questionCount + 1} מתוך 5-6
@@ -392,7 +437,7 @@ export default function AIAssessment() {
           {conversationHistory.map((message, index) => (
             <div key={index} className={`message ${message.type}`}>
               <div className="message-avatar">
-                {message.type === 'ai' ? '🤖' : '👤'}
+                {message.type === 'ai' ? '⚡' : '👤'}
               </div>
               <div className="message-content">{message.content}</div>
             </div>
@@ -400,7 +445,7 @@ export default function AIAssessment() {
           
           {isProcessing && (
             <div className="message ai">
-              <div className="message-avatar">🤖</div>
+              <div className="message-avatar">⚡</div>
               <div className="message-content typing">
                 <div className="typing-indicator">
                   <span></span>
@@ -411,10 +456,12 @@ export default function AIAssessment() {
               </div>
             </div>
           )}
+          <div ref={conversationEndRef} />
         </div>
 
         <div className="input-container">
           <textarea
+            ref={textareaRef}
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
             placeholder="כתוב/י את התשובה שלך כאן..."
