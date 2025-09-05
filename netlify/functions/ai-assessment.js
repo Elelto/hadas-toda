@@ -122,32 +122,35 @@ async function generateQuestion(data, headers) {
       `${msg.type === 'ai' ? 'קלינאי' : 'מטופל'}: ${msg.content}`
     ).join('\n');
     
-    const prompt = `אתה קלינאי תקשורת מנוסה. צור שאלת המשך מותאמת אישית על בסיס התשובה האחרונה של המטופל.
+    const prompt = `You are an experienced speech-language pathologist. Create a personalized follow-up question based on the patient's last response.
 
-=== התשובה האחרונה של המטופל ===
+=== Patient's Last Response ===
 "${lastUserResponse}"
 
-=== השיחה המלאה עד כה ===
+=== Full Conversation So Far ===
 ${conversationContext}
 
-=== שאלות שכבר נשאלו (אסור לחזור עליהן בדיוק!) ===
+=== Questions Already Asked (DO NOT repeat exactly!) ===
 - ${previousQuestions}
 
-=== הוראות חשובות ===
-1. **קרא בעיון את התשובה האחרונה** - זה הדבר הכי חשוב!
-2. אם המטופל כתב רק "הי" או תשובה כללית - שאל שאלת פתיחה בסיסית על הבעיה
-3. אם המטופל הזכיר בעיה ספציפית - התמקד בדיוק בזה שהוא אמר
-4. אם המטופל הזכיר גיל/מצב/סימפטום - שאל עליו בדיוק
-5. **אסור לחזור על שאלות זהות או דומות מאוד לקודמות!**
-6. אם השאלה דומה לקודמת - נסח אותה אחרת או שאל על היבט אחר
-7. השתמש בשפה אמפתית ומקצועית
+=== Important Instructions ===
+1. **Carefully read the last response** - this is the most important thing!
+2. If patient wrote only "hi" or general response - ask basic opening question about the problem
+3. If patient mentioned specific problem - focus exactly on what they said
+4. If patient mentioned age/condition/symptom - ask about it specifically
+5. **NEVER repeat identical or very similar questions to previous ones!**
+6. If question is similar to previous - rephrase it differently or ask about different aspect
+7. Use empathetic and professional language
+8. **CRITICAL: Use correct Hebrew grammar - "מתמתן" (becomes milder) NOT "מתמצן"**
+9. Focus on specific speech/communication disorders, not general issues
+10. If discussing stuttering, ask specific questions about stuttering patterns
 
-דוגמאות:
-- אם המטופל כתב "הי" → "שלום! מה הביא אותך לפנות לייעוץ בנושא תקשורת ודיבור?"
-- אם המטופל כתב "יש לי בעיה בדיבור" → "אני מבין. איך הבעיה בדיבור מתבטאת? האם זה קושי בהגייה, בקצב, או משהו אחר?"
-- אם המטופל כתב "הילד שלי בן 5 לא מדבר טוב" → "מה בדיוק אתה מבחין בדיבור של הילד בן ה-5? האם זה קושי בהגיית מילים מסוימות?"
+Examples:
+- If patient wrote "hi" → "שלום! מה הביא אותך לפנות לייעוץ בנושא תקשורת ודיבור?"
+- If patient wrote "יש לי בעיה בדיבור" → "אני מבין. איך הבעיה בדיבור מתבטאת? האם זה קושי בהגייה, בקצב, או משהו אחר?"
+- If patient mentioned stuttering → "האם הגמגום שלך מתמתן או מחמיר בסיטואציות מסוימות?"
 
-החזר רק את השאלה, ללא הסברים.`;
+Return only the question in Hebrew, without explanations.`;
 
     const response = await openai.chat.completions.create({
       model: process.env.AI_MODEL || 'gpt-4',
@@ -201,30 +204,34 @@ async function generateAssessment(data, headers) {
       `${msg.type === 'ai' ? 'קלינאי' : 'מטופל'}: ${msg.content}`
     ).join('\n');
 
-    const prompt = `אתה מומחה בקלינאות תקשורת. בצע אבחון ראשוני מקצועי על בסיס השיחה הבאה:
+    const prompt = `You are a speech-language pathology expert. Perform a professional preliminary assessment based on the following conversation:
 
-=== השיחה המלאה ===
+=== Full Conversation ===
 ${conversationContext}
 
-=== הוראות לאבחון ===
-1. נתח את המידע שהתקבל מהמטופל
-2. זהה את הבעיות העיקריות בתקשורת/דיבור
-3. הערך את רמת הדחיפות
-4. תן המלצות מעשיות וטיפים מיידיים
-5. קבע אם נדרשת פגישה מקצועית
+=== Assessment Instructions ===
+1. Analyze the information received from the patient
+2. Identify the main communication/speech problems SPECIFICALLY
+3. Assess urgency level
+4. Provide practical recommendations and immediate tips
+5. Determine if professional consultation is needed
+6. **CRITICAL: Provide SPECIFIC diagnosis, not general "communication problem"**
+7. **If stuttering is mentioned, focus specifically on stuttering patterns and characteristics**
+8. **Use correct Hebrew grammar - "מתמתן" (becomes milder) NOT "מתמצן"**
 
-החזר את התשובה בפורמט JSON הבא:
+Return the answer in the following JSON format:
 {
-  "summary": "סיכום מקצועי של הבעיה והמצב",
+  "summary": "Professional summary of the SPECIFIC problem and condition (not general)",
   "urgencyLevel": "low/medium/high",
   "needsProfessionalConsultation": true/false,
-  "recommendations": ["המלצה 1", "המלצה 2", "המלצה 3"],
-  "practicalTips": ["טיפ מעשי 1", "טיפ מעשי 2"],
-  "mainConcerns": ["דאגה עיקרית 1", "דאגה עיקרית 2"],
-  "followUpAdvice": "עצות למעקב והמשך טיפול"
+  "recommendations": ["Recommendation 1", "Recommendation 2", "Recommendation 3"],
+  "practicalTips": ["Practical tip 1", "Practical tip 2"],
+  "mainConcerns": ["Main concern 1", "Main concern 2"],
+  "followUpAdvice": "Advice for follow-up and continued treatment",
+  "specificDiagnosis": "Specific preliminary diagnosis (e.g., 'developmental stuttering', 'articulation disorder', etc.)"
 }
 
-החזר רק את ה-JSON, ללא טקסט נוסף.`;
+Return only the JSON in Hebrew, without additional text.`;
 
     const response = await openai.chat.completions.create({
       model: process.env.AI_MODEL || 'gpt-4',

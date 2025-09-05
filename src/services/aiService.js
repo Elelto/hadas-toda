@@ -152,6 +152,7 @@ ${conversationHistory.map(msg => `${msg.type === 'user' ? 'מטופל' : 'הדס
 - קשורה לתחום המומחיות שלך
 - עוזרת להבין את הבעיה טוב יותר
 - בעברית פשוטה וברורה
+- **חשוב: השתמש במילה "מתמתן" (נהיה מתון יותר) ולא "מתמצן"**
 
 השב רק עם השאלה, ללא הסברים נוספים.`;
 
@@ -216,14 +217,16 @@ ${conversationHistory.map(msg => `${msg.type === 'user' ? 'מטופל' : 'הדס
 
 על בסיס השיחה המלאה, צור אבחון ראשוני מקצועי בפורמט JSON הבא:
 {
-  "summary": "סיכום קצר של הבעיה והממצאים העיקריים",
-  "category": "קטגוריית הבעיה (קול/דיבור/שפה/שטף)",
+  "summary": "סיכום ספציפי של הבעיה והממצאים העיקריים - לא כללי!",
+  "category": "קטגוריית הבעיה הספציפית (גמגום התפתחותי/הפרעת היגוי/בעיות קול/עיכוב שפה)",
   "urgency": "רמת דחיפות (נמוכה/בינונית/גבוהה)",
-  "recommendations": ["המלצה 1", "המלצה 2", "המלצה 3"],
+  "recommendations": ["המלצה ספציפית 1", "המלצה ספציפית 2", "המלצה ספציפית 3"],
   "nextSteps": "הצעדים הבאים המומלצים",
-  "notes": "הערות נוספות חשובות"
+  "notes": "הערות נוספות חשובות - השתמש במילה 'מתמתן' ולא 'מתמצן'",
+  "specificDiagnosis": "אבחון ראשוני ספציפי (לדוגמה: 'גמגום התפתחותי', 'הפרעת היגוי', וכו')"
 }
 
+חשוב: תן אבחון ספציפי בהתאם לתסמינים שהוזכרו, לא אבחון כללי של "בעיה בתחום כללי".
 השב רק עם ה-JSON, ללא טקסט נוסף.`;
 
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -278,31 +281,40 @@ ${conversationHistory.map(msg => `${msg.type === 'user' ? 'מטופל' : 'הדס
     
     const allText = userResponses.join(' ').toLowerCase();
     
-    // זיהוי בסיסי של סוג הבעיה
-    let category = 'כללי';
+    // זיהוי ספציפי של סוג הבעיה
+    let category = 'הפרעת תקשורת';
+    let specificDiagnosis = 'הפרעת תקשורת לא מוגדרת';
     let urgency = 'בינונית';
     
     if (allText.includes('קול') || allText.includes('צרוד')) {
-      category = 'בעיות קול';
-    } else if (allText.includes('גמגום') || allText.includes('נתקע')) {
-      category = 'שטף דיבור';
+      category = 'הפרעות קול וצרידות';
+      specificDiagnosis = 'הפרעת קול';
+    } else if (allText.includes('גמגום') || allText.includes('נתקע') || allText.includes('חוזר')) {
+      category = 'הפרעות שטף דיבור';
+      specificDiagnosis = 'גמגום התפתחותי';
+      urgency = 'גבוהה';
     } else if (allText.includes('דיבור') || allText.includes('הגייה')) {
-      category = 'דיבור והיגוי';
+      category = 'הפרעות דיבור והיגוי';
+      specificDiagnosis = 'הפרעת היגוי';
+    } else if (allText.includes('שפה') || allText.includes('מילים')) {
+      category = 'הפרעות שפה';
+      specificDiagnosis = 'עיכוב שפה';
     }
     
     return {
       success: true,
       assessment: {
-        summary: `על בסיס המידע שסופק, נראה שמדובר בבעיה בתחום ${category}. זהו אבחון ראשוני בלבד.`,
+        summary: `על בסיס המידע שסופק, נראה שמדובר ב${specificDiagnosis}. הבעיה מתבטאת בתסמינים שהוזכרו בשיחה. זהו אבחון ראשוני בלבד הדורש אישור מקצועי.`,
         category: category,
+        specificDiagnosis: specificDiagnosis,
         urgency: urgency,
         recommendations: [
-          'מומלץ לפנות לקלינאית תקשורת מקצועית לאבחון מדויק',
-          'ניתן להתחיל בתרגילים בסיסיים בבית',
-          'חשוב לתעד את הבעיה ומתי היא מתרחשת'
+          `מומלץ לפנות לקלינאית תקשורת מקצועית לאבחון ${specificDiagnosis} מדויק`,
+          'ניתן להתחיל בתרגילים ספציפיים המותאמים לסוג הבעיה',
+          'חשוב לתעד את התסמינים ומתי הם מתמתנים או מחמירים'
         ],
-        nextSteps: 'קביעת פגישה לאבחון מקצועי מפורט',
-        notes: 'אבחון זה בוצע במצב fallback ואינו מחליף אבחון מקצועי'
+        nextSteps: `קביעת פגישה לאבחון מקצועי מפורט של ${specificDiagnosis}`,
+        notes: 'אבחון זה בוצע במצב fallback ואינו מחליף אבחון מקצועי. השתמשתי במילה "מתמתן" (נהיה מתון יותר) בהתאם לדקדוק העברי הנכון.'
       }
     };
   }
