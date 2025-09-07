@@ -30,5 +30,7 @@ export default defineConfig({
         admin: resolve(__dirname, 'public/admin/index.html'),
       },
     },
-  }
+  },
+  // הגדרת קבצים סטטיים
+  publicDir: 'public'
 });

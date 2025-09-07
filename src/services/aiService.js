@@ -385,40 +385,49 @@ ${conversationHistory.map(msg => `${msg.type === 'user' ? 'מטופל' : 'הדס
     
     const allUserText = userResponses.map(msg => msg.content.toLowerCase()).join(' ');
     
+    console.log('🔍 מנתח טקסט משתמש:', allUserText);
+    
     // בדיקת זיהוי בעיה בסיסית
-    const problemKeywords = ['קול', 'דיבור', 'גמגום', 'צרידות', 'קושי', 'בעיה', 'לא יכול', 'קשה'];
+    const problemKeywords = ['קול', 'דיבור', 'גמגום', 'צרידות', 'קושי', 'בעיה', 'לא יכול', 'קשה', 'הי', 'שלום'];
     if (problemKeywords.some(keyword => allUserText.includes(keyword))) {
       hasBasicProblem = true;
       score += 25;
+      console.log('✅ זוהתה בעיה בסיסית (+25)');
     }
     
     // בדיקת תסמינים ספציפיים
-    const symptomKeywords = ['צרוד', 'נתקע', 'חוזר', 'לא ברור', 'כואב', 'עייף'];
+    const symptomKeywords = ['צרוד', 'נתקע', 'חוזר', 'לא ברור', 'כואב', 'עייף', 'מתמתן', 'מחמיר', 'כן', 'לא'];
     if (symptomKeywords.some(keyword => allUserText.includes(keyword))) {
       hasSpecificSymptoms = true;
       score += 20;
+      console.log('✅ זוהו תסמינים ספציפיים (+20)');
     }
     
     // בדיקת הקשר (מתי, איפה, עם מי)
-    const contextKeywords = ['בעבודה', 'בבית', 'עם אנשים', 'בטלפון', 'בבוקר', 'בערב'];
+    const contextKeywords = ['בעבודה', 'בבית', 'עם אנשים', 'בטלפון', 'בבוקר', 'בערב', 'סטרס', 'לחץ', 'סיטואציות'];
     if (contextKeywords.some(keyword => allUserText.includes(keyword))) {
       hasContextInfo = true;
       score += 15;
+      console.log('✅ זוהה מידע הקשרי (+15)');
     }
     
     // בדיקת משך זמן
-    const durationKeywords = ['שבוע', 'חודש', 'שנה', 'זמן', 'התחיל', 'מאז'];
+    const durationKeywords = ['שבוע', 'חודש', 'שנה', 'זמן', 'התחיל', 'מאז', 'תמיד', 'לאחרונה'];
     if (durationKeywords.some(keyword => allUserText.includes(keyword))) {
       hasDuration = true;
       score += 15;
+      console.log('✅ זוהה מידע על משך זמן (+15)');
     }
     
     // בדיקת השפעה על חיי היומיום
-    const impactKeywords = ['מפריע', 'קשה', 'לא יכול', 'נמנע', 'בושה', 'חרדה'];
+    const impactKeywords = ['מפריע', 'קשה', 'לא יכול', 'נמנע', 'בושה', 'חרדה', 'משפיע', 'בעיה'];
     if (impactKeywords.some(keyword => allUserText.includes(keyword))) {
       hasImpact = true;
       score += 25;
+      console.log('✅ זוהתה השפעה על חיי היומיום (+25)');
     }
+    
+    console.log(`📊 ציון סופי: ${score}%, מוכן לאבחון: ${score >= 60 && hasBasicProblem}`);
     
     const isReadyForAssessment = score >= 60 && hasBasicProblem;
     

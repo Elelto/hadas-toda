@@ -129,16 +129,15 @@ export default function AIAssessment() {
 
     console.log(`🔍 מצב נוכחי: ${useAI ? 'AI' : 'Fallback'}, שאלה מספר: ${questionCount + 1}`);
 
+    // עדכון מיידי של מד איכות המידע לפני הבדיקות
+    const currentInformationQuality = useAI ? 
+      aiService.evaluateInformationQuality(newHistory) : 
+      { isReadyForAssessment: questionCount >= 4, score: Math.min((questionCount + 1) * 20, 100) };
+    
+    setInformationQuality(currentInformationQuality);
+    console.log('📊 הערכת איכות מידע:', currentInformationQuality);
+
     try {
-      // בדיקה אם צריך לסיים את האבחון - על בסיס איכות המידע
-      const currentInformationQuality = useAI ? 
-        aiService.evaluateInformationQuality(newHistory) : 
-        { isReadyForAssessment: questionCount >= 4, score: questionCount * 20 };
-      
-      // עדכון state של איכות המידע
-      setInformationQuality(currentInformationQuality);
-      
-      console.log('📊 הערכת איכות מידע:', currentInformationQuality);
       
       if (currentInformationQuality.isReadyForAssessment || questionCount >= 8) {
         console.log('🏁 מסיים אבחון...');
