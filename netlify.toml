@@ -3,6 +3,10 @@
   publish = "dist"
   command = "npm run build"
 
+# הפעלת Netlify Identity
+[context.production]
+  environment = { NETLIFY_IDENTITY_ENABLED = "true" }
+
 # הגדרות משתני סביבה לפרודקשן
 [build.environment]
   # משתני סביבה יוגדרו בממשק Netlify
