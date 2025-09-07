@@ -38,32 +38,29 @@ window.addEventListener('load', function() {
   // Make sure NetlifyCMS is available
   if (window.CMS) {
     // Register the preview template
-    CMS.registerPreviewStyle('admin-rtl.css');
+    CMS.registerPreviewStyle('./admin-rtl.css');
     
-    // Create a React component for the blog post preview
-    const BlogPostPreview = CMS.createClass({
-      render: function() {
-        const entry = this.props.entry;
-        const title = entry.getIn(['data', 'title']) || 'כותרת הפוסט';
-        const date = entry.getIn(['data', 'date']);
-        const formattedDate = date ? formatDateToHebrew(date) : 'תאריך';
-        const image = entry.getIn(['data', 'image']);
-        const imageUrl = image ? this.props.getAsset(image).toString() : '';
-        const categories = entry.getIn(['data', 'categories']);
-        
-        return CMS.createElement('div', { className: 'blog-preview' },
-          CMS.createElement('h1', { className: 'blog-preview-title' }, title),
-          CMS.createElement('div', { className: 'blog-preview-date' }, formattedDate),
-          categories && categories.toJS ? CMS.createElement('div', { className: 'blog-preview-categories' },
-            categories.toJS().map((category, index) => 
-              CMS.createElement('span', { className: 'blog-preview-category', key: index }, category)
-            )
-          ) : null,
-          imageUrl ? CMS.createElement('img', { className: 'blog-preview-image', src: imageUrl, alt: title }) : null,
-          CMS.createElement('div', { className: 'blog-preview-content' }, this.props.widgetFor('body'))
-        );
-      }
-    });
+    // Create a React component for the blog post preview using modern syntax
+    const BlogPostPreview = ({ entry, getAsset, widgetFor }) => {
+      const title = entry.getIn(['data', 'title']) || 'כותרת הפוסט';
+      const date = entry.getIn(['data', 'date']);
+      const formattedDate = date ? formatDateToHebrew(date) : 'תאריך';
+      const image = entry.getIn(['data', 'image']);
+      const imageUrl = image ? getAsset(image).toString() : '';
+      const categories = entry.getIn(['data', 'categories']);
+      
+      return CMS.createElement('div', { className: 'blog-preview' },
+        CMS.createElement('h1', { className: 'blog-preview-title' }, title),
+        CMS.createElement('div', { className: 'blog-preview-date' }, formattedDate),
+        categories && categories.toJS ? CMS.createElement('div', { className: 'blog-preview-categories' },
+          categories.toJS().map((category, index) => 
+            CMS.createElement('span', { className: 'blog-preview-category', key: index }, category)
+          )
+        ) : null,
+        imageUrl ? CMS.createElement('img', { className: 'blog-preview-image', src: imageUrl, alt: title }) : null,
+        CMS.createElement('div', { className: 'blog-preview-content' }, widgetFor('body'))
+      );
+    };
     
     // Register the preview template for blog posts
     CMS.registerPreviewTemplate('blog', BlogPostPreview);

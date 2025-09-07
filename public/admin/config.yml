@@ -2,6 +2,9 @@
 backend:
   name: git-gateway
   branch: main
+  # הוספת הגדרות אבטחה
+  identity_url: "https://hadas-toda.co.il/.netlify/identity"
+  gateway_url: "https://hadas-toda.co.il/.netlify/git"
 
 # הגדרת בדיקה מקומית ללא צורך בהתחברות
 local_backend: true
