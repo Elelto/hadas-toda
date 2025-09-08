@@ -1,0 +1,13 @@
+menu_items:
+  - name: "בית"
+    path: "/"
+  - name: "אודות"
+    path: "/about"
+  - name: "שירותים"
+    path: "/services"
+  - name: "המלצות"
+    path: "/testimonials"
+  - name: "בלוג"
+    path: "/blog"
+  - name: "יצירת קשר"
+    path: "/contact"
