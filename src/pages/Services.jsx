@@ -35,6 +35,8 @@ export default function Services() {
       try {
         const content = await loadYamlContent('/content/pages/services.yml');
         console.log('Loaded services content:', content);
+        console.log('services type:', typeof content?.services, 'isArray:', Array.isArray(content?.services));
+        console.log('process_steps type:', typeof content?.process_steps, 'isArray:', Array.isArray(content?.process_steps));
         
         if (content) {
           // Transform flat YAML structure to expected structure
@@ -43,7 +45,9 @@ export default function Services() {
               title: content.title || "תחומי טיפול",
               subtitle: content.subtitle || "מגוון שירותים מקצועיים בתחום קלינאות התקשורת"
             },
-            services: content.services || [],
+            services: Array.isArray(content.services) 
+              ? content.services 
+              : Object.values(content.services || {}),
             process: {
               title: content.process_title || "איך מתנהל הטיפול?",
               steps: Array.isArray(content.process_steps)
