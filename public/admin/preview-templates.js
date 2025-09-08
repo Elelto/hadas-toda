@@ -40,7 +40,7 @@ window.addEventListener('load', function() {
     // Register the preview template
     CMS.registerPreviewStyle('./admin-rtl.css');
     
-    // Create a React component for the blog post preview using React.createElement
+    // Create a React component for the blog post preview using CMS h function
     const BlogPostPreview = ({ entry, getAsset, widgetFor }) => {
       const title = entry.getIn(['data', 'title']) || 'כותרת הפוסט';
       const date = entry.getIn(['data', 'date']);
@@ -49,16 +49,16 @@ window.addEventListener('load', function() {
       const imageUrl = image ? getAsset(image).toString() : '';
       const categories = entry.getIn(['data', 'categories']);
       
-      return React.createElement('div', { className: 'blog-preview' },
-        React.createElement('h1', { className: 'blog-preview-title' }, title),
-        React.createElement('div', { className: 'blog-preview-date' }, formattedDate),
-        categories && categories.toJS ? React.createElement('div', { className: 'blog-preview-categories' },
+      return CMS.h('div', { className: 'blog-preview' },
+        CMS.h('h1', { className: 'blog-preview-title' }, title),
+        CMS.h('div', { className: 'blog-preview-date' }, formattedDate),
+        categories && categories.toJS ? CMS.h('div', { className: 'blog-preview-categories' },
           categories.toJS().map((category, index) => 
-            React.createElement('span', { className: 'blog-preview-category', key: index }, category)
+            CMS.h('span', { className: 'blog-preview-category', key: index }, category)
           )
         ) : null,
-        imageUrl ? React.createElement('img', { className: 'blog-preview-image', src: imageUrl, alt: title }) : null,
-        React.createElement('div', { className: 'blog-preview-content' }, widgetFor('body'))
+        imageUrl ? CMS.h('img', { className: 'blog-preview-image', src: imageUrl, alt: title }) : null,
+        CMS.h('div', { className: 'blog-preview-content' }, widgetFor('body'))
       );
     };
     
