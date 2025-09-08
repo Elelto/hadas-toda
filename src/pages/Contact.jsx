@@ -1,15 +1,62 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { init, send } from '@emailjs/browser';
+import { loadYamlContent } from '../utils/yamlLoader';
 import '../styles/contact.css';
 
 // התחל את השירות של EmailJS עם המפתח הציבורי
 init("l9xXgXVINGFdgI8KJ");
+
+// Default content fallback
+const getDefaultContactContent = () => ({
+  hero: {
+    title: "יצירת קשר",
+    subtitle: "להתייעצות, שאלות או קביעת פגישה – אשמח לשוחח!"
+  },
+  contact_info: {
+    title: "פרטי התקשרות",
+    phone: "050-6796209",
+    whatsapp: "972506796209",
+    email: "hadas.toda.info@gmail.com",
+    address: "שיכון ג', בני ברק",
+    map_url: "https://maps.google.com/?q=שיכון+ג+בני+ברק",
+    social: {
+      facebook: "https://www.facebook.com/profile.php?id=61566802899787",
+      instagram: "https://www.instagram.com/hadas_toda/"
+    }
+  },
+  form: {
+    title: "שלח/י הודעה"
+  },
+  faq: {
+    title: "שאלות נפוצות",
+    items: [
+      {
+        question: "מה משך הטיפול?",
+        answer: "מפגש טיפולי נמשך כחצי שעה. במקרים מסוימים יתכן שיידרשו מפגשים ארוכים יותר, אך זה יתואם מראש."
+      },
+      {
+        question: "האם נדרשת הכנה לפני הטיפול?",
+        answer: "אין צורך בהכנה מיוחדת. מומלץ להגיע בלבוש נוח ולהימנע מארוחה כבדה לפני הטיפול."
+      },
+      {
+        question: "האם יש החזר מקופת חולים?",
+        answer: "בחלק מהמקרים ניתן לקבל החזר מקופות החולים השונות. אשמח להנפיק קבלה מתאימה לצורך הגשת בקשה להחזר."
+      },
+      {
+        question: "האם ניתן לבטל תור שנקבע?",
+        answer: "כן, ניתן לבטל תור עד 24 שעות לפני מועד הטיפול ללא חיוב. ביטול בהתראה קצרה יותר עשוי להיות כרוך בדמי ביטול."
+      }
+    ]
+  }
+});
 
 export default function Contact() {
   const form = useRef();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
+  const [contactContent, setContactContent] = useState(null);
+  const [contentLoading, setContentLoading] = useState(true);
   const [formData, setFormData] = useState({
     user_name: '',
     user_email: '',
@@ -17,6 +64,27 @@ export default function Contact() {
     message: ''
   });
   const [formErrors, setFormErrors] = useState({});
+
+  // Load YAML content
+  useEffect(() => {
+    const loadContent = async () => {
+      try {
+        const content = await loadYamlContent('/content/pages/contact.yml');
+        if (content) {
+          setContactContent(content);
+        } else {
+          setContactContent(getDefaultContactContent());
+        }
+      } catch (error) {
+        console.error('Error loading contact content:', error);
+        setContactContent(getDefaultContactContent());
+      } finally {
+        setContentLoading(false);
+      }
+    };
+
+    loadContent();
+  }, []);
 
   // טיפול בשינויים בשדות הטופס
   const handleChange = (e) => {
@@ -168,12 +236,20 @@ export default function Contact() {
     setOpenFaq(openFaq === index ? null : index);
   };
 
+  if (contentLoading) {
+    return <div className="loading">טוען...</div>;
+  }
+
+  if (!contactContent) {
+    return <div className="error">שגיאה בטעינת התוכן</div>;
+  }
+
   return (
     <div className="contact-page">
       <div className="contact-hero">
         <div className="container">
-          <h1 className="contact-title" data-aos="fade-down">יצירת קשר</h1>
-          <p className="contact-subtitle" data-aos="fade-up" data-aos-delay="300">להתייעצות, שאלות או קביעת פגישה – אשמח לשוחח!</p>
+          <h1 className="contact-title" data-aos="fade-down">{contactContent.hero?.title || "יצירת קשר"}</h1>
+          <p className="contact-subtitle" data-aos="fade-up" data-aos-delay="300">{contactContent.hero?.subtitle || "להתייעצות, שאלות או קביעת פגישה – אשמח לשוחח!"}</p>
         </div>
       </div>
       
@@ -183,7 +259,7 @@ export default function Contact() {
           <div className="contact-container">
             <div className="contact-info-card" data-aos="fade-right">
               <div className="info-title-wrapper">
-                <h2 className="info-title" id="contact-details-title" data-aos="fade-up" data-aos-delay="200">פרטי התקשרות</h2>
+                <h2 className="info-title" id="contact-details-title" data-aos="fade-up" data-aos-delay="200">{contactContent.contact_info?.title || "פרטי התקשרות"}</h2>
               </div>
               
               <div className="contact-details" data-aos="fade-up" data-aos-delay="400">
@@ -191,7 +267,7 @@ export default function Contact() {
                   <div className="contact-icon">☎️</div>
                   <div className="contact-text">
                     <span className="contact-label">טלפון</span>
-                    <a href="tel:0506796209" className="contact-link">050-6796209</a>
+                    <a href={`tel:${contactContent.contact_info?.phone || "0506796209"}`} className="contact-link">{contactContent.contact_info?.phone || "050-6796209"}</a>
                   </div>
                 </div>
                 
@@ -199,7 +275,7 @@ export default function Contact() {
                   <div className="contact-icon">📱</div>
                   <div className="contact-text">
                     <span className="contact-label">ווטסאפ</span>
-                    <a href="https://wa.me/972506796209" target="_blank" rel="noopener noreferrer" className="contact-link contact-link-whatsapp">שלח/י הודעה <span className="whatsapp-icon">↗</span></a>
+                    <a href={`https://wa.me/${contactContent.contact_info?.whatsapp || "972506796209"}`} target="_blank" rel="noopener noreferrer" className="contact-link contact-link-whatsapp">שלח/י הודעה <span className="whatsapp-icon">↗</span></a>
                   </div>
                 </div>
                 
@@ -207,7 +283,7 @@ export default function Contact() {
                   <div className="contact-icon">✉️</div>
                   <div className="contact-text">
                     <span className="contact-label">מייל</span>
-                    <a href="mailto:hadas.toda.info@gmail.com" className="contact-link">hadas.toda.info@gmail.com</a>
+                    <a href={`mailto:${contactContent.contact_info?.email || "hadas.toda.info@gmail.com"}`} className="contact-link">{contactContent.contact_info?.email || "hadas.toda.info@gmail.com"}</a>
                   </div>
                 </div>
                 
@@ -215,7 +291,7 @@ export default function Contact() {
                   <div className="contact-icon">📍</div>
                   <div className="contact-text">
                     <span className="contact-label">כתובת</span>
-                    <a href="https://maps.google.com/?q=שיכון+ג+בני+ברק" target="_blank" rel="noopener noreferrer" className="contact-link location-link">שיכון ג', בני ברק <span className="map-icon">🗺️</span></a>
+                    <a href={contactContent.contact_info?.map_url || "https://maps.google.com/?q=שיכון+ג+בני+ברק"} target="_blank" rel="noopener noreferrer" className="contact-link location-link">{contactContent.contact_info?.address || "שיכון ג', בני ברק"} <span className="map-icon">🗺️</span></a>
                   </div>
                 </div>
                 
@@ -235,10 +311,10 @@ export default function Contact() {
                 <div className="contact-social" data-aos="fade-up" data-aos-delay="800">
                   <h3 className="social-title">עקבו אחרי</h3>
                   <div className="social-links">
-                    <a href="https://www.facebook.com/profile.php?id=61566802899787" target="_blank" rel="noopener noreferrer" className="social-link" aria-label="פייסבוק">
+                    <a href={contactContent.contact_info?.social?.facebook || "https://www.facebook.com/profile.php?id=61566802899787"} target="_blank" rel="noopener noreferrer" className="social-link" aria-label="פייסבוק">
                       <div className="social-icon">f</div>
                     </a>
-                    <a href="https://www.instagram.com/hadas_toda/" target="_blank" rel="noopener noreferrer" className="social-link" aria-label="אינסטגרם">
+                    <a href={contactContent.contact_info?.social?.instagram || "https://www.instagram.com/hadas_toda/"} target="_blank" rel="noopener noreferrer" className="social-link" aria-label="אינסטגרם">
                       <div className="social-icon">📸</div>
                     </a>
                   </div>
@@ -248,7 +324,7 @@ export default function Contact() {
             
             <div className="contact-form-card" data-aos="fade-left">
               <div className="form-title-wrapper">
-                <h2 className="form-title" data-aos="fade-up" data-aos-delay="200">שלח/י הודעה</h2>
+                <h2 className="form-title" data-aos="fade-up" data-aos-delay="200">{contactContent.form?.title || "שלח/י הודעה"}</h2>
               </div>
               <form className="contact-form" ref={form} onSubmit={handleSubmit} data-aos="fade-up" data-aos-delay="400">
                 <div className="form-group">
@@ -340,48 +416,20 @@ export default function Contact() {
         <section className="faq-section">
           <div className="container">
             <div className="faq-title-wrapper">
-              <h2 className="faq-title" data-aos="fade-up">שאלות נפוצות</h2>
+              <h2 className="faq-title" data-aos="fade-up">{contactContent.faq?.title || "שאלות נפוצות"}</h2>
             </div>
             <div className="faq-container" data-aos="fade-up" data-aos-delay="200">
-              <div className={`faq-item ${openFaq === 0 ? 'active' : ''}`} onClick={() => toggleFaq(0)}>
-                <div className="faq-question">
-                  <span>מה משך הטיפול?</span>
-                  <div className="faq-icon">{openFaq === 0 ? '-' : '+'}</div>
+              {contactContent.faq?.items?.map((faqItem, index) => (
+                <div key={index} className={`faq-item ${openFaq === index ? 'active' : ''}`} onClick={() => toggleFaq(index)}>
+                  <div className="faq-question">
+                    <span>{faqItem.question}</span>
+                    <div className="faq-icon">{openFaq === index ? '-' : '+'}</div>
+                  </div>
+                  <div className="faq-answer">
+                    <p>{faqItem.answer}</p>
+                  </div>
                 </div>
-                <div className="faq-answer">
-                  <p>מפגש טיפולי נמשך כחצי שעה. במקרים מסוימים יתכן שיידרשו מפגשים ארוכים יותר, אך זה יתואם מראש.</p>
-                </div>
-              </div>
-              
-              <div className={`faq-item ${openFaq === 1 ? 'active' : ''}`} onClick={() => toggleFaq(1)}>
-                <div className="faq-question">
-                  <span>האם נדרשת הכנה לפני הטיפול?</span>
-                  <div className="faq-icon">{openFaq === 1 ? '-' : '+'}</div>
-                </div>
-                <div className="faq-answer">
-                  <p>אין צורך בהכנה מיוחדת. מומלץ להגיע בלבוש נוח ולהימנע מארוחה כבדה לפני הטיפול.</p>
-                </div>
-              </div>
-              
-              <div className={`faq-item ${openFaq === 2 ? 'active' : ''}`} onClick={() => toggleFaq(2)}>
-                <div className="faq-question">
-                  <span>האם יש החזר מקופת חולים?</span>
-                  <div className="faq-icon">{openFaq === 2 ? '-' : '+'}</div>
-                </div>
-                <div className="faq-answer">
-                  <p>בחלק מהמקרים ניתן לקבל החזר מקופות החולים השונות. אשמח להנפיק קבלה מתאימה לצורך הגשת בקשה להחזר.</p>
-                </div>
-              </div>
-              
-              <div className={`faq-item ${openFaq === 3 ? 'active' : ''}`} onClick={() => toggleFaq(3)}>
-                <div className="faq-question">
-                  <span>האם ניתן לבטל תור שנקבע?</span>
-                  <div className="faq-icon">{openFaq === 3 ? '-' : '+'}</div>
-                </div>
-                <div className="faq-answer">
-                  <p>כן, ניתן לבטל תור עד 24 שעות לפני מועד הטיפול ללא חיוב. ביטול בהתראה קצרה יותר עשוי להיות כרוך בדמי ביטול.</p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </section>

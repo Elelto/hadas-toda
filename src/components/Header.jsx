@@ -1,12 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { loadYamlContent } from '../utils/yamlLoader';
 import logo from '../assets/logo.png';
 import '../styles/header.css';
+
+// Default navigation items
+const getDefaultNavItems = () => [
+  { path: '/', label: 'ראשי' },
+  { path: '/services', label: 'תחומי טיפול' },
+  { path: '/ai-assessment', label: 'אבחון חכם', isNew: true },
+  { path: '/about', label: 'קצת עליי' },
+  { path: '/blog', label: 'בלוג מקצועי' },
+  { path: '/testimonials', label: 'מטופלים מספרים' },
+  { path: '/contact', label: 'דברו איתי' }
+];
 
 export default function Header() {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [headerContent, setHeaderContent] = useState(null);
+  const [navItems, setNavItems] = useState(getDefaultNavItems());
   
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -27,15 +41,24 @@ export default function Header() {
     };
   }, []);
 
-  const navItems = [
-    { path: '/', label: 'ראשי' },
-    { path: '/services', label: 'תחומי טיפול' },
-    { path: '/ai-assessment', label: 'אבחון חכם', isNew: true },
-    { path: '/about', label: 'קצת עליי' },
-    { path: '/blog', label: 'בלוג מקצועי' },
-    { path: '/testimonials', label: 'מטופלים מספרים' },
-    { path: '/contact', label: 'דברו איתי' }
-  ];
+  // Load header content from YAML
+  useEffect(() => {
+    const loadContent = async () => {
+      try {
+        const content = await loadYamlContent('/content/components/header.yml');
+        if (content) {
+          setHeaderContent(content);
+          if (content.navigation?.items) {
+            setNavItems(content.navigation.items);
+          }
+        }
+      } catch (error) {
+        console.warn('Could not load header content, using defaults');
+      }
+    };
+
+    loadContent();
+  }, []);
 
   return (
     <header className={`site-header ${scrolled ? 'scrolled' : ''}`}>
@@ -48,8 +71,8 @@ export default function Header() {
             className={`logo ${scrolled ? 'scrolled' : ''}`}
           />
           <div className="logo-text">
-            <h1 className={`site-title ${scrolled ? 'scrolled' : ''}`}>הדס תודה</h1>
-            <p className={`site-subtitle ${scrolled ? 'scrolled' : ''}`}>קלינאית תקשורת</p>
+            <h1 className={`site-title ${scrolled ? 'scrolled' : ''}`}>{headerContent?.site?.title || "הדס תודה"}</h1>
+            <p className={`site-subtitle ${scrolled ? 'scrolled' : ''}`}>{headerContent?.site?.subtitle || "קלינאית תקשורת"}</p>
           </div>
         </Link>
         
