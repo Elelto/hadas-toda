@@ -2,13 +2,16 @@
 backend:
   name: git-gateway
   branch: main
+  site_domain: hadas-toda.netlify.app
 
 # הגדרת בדיקה מקומית ללא צורך בהתחברות
-local_backend: true
+local_backend:
+  url: http://localhost:8081/api/v1
 
-# הגדרות פיתוח
+# הגדרות פיתוח - מניעת הפניה לאתר החי
 display_url: http://localhost:5173
-logo_url: https://www.hadas-toda.co.il/favicon/logo.png
+site_url: https://hadas-toda.co.il
+logo_url: http://localhost:5173/favicon/logo.png
 
 # הגדרות מדיה
 media_folder: "public/images/uploads"
