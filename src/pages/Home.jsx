@@ -82,76 +82,76 @@ export default function Home() {
     loadContent();
   }, []);
 
-  // Counter animation function
-  const animateCounter = (element, target, duration = 2500) => {
-    const startTime = performance.now();
-    let lastValue = 0;
+  // Simple counter animation using setInterval
+  const animateCounter = (element, target, duration = 2000) => {
+    if (!element) return;
     
-    // Smoother easing function
-    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+    let current = 0;
+    const increment = target / (duration / 50); // Update every 50ms
     
-    const animate = (currentTime) => {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
+    const timer = setInterval(() => {
+      current += increment;
       
-      // Apply easing
-      const easedProgress = easeOutCubic(progress);
-      const rawValue = easedProgress * target;
-      
-      // Smooth interpolation to avoid jumps
-      const currentValue = Math.round(rawValue);
-      
-      // Only update if value changed to avoid flickering
-      if (currentValue !== lastValue || progress >= 1) {
-        lastValue = currentValue;
-        
-        // Handle different number formats
-        if (target === 10) {
-          element.textContent = currentValue + '+';
-        } else if (target === 100) {
-          element.textContent = currentValue + '+';
-        } else if (target === 'MA') {
-          element.textContent = 'M.A';
-        } else {
-          element.textContent = currentValue;
-        }
+      if (current >= target) {
+        current = target;
+        clearInterval(timer);
       }
       
-      if (progress < 1) {
-        requestAnimationFrame(animate);
+      const displayValue = Math.round(current);
+      
+      // Handle different number formats
+      if (target === 10 || target === 100) {
+        element.textContent = displayValue + '+';
+      } else if (target === 'MA') {
+        element.textContent = 'M.A';
+        clearInterval(timer);
+      } else {
+        element.textContent = displayValue;
       }
-    };
+    }, 50);
     
-    requestAnimationFrame(animate);
+    // Return cleanup function
+    return () => clearInterval(timer);
   };
 
   useEffect(() => {
+    let cleanupFunctions = [];
+    
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const element = entry.target;
           const targetValue = element.dataset.target;
           
+          console.log('Counter element intersecting:', element, 'target:', targetValue); // Debug log
+          
           if (targetValue && !element.classList.contains('animated')) {
             element.classList.add('animated');
             
             if (targetValue === 'MA') {
-              // For M.A, just show the text without animation
               element.textContent = 'M.A';
             } else {
-              element.textContent = '0'; // Set initial display value to 0
-              animateCounter(element, parseInt(targetValue));
+              element.textContent = '0';
+              const cleanup = animateCounter(element, parseInt(targetValue));
+              if (cleanup) {
+                cleanupFunctions.push(cleanup);
+              }
             }
           }
         }
       });
-    }, { threshold: 0.5 });
-
-    counterRefs.current.forEach((ref) => {
-      if (ref) observer.observe(ref);
+    }, { 
+      threshold: 0.1, // Lower threshold for easier trigger
+      rootMargin: '100px' // Larger margin
     });
 
-    return () => observer.disconnect();
+    const counters = document.querySelectorAll('.counter');
+    counters.forEach(counter => observer.observe(counter));
+
+    return () => {
+      observer.disconnect();
+      cleanupFunctions.forEach(cleanup => cleanup());
+    };
   }, []);
 
   if (loading) {
@@ -192,30 +192,27 @@ export default function Home() {
               <div className="highlight-item">
                 <span 
                   className="highlight-number counter" 
-                  ref={(el) => counterRefs.current[0] = el}
                   data-target="10"
                 >
-                  0
+                  10+
                 </span>
                 <span className="highlight-text">שנות ניסיון</span>
               </div>
               <div className="highlight-item">
                 <span 
                   className="highlight-number counter" 
-                  ref={(el) => counterRefs.current[1] = el}
                   data-target="100"
                 >
-                  0
+                  100+
                 </span>
                 <span className="highlight-text">מטופלים מרוצים</span>
               </div>
               <div className="highlight-item">
                 <span 
                   className="highlight-number counter" 
-                  ref={(el) => counterRefs.current[2] = el}
                   data-target="MA"
                 >
-                  0
+                  M.A
                 </span>
                 <span className="highlight-text">תואר שני בקלינאות תקשורת</span>
               </div>

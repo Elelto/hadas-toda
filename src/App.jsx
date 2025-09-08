@@ -22,16 +22,17 @@ function App() {
       duration: 600,
       once: true,
       mirror: false,
-      offset: 120,
+      offset: 50, // Reduced from 120 to trigger earlier
       delay: 0,
       easing: 'ease-out-cubic',
       anchorPlacement: 'top-bottom',
-      throttleDelay: 200,
-      debounceDelay: 100,
+      throttleDelay: 50, // Reduced from 200 for better performance
+      debounceDelay: 50, // Reduced from 100 for better performance
       disable: function() {
-        // השבת AOS במכשירים עם בעיות ביצועים
+        // Disable on very small screens or slow devices
         const maxWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-        return maxWidth < 768 && /iPad|iPhone|iPod/.test(navigator.userAgent);
+        const isSlowDevice = navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4;
+        return maxWidth < 480 || isSlowDevice;
       }
     });
     
