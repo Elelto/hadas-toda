@@ -33,9 +33,43 @@ export default function Services() {
   useEffect(() => {
     const loadContent = async () => {
       try {
-        const content = await loadYamlContent('/content/pages/services.yml');
+        // Use correct content directly - YAML parser has issues with complex lists
+        const content = {
+          title: "תחומי טיפול",
+          subtitle: "מגוון שירותים מקצועיים בתחום קלינאות התקשורת",
+          services: [
+            { title: "טיפול בגמגום", description: "התמודדות עם גמגום בקרב ילדים ומבוגרים באמצעות שיטות מגוונות ומותאמות אישית." },
+            { title: "שיפור שפה ודיבור", description: "עבודה על שפה, הגייה, שטף דיבור והבנת הנשמע." },
+            { title: "טיפול בקול", description: "שיקום וטיפוח הקול, תרגילים לשיפור איכות הקול ומניעת מאמץ קולי." },
+            { title: "הדרכת הורים", description: "הדרכה וליווי הורים לתמיכה בתהליך הטיפולי." }
+          ],
+          process_title: "איך מתנהל הטיפול?",
+          process_steps: [
+            { title: "פגישת היכרות", description: "שיחה ראשונית להבנת הצרכים והציפיות" },
+            { title: "אבחון מקצועי", description: "הערכה מקיפה לאיתור הקשיים והחוזקות" },
+            { title: "בניית תוכנית טיפול", description: "תוכנית אישית ומותאמת לצרכים הייחודיים" },
+            { title: "מפגשי טיפול", description: "מפגשים קבועים בסביבה נעימה ותומכת" }
+          ]
+        };
+        
         if (content) {
-          setServicesContent(content);
+          // Transform flat YAML structure to expected structure
+          const transformedContent = {
+            hero: {
+              title: content.title || "תחומי טיפול",
+              subtitle: content.subtitle || "מגוון שירותים מקצועיים בתחום קלינאות התקשורת"
+            },
+            services: content.services || [],
+            process: {
+              title: content.process_title || "איך מתנהל הטיפול?",
+              steps: content.process_steps.map((step, index) => ({
+                number: (index + 1).toString(),
+                title: step.title,
+                description: step.description
+              }))
+            }
+          };
+          setServicesContent(transformedContent);
         } else {
           setServicesContent(getDefaultServicesContent());
         }

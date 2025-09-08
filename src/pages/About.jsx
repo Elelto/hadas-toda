@@ -45,8 +45,36 @@ export default function About() {
     const loadContent = async () => {
       try {
         const content = await loadYamlContent('/content/pages/about.yml');
+        console.log('Loaded about content:', content); // Debug log
         if (content) {
-          setAboutContent(content);
+          // Transform flat YAML structure to expected structure
+          const transformedContent = {
+            hero: {
+              title: content.hero?.title || content.title || "נעים להכיר, הדס תודה",
+              subtitle: content.hero?.subtitle || content.subtitle || "קלינאית תקשורת (M.A), מומחית בטיפול בקול, צרידות, שפה ודיבור לילדים ומבוגרים"
+            },
+            content: {
+              title: "מסע אל הקול הפנימי והחיצוני",
+              paragraphs: [
+                content.paragraph1 || content.content?.paragraphs?.[0] || "",
+                content.paragraph2 || content.content?.paragraphs?.[1] || "",
+                content.paragraph3 || content.content?.paragraphs?.[2] || "",
+                content.highlight || content.content?.paragraphs?.[3] || ""
+              ].filter(p => p) // Remove empty paragraphs
+            },
+            qualifications: {
+              title: content.qualifications_title || content.qualifications?.title || "הכשרה, ניסיון והתמחויות",
+              items: Array.isArray(content.qualifications) 
+                ? content.qualifications.map(item => typeof item === 'string' ? item : item.item)
+                : content.qualifications?.items || []
+            },
+            quote: {
+              text: content.quote?.text || content.quote || "הקול שלנו הוא הגשר בין עולמנו הפנימי לעולם החיצון. אני כאן כדי לעזור לכם לבנות גשר חזק, יציב וצלול.",
+              author: content.quote?.author || "הדס תודה"
+            }
+          };
+          console.log('Transformed content:', transformedContent); // Debug log
+          setAboutContent(transformedContent);
         } else {
           setAboutContent(getDefaultAboutContent());
         }

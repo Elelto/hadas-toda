@@ -35,7 +35,12 @@ const parseSimpleYaml = (yamlText) => {
       // Top level section
       const colonIndex = trimmed.indexOf(':');
       const key = trimmed.substring(0, colonIndex).trim();
-      const value = trimmed.substring(colonIndex + 1).trim();
+      let value = trimmed.substring(colonIndex + 1).trim();
+      
+      // Remove quotes if present
+      if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+        value = value.slice(1, -1);
+      }
       
       currentSection = key;
       if (value) {
@@ -51,7 +56,12 @@ const parseSimpleYaml = (yamlText) => {
       // Second level property
       const colonIndex = trimmed.indexOf(':');
       const key = trimmed.substring(0, colonIndex).trim();
-      const value = trimmed.substring(colonIndex + 1).trim();
+      let value = trimmed.substring(colonIndex + 1).trim();
+      
+      // Remove quotes if present
+      if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+        value = value.slice(1, -1);
+      }
       
       lastKey = key;
       if (value) {
@@ -63,26 +73,43 @@ const parseSimpleYaml = (yamlText) => {
       currentListItem = null;
     } else if (indent === 4 && trimmed.startsWith('- ')) {
       // List item
-      const itemContent = trimmed.substring(2).trim();
+      let itemContent = trimmed.substring(2).trim();
+      
+      // Remove quotes if present
+      if ((itemContent.startsWith('"') && itemContent.endsWith('"')) || (itemContent.startsWith("'") && itemContent.endsWith("'"))) {
+        itemContent = itemContent.slice(1, -1);
+      }
+      
       if (itemContent.includes(':')) {
         // Object in list
         const colonIndex = itemContent.indexOf(':');
         const key = itemContent.substring(0, colonIndex).trim();
-        const value = itemContent.substring(colonIndex + 1).trim();
+        let value = itemContent.substring(colonIndex + 1).trim();
+        
+        // Remove quotes if present
+        if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+          value = value.slice(1, -1);
+        }
         
         currentListItem = {};
         currentListItem[key] = value;
         currentList.push(currentListItem);
       } else {
-        // Simple list item
-        currentList.push({ name: itemContent });
+        // Simple list item - for about page qualifications
+        currentList.push(itemContent);
         currentListItem = null;
       }
     } else if (indent === 6 && currentListItem && trimmed.includes(':')) {
       // Additional properties for list item
       const colonIndex = trimmed.indexOf(':');
       const key = trimmed.substring(0, colonIndex).trim();
-      const value = trimmed.substring(colonIndex + 1).trim();
+      let value = trimmed.substring(colonIndex + 1).trim();
+      
+      // Remove quotes if present
+      if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+        value = value.slice(1, -1);
+      }
+      
       currentListItem[key] = value;
     } else if (indent > 2 && !trimmed.includes(':') && !trimmed.startsWith('-')) {
       // Multi-line value continuation
