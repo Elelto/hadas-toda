@@ -427,10 +427,10 @@ export default function Contact() {
         <section className="faq-section">
           <div className="container">
             <div className="faq-title-wrapper">
-              <h2 className="faq-title" data-aos="fade-up">{contactContent.faq?.title || "שאלות נפוצות"}</h2>
+              <h2 className="faq-title" data-aos="fade-up">{contactContent.faq_title || "שאלות נפוצות"}</h2>
             </div>
             <div className="faq-container" data-aos="fade-up" data-aos-delay="200">
-              {contactContent.faq?.items?.map((faqItem, index) => (
+              {contactContent.faq_items?.map((faqItem, index) => (
                 <div key={index} className={`faq-item ${openFaq === index ? 'active' : ''}`} onClick={() => toggleFaq(index)}>
                   <div className="faq-question">
                     <span>{faqItem.question}</span>
