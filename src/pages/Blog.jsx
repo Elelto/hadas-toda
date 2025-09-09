@@ -1,11 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import '../styles/blog.css';
 import blogPosts from '../data/blogPosts';
+import AOS from 'aos';
+import '../styles/blog.css';
 
 export default function Blog() {
   const [filter, setFilter] = useState('all');
-  
+  const [filteredPosts, setFilteredPosts] = useState(blogPosts);
+
+  useEffect(() => {
+    setFilteredPosts(blogPosts);
+  }, []);
+
+  useEffect(() => {
+    // Refresh AOS when posts are loaded
+    const timer = setTimeout(() => {
+      AOS.refresh();
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [filteredPosts]);
+
   // קטגוריות לסינון
   const categories = [
     { id: 'all', label: 'הכל' },
@@ -15,11 +29,15 @@ export default function Blog() {
     { id: 'children', label: 'ילדים' },
     { id: 'adults', label: 'מבוגרים' }
   ];
-  
+
   // סינון המאמרים לפי הקטגוריה הנבחרת
-  const filteredPosts = filter === 'all' 
-    ? blogPosts 
-    : blogPosts.filter(post => post.categories.includes(filter));
+  useEffect(() => {
+    if (filter === 'all') {
+      setFilteredPosts(blogPosts);
+    } else {
+      setFilteredPosts(blogPosts.filter(post => post.categories.includes(filter)));
+    }
+  }, [filter]);
 
   return (
     <div className="blog-page">

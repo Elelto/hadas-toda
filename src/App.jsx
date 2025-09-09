@@ -18,33 +18,38 @@ import 'aos/dist/aos.css';
 
 function App() {
   useEffect(() => {
+    // Initialize AOS with optimized settings
     AOS.init({
-      duration: 600,
+      duration: 800,
       once: true,
       mirror: false,
-      offset: 50, // Reduced from 120 to trigger earlier
+      offset: 100,
       delay: 0,
-      easing: 'ease-out-cubic',
+      easing: 'ease-out-quart',
       anchorPlacement: 'top-bottom',
-      throttleDelay: 50, // Reduced from 200 for better performance
-      debounceDelay: 50, // Reduced from 100 for better performance
-      disable: function() {
-        // Disable on very small screens or slow devices
-        const maxWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-        const isSlowDevice = navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4;
-        return maxWidth < 480 || isSlowDevice;
-      }
+      throttleDelay: 99,
+      debounceDelay: 50,
+      disable: false
     });
-    
-    // רענון AOS כאשר החלון משנה גודל
-    const handleResize = () => {
+
+    // Refresh AOS after a short delay to ensure proper initialization
+    const refreshTimer = setTimeout(() => {
       AOS.refresh();
+    }, 100);
+
+    // Handle route changes - refresh AOS when content changes
+    const handleRouteChange = () => {
+      setTimeout(() => {
+        AOS.refresh();
+      }, 50);
     };
-    
-    window.addEventListener('resize', handleResize);
-    
+
+    // Listen for popstate events (back/forward navigation)
+    window.addEventListener('popstate', handleRouteChange);
+
     return () => {
-      window.removeEventListener('resize', handleResize);
+      clearTimeout(refreshTimer);
+      window.removeEventListener('popstate', handleRouteChange);
     };
   }, []);
 

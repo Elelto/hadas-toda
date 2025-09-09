@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import heroImage from '../assets/logo.png'; // יש להחליף בתמונה מתאימה
-import SoundWaves from '../components/SoundWaves';
-import '../styles/home.css';
-import blogPosts from '../data/blogPosts';
 import { loadYamlContent } from '../utils/yamlLoader';
+import AOS from 'aos';
+import '../styles/home.css';
+import SoundWaves from '../components/SoundWaves';
+import blogPosts from '../data/blogPosts';
 
 // Fallback content function
 const getDefaultHomeContent = () => ({
@@ -115,44 +115,13 @@ export default function Home() {
   };
 
   useEffect(() => {
-    let cleanupFunctions = [];
-    
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const element = entry.target;
-          const targetValue = element.dataset.target;
-          
-          console.log('Counter element intersecting:', element, 'target:', targetValue); // Debug log
-          
-          if (targetValue && !element.classList.contains('animated')) {
-            element.classList.add('animated');
-            
-            if (targetValue === 'MA') {
-              element.textContent = 'M.A';
-            } else {
-              element.textContent = '0';
-              const cleanup = animateCounter(element, parseInt(targetValue));
-              if (cleanup) {
-                cleanupFunctions.push(cleanup);
-              }
-            }
-          }
-        }
-      });
-    }, { 
-      threshold: 0.1, // Lower threshold for easier trigger
-      rootMargin: '100px' // Larger margin
-    });
+    // Refresh AOS when component mounts
+    const timer = setTimeout(() => {
+      AOS.refresh();
+    }, 100);
 
-    const counters = document.querySelectorAll('.counter');
-    counters.forEach(counter => observer.observe(counter));
-
-    return () => {
-      observer.disconnect();
-      cleanupFunctions.forEach(cleanup => cleanup());
-    };
-  }, []);
+    return () => clearTimeout(timer);
+  }, [homeContent]);
 
   if (loading) {
     return <div className="loading">טוען תוכן...</div>;
@@ -236,14 +205,14 @@ export default function Home() {
           <p className="section-subtitle" data-aos="fade-up" data-aos-delay="200">{homeContent?.testimonials?.subtitle || 'מה אומרים המטופלים שלי על הטיפול והתוצאות'}</p>
           
           <div className="testimonials-carousel">
-            {homeContent?.testimonials?.items?.map((testimonial, index) => (
+            {(Array.isArray(homeContent?.testimonials?.items) ? homeContent.testimonials.items.map((testimonial, index) => (
               <div key={index} className="testimonial-card" data-aos={index % 2 === 0 ? "fade-right" : "fade-left"} data-aos-delay={400 + (index * 200)}>
                 <div className="quote">
                   "{testimonial.quote}"
                   <div className="quote-author">– {testimonial.author}</div>
                 </div>
               </div>
-            )) || (
+            )) : null) || (
               <>
                 <div className="testimonial-card" data-aos="fade-right" data-aos-delay="400">
                   <div className="quote">

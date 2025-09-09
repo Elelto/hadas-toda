@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { init, send } from '@emailjs/browser';
 import { loadYamlContent } from '../utils/yamlLoader';
+import AOS from 'aos';
+import { init, send } from '@emailjs/browser';
 import '../styles/contact.css';
 
 // התחל את השירות של EmailJS עם המפתח הציבורי
@@ -85,6 +86,16 @@ export default function Contact() {
 
     loadContent();
   }, []);
+
+  useEffect(() => {
+    // Refresh AOS when content loads
+    if (contactContent) {
+      const timer = setTimeout(() => {
+        AOS.refresh();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [contactContent]);
 
   // טיפול בשינויים בשדות הטופס
   const handleChange = (e) => {

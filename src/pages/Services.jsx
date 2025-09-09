@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { loadYamlContent } from '../utils/yamlLoader';
+import AOS from 'aos';
 import '../styles/services.css';
 
 // Default content fallback
@@ -32,51 +33,47 @@ export default function Services() {
   // Load YAML content
   useEffect(() => {
     const loadContent = async () => {
-      try {
-        const content = await loadYamlContent('/content/pages/services.yml');
-        console.log('Loaded services content:', content);
-        console.log('services type:', typeof content?.services, 'isArray:', Array.isArray(content?.services));
-        console.log('process_steps type:', typeof content?.process_steps, 'isArray:', Array.isArray(content?.process_steps));
-        
-        if (content) {
-          // Transform flat YAML structure to expected structure
-          const transformedContent = {
-            hero: {
-              title: content.title || "תחומי טיפול",
-              subtitle: content.subtitle || "מגוון שירותים מקצועיים בתחום קלינאות התקשורת"
-            },
-            services: Array.isArray(content.services) 
-              ? content.services 
-              : Object.values(content.services || {}),
-            process: {
-              title: content.process_title || "איך מתנהל הטיפול?",
-              steps: Array.isArray(content.process_steps)
-                ? content.process_steps.map((step, index) => ({
-                    number: (index + 1).toString(),
-                    title: step.title,
-                    description: step.description
-                  }))
-                : Object.values(content.process_steps || {}).map((step, index) => ({
-                    number: (index + 1).toString(),
-                    title: step.title,
-                    description: step.description
-                  }))
-            }
-          };
-          setServicesContent(transformedContent);
-        } else {
-          setServicesContent(getDefaultServicesContent());
-        }
-      } catch (error) {
-        console.error('Error loading services content:', error);
+      const content = await loadYamlContent('/content/pages/services.yml');
+      if (content) {
+        const transformedContent = {
+          hero: {
+            title: content.title || "תחומי טיפול",
+            subtitle: content.subtitle || "מגוון שירותים מקצועיים בתחום קלינאות התקשורת"
+          },
+          services: Array.isArray(content.services) ? content.services : Object.values(content.services || {}),
+          process: {
+            title: content.process_title || "איך מתנהל הטיפול?",
+            steps: Array.isArray(content.process_steps)
+              ? content.process_steps.map(step => ({
+                  title: step.title || "",
+                  description: step.description || ""
+                }))
+              : Object.values(content.process_steps || {}).map(step => ({
+                  title: step.title || "",
+                  description: step.description || ""
+                }))
+          }
+        };
+        setServicesContent(transformedContent);
+      } else {
+        console.log('Services - No content loaded, using fallback');
         setServicesContent(getDefaultServicesContent());
-      } finally {
-        setLoading(false);
       }
+      setLoading(false);
     };
 
     loadContent();
   }, []);
+
+  useEffect(() => {
+    // Refresh AOS when content loads
+    if (servicesContent) {
+      const timer = setTimeout(() => {
+        AOS.refresh();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [servicesContent]);
 
   if (loading) {
     return <div className="loading">טוען...</div>;

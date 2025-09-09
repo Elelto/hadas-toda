@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import AOS from 'aos';
 import '../styles/testimonials.css';
 
 const testimonials = [
@@ -41,6 +42,13 @@ const testimonials = [
 ];
 
 export default function Testimonials() {
+  useEffect(() => {
+    // Refresh AOS when component mounts
+    const timer = setTimeout(() => {
+      AOS.refresh();
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
   return (
     <div className="testimonials-page">
       <div className="container">

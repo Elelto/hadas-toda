@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { loadYamlContent } from '../utils/yamlLoader';
+import AOS from 'aos';
 import '../styles/about.css';
 
 // Default content fallback
@@ -64,16 +65,20 @@ export default function About() {
             },
             qualifications: {
               title: content.qualifications_title || content.qualifications?.title || "הכשרה, ניסיון והתמחויות",
-              items: Array.isArray(content.qualifications) 
-                ? content.qualifications.map(item => typeof item === 'string' ? item : item.item)
-                : content.qualifications?.items || []
+              items: (() => {
+                if (Array.isArray(content.qualifications)) {
+                  return content.qualifications.map(item => typeof item === 'string' ? item : item.item);
+                } else if (content.qualifications && typeof content.qualifications === 'object') {
+                  return Object.values(content.qualifications).map(item => typeof item === 'string' ? item : item.item);
+                }
+                return [];
+              })()
             },
             quote: {
               text: content.quote?.text || content.quote || "הקול שלנו הוא הגשר בין עולמנו הפנימי לעולם החיצון. אני כאן כדי לעזור לכם לבנות גשר חזק, יציב וצלול.",
               author: content.quote?.author || "הדס תודה"
             }
           };
-          console.log('Transformed content:', transformedContent); // Debug log
           setAboutContent(transformedContent);
         } else {
           setAboutContent(getDefaultAboutContent());
@@ -88,6 +93,16 @@ export default function About() {
 
     loadContent();
   }, []);
+
+  useEffect(() => {
+    // Refresh AOS when content loads
+    if (aboutContent) {
+      const timer = setTimeout(() => {
+        AOS.refresh();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [aboutContent]);
 
   if (loading) {
     return <div className="loading">טוען...</div>;

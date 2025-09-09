@@ -1,14 +1,10 @@
 // Simple YAML loader utility
-export const loadYamlContent = async (filePath) => {
+export const loadYamlContent = async (path) => {
   try {
-    const response = await fetch(filePath);
-    if (!response.ok) {
-      console.warn(`Could not load ${filePath}, using fallback content`);
-      return null;
-    }
-    
+    const response = await fetch(path);
     const yamlText = await response.text();
-    return parseSimpleYaml(yamlText);
+    const parsed = parseSimpleYaml(yamlText);
+    return parsed;
   } catch (error) {
     console.warn('Error loading YAML:', error);
     return null;
@@ -19,20 +15,17 @@ export const loadYamlContent = async (filePath) => {
 const parseSimpleYaml = (yamlText) => {
   const lines = yamlText.split('\n');
   const result = {};
-  let currentSection = null;
-  let currentObject = result;
-  let currentList = null;
-  let currentListItem = null;
-  let lastKey = null;
-  
-  for (let line of lines) {
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
     const trimmed = line.trim();
+    
     if (!trimmed || trimmed.startsWith('#')) continue;
     
     const indent = line.length - line.trimStart().length;
     
     if (indent === 0 && trimmed.includes(':')) {
-      // Top level section
+      // Top level property
       const colonIndex = trimmed.indexOf(':');
       const key = trimmed.substring(0, colonIndex).trim();
       let value = trimmed.substring(colonIndex + 1).trim();
@@ -42,85 +35,107 @@ const parseSimpleYaml = (yamlText) => {
         value = value.slice(1, -1);
       }
       
-      currentSection = key;
       if (value) {
-        result[currentSection] = value;
+        result[key] = value;
       } else {
-        result[currentSection] = {};
-        currentObject = result[currentSection];
+        // Check if next lines are list items
+        let j = i + 1;
+        let isListNext = false;
+        while (j < lines.length) {
+          const nextLine = lines[j];
+          const nextTrimmed = nextLine.trim();
+          if (!nextTrimmed) {
+            j++;
+            continue;
+          }
+          const nextIndent = nextLine.length - nextLine.trimStart().length;
+          if (nextIndent === 2 && nextTrimmed.startsWith('- ')) {
+            isListNext = true;
+          }
+          break;
+        }
+        
+        if (isListNext) {
+          result[key] = [];
+        } else {
+          result[key] = {};
+        }
       }
-      currentList = null;
-      currentListItem = null;
-      lastKey = null;
-    } else if (indent === 2 && trimmed.includes(':')) {
-      // Second level property
-      const colonIndex = trimmed.indexOf(':');
-      const key = trimmed.substring(0, colonIndex).trim();
-      let value = trimmed.substring(colonIndex + 1).trim();
-      
-      // Remove quotes if present
-      if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
-        value = value.slice(1, -1);
+    } else if (indent === 2 && trimmed.startsWith('- ')) {
+      // List item - find the parent key
+      let parentKey = null;
+      for (let j = i - 1; j >= 0; j--) {
+        const prevLine = lines[j];
+        const prevTrimmed = prevLine.trim();
+        if (!prevTrimmed) continue;
+        
+        const prevIndent = prevLine.length - prevLine.trimStart().length;
+        if (prevIndent === 0 && prevTrimmed.includes(':')) {
+          const colonIndex = prevTrimmed.indexOf(':');
+          const key = prevTrimmed.substring(0, colonIndex).trim();
+          let value = prevTrimmed.substring(colonIndex + 1).trim();
+          if (!value) {
+            parentKey = key;
+          }
+          break;
+        }
       }
       
-      lastKey = key;
-      if (value) {
-        currentObject[key] = value;
-      } else {
-        currentObject[key] = [];
-        currentList = currentObject[key];
-      }
-      currentListItem = null;
-    } else if (indent === 4 && trimmed.startsWith('- ')) {
-      // List item
-      let itemContent = trimmed.substring(2).trim();
-      
-      // Remove quotes if present
-      if ((itemContent.startsWith('"') && itemContent.endsWith('"')) || (itemContent.startsWith("'") && itemContent.endsWith("'"))) {
-        itemContent = itemContent.slice(1, -1);
-      }
-      
-      if (itemContent.includes(':')) {
-        // Object in list
-        const colonIndex = itemContent.indexOf(':');
-        const key = itemContent.substring(0, colonIndex).trim();
-        let value = itemContent.substring(colonIndex + 1).trim();
+      if (parentKey && Array.isArray(result[parentKey])) {
+        let itemContent = trimmed.substring(2).trim();
         
         // Remove quotes if present
-        if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
-          value = value.slice(1, -1);
+        if ((itemContent.startsWith('"') && itemContent.endsWith('"')) || (itemContent.startsWith("'") && itemContent.endsWith("'"))) {
+          itemContent = itemContent.slice(1, -1);
         }
         
-        currentListItem = {};
-        currentListItem[key] = value;
-        currentList.push(currentListItem);
-      } else {
-        // Simple list item - for about page qualifications
-        currentList.push(itemContent);
-        currentListItem = null;
-      }
-    } else if (indent === 6 && currentListItem && trimmed.includes(':')) {
-      // Additional properties for list item
-      const colonIndex = trimmed.indexOf(':');
-      const key = trimmed.substring(0, colonIndex).trim();
-      let value = trimmed.substring(colonIndex + 1).trim();
-      
-      // Remove quotes if present
-      if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
-        value = value.slice(1, -1);
-      }
-      
-      currentListItem[key] = value;
-    } else if (indent > 2 && !trimmed.includes(':') && !trimmed.startsWith('-')) {
-      // Multi-line value continuation
-      if (currentListItem) {
-        const keys = Object.keys(currentListItem);
-        const lastItemKey = keys[keys.length - 1];
-        if (lastItemKey) {
-          currentListItem[lastItemKey] += ' ' + trimmed;
+        if (itemContent.includes(':')) {
+          // Object in list
+          const colonIndex = itemContent.indexOf(':');
+          const key = itemContent.substring(0, colonIndex).trim();
+          let value = itemContent.substring(colonIndex + 1).trim();
+          
+          // Remove quotes if present
+          if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+            value = value.slice(1, -1);
+          }
+          
+          const listItem = { [key]: value };
+          
+          // Check for additional properties on following lines
+          let k = i + 1;
+          while (k < lines.length) {
+            const nextLine = lines[k];
+            const nextTrimmed = nextLine.trim();
+            if (!nextTrimmed) {
+              k++;
+              continue;
+            }
+            
+            const nextIndent = nextLine.length - nextLine.trimStart().length;
+            if (nextIndent === 4 && nextTrimmed.includes(':')) {
+              const nextColonIndex = nextTrimmed.indexOf(':');
+              const nextKey = nextTrimmed.substring(0, nextColonIndex).trim();
+              let nextValue = nextTrimmed.substring(nextColonIndex + 1).trim();
+              
+              // Remove quotes if present
+              if ((nextValue.startsWith('"') && nextValue.endsWith('"')) || (nextValue.startsWith("'") && nextValue.endsWith("'"))) {
+                nextValue = nextValue.slice(1, -1);
+              }
+              
+              listItem[nextKey] = nextValue;
+              i = k; // Skip this line in main loop
+              k++;
+            } else {
+              break;
+            }
+          }
+          
+          result[parentKey].push(listItem);
+        } else {
+          // Simple list item
+          result[parentKey].push(itemContent);
         }
-      } else if (lastKey && currentObject[lastKey]) {
-        currentObject[lastKey] += ' ' + trimmed;
       }
     }
   }
