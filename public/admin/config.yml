@@ -3,6 +3,12 @@ backend:
   name: git-gateway
   branch: main
   site_domain: hadas-toda.netlify.app
+  commit_messages:
+    create: 'Create {{collection}} "{{slug}}"'
+    update: 'Update {{collection}} "{{slug}}"'
+    delete: 'Delete {{collection}} "{{slug}}"'
+    uploadMedia: 'Upload "{{path}}"'
+    deleteMedia: 'Delete "{{path}}"'
 
 # הגדרת בדיקה מקומית ללא צורך בהתחברות
 local_backend:
