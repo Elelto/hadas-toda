@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { loadYamlContent } from '../utils/yamlLoader';
 import AOS from 'aos';
+import SEOHead from '../components/SEOHead';
 import { init, send } from '@emailjs/browser';
 import '../styles/contact.css';
 
@@ -255,8 +256,45 @@ export default function Contact() {
     return <div className="error">שגיאה בטעינת התוכן</div>;
   }
 
+  // SEO structured data for contact page
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "mainEntity": {
+      "@type": "MedicalBusiness",
+      "name": "הדס תודה - קלינאית תקשורת",
+      "description": "יצירת קשר עם הדס תודה - קלינאית תקשורת מוסמכת לקביעת פגישות וייעוץ מקצועי",
+      "url": "https://www.hadas-toda.co.il/contact",
+      "telephone": "+972-50-679-6209",
+      "email": "hadas.toda.info@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "שיכון ג'",
+        "addressLocality": "בני ברק",
+        "addressCountry": "IL"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "32.0851",
+        "longitude": "34.8255"
+      },
+      "openingHours": "Mo-Th 09:00-18:00",
+      "sameAs": [
+        "https://www.facebook.com/profile.php?id=61566802899787",
+        "https://www.instagram.com/hadas_toda/"
+      ]
+    }
+  };
+
   return (
     <div className="contact-page">
+      <SEOHead
+        title="יצירת קשר"
+        description="יצירת קשר עם הדס תודה - קלינאית תקשורת מוסמכת. קביעת פגישות, ייעוץ מקצועי וטיפול בגמגום, צרידות ובעיות קול. טלפון: 050-679-6209"
+        keywords="יצירת קשר, הדס תודה, קביעת פגישה, קלינאית תקשורת, ייעוץ, טלפון, בני ברק"
+        canonicalUrl="/contact"
+        structuredData={structuredData}
+      />
       <div className="contact-hero">
         <div className="container">
           <h1 className="contact-title" data-aos="fade-down">{contactContent.hero?.title || "יצירת קשר"}</h1>

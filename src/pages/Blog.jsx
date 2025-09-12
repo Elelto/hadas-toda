@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import blogPosts from '../data/blogPosts';
 import AOS from 'aos';
+import SEOHead from '../components/SEOHead';
 import '../styles/blog.css';
 
 export default function Blog() {
@@ -39,8 +40,45 @@ export default function Blog() {
     }
   }, [filter]);
 
+  // SEO structured data for blog page
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "הבלוג המקצועי - הדס תודה",
+    "description": "מאמרים מקצועיים, טיפים וחידושים בתחום קלינאות התקשורת, גמגום, צרידות ובעיות קול",
+    "url": "https://www.hadas-toda.co.il/blog",
+    "author": {
+      "@type": "Person",
+      "name": "הדס תודה",
+      "jobTitle": "קלינאית תקשורת"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "הדס תודה - קלינאית תקשורת",
+      "url": "https://www.hadas-toda.co.il"
+    },
+    "blogPost": blogPosts.slice(0, 5).map(post => ({
+      "@type": "BlogPosting",
+      "headline": post.title,
+      "description": post.excerpt,
+      "url": `https://www.hadas-toda.co.il/blog/${post.slug}`,
+      "datePublished": post.date,
+      "author": {
+        "@type": "Person",
+        "name": "הדס תודה"
+      }
+    }))
+  };
+
   return (
     <div className="blog-page">
+      <SEOHead
+        title="בלוג"
+        description="הבלוג המקצועי של הדס תודה - מאמרים, טיפים וחידושים בתחום קלינאות התקשורת, גמגום, צרידות ובעיות קול לילדים ומבוגרים."
+        keywords="בלוג קלינאות תקשורת, מאמרים מקצועיים, טיפים גמגום, צרידות, בעיות קול, הדס תודה"
+        canonicalUrl="/blog"
+        structuredData={structuredData}
+      />
       <section className="blog-hero">
         <div className="container">
           <h1 className="page-title" data-aos="fade-down">הבלוג המקצועי</h1>

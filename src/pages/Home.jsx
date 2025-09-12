@@ -4,6 +4,7 @@ import { loadYamlContent } from '../utils/yamlLoader';
 import AOS from 'aos';
 import '../styles/home.css';
 import SoundWaves from '../components/SoundWaves';
+import SEOHead from '../components/SEOHead';
 import blogPosts from '../data/blogPosts';
 
 // Fallback content function
@@ -127,8 +128,62 @@ export default function Home() {
     return <div className="loading">טוען תוכן...</div>;
   }
 
+  // SEO structured data for home page
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "MedicalBusiness",
+    "name": "הדס תודה - קלינאית תקשורת",
+    "description": "קלינאית תקשורת מוסמכת המתמחה בטיפול בגמגום, שפה, דיבור וקול לילדים ומבוגרים",
+    "url": "https://www.hadas-toda.co.il",
+    "telephone": "+972-50-123-4567",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "IL",
+      "addressLocality": "ישראל"
+    },
+    "medicalSpecialty": "Speech-Language Pathology",
+    "serviceArea": {
+      "@type": "Place",
+      "name": "ישראל"
+    },
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "שירותי קלינאות תקשורת",
+      "itemListElement": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "MedicalTherapy",
+            "name": "טיפול בגמגום"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "MedicalTherapy",
+            "name": "טיפול בצרידות ובעיות קול"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "MedicalTherapy",
+            "name": "טיפול בעיכוב שפתי"
+          }
+        }
+      ]
+    }
+  };
+
   return (
     <div className="home-page">
+      <SEOHead
+        title="דף הבית"
+        description="הדס תודה - קלינאית תקשורת מוסמכת המתמחה בטיפול בגמגום, צרידות, בעיות קול ועיכוב שפתי לילדים ומבוגרים. טיפול מקצועי ואישי."
+        keywords="קלינאית תקשורת, גמגום, צרידות, בעיות קול, עיכוב שפתי, טיפול בדיבור, הדס תודה, ישראל"
+        canonicalUrl="/"
+        structuredData={structuredData}
+      />
       {/* Hero Section */}
       <section className="home-hero">
         <SoundWaves 

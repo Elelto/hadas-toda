@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { loadYamlContent } from '../utils/yamlLoader';
 import AOS from 'aos';
+import SEOHead from '../components/SEOHead';
 import '../styles/services.css';
 
 // Default content fallback
@@ -83,8 +84,62 @@ export default function Services() {
     return <div className="error">שגיאה בטעינת התוכן</div>;
   }
 
+  // SEO structured data for services page
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "MedicalBusiness",
+    "name": "הדס תודה - שירותי קלינאות תקשורת",
+    "description": "שירותי קלינאות תקשורת מקצועיים: טיפול בגמגום, צרידות, בעיות קול, עיכוב שפתי ושיבושי היגוי",
+    "url": "https://www.hadas-toda.co.il/services",
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "שירותי טיפול בתקשורת",
+      "itemListElement": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "MedicalTherapy",
+            "name": "טיפול בגמגום",
+            "description": "טיפול מקצועי בגמגום לילדים ומבוגרים"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "MedicalTherapy",
+            "name": "טיפול בצרידות ובעיות קול",
+            "description": "שיקום קולי וטיפול בצרידות כרונית"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "MedicalTherapy",
+            "name": "טיפול בעיכוב שפתי",
+            "description": "אבחון וטיפול בעיכוב שפתי אצל ילדים"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "MedicalTherapy",
+            "name": "טיפול בשיבושי היגוי",
+            "description": "שיפור הגייה נכונה וטיפול בשיבושי היגוי"
+          }
+        }
+      ]
+    }
+  };
+
   return (
     <div className="services-page">
+      <SEOHead
+        title="שירותים"
+        description="שירותי קלינאות תקשורת מקצועיים של הדס תודה: טיפול בגמגום, צרידות, בעיות קול, עיכוב שפתי ושיבושי היגוי לילדים ומבוגרים."
+        keywords="טיפול בגמגום, צרידות, בעיות קול, עיכוב שפתי, שיבושי היגוי, קלינאית תקשורת, שירותי טיפול"
+        canonicalUrl="/services"
+        structuredData={structuredData}
+      />
       <div className="container">
         <section className="services-section">
           <div className="services-header">

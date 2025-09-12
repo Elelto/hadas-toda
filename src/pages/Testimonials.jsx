@@ -1,6 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { loadYamlContent } from '../utils/yamlLoader';
 import AOS from 'aos';
+import SEOHead from '../components/SEOHead';
 import '../styles/testimonials.css';
 
 const testimonials = [
@@ -49,8 +51,48 @@ export default function Testimonials() {
     }, 100);
     return () => clearTimeout(timer);
   }, []);
+  // SEO structured data for testimonials page
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "המלצות - הדס תודה",
+    "description": "המלצות ממטופלים על הטיפול בקלינאות התקשורת של הדס תודה - סיפורי הצלחה בטיפול בגמגום, צרידות ובעיות קול",
+    "url": "https://www.hadas-toda.co.il/testimonials",
+    "mainEntity": {
+      "@type": "MedicalBusiness",
+      "name": "הדס תודה - קלינאית תקשורת",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "5",
+        "reviewCount": testimonials.length,
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "review": testimonials.map((testimonial, index) => ({
+        "@type": "Review",
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": "5",
+          "bestRating": "5"
+        },
+        "author": {
+          "@type": "Person",
+          "name": testimonial.name
+        },
+        "reviewBody": testimonial.text
+      }))
+    }
+  };
+
   return (
     <div className="testimonials-page">
+      <SEOHead
+        title="המלצות"
+        description="המלצות ממטופלים על הטיפול בקלינאות התקשורת של הדס תודה. סיפורי הצלחה בטיפול בגמגום, צרידות, בעיות קול ועיכוב שפתי."
+        keywords="המלצות, ביקורות, סיפורי הצלחה, טיפול בגמגום, צרידות, הדס תודה, קלינאית תקשורת"
+        canonicalUrl="/testimonials"
+        structuredData={structuredData}
+      />
       <div className="container">
         <section className="testimonials-section">
           <div className="testimonials-header">

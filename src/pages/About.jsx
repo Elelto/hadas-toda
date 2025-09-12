@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { loadYamlContent } from '../utils/yamlLoader';
 import AOS from 'aos';
+import SEOHead from '../components/SEOHead';
 import '../styles/about.css';
 
 // Default content fallback
@@ -112,8 +113,45 @@ export default function About() {
     return <div className="error">שגיאה בטעינת התוכן</div>;
   }
 
+  // SEO structured data for about page
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "הדס תודה",
+    "jobTitle": "קלינאית תקשורת",
+    "description": "קלינאית תקשורת מוסמכת (M.A) עם התמחות בטיפול בקול, צרידות, שפה ודיבור לילדים ומבוגרים",
+    "url": "https://www.hadas-toda.co.il/about",
+    "worksFor": {
+      "@type": "MedicalBusiness",
+      "name": "הדס תודה - קלינאית תקשורת"
+    },
+    "hasCredential": [
+      {
+        "@type": "EducationalOccupationalCredential",
+        "credentialCategory": "degree",
+        "educationalLevel": "Master's Degree",
+        "about": "קלינאות תקשורת"
+      }
+    ],
+    "knowsAbout": [
+      "טיפול בגמגום",
+      "טיפול בצרידות",
+      "בעיות קול",
+      "עיכוב שפתי",
+      "שיבושי היגוי",
+      "קלינאות תקשורת"
+    ]
+  };
+
   return (
     <div className="about-page">
+      <SEOHead
+        title="אודות"
+        description="הדס תודה - קלינאית תקשורת מוסמכת (M.A) עם התמחות בטיפול בקול, צרידות, שפה ודיבור. ניסיון רב בעבודה עם ילדים ומבוגרים."
+        keywords="הדס תודה, קלינאית תקשורת, M.A, ניסיון מקצועי, טיפול בקול, צרידות, אודות"
+        canonicalUrl="/about"
+        structuredData={structuredData}
+      />
       <section className="about-hero">
         <div className="container">
           <h1 className="about-title" data-aos="fade-down">{aboutContent.hero?.title || "נעים להכיר, הדס תודה"}</h1>
