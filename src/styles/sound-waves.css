@@ -2,10 +2,10 @@
 
 /* CSS Custom Properties for Dynamic Control */
 .sound-waves {
-  --wave-color-start: #00bcd4;
-  --wave-color-mid: #26c6da;
-  --wave-color-end: #4dd0e1;
-  --wave-stroke-color: #00acc1;
+  --wave-color-start: rgba(233, 230, 236, 0.8);
+  --wave-color-mid: rgba(203, 185, 214, 0.7);
+  --wave-color-end: rgba(185, 123, 160, 0.6);
+  --wave-stroke-color: rgba(203, 185, 214, 0.7);
   --scroll-velocity: 0;
   --scroll-intensity: 1;
   --animation-speed: 3s;
@@ -14,24 +14,24 @@
 
 /* Color Variants */
 .sound-waves--primary {
-  --wave-color-start: #00bcd4;
-  --wave-color-mid: #26c6da;
-  --wave-color-end: #4dd0e1;
-  --wave-stroke-color: #00acc1;
+  --wave-color-start: rgba(233, 230, 236, 0.8);
+  --wave-color-mid: rgba(203, 185, 214, 0.7);
+  --wave-color-end: rgba(185, 123, 160, 0.6);
+  --wave-stroke-color: rgba(203, 185, 214, 0.7);
 }
 
 .sound-waves--secondary {
-  --wave-color-start: #0097a7;
-  --wave-color-mid: #00acc1;
-  --wave-color-end: #00bcd4;
-  --wave-stroke-color: #006064;
+  --wave-color-start: rgba(248, 249, 250, 0.7);
+  --wave-color-mid: rgba(233, 236, 239, 0.6);
+  --wave-color-end: rgba(203, 185, 214, 0.5);
+  --wave-stroke-color: rgba(233, 236, 239, 0.6);
 }
 
 .sound-waves--accent {
-  --wave-color-start: #4dd0e1;
-  --wave-color-mid: #80deea;
-  --wave-color-end: #b2ebf2;
-  --wave-stroke-color: #26c6da;
+  --wave-color-start: rgba(203, 185, 214, 0.7);
+  --wave-color-mid: rgba(185, 123, 160, 0.6);
+  --wave-color-end: rgba(233, 230, 236, 0.5);
+  --wave-stroke-color: rgba(185, 123, 160, 0.6);
 }
 
 /* Base Sound Waves Styling */
@@ -59,6 +59,7 @@
   z-index: 0;
   pointer-events: none;
   min-height: 300px;
+  opacity: 0.15;
 }
 
 /* Separator Waves */
@@ -67,6 +68,8 @@
   height: 60px;
   margin: 2rem 0;
   display: block;
+  position: relative;
+  z-index: 2;
 }
 
 /* Connector Waves */
@@ -75,6 +78,12 @@
   height: 100px;
   margin: 1rem auto;
   display: block;
+  position: absolute;
+  width: 100px;
+  height: 300px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
 }
 
 /* Wave Layer Animations */
@@ -421,6 +430,7 @@
 @media (max-width: 768px) {
   .sound-waves--background {
     height: 200px;
+    opacity: 0.1;
   }
   
   .sound-waves--separator {
@@ -429,8 +439,8 @@
   }
   
   .sound-waves--connector {
-    width: 150px;
-    height: 80px;
+    width: 60px;
+    height: 200px;
   }
   
   /* Reduce animation intensity on mobile for performance */
@@ -449,8 +459,8 @@
   }
   
   .sound-waves--connector {
-    width: 120px;
-    height: 60px;
+    width: 40px;
+    height: 150px;
   }
 }
 
