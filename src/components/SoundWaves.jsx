@@ -106,9 +106,9 @@ const SoundWaves = ({
       >
         <defs>
           <linearGradient id={`waveGradient-${Date.now()}`} x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#00bcd4" stopOpacity="0.8" />
-            <stop offset="50%" stopColor="#26c6da" stopOpacity="0.4" />
-            <stop offset="100%" stopColor="#4dd0e1" stopOpacity="0.1" />
+            <stop offset="0%" stopColor="var(--wave-color-start)" stopOpacity="0.8" />
+            <stop offset="50%" stopColor="var(--wave-color-mid)" stopOpacity="0.4" />
+            <stop offset="100%" stopColor="var(--wave-color-end)" stopOpacity="0.1" />
           </linearGradient>
         </defs>
         
@@ -123,7 +123,7 @@ const SoundWaves = ({
         <path
           d={generateWavePath(1200, 400, 20, 3, 0.5, scrollOffset * 0.8)}
           fill="none"
-          stroke="#00bcd4"
+          stroke="var(--wave-stroke-color)"
           strokeWidth="2"
           strokeOpacity="0.7"
           className="wave-layer wave-layer--2"
@@ -131,7 +131,7 @@ const SoundWaves = ({
         <path
           d={generateWavePath(1200, 400, 15, 4, 1, scrollOffset * 0.6)}
           fill="none"
-          stroke="#26c6da"
+          stroke="var(--wave-color-mid)"
           strokeWidth="1.5"
           strokeOpacity="0.5"
           className="wave-layer wave-layer--3"
@@ -157,14 +157,14 @@ const SoundWaves = ({
         <path
           d={generateSeparatorPath(1200, 100, 25, 3)}
           fill="none"
-          stroke="#00bcd4"
+          stroke="var(--wave-stroke-color)"
           strokeWidth="3"
           className="separator-wave separator-wave--1"
         />
         <path
           d={generateSeparatorPath(1200, 100, 15, 4, 0.3)}
           fill="none"
-          stroke="#26c6da"
+          stroke="var(--wave-color-mid)"
           strokeWidth="2"
           className="separator-wave separator-wave--2"
         />
