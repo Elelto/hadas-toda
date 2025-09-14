@@ -4,6 +4,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
+import SiteNotice from './components/SiteNotice';
 import Home from './pages/Home';
 import About from './pages/About';
 import Services from './pages/Services';
@@ -58,6 +59,7 @@ function App() {
     <HelmetProvider>
       <Router>
         <ScrollToTop />
+        <SiteNotice />
         <div className="app-container">
           <Header />
           <main>
