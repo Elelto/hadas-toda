@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { loadYamlContent } from '../utils/yamlLoader';
 import AOS from 'aos';
 import SEOHead from '../components/SEOHead';
+import StructuredData from '../components/StructuredData';
 import '../styles/services.css';
 
 // Default content fallback
@@ -132,46 +133,49 @@ export default function Services() {
   };
 
   return (
-    <div className="services-page">
-      <SEOHead
-        title="שירותים"
-        description="שירותי קלינאות תקשורת מקצועיים של הדס תודה: טיפול בגמגום, צרידות, בעיות קול, עיכוב שפתי ושיבושי היגוי לילדים ומבוגרים."
-        keywords="טיפול בגמגום, צרידות, בעיות קול, עיכוב שפתי, שיבושי היגוי, קלינאית תקשורת, שירותי טיפול"
-        canonicalUrl="/services"
-        structuredData={structuredData}
-      />
-      <div className="container">
-        <section className="services-section">
-          <div className="services-header">
-            <h1 className="services-title" data-aos="fade-down">{servicesContent.hero?.title || "תחומי טיפול"}</h1>
-            <p className="services-subtitle" data-aos="fade-up" data-aos-delay="200">{servicesContent.hero?.subtitle || "מגוון שירותים מקצועיים בתחום קלינאות התקשורת"}</p>
-          </div>
-          
-          <div className="services-grid">
-            {servicesContent.services?.map((service, index) => (
-              <div key={index} className="service-card" data-aos="fade-up" data-aos-delay={400 + (index * 100)}>
-                <h3 className="service-title">{service.title}</h3>
-                <p className="service-description">{service.desc || service.description}</p>
-              </div>
-            ))}
-          </div>
-          
-          <div className="services-info">
-            <h2 className="info-title" data-aos="fade-up">{servicesContent.process?.title || "איך מתנהל הטיפול?"}</h2>
-            <div className="info-steps">
-              {servicesContent.process?.steps?.map((step, index) => (
-                <div key={index} className="info-step" data-aos={index % 2 === 0 ? "fade-right" : "fade-left"} data-aos-delay={200 + (index * 200)}>
-                  <div className="step-number">{step.number}</div>
-                  <div className="step-content">
-                    <h3>{step.title}</h3>
-                    <p>{step.description}</p>
-                  </div>
+    <>
+      <StructuredData type="services" />
+      <div className="services-page">
+        <SEOHead
+          title="שירותים"
+          description="שירותי קלינאות תקשורת מקצועיים של הדס תודה: טיפול בגמגום, צרידות, בעיות קול, עיכוב שפתי ושיבושי היגוי לילדים ומבוגרים."
+          keywords="טיפול בגמגום, צרידות, בעיות קול, עיכוב שפתי, שיבושי היגוי, קלינאית תקשורת, שירותי טיפול"
+          canonicalUrl="/services"
+          structuredData={structuredData}
+        />
+        <div className="container">
+          <section className="services-section">
+            <div className="services-header">
+              <h1 className="services-title" data-aos="fade-down">{servicesContent.hero?.title || "תחומי טיפול"}</h1>
+              <p className="services-subtitle" data-aos="fade-up" data-aos-delay="200">{servicesContent.hero?.subtitle || "מגוון שירותים מקצועיים בתחום קלינאות התקשורת"}</p>
+            </div>
+            
+            <div className="services-grid">
+              {servicesContent.services?.map((service, index) => (
+                <div key={index} className="service-card" data-aos="fade-up" data-aos-delay={400 + (index * 100)}>
+                  <h3 className="service-title">{service.title}</h3>
+                  <p className="service-description">{service.desc || service.description}</p>
                 </div>
               ))}
             </div>
-          </div>
-        </section>
+            
+            <div className="services-info">
+              <h2 className="info-title" data-aos="fade-up">{servicesContent.process?.title || "איך מתנהל הטיפול?"}</h2>
+              <div className="info-steps">
+                {servicesContent.process?.steps?.map((step, index) => (
+                  <div key={index} className="info-step" data-aos={index % 2 === 0 ? "fade-right" : "fade-left"} data-aos-delay={200 + (index * 200)}>
+                    <div className="step-number">{step.number}</div>
+                    <div className="step-content">
+                      <h3>{step.title}</h3>
+                      <p>{step.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
