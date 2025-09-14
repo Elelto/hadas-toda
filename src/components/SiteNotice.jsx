@@ -6,17 +6,12 @@ const SiteNotice = () => {
   const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
-    // Check if user has already dismissed the notice
-    const hasSeenNotice = localStorage.getItem('siteNoticeShown');
+    // Show notice after a short delay on every page load
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 1000);
     
-    if (!hasSeenNotice) {
-      // Show notice after a short delay
-      const timer = setTimeout(() => {
-        setIsVisible(true);
-      }, 1000);
-      
-      return () => clearTimeout(timer);
-    }
+    return () => clearTimeout(timer);
   }, []);
 
   const handleClose = () => {
@@ -25,7 +20,6 @@ const SiteNotice = () => {
     // Hide after animation completes
     setTimeout(() => {
       setIsVisible(false);
-      localStorage.setItem('siteNoticeShown', 'true');
     }, 300);
   };
 
