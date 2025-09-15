@@ -240,6 +240,132 @@
   transform: scale(1.3);
 }
 
+/* Courses Section */
+.about-courses {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  padding: 2.5rem;
+  height: fit-content;
+  position: relative;
+  overflow: hidden;
+  margin-top: 2rem;
+}
+
+.about-courses:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--gradient-secondary);
+}
+
+.about-courses h2 {
+  margin-bottom: 2rem;
+  font-size: 1.6rem;
+  color: var(--secondary-dark);
+  position: relative;
+  display: inline-block;
+}
+
+.about-courses h2:after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 40px;
+  height: 3px;
+  background-color: var(--secondary);
+  border-radius: 2px;
+}
+
+.courses-list {
+  list-style: none;
+  padding: 0;
+}
+
+.course-item {
+  padding: 1.2rem 0;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  padding-right: 2rem;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.course-item:last-child {
+  border-bottom: none;
+}
+
+.course-item:before {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 1.5rem;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--secondary);
+  transition: var(--transition);
+}
+
+.course-item:hover {
+  transform: translateX(-8px);
+  background-color: rgba(233, 196, 106, 0.05);
+  border-radius: 4px;
+  padding-right: 2.5rem;
+  padding-left: 1rem;
+}
+
+.course-item:hover:before {
+  background-color: var(--secondary-dark);
+  transform: scale(1.3);
+}
+
+.course-name {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--dark);
+  line-height: 1.5;
+}
+
+.course-instructor {
+  font-size: 0.95rem;
+  color: var(--secondary-dark);
+  font-weight: 400;
+  font-style: italic;
+}
+
+.course-instructor:before {
+  content: "מרצה: ";
+  font-weight: 500;
+  font-style: normal;
+}
+
+/* Mobile adjustments for courses */
+@media (max-width: 768px) {
+  .about-courses {
+    margin-top: 1.5rem;
+    padding: 2rem;
+  }
+  
+  .course-item {
+    padding: 1rem 0;
+  }
+  
+  .course-name {
+    font-size: 1rem;
+  }
+  
+  .course-instructor {
+    font-size: 0.9rem;
+  }
+}
+
 /* Quote Section */
 .about-quote {
   background-color: white;

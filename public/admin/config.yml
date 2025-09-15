@@ -126,6 +126,13 @@ collections:
             widget: "list"
             fields:
               - { label: "הכשרה", name: "item", widget: "string" }
+          - { label: "כותרת השתלמויות", name: "courses_title", widget: "string" }
+          - label: "רשימת השתלמויות"
+            name: "courses"
+            widget: "list"
+            fields:
+              - { label: "שם ההשתלמות", name: "name", widget: "string" }
+              - { label: "מרצה", name: "instructor", widget: "string" }
           - { label: "ציטוט", name: "quote", widget: "text" }
 
       - name: "services"

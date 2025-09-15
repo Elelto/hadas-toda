@@ -32,6 +32,16 @@ const getDefaultAboutContent = () => ({
       "הכשרות מתקדמות ועדכניות בטיפול קולי (Vocal Therapy), שיקום קול וטכניקות טיפול חדשניות."
     ]
   },
+  courses: [
+    {
+      name: "קורס בטיפול בגמגום",
+      instructor: "ד\"ר יוסי כהן"
+    },
+    {
+      name: "קורס בטיפול בצרידות",
+      instructor: "ד\"ר מיכל לוי"
+    }
+  ],
   quote: {
     text: "הקול שלנו הוא הגשר בין עולמנו הפנימי לעולם החיצון. אני כאן כדי לעזור לכם לבנות גשר חזק, יציב וצלול.",
     author: "הדס תודה"
@@ -75,6 +85,7 @@ export default function About() {
                 return [];
               })()
             },
+            courses: content.courses || [],
             quote: {
               text: content.quote?.text || content.quote || "הקול שלנו הוא הגשר בין עולמנו הפנימי לעולם החיצון. אני כאן כדי לעזור לכם לבנות גשר חזק, יציב וצלול.",
               author: content.quote?.author || "הדס תודה"
@@ -178,13 +189,29 @@ export default function About() {
               ))}
             </ul>
           </div>
+          
+          {aboutContent.courses && aboutContent.courses.length > 0 && (
+            <div className="about-courses" data-aos="fade-up" data-aos-delay="600">
+              <h2 data-aos="fade-left" data-aos-delay="800">{aboutContent.courses_title || "השתלמויות מקצועיות"}</h2>
+              <ul className="courses-list" data-aos="fade-up" data-aos-delay="1000">
+                {aboutContent.courses.map((course, index) => (
+                  <li key={index} className="course-item">
+                    <span className="course-name">{course.name}</span>
+                    {course.instructor && (
+                      <span className="course-instructor">{course.instructor}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </section>
       
       <section className="about-quote">
         <div className="container">
           <div className="quote">
-            "{aboutContent.quote?.text || "הקול שלנו הוא הגשר בין עולמנו הפנימי לעולם החיצון. אני כאן כדי לעזור לכם לבנות גשר חזק, יציב וצלול."}"
+            "{aboutContent.quote?.text || "הקול שלנו הוא הגשר בין עולמנו הפנימי לעולם החיצוני. אני כאן כדי לעזור לכם לבנות גשר חזק, יציב וצלול."}"
             <div className="quote-author">- {aboutContent.quote?.author || "הדס תודה"}</div>
           </div>
         </div>
