@@ -5,7 +5,7 @@
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "dev": "vite",
+    "dev": "node scripts/sync-content.js && vite",
     "update-blog": "node scripts/update-blog-data.js",
     "prebuild": "npm run update-blog",
     "build": "node scripts/sync-content.js && vite build",

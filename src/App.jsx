@@ -14,6 +14,7 @@ import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import Admin from './pages/Admin';
 import AIAssessmentPage from './pages/AIAssessment';
+import BneiBrak from './pages/BneiBrak';
 import './styles/global.css';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -67,14 +68,16 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
               <Route path="/services" element={<Services />} />
-              <Route path="/testimonials" element={<Testimonials />} />
-              <Route path="/contact" element={<Contact />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
+              <Route path="/testimonials" element={<Testimonials />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/bnei-brak" element={<BneiBrak />} />
               <Route path="/ai-assessment" element={<AIAssessmentPage />} />
               <Route path="/dashboard" element={<Admin />} />
               {/* Redirect /admin/ to the Netlify CMS admin interface */}
               <Route path="/admin/*" element={<Navigate to="/admin/index.html" replace />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </main>
           <Footer />

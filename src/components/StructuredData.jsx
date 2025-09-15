@@ -11,7 +11,7 @@ const StructuredData = ({ type = 'organization', pageData = {} }) => {
     "@id": `${baseUrl}/#organization`,
     "name": "הדס תודה - קלינאית תקשורת",
     "alternateName": "Hadas Toda Speech Therapist",
-    "description": "קלינאית תקשורת מוסמכת המתמחה בטיפול בגמגום, צרידות, בעיות קול ועיכוב שפתי לילדים ומבוגרים",
+    "description": "קלינאית תקשורת מוסמכת בבני ברק המתמחה בטיפול בגמגום, צרידות, בעיות קול ועיכוב שפתי לילדים ומבוגרים",
     "url": baseUrl,
     "logo": `${baseUrl}/images/logo.png`,
     "image": `${baseUrl}/images/logo.png`,
@@ -20,19 +20,38 @@ const StructuredData = ({ type = 'organization', pageData = {} }) => {
     "address": {
       "@type": "PostalAddress",
       "addressCountry": "IL",
-      "addressRegion": "מרכז",
+      "addressRegion": "מחוז המרכז",
       "addressLocality": "בני ברק",
-      "streetAddress": "ישראל"
+      "postalCode": "5120000",
+      "streetAddress": "בני ברק, ישראל"
     },
     "geo": {
       "@type": "GeoCoordinates",
       "latitude": "32.0851",
       "longitude": "34.8255"
     },
-    "areaServed": {
-      "@type": "Country",
-      "name": "ישראל"
-    },
+    "areaServed": [
+      {
+        "@type": "City",
+        "name": "בני ברק"
+      },
+      {
+        "@type": "City", 
+        "name": "רמת גן"
+      },
+      {
+        "@type": "City",
+        "name": "גבעתיים"
+      },
+      {
+        "@type": "City",
+        "name": "תל אביב"
+      },
+      {
+        "@type": "AdministrativeArea",
+        "name": "מחוז המרכז"
+      }
+    ],
     "serviceType": [
       "טיפול בגמגום",
       "טיפול בצרידות", 

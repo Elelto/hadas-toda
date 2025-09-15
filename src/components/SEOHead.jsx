@@ -49,8 +49,13 @@ const SEOHead = ({
         {/* Additional SEO */}
         <meta name="author" content="הדס תודה" />
         <meta name="language" content="Hebrew" />
-        <meta name="geo.region" content="IL" />
-        <meta name="geo.placename" content="Israel" />
+        <meta name="geo.region" content="IL-M" />
+        <meta name="geo.placename" content="בני ברק, ישראל" />
+        <meta name="geo.position" content="32.0851;34.8255" />
+        <meta name="ICBM" content="32.0851, 34.8255" />
+        <meta name="business:contact_data:locality" content="בני ברק" />
+        <meta name="business:contact_data:region" content="מחוז המרכז" />
+        <meta name="business:contact_data:country_name" content="ישראל" />
         
         {/* Performance & SEO */}
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />

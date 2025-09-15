@@ -5,6 +5,8 @@ menu_items:
     path: "/about"
   - name: "שירותים"
     path: "/services"
+  - name: "בני ברק"
+    path: "/bnei-brak"
   - name: "המלצות"
     path: "/testimonials"
   - name: "בלוג"
