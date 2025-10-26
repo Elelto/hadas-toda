@@ -17,6 +17,9 @@ export default defineConfig({
   ],
   base: "/",
   server: {
+    port: 5173,
+    strictPort: false,
+    host: '127.0.0.1',
     fs: {
       // אפשר גישה לקבצים מחוץ לתיקיית המקור
       allow: ['..'],

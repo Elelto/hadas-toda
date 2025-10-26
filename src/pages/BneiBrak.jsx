@@ -1,49 +1,46 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import SEOHead from '../components/SEOHead';
 import StructuredData from '../components/StructuredData';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import SoundWaves from '../components/SoundWaves';
+import AOS from 'aos';
 import '../styles/bnei-brak.css';
 
 const BneiBrak = () => {
+  const [activeAccordion, setActiveAccordion] = useState(null);
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    AOS.init({ duration: 1000, once: true });
   }, []);
 
   const seoData = {
-    title: "קלינאית תקשורת בבני ברק",
-    description: "הדס תודה – קלינאית תקשורת בבני ברק. טיפול בגמגום, צרידות, בעיות קול ועיכוב שפתי לילדים ולמבוגרים. ליצירת קשר: 050-679-6209",
-    keywords: "קלינאית תקשורת בני ברק, טיפול בגמגום בני ברק, צרידות בני ברק, בעיות קול בני ברק, עיכוב שפתי בני ברק, הדס תודה",
+    title: "קלינאית תקשורת בבני ברק | הדס תודה M.A",
+    description: "קלינאית תקשורת מוסמכת בבני ברק. טיפול מקצועי בגמגום, צרידות, בעיות קול ועיכוב שפתי לילדים ומבוגרים. קליניקה בשיכון ג'. ☎ 050-679-6209",
+    keywords: "קלינאית תקשורת בני ברק, טיפול בגמגום בני ברק, צרידות בני ברק, בעיות קול בני ברק, עיכוב שפתי בני ברק, הדס תודה, שיכון ג בני ברק",
     canonicalUrl: "/bnei-brak"
   };
 
-  const localServices = [
+  const services = [
     {
       title: "טיפול בגמגום",
-      description: "עבודה רגישה ומדורגת על שטף הדיבור, עם תרגול מעשי בבית ובקליניקה.",
-      icon: "🗣️"
+      description: "גישה מקצועית ורגישה לשיפור שטף הדיבור. תוכנית טיפול מותאמת אישית המשלבת טכניקות מוכחות ותרגול מעשי."
     },
     {
-      title: "טיפול בצרידות", 
-      description: "הקלה על מאמץ וצרידות, עם תרגילי קול שמתאימים לשגרה.",
-      icon: "👄"
+      title: "טיפול בצרידות ובעיות קול", 
+      description: "אבחון וטיפול מקיף בהפרעות קול. התמחות בשיקום קולי למורים, מרצים וחזנים."
     },
     {
-      title: "שיקום קול",
-      description: "ליווי למורים, חזנים ומרצים – חיזוק הקול ושמירה עליו לאורך זמן.",
-      icon: "🎵"
-    },
-    {
-      title: "עיכוב שפתי",
-      description: "פיתוח שפה דרך משחק ותקשורת יומיומית, יחד אתכם ההורים.",
-      icon: "👶"
+      title: "עיכוב שפתי והיגוי",
+      description: "ליווי התפתחותי לילדים בתחומי השפה והדיבור. גישה משחקית ומעצימה המשלבת את ההורים בתהליך."
     }
   ];
 
-  const nearbyAreas = [
-    "רמת גן", "גבעתיים", "תל אביב", "פתח תקווה", "רמת השרון"
-  ];
+  const clinicInfo = {
+    location: "שיכון ג', בני ברק",
+    phone: "050-679-6209",
+    email: "hadas.toda.info@gmail.com",
+    areas: ["בני ברק", "רמת גן", "גבעתיים", "תל אביב", "פתח תקווה"]
+  };
 
   return (
     <>
@@ -51,164 +48,155 @@ const BneiBrak = () => {
       <StructuredData type="services" />
       
       <div className="bnei-brak-page">
-        <Header />
-        
         {/* Hero Section */}
-        <section className="bnei-brak-hero">
-          <SoundWaves variant="background" intensity="medium" color="primary" />
+        <section className="hero-modern">
           <div className="container">
-            <div className="hero-content">
+            <div className="hero-content" data-aos="fade-up">
+              <div className="hero-badge">קלינאית תקשורת מוסמכת</div>
               <h1 className="hero-title">
-                קלינאית תקשורת בבני ברק
-                <span className="location-highlight">הדס תודה</span>
+                קליניקה לתקשורת בבני ברק
               </h1>
               <p className="hero-subtitle">
-                שלום, אני הדס. מטפלת בילדים ובמבוגרים – גמגום, צרידות, בעיות קול ועיכוב שפתי.
+                הדס תודה, M.A - קלינאית תקשורת מומחית
               </p>
-              <div className="hero-features">
-                <div className="feature">
-                  <span className="feature-icon">📍</span>
-                  <span>ממוקמת בבני ברק</span>
-                </div>
-                <div className="feature">
-                  <span className="feature-icon">🎓</span>
-                  <span>קלינאית מוסמכת M.A</span>
-                </div>
-                <div className="feature">
-                  <span className="feature-icon">👨‍👩‍👧‍👦</span>
-                  <span>ילדים ומבוגרים</span>
-                </div>
-              </div>
-              <div className="hero-cta">
-                <a href="tel:+972506796209" className="btn-primary">
-                  בואו נדבר: 050-679-6209
+              <p className="hero-description">
+                טיפול מקצועי בגמגום, צרידות, בעיות קול ועיכוב שפתי לילדים ומבוגרים
+              </p>
+              <div className="hero-actions">
+                <a href="tel:+972506796209" className="btn-hero btn-primary">
+                  📞 050-679-6209
                 </a>
-                <a href="/contact" className="btn-secondary">
-                  השאירו פרטים
+                <a href="#contact" className="btn-hero btn-secondary">
+                  קביעת פגישה
                 </a>
               </div>
             </div>
           </div>
         </section>
 
-        <SoundWaves variant="separator" intensity="low" color="secondary" />
-
-        {/* Local Services */}
-        <section className="local-services">
+        {/* Services Section */}
+        <section className="services-section">
           <div className="container">
-            <h2 className="section-title">תחומי טיפול</h2>
-            <p className="section-subtitle">
-              תחומים נפוצים שאני פוגשת בקליניקה
-            </p>
+            <div className="section-header">
+              <h2 className="section-title">תחומי טיפול</h2>
+              <p className="section-description">
+                טיפולים מקצועיים המבוססים על מחקר עדכני וניסיון קליני
+              </p>
+            </div>
             
-            <div className="services-grid">
-              {localServices.map((service, index) => (
-                <div key={index} className="service-card">
-                  <div className="service-icon">{service.icon}</div>
+            <div className="services-list">
+              {services.map((service, index) => (
+                <div key={index} className="service-item" data-aos="fade-up" data-aos-delay={index * 100}>
                   <h3 className="service-title">{service.title}</h3>
                   <p className="service-description">{service.description}</p>
                 </div>
               ))}
             </div>
-          </div>
-        </section>
-
-        <SoundWaves variant="separator" intensity="low" color="accent" />
-
-        {/* Why Choose Local */}
-        <section className="why-local">
-          <div className="container">
-            <div className="content-grid">
-              <div className="text-content">
-                <h2>למה דווקא כאן?</h2>
-                <div className="advantages">
-                  <div className="advantage">
-                    <h3>🏠 קרוב ונוח</h3>
-                    <p>קל להגיע, גם בתחבורה ציבורית.</p>
-                  </div>
-                  <div className="advantage">
-                    <h3>🤝 יחס אישי</h3>
-                    <p>מתאימה את הדרך והקצב לכל אדם ולכל משפחה.</p>
-                  </div>
-                  <div className="advantage">
-                    <h3>⏰ זמינות וגמישות</h3>
-                    <p>תורים בשעות נוחות ותיאום מהיר.</p>
-                  </div>
-                  <div className="advantage">
-                    <h3>🎯 שיתוף פעולה</h3>
-                    <p>עובדים יחד – אתם, הילד/ה ואני.</p>
-                  </div>
-                </div>
-              </div>
-              <div className="image-content">
-                <div className="location-info">
-                  <h3>פרטי מיקום</h3>
-                  <div className="location-details">
-                    <p><strong>עיר:</strong> בני ברק</p>
-                    <p><strong>אזור:</strong> שיכון ג'</p>
-                    <p><strong>שירות:</strong> תושבי בני ברק והסביבה</p>
-                    <p><strong>טלפון:</strong> <a href="tel:+972506796209">050-679-6209</a></p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <SoundWaves variant="separator" intensity="medium" color="primary" />
-
-        {/* Coverage Area */}
-        <section className="coverage-area">
-          <div className="container">
-            <h2 className="section-title">איפה אני מקבלת</h2>
-            <p className="section-subtitle">
             
-            </p>
-            <div className="areas-grid">
-              <div className="primary-area">
-                <h3>🎯 אזור ראשי</h3>
-                <p className="area-name">בני ברק</p>
-                <p>נגיש ונוח להגיע</p>
-              </div>
-              <div className="nearby-areas">
-                <h3>📍 אזורים סמוכים</h3>
-                <div className="areas-list">
-                  {nearbyAreas.map((area, index) => (
-                    <span key={index} className="area-tag">{area}</span>
-                  ))}
-                </div>
-                <p>גם מהערים הסמוכות, בתיאום מראש.</p>
-              </div>
+            <div className="services-cta">
+              <a href="/services" className="link-arrow">
+                לפרטים נוספים על הטיפולים ←
+              </a>
             </div>
           </div>
         </section>
 
-        <SoundWaves variant="separator" intensity="low" color="secondary" />
-
-        {/* Contact CTA */}
-        <section className="local-contact">
+        {/* About Section */}
+        <section className="about-section">
           <div className="container">
-            <div className="contact-card">
-              <h2>נשמע לכם רלוונטי?</h2>
-              <p>
-                מוזמנים לדבר.
-              </p>
-              <div className="contact-options">
-                <a href="tel:+972506796209" className="contact-btn phone">
-                  <span className="btn-icon">📞</span>
-                  בואו נדבר: 050-679-6209
-                </a>
-                <a href="/contact" className="contact-btn form">
-                  <span className="btn-icon">✉️</span>
-                  השאירו פרטים
-                </a>
+            <div className="about-content">
+              <div className="about-text">
+                <h2 className="section-title">גישה מקצועית ואישית</h2>
+                <p>
+                  אני מאמינה שכל מטופל ייחודי ודורש גישה טיפולית מותאמת אישית. 
+                  בקליניקה שלי בבני ברק, אני משלבת ידע מקצועי מתקדם עם יחס חם ואמפתי, 
+                  ומלווה את המטופלים שלי בתהליך טיפולי ממוקד ויעיל.
+                </p>
+                <p>
+                  הטיפולים מבוססים על שיטות מוכחות מחקרית ומותאמים לצרכים הספציפיים 
+                  של כל מטופל – ילד או מבוגר. אני שמה דגש על שיתוף פעולה עם ההורים 
+                  והמשפחה, ועל יצירת סביבה תומכת ומעצימה.
+                </p>
               </div>
-              <p className="contact-note">חוזרת לרוב באותו יום</p>
+              <div className="about-credentials">
+                <div className="credential-item">
+                  <div className="credential-icon">🎓</div>
+                  <div>
+                    <h4>השכלה</h4>
+                    <p>תואר שני (M.A) בקלינאות תקשורת</p>
+                  </div>
+                </div>
+                <div className="credential-item">
+                  <div className="credential-icon">💼</div>
+                  <div>
+                    <h4>ניסיון</h4>
+                    <p>שנות ניסיון בטיפול בילדים ומבוגרים</p>
+                  </div>
+                </div>
+                <div className="credential-item">
+                  <div className="credential-icon">📍</div>
+                  <div>
+                    <h4>מיקום</h4>
+                    <p>שיכון ג', בני ברק</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        <Footer />
+        {/* Contact Section */}
+        <section className="contact-section">
+          <div className="container">
+            <div className="contact-grid">
+              <div className="contact-info">
+                <h2 className="section-title">פרטי התקשרות</h2>
+                <div className="info-items">
+                  <div className="info-item">
+                    <div className="info-icon">📍</div>
+                    <div>
+                      <h4>כתובת</h4>
+                      <p>{clinicInfo.location}</p>
+                    </div>
+                  </div>
+                  <div className="info-item">
+                    <div className="info-icon">�</div>
+                    <div>
+                      <h4>טלפון</h4>
+                      <a href={`tel:+972${clinicInfo.phone.replace(/[^0-9]/g, '')}`}>{clinicInfo.phone}</a>
+                    </div>
+                  </div>
+                  <div className="info-item">
+                    <div className="info-icon">✉️</div>
+                    <div>
+                      <h4>דוא"ל</h4>
+                      <a href={`mailto:${clinicInfo.email}`}>{clinicInfo.email}</a>
+                    </div>
+                  </div>
+                </div>
+                <div className="service-areas">
+                  <h4>אזורי שירות</h4>
+                  <p>מקבלת מטופלים מ{clinicInfo.areas.join(', ')} והסביבה</p>
+                </div>
+              </div>
+              <div className="contact-cta">
+                <h3>בואו נתחיל</h3>
+                <p>
+                  מוזמנים ליצור קשר לקביעת פגישת ייעוץ ראשונית. 
+                  אשמח לענות על שאלות ולספר עוד על הטיפולים.
+                </p>
+                <div className="cta-buttons">
+                  <a href="tel:+972506796209" className="btn btn-primary">
+                    התקשרו עכשיו
+                  </a>
+                  <a href="/contact" className="btn btn-secondary">
+                    השאירו הודעה
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </>
   );

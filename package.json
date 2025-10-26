@@ -22,6 +22,7 @@
     "browserify-fs": "^1.0.0",
     "buffer": "^6.0.3",
     "gray-matter": "^4.0.3",
+    "js-yaml": "^4.1.0",
     "netlify-identity-widget": "^1.9.2",
     "openai": "^5.19.1",
     "path-browserify": "^1.0.1",
