@@ -7,7 +7,6 @@ import '../styles/header.css';
 // Default navigation items
 const getDefaultNavItems = () => [
   { path: '/', label: 'ראשי' },
-  { path: '/bnei-brak', label: 'קלינאית תקשורת בני ברק' },
   { path: '/services', label: 'תחומי טיפול' },
   { path: '/ai-assessment', label: 'אבחון חכם', isNew: true },
   { path: '/about', label: 'קצת עליי' },

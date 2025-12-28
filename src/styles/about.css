@@ -84,10 +84,10 @@
 }
 
 .about-content .container {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 3rem;
-  max-width: 1200px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 0 2rem;
 }
@@ -102,7 +102,7 @@
   background-color: white;
   border-radius: 8px;
   box-shadow: var(--shadow);
-  padding: 3rem;
+  padding: 3.5rem;
   position: relative;
   overflow: hidden;
 }
@@ -164,7 +164,7 @@
   border-radius: 8px;
   box-shadow: var(--shadow);
   padding: 2.5rem;
-  height: fit-content;
+  height: auto;
   position: relative;
   overflow: hidden;
 }
@@ -246,10 +246,10 @@
   border-radius: 8px;
   box-shadow: var(--shadow);
   padding: 2.5rem;
-  height: fit-content;
+  height: auto;
   position: relative;
   overflow: hidden;
-  margin-top: 2rem;
+  margin-top: 0;
 }
 
 .about-courses:before {
