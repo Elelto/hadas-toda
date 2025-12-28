@@ -37,7 +37,8 @@ const getDefaultHomeContent = () => ({
     voice_services: [
       { name: "טיפול בצרידות ובעיות קול" },
       { name: "שיקום קולי מקצועי" },
-      { name: "ליווי קולי (מורים, מרצים)" }
+      { name: "ליווי קולי (מורים, מרצים)" },
+      { name: "טיפול בגמגום" }
     ],
     speech_services: [
       { name: "אבחון וטיפול בעיכוב שפתי" },
@@ -316,7 +317,7 @@ export default function Home() {
                 <h3 className="category-title">שירותי קול</h3>
                 <div className="treatment-areas-grid">
                   {homeContent?.services?.voice_services?.map((service, index) => {
-                    const icons = ['🗣️', '🎭', '🎤'];
+                    const icons = ['🗣️', '🎭', '🎤', '💬'];
                     return (
                       <div key={index} className="treatment-area-item">
                         <span className="treatment-icon">{icons[index] || '🗣️'}</span>
@@ -336,6 +337,10 @@ export default function Home() {
                       <div className="treatment-area-item">
                         <span className="treatment-icon">🎤</span>
                         ליווי קולי (מורים, מרצים)
+                      </div>
+                      <div className="treatment-area-item">
+                        <span className="treatment-icon">💬</span>
+                        טיפול בגמגום
                       </div>
                     </>
                   )}
