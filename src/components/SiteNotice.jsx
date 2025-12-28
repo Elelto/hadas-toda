@@ -1,18 +1,28 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import './SiteNotice.css';
 
 const SiteNotice = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
-    // Show notice after a short delay on every page load
+    // Show notice only on blog pages
+    const isBlogPage = location.pathname.startsWith('/blog');
+    
+    if (!isBlogPage) {
+      setIsVisible(false);
+      return;
+    }
+    
+    // Show notice after a short delay on blog pages
     const timer = setTimeout(() => {
       setIsVisible(true);
     }, 1000);
     
     return () => clearTimeout(timer);
-  }, []);
+  }, [location.pathname]);
 
   const handleClose = () => {
     setIsClosing(true);

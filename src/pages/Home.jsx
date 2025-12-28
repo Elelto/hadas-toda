@@ -194,7 +194,7 @@ export default function Home() {
             intensity="medium" 
             color="primary" 
             effect="subtle"
-            scrollResponsive={true}
+            scrollResponsive={false}
           />
           <div className="container">
             <div className="hero-content" data-aos="fade-up">
@@ -256,7 +256,7 @@ export default function Home() {
             intensity="low" 
             color="secondary" 
             effect="subtle"
-            scrollResponsive={true}
+            scrollResponsive={false}
           />
           <div className="container">
             <h2 className="section-title" data-aos="fade-up">{homeContent?.testimonials?.title || 'קולות מהקליניקה'}</h2>
@@ -305,7 +305,7 @@ export default function Home() {
             intensity="low" 
             color="accent" 
             effect="subtle"
-            scrollResponsive={true}
+            scrollResponsive={false}
           />
           <div className="container">
             <h2 className="section-title" data-aos="fade-up">{homeContent?.services?.title || 'תחומי המומחיות שלי'}</h2>
