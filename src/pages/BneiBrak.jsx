@@ -54,7 +54,7 @@ const BneiBrak = () => {
             <div className="hero-content" data-aos="fade-up">
               <div className="hero-badge">קלינאית תקשורת מוסמכת</div>
               <h1 className="hero-title">
-                קליניקה לתקשורת בבני ברק
+                קלינאית תקשורת בבני ברק
               </h1>
               <p className="hero-subtitle">
                 הדס תודה, M.A - קלינאית תקשורת מומחית
