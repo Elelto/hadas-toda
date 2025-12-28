@@ -170,43 +170,50 @@ export default function About() {
         </div>
       </section>
       
-      <section className="about-content">
+      {/* Bio Section - White Background */}
+      <section className="section-bio">
         <div className="container">
-          <div className="about-card" data-aos="fade-up">
-            <h2 data-aos="fade-right" data-aos-delay="200">{aboutContent.content?.title || "מסע אל הקול הפנימי והחיצוני"}</h2>
+          <h2 className="section-title" data-aos="fade-right">{aboutContent.content?.title || "מסע אל הקול הפנימי והחיצוני"}</h2>
+          <div className="bio-content">
             {aboutContent.content?.paragraphs?.map((paragraph, index) => (
-              <p key={index} className={`about-text ${index === aboutContent.content.paragraphs.length - 1 ? 'highlight' : ''}`} data-aos="fade-up" data-aos-delay={400 + (index * 200)}>
+              <p key={index} className={`about-text ${index === aboutContent.content.paragraphs.length - 1 ? 'highlight' : ''}`} data-aos="fade-up" data-aos-delay={200 + (index * 100)}>
                 {paragraph}
               </p>
             ))}
           </div>
-          
-          <div className="about-qualifications" data-aos="fade-up" data-aos-delay="400">
-            <h2 data-aos="fade-left" data-aos-delay="600">{aboutContent.qualifications?.title || "הכשרה, ניסיון והתמחויות"}</h2>
-            <ul className="qualifications-list" data-aos="fade-up" data-aos-delay="800">
-              {aboutContent.qualifications?.items?.map((item, index) => (
-                <li key={index}>{item}</li>
+        </div>
+      </section>
+      
+      {/* Qualifications Section - Light Background */}
+      <section className="section-qualifications">
+        <div className="container">
+          <h2 className="section-title" data-aos="fade-left">{aboutContent.qualifications?.title || "הכשרה, ניסיון והתמחויות"}</h2>
+          <ul className="qualifications-list" data-aos="fade-up" data-aos-delay="400">
+            {aboutContent.qualifications?.items?.map((item, index) => (
+              <li key={index}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      </section>
+      
+      {/* Courses Section - White Background */}
+      {aboutContent.courses && aboutContent.courses.length > 0 && (
+        <section className="section-courses">
+          <div className="container">
+            <h2 className="section-title" data-aos="fade-right">{aboutContent.courses_title || "השתלמויות מקצועיות"}</h2>
+            <ul className="courses-list" data-aos="fade-up" data-aos-delay="400">
+              {aboutContent.courses.map((course, index) => (
+                <li key={index} className="course-item">
+                  <span className="course-name">{course.name}</span>
+                  {course.instructor && (
+                    <span className="course-instructor">{course.instructor}</span>
+                  )}
+                </li>
               ))}
             </ul>
           </div>
-          
-          {aboutContent.courses && aboutContent.courses.length > 0 && (
-            <div className="about-courses" data-aos="fade-up" data-aos-delay="600">
-              <h2 data-aos="fade-left" data-aos-delay="800">{aboutContent.courses_title || "השתלמויות מקצועיות"}</h2>
-              <ul className="courses-list" data-aos="fade-up" data-aos-delay="1000">
-                {aboutContent.courses.map((course, index) => (
-                  <li key={index} className="course-item">
-                    <span className="course-name">{course.name}</span>
-                    {course.instructor && (
-                      <span className="course-instructor">{course.instructor}</span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      </section>
+        </section>
+      )}
       
       <section className="about-quote">
         <div className="container">
