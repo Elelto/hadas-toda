@@ -9,10 +9,7 @@ const BneiBrak = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    // Refresh AOS to detect new elements
-    setTimeout(() => {
-      AOS.refresh();
-    }, 100);
+    AOS.init({ duration: 800, once: true, offset: 100 });
   }, []);
 
   const seoData = {
@@ -167,35 +164,9 @@ const BneiBrak = () => {
         <section className="bb-about section-padding bg-light">
           <div className="container">
             <div className="bb-about-wrapper">
-              <div className="bb-about-visual">
-                <div className="visual-decoration circle-bg"></div>
-                <div className="visual-decoration dots"></div>
-                
-                <div className="visual-card main-card">
-                  <h3><span className="icon">✨</span> הגישה הטיפולית</h3>
-                  <ul>
-                    <li>
-                      <span className="check-icon">✓</span>
-                      אבחון מעמיק ומדויק לכל מטופל
-                    </li>
-                    <li>
-                      <span className="check-icon">✓</span>
-                      בניית תוכנית טיפול אישית וממוקדת
-                    </li>
-                    <li>
-                      <span className="check-icon">✓</span>
-                      שילוב טכנולוגיות וכלי טיפול מתקדמים
-                    </li>
-                    <li>
-                      <span className="check-icon">✓</span>
-                      ליווי צמוד באווירה תומכת ומכילה
-                    </li>
-                  </ul>
-                </div>
-                
-                <div className="visual-card stat-card">
-                  <span className="number">100%</span>
-                  <span className="text">מחויבות להצלחה</span>
+              <div className="bb-about-image" data-aos="fade-right">
+                <div className="image-placeholder">
+                  <span className="placeholder-icon">👩‍⚕️</span>
                 </div>
               </div>
               <div className="bb-about-content" data-aos="fade-left">
