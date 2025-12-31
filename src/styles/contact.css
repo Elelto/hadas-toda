@@ -386,60 +386,79 @@
 }
 
 /* Brand Colors for Icons */
+/* Refined Icon Styles: White background, Colored Symbol & Border */
 .icon-whatsapp {
-  background-color: #25D366;
-  border-color: #25D366;
-  color: white;
+  background-color: white;
+  color: #25D366;
+  border: 2px solid #25D366;
 }
 
 .icon-whatsapp:hover {
-  background-color: #128C7E;
-  border-color: #128C7E;
+  background-color: #25D366;
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
 }
 
-/* Soft, Calm Brand Colors */
 .icon-phone {
-  background-color: #66bb6a;
-  /* Soft Green */
-  border-color: #66bb6a;
+  background-color: white;
+  color: #2e7d32;
+  /* Mature Green */
+  border: 2px solid #2e7d32;
+}
+
+.icon-phone:hover {
+  background-color: #2e7d32;
   color: white;
 }
 
 .icon-email {
-  background-color: #ef5350;
-  /* Soft Red/Coral */
-  border-color: #ef5350;
+  background-color: white;
+  color: #c62828;
+  /* Mature Red */
+  border: 2px solid #c62828;
+}
+
+.icon-email:hover {
+  background-color: #c62828;
   color: white;
 }
 
 .icon-map {
-  background-color: #42a5f5;
-  /* Soft Blue */
-  border-color: #42a5f5;
+  background-color: white;
+  color: #1565c0;
+  /* Mature Blue */
+  border: 2px solid #1565c0;
+}
+
+.icon-map:hover {
+  background-color: #1565c0;
   color: white;
 }
 
 .social-facebook {
-  background-color: #1877F2;
-  border-color: #1877F2;
+  background-color: white;
+  color: #1877F2;
+  border: 2px solid #1877F2;
 }
 
 .social-facebook:hover {
-  background-color: #166fe5 !important;
+  background-color: #1877F2 !important;
   color: white !important;
-  border-color: #166fe5 !important;
+  border-color: #1877F2 !important;
 }
 
 .social-instagram {
-  background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D);
-  border: none;
+  background: white;
+  color: #C13584;
+  border: 2px solid #C13584;
 }
 
 .social-instagram:hover {
   background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D) !important;
-  opacity: 0.9;
   color: white !important;
-  border: none !important;
+  border-color: transparent !important;
+  opacity: 1;
 }
 
 .social-link:hover {
