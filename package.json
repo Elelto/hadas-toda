@@ -7,7 +7,7 @@
     "deploy": "gh-pages -d dist",
     "dev": "node scripts/sync-content.js && vite",
     "update-blog": "node scripts/update-blog-data.js",
-    "prebuild": "npm run update-blog",
+    "prebuild": "npm run update-blog && node scripts/generate-sitemap.js",
     "build": "node scripts/sync-content.js && vite build",
     "preview": "vite preview",
     "cms": "npx netlify-cms-proxy-server",
