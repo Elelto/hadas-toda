@@ -4,6 +4,7 @@ import AOS from 'aos';
 import SEOHead from '../components/SEOHead';
 import { init, send } from '@emailjs/browser';
 import '../styles/contact.css';
+import { FaPhone, FaWhatsapp, FaEnvelope, FaMapMarkerAlt, FaMap, FaFacebookF, FaInstagram, FaPlus, FaMinus, FaExternalLinkAlt } from 'react-icons/fa';
 
 // התחל את השירות של EmailJS עם המפתח הציבורי
 init("l9xXgXVINGFdgI8KJ");
@@ -105,7 +106,7 @@ export default function Contact() {
       ...prev,
       [name]: value
     }));
-    
+
     // נקה שגיאות כאשר המשתמש מתקן את הקלט
     if (formErrors[name]) {
       setFormErrors(prev => ({
@@ -118,41 +119,41 @@ export default function Contact() {
   // בדיקת תקינות הטופס
   const validateForm = () => {
     const errors = {};
-    
+
     if (!formData.user_name.trim()) {
       errors.user_name = 'נא להזין שם';
     }
-    
+
     if (!formData.user_email.trim()) {
       errors.user_email = 'נא להזין כתובת אימייל';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.user_email)) {
       errors.user_email = 'כתובת האימייל אינה תקינה';
     }
-    
+
     if (formData.user_phone.trim() && !/^0[2-9]\d{7,8}$/.test(formData.user_phone)) {
       errors.user_phone = 'מספר הטלפון אינו תקין';
     }
-    
+
     if (!formData.message.trim()) {
       errors.message = 'נא להזין הודעה';
     }
-    
+
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     // בדיקת תקינות לפני שליחה
     if (!validateForm()) {
       return;
     }
-    
+
     setLoading(true);
     setSuccess(false);
     setError(false);
-    
+
     // נקח את הערכים מהטופס
     const name = formData.user_name;
     const email = formData.user_email;
@@ -176,12 +177,12 @@ export default function Contact() {
       recipient: 'hadas.toda.info@gmail.com',  // ניסיון נוסף
       reply_to: email
     };
-    
+
     // שליחת הפנייה
     send(serviceID, templateID, mainParams, publicKey)
       .then((result) => {
         console.log('פנייה נשלחה בהצלחה:', result.text);
-        
+
         // שליחת אישור אוטומטי לפונה (החלף את המזהה בתבנית האישור שלך)
         const replyParams = {
           user_name: name,
@@ -193,10 +194,10 @@ export default function Contact() {
           email: email,     // ניסיון אחר לכתובת בפורמט אחר
           reply_to: 'hadas.toda.info@gmail.com'
         };
-        
+
         // תבנית האישור לפונה
         const replyTemplateID = 'template_vmm0l2g';  // תבנית האישור
-        
+
         // שליחת האישור
         send(serviceID, replyTemplateID, replyParams, publicKey)
           .then((replyResult) => {
@@ -219,7 +220,7 @@ export default function Contact() {
         setLoading(false);
       });
   };
-  
+
   // אפקט לגלילה חלקה למיקום הטופס כאשר יש שגיאה
   useEffect(() => {
     if (Object.keys(formErrors).length > 0) {
@@ -243,7 +244,7 @@ export default function Contact() {
 
   // פונקציה לפתיחה וסגירה של שאלות נפוצות
   const [openFaq, setOpenFaq] = useState(null);
-  
+
   const toggleFaq = (index) => {
     setOpenFaq(openFaq === index ? null : index);
   };
@@ -301,51 +302,51 @@ export default function Contact() {
           <p className="contact-subtitle" data-aos="fade-up" data-aos-delay="300">{contactContent.hero?.subtitle || "להתייעצות, שאלות או קביעת פגישה – אשמח לשוחח!"}</p>
         </div>
       </div>
-      
+
       <div className="container">
         <section className="contact-section">
-          
+
           <div className="contact-container">
             <div className="contact-info-card" data-aos="fade-right">
               <div className="info-title-wrapper">
                 <h2 className="info-title" id="contact-details-title" data-aos="fade-up" data-aos-delay="200">{contactContent.contact_info?.title || "פרטי התקשרות"}</h2>
               </div>
-              
+
               <div className="contact-details" data-aos="fade-up" data-aos-delay="400">
                 <div className="contact-item">
-                  <div className="contact-icon">☎️</div>
+                  <div className="contact-icon icon-phone"><FaPhone /></div>
                   <div className="contact-text">
                     <span className="contact-label">טלפון</span>
                     <a href={`tel:${contactContent.contact_info?.phone || "0506796209"}`} className="contact-link">{contactContent.contact_info?.phone || "050-6796209"}</a>
                   </div>
                 </div>
-                
+
                 <div className="contact-item">
-                  <div className="contact-icon">📱</div>
+                  <div className="contact-icon icon-whatsapp"><FaWhatsapp /></div>
                   <div className="contact-text">
                     <span className="contact-label">ווטסאפ</span>
-                    <a href={`https://wa.me/${contactContent.contact_info?.whatsapp || "972506796209"}`} target="_blank" rel="noopener noreferrer" className="contact-link contact-link-whatsapp">שלח/י הודעה <span className="whatsapp-icon">↗</span></a>
+                    <a href={`https://wa.me/${contactContent.contact_info?.whatsapp || "972506796209"}`} target="_blank" rel="noopener noreferrer" className="contact-link contact-link-whatsapp">שלח/י הודעה <span className="whatsapp-icon"><FaExternalLinkAlt size={12} /></span></a>
                   </div>
                 </div>
-                
+
                 <div className="contact-item">
-                  <div className="contact-icon">✉️</div>
+                  <div className="contact-icon icon-email"><FaEnvelope /></div>
                   <div className="contact-text">
                     <span className="contact-label">מייל</span>
                     <a href={`mailto:${contactContent.contact_info?.email || "hadas.toda.info@gmail.com"}`} className="contact-link">{contactContent.contact_info?.email || "hadas.toda.info@gmail.com"}</a>
                   </div>
                 </div>
-                
+
                 <div className="contact-item">
-                  <div className="contact-icon">📍</div>
+                  <div className="contact-icon icon-map"><FaMapMarkerAlt /></div>
                   <div className="contact-text">
                     <span className="contact-label">כתובת</span>
-                    <a href={contactContent.contact_info?.map_url || "https://maps.google.com/?q=שיכון+ג+בני+ברק"} target="_blank" rel="noopener noreferrer" className="contact-link location-link">{contactContent.contact_info?.address || "שיכון ג', בני ברק"} <span className="map-icon">🗺️</span></a>
+                    <a href={contactContent.contact_info?.map_url || "https://maps.google.com/?q=שיכון+ג+בני+ברק"} target="_blank" rel="noopener noreferrer" className="contact-link location-link">{contactContent.contact_info?.address || "שיכון ג', בני ברק"} <span className="map-icon"><FaMap /></span></a>
                   </div>
                 </div>
-                
+
                 <div className="contact-map" data-aos="zoom-in" data-aos-delay="600">
-                  <iframe 
+                  <iframe
                     title="מיקום הקליניקה"
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13520.846147508547!2d34.82549323022461!3d32.08510975!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x151d4a3f1f2b099d%3A0x2677dd5d196b8718!2z16nXmdeZ15XXnyDXkSfigJwsINeR16DXmSDXkdeo16c!5e0!3m2!1siw!2sil!4v1717998118455!5m2!1siw!2sil"
                     width="100%"
@@ -356,21 +357,21 @@ export default function Contact() {
                     referrerPolicy="no-referrer-when-downgrade"
                   ></iframe>
                 </div>
-                
+
                 <div className="contact-social" data-aos="fade-up" data-aos-delay="800">
                   <h3 className="social-title">עקבו אחרי</h3>
                   <div className="social-links">
-                    <a href={contactContent.contact_info?.social?.facebook || "https://www.facebook.com/profile.php?id=61566802899787"} target="_blank" rel="noopener noreferrer" className="social-link" aria-label="פייסבוק">
-                      <div className="social-icon">f</div>
+                    <a href={contactContent.contact_info?.social?.facebook || "https://www.facebook.com/profile.php?id=61566802899787"} target="_blank" rel="noopener noreferrer" className="social-link social-facebook" aria-label="פייסבוק">
+                      <div className="social-icon"><FaFacebookF /></div>
                     </a>
-                    <a href={contactContent.contact_info?.social?.instagram || "https://www.instagram.com/hadas_toda/"} target="_blank" rel="noopener noreferrer" className="social-link" aria-label="אינסטגרם">
-                      <div className="social-icon">📸</div>
+                    <a href={contactContent.contact_info?.social?.instagram || "https://www.instagram.com/hadas_toda/"} target="_blank" rel="noopener noreferrer" className="social-link social-instagram" aria-label="אינסטגרם">
+                      <div className="social-icon"><FaInstagram /></div>
                     </a>
                   </div>
                 </div>
               </div>
             </div>
-            
+
             <div className="contact-form-card" data-aos="fade-left">
               <div className="form-title-wrapper">
                 <h2 className="form-title" data-aos="fade-up" data-aos-delay="200">{contactContent.form?.title || "שלח/י הודעה"}</h2>
@@ -378,50 +379,50 @@ export default function Contact() {
               <form className="contact-form" ref={form} onSubmit={handleSubmit} data-aos="fade-up" data-aos-delay="400">
                 <div className="form-group">
                   <label htmlFor="user_name" className="form-label">שם</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     id="user_name"
-                    name="user_name" 
-                    className={`form-control ${formErrors.user_name ? 'is-invalid' : ''}`} 
+                    name="user_name"
+                    className={`form-control ${formErrors.user_name ? 'is-invalid' : ''}`}
                     value={formData.user_name}
                     onChange={handleChange}
                   />
                   {formErrors.user_name && <div className="form-error">{formErrors.user_name}</div>}
                 </div>
-                
+
                 <div className="form-group">
                   <label htmlFor="user_email" className="form-label">אימייל</label>
-                  <input 
-                    type="email" 
+                  <input
+                    type="email"
                     id="user_email"
-                    name="user_email" 
-                    className={`form-control ${formErrors.user_email ? 'is-invalid' : ''}`} 
+                    name="user_email"
+                    className={`form-control ${formErrors.user_email ? 'is-invalid' : ''}`}
                     value={formData.user_email}
                     onChange={handleChange}
                   />
                   {formErrors.user_email && <div className="form-error">{formErrors.user_email}</div>}
                 </div>
-                
+
                 <div className="form-group">
                   <label htmlFor="user_phone" className="form-label">טלפון <span className="optional-field">(אופציונלי)</span></label>
-                  <input 
-                    type="tel" 
+                  <input
+                    type="tel"
                     id="user_phone"
-                    name="user_phone" 
-                    className={`form-control ${formErrors.user_phone ? 'is-invalid' : ''}`} 
+                    name="user_phone"
+                    className={`form-control ${formErrors.user_phone ? 'is-invalid' : ''}`}
                     value={formData.user_phone}
                     onChange={handleChange}
                     placeholder="050-1234567"
                   />
                   {formErrors.user_phone && <div className="form-error">{formErrors.user_phone}</div>}
                 </div>
-                
+
                 <div className="form-group">
                   <label htmlFor="message" className="form-label">הודעה</label>
-                  <textarea 
+                  <textarea
                     id="message"
-                    name="message" 
-                    className={`form-control ${formErrors.message ? 'is-invalid' : ''}`} 
+                    name="message"
+                    className={`form-control ${formErrors.message ? 'is-invalid' : ''}`}
                     rows="4"
                     value={formData.message}
                     onChange={handleChange}
@@ -429,15 +430,15 @@ export default function Contact() {
                   ></textarea>
                   {formErrors.message && <div className="form-error">{formErrors.message}</div>}
                 </div>
-                
+
                 {/* שדה נסתר לכתובת המייל של היעד */}
                 <input type="hidden" name="recipient_email" value="hadas.toda.info@gmail.com" />
-                
+
                 <button type="submit" className={`btn form-submit ${loading ? 'loading' : ''}`} disabled={loading}>
                   <span className="btn-text">{loading ? 'שולח...' : 'שלח/י הודעה'}</span>
                   {loading && <span className="spinner"></span>}
                 </button>
-                
+
                 {success && (
                   <div className="form-feedback success">
                     <div className="feedback-icon">✓</div>
@@ -447,7 +448,7 @@ export default function Contact() {
                     </div>
                   </div>
                 )}
-                
+
                 {error && (
                   <div className="form-feedback error">
                     <div className="feedback-icon">!</div>
@@ -461,7 +462,7 @@ export default function Contact() {
             </div>
           </div>
         </section>
-        
+
         <section className="faq-section">
           <div className="container">
             <div className="faq-title-wrapper">
@@ -472,7 +473,7 @@ export default function Contact() {
                 <div key={index} className={`faq-item ${openFaq === index ? 'active' : ''}`} onClick={() => toggleFaq(index)}>
                   <div className="faq-question">
                     <span>{faqItem.question}</span>
-                    <div className="faq-icon">{openFaq === index ? '-' : '+'}</div>
+                    <div className="faq-icon">{openFaq === index ? <FaMinus /> : <FaPlus />}</div>
                   </div>
                   <div className="faq-answer">
                     <p>{faqItem.answer}</p>
