@@ -10,23 +10,19 @@ const SiteNotice = () => {
   useEffect(() => {
     // Show notice only on blog pages
     const isBlogPage = location.pathname.startsWith('/blog');
-    
+
     if (!isBlogPage) {
       setIsVisible(false);
       return;
     }
-    
-    // Show notice after a short delay on blog pages
-    const timer = setTimeout(() => {
-      setIsVisible(true);
-    }, 1000);
-    
-    return () => clearTimeout(timer);
+
+    // Show notice immediately on blog pages
+    setIsVisible(true);
   }, [location.pathname]);
 
   const handleClose = () => {
     setIsClosing(true);
-    
+
     // Hide after animation completes
     setTimeout(() => {
       setIsVisible(false);
@@ -41,22 +37,22 @@ const SiteNotice = () => {
         <button className="site-notice-close" onClick={handleClose} aria-label="סגור הודעה">
           ×
         </button>
-        
+
         <div className="site-notice-content">
           <div className="site-notice-icon">
             🚧
           </div>
-          
+
           <h3 className="site-notice-title">
             אתר בבניה והרצה
           </h3>
-          
+
           <p className="site-notice-text">
             האתר עדיין לא עבר הגהה מקצועית מלאה.
             <br />
             השימוש באתר הוא על אחריות המשתמש בלבד.
           </p>
-          
+
           <button className="site-notice-button" onClick={handleClose}>
             הבנתי
           </button>
