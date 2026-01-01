@@ -15,6 +15,7 @@ import BlogPost from './pages/BlogPost';
 import Admin from './pages/Admin';
 import AIAssessmentPage from './pages/AIAssessment';
 import BneiBrak from './pages/BneiBrak';
+import AccessibilityWidget from './components/AccessibilityWidget';
 import './styles/global.css';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -32,7 +33,7 @@ function App() {
       anchorPlacement: 'top-bottom',
       throttleDelay: 99,
       debounceDelay: 50,
-      disable: false
+      disable: window.document.body.classList.contains('stop-animations')
     });
 
     // Refresh AOS after a short delay to ensure proper initialization
@@ -61,6 +62,7 @@ function App() {
       <Router>
         <ScrollToTop />
         <SiteNotice />
+        <AccessibilityWidget />
         <div className="app-container">
           <Header />
           <main>

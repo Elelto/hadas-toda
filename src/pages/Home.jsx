@@ -7,6 +7,13 @@ import SoundWaves from '../components/SoundWaves';
 import SEOHead from '../components/SEOHead';
 import StructuredData from '../components/StructuredData';
 import blogPosts from '../data/blogPosts';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination, Navigation } from 'swiper/modules';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 
 // Fallback content function
 const getDefaultHomeContent = () => ({
@@ -127,9 +134,21 @@ export default function Home() {
         {/* Hero Section */}
         <section className="bb-hero home-hero-wrapper">
           <div className="bb-hero-overlay"></div>
+
+          {/* Subtle Dynamic Background Sound Waves */}
+          <div className="hero-sound-waves">
+            <SoundWaves variant="background" intensity="low" color="primary" effect="subtle" />
+          </div>
+
           <div className="container bb-hero-content">
             <div className="bb-hero-text" data-aos="fade-up">
-              <span className="bb-badge">קלינאית תקשורת מוסמכת</span>
+              <div className="hero-badge-container">
+                <span className="bb-badge">קלינאית תקשורת מוסמכת</span>
+                {/* Floating Wave Accent */}
+                <div className="badge-wave">
+                  <SoundWaves variant="connector" color="accent" intensity="medium" height="30px" />
+                </div>
+              </div>
               <h1>{homeContent?.hero?.title || 'הדס תודה'} <span className="text-highlight">M.A</span></h1>
               <p className="bb-subtitle">{homeContent?.hero?.subtitle || 'מומחית לשפה, דיבור וקול'}</p>
               <p className="bb-description">
@@ -144,7 +163,7 @@ export default function Home() {
                 </Link>
               </div>
             </div>
-            
+
             <div className="bb-hero-shape" data-aos="fade-left" data-aos-delay="200">
               <div className="shape-circle home-shape-bg"></div>
               <div className="shape-content">
@@ -163,7 +182,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          
+
           <div className="wave-bottom">
             <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
               <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" className="shape-fill"></path>
@@ -179,7 +198,7 @@ export default function Home() {
               <div className="header-underline"></div>
               <p>{homeContent?.services?.subtitle}</p>
             </div>
-            
+
             <div className="services-split-grid">
               {/* Voice Services */}
               <div className="service-group" data-aos="fade-up">
@@ -240,7 +259,7 @@ export default function Home() {
                 <div className="bb-about-visual">
                   <div className="visual-decoration circle-bg"></div>
                   <div className="visual-decoration dots"></div>
-                  
+
                   <div className="visual-card main-card">
                     <h3><span className="icon">🎯</span> למה לבחור בי?</h3>
                     <ul>
@@ -262,7 +281,7 @@ export default function Home() {
                       </li>
                     </ul>
                   </div>
-                  
+
                   <div className="visual-card stat-card">
                     <span className="number">10+</span>
                     <span className="text">שנות ניסיון</span>
@@ -291,20 +310,52 @@ export default function Home() {
               <div className="header-underline"></div>
               <p>{homeContent?.testimonials?.subtitle}</p>
             </div>
-            
-            <div className="testimonials-grid">
-              {homeContent?.testimonials?.items?.map((item, index) => (
-                <div key={index} className="testimonial-card" data-aos="fade-up" data-aos-delay={index * 100}>
-                  <div className="quote-icon">❝</div>
-                  <p className="testimonial-text">{item.quote}</p>
-                  <div className="testimonial-author">
-                    <span className="author-name">{item.author}</span>
-                    <span className="author-location">מטופל/ת</span>
-                  </div>
-                </div>
-              ))}
+
+            <div className="testimonials-carousel-wrapper" data-aos="fade-up">
+              <Swiper
+                modules={[Autoplay, Pagination, Navigation]}
+                spaceBetween={30}
+                slidesPerView={1}
+                centeredSlides={(homeContent?.testimonials?.items?.length || 0) < 3}
+                loop={true}
+                autoplay={{
+                  delay: 5000,
+                  disableOnInteraction: false,
+                }}
+                pagination={{
+                  clickable: true,
+                  dynamicBullets: true,
+                }}
+                navigation={true}
+                breakpoints={{
+                  640: {
+                    slidesPerView: (homeContent?.testimonials?.items?.length || 0) >= 2 ? 2 : 1,
+                  },
+                  1024: {
+                    slidesPerView: (homeContent?.testimonials?.items?.length || 0) >= 3 ? 3 : (homeContent?.testimonials?.items?.length || 1),
+                  },
+                }}
+                className="testimonials-swiper"
+              >
+                {(homeContent?.testimonials?.items?.length > 0 ? homeContent.testimonials.items : [
+                  { quote: "טיפול מקצועי ומסור, הרגשתי שיפור כבר מהמפגש הראשון.", author: "לקוח מרוצה" },
+                  { quote: "הדס מדהימה עם ילדים, הבת שלי מחכה לכל מפגש.", author: "אמא לילד בטיפול" },
+                  { quote: "מומלץ בחום לכל מי שמחפש קלינאית תקשורת עם נשמה.", author: "דניאל" }
+                ]).map((item, index) => (
+                  <SwiperSlide key={index}>
+                    <div className="testimonial-card">
+                      <div className="quote-icon">❝</div>
+                      <p className="testimonial-text">{item.quote}</p>
+                      <div className="testimonial-author">
+                        <span className="author-name">{item.author}</span>
+                        <span className="author-location">מטופל/ת</span>
+                      </div>
+                    </div>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
             </div>
-            
+
             <div className="center-cta mt-5">
               <Link to="/testimonials" className="link-arrow">
                 לכל סיפורי ההצלחה ←
@@ -332,8 +383,8 @@ export default function Home() {
                       <div className={`blog-image-placeholder cat-${post.categories[0] || 'default'}`}></div>
                     )}
                     <span className="blog-card-category">
-                      {post.categories[0] === 'voice' ? 'קול' : 
-                       post.categories[0] === 'children' ? 'ילדים' : 'כללי'}
+                      {post.categories[0] === 'voice' ? 'קול' :
+                        post.categories[0] === 'children' ? 'ילדים' : 'כללי'}
                     </span>
                   </div>
                   <div className="blog-card-content">

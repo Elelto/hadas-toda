@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
-const OptimizedImage = ({ 
-  src, 
-  alt, 
-  className = '', 
-  width, 
-  height, 
+const OptimizedImage = ({
+  src,
+  alt,
+  className = '',
+  width,
+  height,
   loading = 'lazy',
   placeholder = '/images/placeholder.jpg'
 }) => {
@@ -23,10 +23,10 @@ const OptimizedImage = ({
   return (
     <div className={`optimized-image-container ${className}`}>
       {!imageLoaded && !imageError && (
-        <div 
+        <div
           className="image-placeholder"
-          style={{ 
-            width: width || '100%', 
+          style={{
+            width: width || '100%',
             height: height || 'auto',
             backgroundColor: '#f0f0f0',
             display: 'flex',
@@ -38,7 +38,7 @@ const OptimizedImage = ({
           טוען...
         </div>
       )}
-      
+
       <img
         src={imageError ? placeholder : src}
         alt={alt}

@@ -1,5 +1,6 @@
 /* Home Page Redesign - Modern & Professional */
-@import './bnei-brak.css'; /* Import base styles from Bnei Brak design */
+@import './bnei-brak.css';
+/* Import base styles from Bnei Brak design */
 
 .home-page-v2 {
   overflow-x: hidden;
@@ -9,6 +10,32 @@
 /* Hero Section Customizations */
 .home-hero-wrapper {
   background: linear-gradient(135deg, #fdfbfd 0%, #f0f4f8 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-sound-waves {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.6;
+  z-index: 1;
+}
+
+.hero-badge-container {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.badge-wave {
+  width: 120px;
+  height: 40px;
+  opacity: 0.7;
 }
 
 .home-shape-bg {
@@ -32,7 +59,8 @@
 
 .home-hero-wrapper .stat-box:nth-child(3) {
   top: auto;
-  bottom: 25%; /* Positioned in lower right quadrant */
+  bottom: 25%;
+  /* Positioned in lower right quadrant */
   right: -30px;
   left: auto;
   animation-delay: 3s;
@@ -43,16 +71,17 @@
     top: 0;
     right: 0;
   }
-  
+
   .home-hero-wrapper .stat-box:nth-child(2) {
     bottom: 0;
     left: 0;
   }
-  
+
   .home-hero-wrapper .stat-box:nth-child(3) {
     top: 40%;
     left: auto;
-    right: 0; /* Move to right side on mobile too for variety */
+    right: 0;
+    /* Move to right side on mobile too for variety */
     bottom: auto;
   }
 }
@@ -72,14 +101,27 @@
   padding: 2px 8px;
   border-radius: 12px;
   font-weight: 700;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   animation: bounce 2s infinite;
 }
 
 @keyframes bounce {
-  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-  40% { transform: translateY(-5px); }
-  60% { transform: translateY(-3px); }
+
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+
+  40% {
+    transform: translateY(-5px);
+  }
+
+  60% {
+    transform: translateY(-3px);
+  }
 }
 
 /* Services Split Layout */
@@ -94,8 +136,8 @@
   background: #fff;
   border-radius: 20px;
   padding: 2rem;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.03);
-  border: 1px solid rgba(0,0,0,0.03);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.03);
 }
 
 .group-title {
@@ -157,6 +199,67 @@
   border-color: rgba(102, 126, 234, 0.2);
 }
 
+/* Testimonials Carousel */
+.testimonials-carousel-wrapper {
+  padding: 20px 0 60px;
+  position: relative;
+}
+
+.testimonials-swiper {
+  padding: 20px 20px 50px !important;
+}
+
+.testimonials-swiper .swiper-pagination-bullet {
+  background: var(--primary);
+  opacity: 0.3;
+}
+
+.testimonials-swiper .swiper-pagination-bullet-active {
+  opacity: 1;
+  width: 20px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.testimonials-swiper .swiper-pagination {
+  bottom: 0 !important;
+  z-index: 10;
+}
+
+.testimonials-swiper .swiper-button-next,
+.testimonials-swiper .swiper-button-prev {
+  color: var(--primary);
+  background: white;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  z-index: 20;
+}
+
+.testimonials-swiper .swiper-button-next::after,
+.testimonials-swiper .swiper-button-prev::after {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.testimonials-swiper .swiper-button-next:hover,
+.testimonials-swiper .swiper-button-prev:hover {
+  background: var(--primary);
+  color: white;
+  transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+
+  .testimonials-swiper .swiper-button-next,
+  .testimonials-swiper .swiper-button-prev {
+    display: none;
+    /* Hide navigation on mobile to save space */
+  }
+}
+
 /* Quote Section */
 .home-quote-modern {
   padding: 100px 0;
@@ -174,7 +277,7 @@
 
 .quote-mark {
   font-size: 4rem;
-  color: rgba(255,255,255,0.2);
+  color: rgba(255, 255, 255, 0.2);
   line-height: 1;
   font-family: serif;
   margin-bottom: 1rem;
@@ -185,7 +288,7 @@
   font-weight: 300;
   line-height: 1.4;
   margin: 0;
-  color: rgba(255,255,255,0.95);
+  color: rgba(255, 255, 255, 0.95);
 }
 
 /* Blog Modern */
@@ -199,14 +302,14 @@
   background: white;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
-  border: 1px solid rgba(0,0,0,0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .blog-card-modern:hover {
   transform: translateY(-8px);
-  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
 }
 
 .blog-card-image {
@@ -234,22 +337,33 @@
   transform: scale(1.05);
 }
 
-.cat-voice { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
-.cat-speech { background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); }
-.cat-children { background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); }
-.cat-default { background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); }
+.cat-voice {
+  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+}
+
+.cat-speech {
+  background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+}
+
+.cat-children {
+  background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+}
+
+.cat-default {
+  background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+}
 
 .blog-card-category {
   position: absolute;
   top: 15px;
   right: 15px;
-  background: rgba(255,255,255,0.9);
+  background: rgba(255, 255, 255, 0.9);
   padding: 4px 12px;
   border-radius: 20px;
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--primary-dark);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .blog-card-content {
@@ -308,19 +422,19 @@
   .home-hero-wrapper {
     padding-top: 100px;
   }
-  
+
   .reverse-layout-mobile {
     grid-template-columns: 1fr;
   }
-  
-  .reverse-layout-mobile > :first-child {
+
+  .reverse-layout-mobile> :first-child {
     order: 2;
   }
-  
-  .reverse-layout-mobile > :last-child {
+
+  .reverse-layout-mobile> :last-child {
     order: 1;
   }
-  
+
   .quote-text {
     font-size: 1.5rem;
   }
