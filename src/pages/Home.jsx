@@ -7,6 +7,7 @@ import SoundWaves from '../components/SoundWaves';
 import SEOHead from '../components/SEOHead';
 import StructuredData from '../components/StructuredData';
 import blogPosts from '../data/blogPosts';
+import testimonials from '../data/testimonials';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 
@@ -316,8 +317,8 @@ export default function Home() {
                 modules={[Autoplay, Pagination, Navigation]}
                 spaceBetween={30}
                 slidesPerView={1}
-                centeredSlides={(homeContent?.testimonials?.items?.length || 0) < 3}
                 loop={true}
+                loopedSlides={3}
                 autoplay={{
                   delay: 5000,
                   disableOnInteraction: false,
@@ -328,26 +329,24 @@ export default function Home() {
                 }}
                 navigation={true}
                 breakpoints={{
-                  640: {
-                    slidesPerView: (homeContent?.testimonials?.items?.length || 0) >= 2 ? 2 : 1,
+                  768: {
+                    slidesPerView: 2,
+                    spaceBetween: 30,
                   },
-                  1024: {
-                    slidesPerView: (homeContent?.testimonials?.items?.length || 0) >= 3 ? 3 : (homeContent?.testimonials?.items?.length || 1),
+                  1200: {
+                    slidesPerView: 3,
+                    spaceBetween: 30,
                   },
                 }}
                 className="testimonials-swiper"
               >
-                {(homeContent?.testimonials?.items?.length > 0 ? homeContent.testimonials.items : [
-                  { quote: "טיפול מקצועי ומסור, הרגשתי שיפור כבר מהמפגש הראשון.", author: "לקוח מרוצה" },
-                  { quote: "הדס מדהימה עם ילדים, הבת שלי מחכה לכל מפגש.", author: "אמא לילד בטיפול" },
-                  { quote: "מומלץ בחום לכל מי שמחפש קלינאית תקשורת עם נשמה.", author: "דניאל" }
-                ]).map((item, index) => (
-                  <SwiperSlide key={index}>
+                {testimonials.map((item, index) => (
+                  <SwiperSlide key={item.id || index}>
                     <div className="testimonial-card">
                       <div className="quote-icon">❝</div>
-                      <p className="testimonial-text">{item.quote}</p>
+                      <p className="testimonial-text">{item.text}</p>
                       <div className="testimonial-author">
-                        <span className="author-name">{item.author}</span>
+                        <span className="author-name">{item.name}</span>
                         <span className="author-location">מטופל/ת</span>
                       </div>
                     </div>

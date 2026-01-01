@@ -3,55 +3,8 @@ import { Link } from 'react-router-dom';
 import AOS from 'aos';
 import { FaQuoteRight } from 'react-icons/fa';
 import SEOHead from '../components/SEOHead';
+import testimonials from '../data/testimonials';
 import '../styles/testimonials.css';
-
-const testimonials = [
-  {
-    id: 1,
-    name: 'אמא של אורי',
-    category: 'child',
-    text: 'הגענו להדס עם קשיי היגוי של אורי. המקצועיות, הסבלנות והגישה המדהימה של הדס הפכו את הטיפול לחוויה חיובית עבורו ועבורנו. השיפור ניכר ואנחנו מודים מאוד!',
-    childName: 'אורי',
-    childAge: 6,
-    childGender: 'בן'
-  },
-  {
-    id: 2,
-    name: 'דניאל כהן',
-    category: 'voice',
-    text: 'סבלתי מצרידות כרונית שהפריעה לי מאוד בחיי היום-יום. הטיפול אצל הדס היה נקודת מפנה. היא אבחנה במדויק את מקור הבעיה ובנתה תוכנית טיפול אישית ויעילה. היום הקול שלי נקי וחזק מתמיד. תודה ענקית!',
-    childName: null,
-    childAge: null,
-    childGender: null
-  },
-  {
-    id: 3,
-    name: 'דנה, אמא של רותם',
-    category: 'child',
-    text: 'הרגשנו שינוי משמעותי בהתפתחות השפה של רותם כבר לאחר מספר מפגשים. הדס הצליחה ליצור קשר מיוחד עם הבת שלנו ולהתאים את הטיפול בדיוק לצרכים שלה. ממליצה בחום!',
-    childName: 'רותם',
-    childAge: 4,
-    childGender: 'בת'
-  },
-  {
-    id: 4,
-    name: 'מאיה לוי',
-    category: 'voice',
-    text: 'כמרצה, הקול שלי הוא כלי עבודה מרכזי. לאחר תקופה של עומס קולי, התחלתי לחוות קשיים. הדס, במקצועיות רבה, לימדה אותי טכניקות להפקת קול נכונה, תרגילי חיזוק ושמירה על בריאות הקול. אני מרגישה הבדל עצום.',
-    childName: null,
-    childAge: null,
-    childGender: null
-  },
-  {
-    id: 5,
-    name: 'משפחת כהן',
-    category: 'child',
-    text: 'הדס היא קלינאית תקשורת מקצועית ומסורה. הטיפול היה מותאם אישית לבתנו והיא הצליחה ליצור סביבה מוגנת ומקדמת עבורה. התקדמנו משמעותית בזכותה בתחום השפתי והתקשורתי.',
-    childName: 'נועה',
-    childAge: 5,
-    childGender: 'בת'
-  }
-];
 
 export default function Testimonials() {
   useEffect(() => {
