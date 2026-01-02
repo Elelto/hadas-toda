@@ -317,6 +317,8 @@ export default function Home() {
                 modules={[Autoplay, Pagination, Navigation]}
                 spaceBetween={30}
                 slidesPerView={1}
+                centeredSlides={true}
+                slideToClickedSlide={true}
                 loop={true}
                 loopedSlides={3}
                 autoplay={{

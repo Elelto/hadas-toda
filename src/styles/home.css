@@ -260,6 +260,34 @@
   }
 }
 
+/* Testimonial Card Scaling - Center is Larger */
+.testimonials-swiper .swiper-slide {
+  transition: all 0.3s ease;
+  opacity: 0.5;
+  transform: scale(0.85);
+  height: auto;
+}
+
+.testimonials-swiper .swiper-slide-active {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 10;
+}
+
+/* For better visual effect on larger screens with 3 slides */
+@media (min-width: 1200px) {
+  .testimonials-swiper .swiper-slide {
+    opacity: 0.6;
+    transform: scale(0.88);
+  }
+
+  .testimonials-swiper .swiper-slide-active {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+
 /* Quote Section */
 .home-quote-modern {
   padding: 100px 0;
