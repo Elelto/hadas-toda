@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import { loadYamlContent } from '../utils/yamlLoader';
 import AOS from 'aos';
 import '../styles/home.css';
-import SoundWaves from '../components/SoundWaves';
+import '../styles/glass.css';
+import AuroraBackground from '../components/AuroraBackground';
+
 import SEOHead from '../components/SEOHead';
 import StructuredData from '../components/StructuredData';
 import blogPosts from '../data/blogPosts';
@@ -136,19 +138,15 @@ export default function Home() {
         <section className="bb-hero home-hero-wrapper">
           <div className="bb-hero-overlay"></div>
 
-          {/* Subtle Dynamic Background Sound Waves */}
-          <div className="hero-sound-waves">
-            <SoundWaves variant="background" intensity="low" color="primary" effect="subtle" />
+          {/* New Aurora Background */}
+          <div className="hero-background-shapes">
+            <AuroraBackground />
           </div>
 
           <div className="container bb-hero-content">
             <div className="bb-hero-text" data-aos="fade-up">
               <div className="hero-badge-container">
                 <span className="bb-badge">קלינאית תקשורת מוסמכת</span>
-                {/* Floating Wave Accent */}
-                <div className="badge-wave">
-                  <SoundWaves variant="connector" color="accent" intensity="medium" height="30px" />
-                </div>
               </div>
               <h1>{homeContent?.hero?.title || 'הדס תודה'} <span className="text-highlight">M.A</span></h1>
               <p className="bb-subtitle">{homeContent?.hero?.subtitle || 'מומחית לשפה, דיבור וקול'}</p>
@@ -156,10 +154,10 @@ export default function Home() {
                 {homeContent?.hero?.description}
               </p>
               <div className="bb-actions">
-                <Link to="/contact" className="bb-btn bb-btn-primary">
+                <Link to="/contact" className="bb-btn btn-soft-glow btn-soft-glow-primary">
                   {homeContent?.hero?.cta_text || 'קביעת פגישת ייעוץ'}
                 </Link>
-                <Link to="/ai-assessment" className="bb-btn bb-btn-outline btn-with-badge">
+                <Link to="/ai-assessment" className="bb-btn btn-soft-glow btn-soft-glow-outline btn-with-badge">
                   אבחון חכם <span className="badge-new">חדש!</span>
                 </Link>
               </div>
@@ -168,15 +166,15 @@ export default function Home() {
             <div className="bb-hero-shape" data-aos="fade-left" data-aos-delay="200">
               <div className="shape-circle home-shape-bg"></div>
               <div className="shape-content">
-                <div className="stat-box">
+                <div className="stat-box glass-card">
                   <span className="stat-number">10+</span>
                   <span className="stat-label">שנות ניסיון</span>
                 </div>
-                <div className="stat-box">
+                <div className="stat-box glass-card">
                   <span className="stat-number">100+</span>
                   <span className="stat-label">מטופלים מרוצים</span>
                 </div>
-                <div className="stat-box">
+                <div className="stat-box glass-card">
                   <span className="stat-number">M.A</span>
                   <span className="stat-label">תואר שני</span>
                 </div>
@@ -202,11 +200,11 @@ export default function Home() {
 
             <div className="services-split-grid">
               {/* Voice Services */}
-              <div className="service-group" data-aos="fade-up">
+              <div className="service-group glass-card" data-aos="fade-up">
                 <h3 className="group-title">🎤 שירותי קול וגמגום</h3>
                 <div className="bb-services-grid home-services-grid">
                   {homeContent?.services?.voice_services?.map((service, index) => (
-                    <div key={index} className="bb-service-card compact-card">
+                    <div key={index} className="bb-service-card compact-card glass-card">
                       <div className="service-icon-wrapper small-icon">
                         {['🗣️', '🎭', '🎤', '💬'][index % 4]}
                       </div>
@@ -217,11 +215,11 @@ export default function Home() {
               </div>
 
               {/* Speech Services */}
-              <div className="service-group" data-aos="fade-up" data-aos-delay="200">
+              <div className="service-group glass-card" data-aos="fade-up" data-aos-delay="200">
                 <h3 className="group-title">🗣️ שירותי שפה ודיבור</h3>
                 <div className="bb-services-grid home-services-grid">
                   {homeContent?.services?.speech_services?.map((service, index) => (
-                    <div key={index} className="bb-service-card compact-card">
+                    <div key={index} className="bb-service-card compact-card glass-card">
                       <div className="service-icon-wrapper small-icon">
                         {['📊', '🔤', '🧩', '✏️'][index % 4]}
                       </div>
@@ -252,7 +250,7 @@ export default function Home() {
                 </p>
                 <p>{homeContent?.about?.paragraph2}</p>
                 <p>{homeContent?.about?.paragraph3}</p>
-                <Link to="/about" className="bb-btn bb-btn-outline mt-4">
+                <Link to="/about" className="bb-btn btn-soft-glow btn-soft-glow-outline mt-4">
                   קראו עוד על הגישה שלי
                 </Link>
               </div>
@@ -261,7 +259,7 @@ export default function Home() {
                   <div className="visual-decoration circle-bg"></div>
                   <div className="visual-decoration dots"></div>
 
-                  <div className="visual-card main-card">
+                  <div className="visual-card main-card glass-card">
                     <h3><span className="icon">🎯</span> למה לבחור בי?</h3>
                     <ul>
                       <li>
@@ -283,7 +281,7 @@ export default function Home() {
                     </ul>
                   </div>
 
-                  <div className="visual-card stat-card">
+                  <div className="visual-card stat-card glass-card">
                     <span className="number">10+</span>
                     <span className="text">שנות ניסיון</span>
                   </div>
@@ -344,7 +342,7 @@ export default function Home() {
               >
                 {testimonials.map((item, index) => (
                   <SwiperSlide key={item.id || index}>
-                    <div className="testimonial-card">
+                    <div className="testimonial-card glass-card">
                       <div className="quote-icon">❝</div>
                       <p className="testimonial-text">{item.text}</p>
                       <div className="testimonial-author">
@@ -376,7 +374,7 @@ export default function Home() {
 
             <div className="blog-grid-modern">
               {blogPosts.slice(0, 3).map((post, index) => (
-                <div key={post.id} className="blog-card-modern" data-aos="fade-up" data-aos-delay={index * 100}>
+                <div key={post.id} className="blog-card-modern glass-card" data-aos="fade-up" data-aos-delay={index * 100}>
                   <div className="blog-card-image">
                     {post.image ? (
                       <img src={post.image} alt={post.title} className="blog-image-real" />

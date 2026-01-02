@@ -1,0 +1,103 @@
+/* Organic Shapes CSS */
+
+.organic-shapes-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.organic-shape {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.6;
+    animation: floatMorph 20s infinite alternate ease-in-out;
+}
+
+/* Shape Variations */
+.shape-1 {
+    top: -10%;
+    left: -5%;
+    width: 50vw;
+    height: 50vw;
+    background: linear-gradient(135deg, rgba(233, 230, 236, 0.8), rgba(203, 185, 214, 0.4));
+    animation-delay: 0s;
+}
+
+.shape-2 {
+    bottom: 0%;
+    right: -10%;
+    width: 40vw;
+    height: 40vw;
+    background: linear-gradient(135deg, rgba(185, 123, 160, 0.3), rgba(233, 230, 236, 0.5));
+    animation-duration: 25s;
+    animation-delay: -5s;
+}
+
+.shape-3 {
+    top: 30%;
+    left: 40%;
+    width: 30vw;
+    height: 30vw;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(203, 185, 214, 0.2) 70%);
+    filter: blur(40px);
+    opacity: 0.4;
+    animation-duration: 18s;
+    animation-delay: -10s;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+    .shape-1 {
+        width: 80vw;
+        height: 80vw;
+        filter: blur(40px);
+    }
+
+    .shape-2 {
+        width: 70vw;
+        height: 70vw;
+        bottom: -10%;
+    }
+
+    .shape-3 {
+        width: 50vw;
+        height: 50vw;
+    }
+}
+
+/* Animations */
+@keyframes floatMorph {
+    0% {
+        transform: translate(0, 0) scale(1) rotate(0deg);
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    }
+
+    33% {
+        transform: translate(30px, -50px) scale(1.1) rotate(10deg);
+        border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    }
+
+    66% {
+        transform: translate(-20px, 20px) scale(0.9) rotate(-5deg);
+        border-radius: 70% 30% 50% 50% / 30% 60% 40% 70%;
+    }
+
+    100% {
+        transform: translate(0, 0) scale(1) rotate(0deg);
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    .organic-shape {
+        animation: none;
+        transition: none;
+    }
+}

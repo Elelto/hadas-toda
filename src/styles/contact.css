@@ -1,44 +1,26 @@
 /* Contact Page Styles */
 .contact-page {
   padding-bottom: 2rem;
-  background-color: var(--light);
+  background-color: transparent;
+  /* Changed from var(--light) to show Aurora */
   min-height: 100vh;
+  position: relative;
 }
 
 /* Hero Section */
 .contact-hero {
-  background-color: var(--light);
-  padding: 10rem 0 3rem;
+  background-color: transparent;
+  padding: 8rem 0 2rem;
   text-align: center;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   margin-bottom: 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: none;
   width: 100%;
-}
-
-.contact-hero:before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: var(--gradient-primary);
   z-index: 1;
 }
 
-.contact-hero:after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="1.5" fill="%232a9d8f" opacity="0.2"/></svg>');
-  opacity: 0.5;
-  z-index: 0;
-}
+/* Removed :before and :after pseudo-elements for cleaner look with Aurora */
 
 .contact-hero .container {
   position: relative;
@@ -211,16 +193,19 @@
 
 /* Contact Info Card */
 .contact-info-card {
-  background-color: white;
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
   padding: 2.5em 2em;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
   height: fit-content;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.8);
   direction: rtl;
   width: 100%;
   position: relative;
+  z-index: 2;
 }
 
 .contact-info-card:hover {
@@ -506,14 +491,17 @@
 
 /* Contact Form */
 .contact-form-card {
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
   padding: 2.5em 0 0 0;
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.8);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 2;
 }
 
 .contact-form-card:hover {
@@ -597,12 +585,13 @@
 .form-control {
   width: 100%;
   padding: 1rem 1.2rem;
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  border: 1px solid transparent;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px 8px 0 0;
   font-size: 1rem;
   transition: all 0.3s ease;
-  background-color: #f9f9f9;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  background-color: rgba(255, 255, 255, 0.5);
+  box-shadow: none;
   -webkit-appearance: none;
   appearance: none;
   touch-action: manipulation;
@@ -619,9 +608,9 @@
 
 .form-control:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.2);
-  background-color: white;
+  border-bottom-color: var(--primary);
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .form-control:hover {

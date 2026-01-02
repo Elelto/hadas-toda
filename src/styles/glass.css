@@ -1,0 +1,113 @@
+/* Glassmorphism & Soft UI Styles */
+
+:root {
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.8);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+    /* Subtle blue-ish shadow for premium feel */
+    --glass-blur: blur(12px);
+}
+
+/* Glass Card - The core component */
+.glass-card {
+    background: var(--glass-bg) !important;
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border) !important;
+    box-shadow: var(--glass-shadow) !important;
+    border-radius: 20px !important;
+    /* Softer, rounder corners */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.85) !important;
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.15) !important;
+}
+
+/* Darker glass for specific accents or footers if needed */
+.glass-card-dark {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+/* Soft Glow Buttons */
+.btn-soft-glow {
+    border: none !important;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    z-index: 1;
+}
+
+/* Primary Soft Glow - Brand Colors */
+.btn-soft-glow-primary {
+    background: var(--gradient-primary);
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(185, 123, 160, 0.4);
+}
+
+.btn-soft-glow-primary:hover {
+    box-shadow: 0 8px 25px rgba(185, 123, 160, 0.6);
+    transform: translateY(-2px);
+}
+
+/* Secondary/Outline Soft Glow - Brand Colors */
+.btn-soft-glow-outline {
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--primary-dark) !important;
+    border: 1px solid var(--primary) !important;
+    backdrop-filter: blur(4px);
+    font-weight: 600;
+}
+
+.btn-soft-glow-outline:hover {
+    background: white;
+    box-shadow: 0 4px 15px rgba(185, 123, 160, 0.2);
+    transform: translateY(-2px);
+    color: var(--primary-dark) !important;
+}
+
+/* Fix for Visual Card Text Visibility */
+.visual-card.main-card li {
+    color: #1a202c !important;
+    /* Very Dark Gray/Black */
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.check-icon {
+    background: rgba(185, 123, 160, 0.15) !important;
+    color: var(--primary-dark) !important;
+    font-weight: bold;
+}
+
+/* Fix for Stat Cards Visibility in Glass Mode */
+.glass-card .stat-number,
+.glass-card .number {
+    color: var(--primary-dark) !important;
+    text-shadow: none !important;
+}
+
+.glass-card .stat-label,
+.glass-card .text {
+    color: var(--dark-light) !important;
+    text-shadow: none !important;
+    font-weight: 500 !important;
+}
+
+/* Typography Softening */
+h1,
+h2,
+h3 {
+    letter-spacing: -0.02em;
+    /* Tighter, more modern */
+}
+
+.glass-text-highlight {
+    background: linear-gradient(120deg, rgba(161, 140, 209, 0.2) 0%, rgba(251, 194, 235, 0.2) 100%);
+    padding: 0 0.2em;
+    border-radius: 4px;
+}

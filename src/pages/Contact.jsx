@@ -4,6 +4,7 @@ import AOS from 'aos';
 import SEOHead from '../components/SEOHead';
 import { init, send } from '@emailjs/browser';
 import '../styles/contact.css';
+import AuroraBackground from '../components/AuroraBackground';
 import { FaPhone, FaWhatsapp, FaEnvelope, FaMapMarkerAlt, FaMap, FaFacebookF, FaInstagram, FaPlus, FaMinus, FaExternalLinkAlt } from 'react-icons/fa';
 
 // התחל את השירות של EmailJS עם המפתח הציבורי
@@ -289,6 +290,7 @@ export default function Contact() {
 
   return (
     <div className="contact-page">
+      <AuroraBackground />
       <SEOHead
         title="יצירת קשר"
         description="יצירת קשר עם הדס תודה - קלינאית תקשורת מוסמכת. קביעת פגישות, ייעוץ מקצועי וטיפול בגמגום, צרידות ובעיות קול. טלפון: 050-679-6209"
