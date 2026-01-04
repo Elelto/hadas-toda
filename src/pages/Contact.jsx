@@ -309,7 +309,7 @@ export default function Contact() {
         <section className="contact-section">
 
           <div className="contact-container">
-            <div className="contact-info-card" data-aos="fade-right">
+            <div className="contact-info-card" data-aos="fade-up">
               <div className="info-title-wrapper">
                 <h2 className="info-title" id="contact-details-title" data-aos="fade-up" data-aos-delay="200">{contactContent.contact_info?.title || "פרטי התקשרות"}</h2>
               </div>
@@ -374,7 +374,7 @@ export default function Contact() {
               </div>
             </div>
 
-            <div className="contact-form-card" data-aos="fade-left">
+            <div className="contact-form-card" data-aos="fade-up">
               <div className="form-title-wrapper">
                 <h2 className="form-title" data-aos="fade-up" data-aos-delay="200">{contactContent.form?.title || "שלח/י הודעה"}</h2>
               </div>
