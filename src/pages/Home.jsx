@@ -157,9 +157,9 @@ export default function Home() {
                 <Link to="/contact" className="bb-btn btn-soft-glow btn-soft-glow-primary">
                   {homeContent?.hero?.cta_text || 'קביעת פגישת ייעוץ'}
                 </Link>
-                <Link to="/ai-assessment" className="bb-btn btn-soft-glow btn-soft-glow-outline btn-with-badge">
+                {/* <Link to="/ai-assessment" className="bb-btn btn-soft-glow btn-soft-glow-outline btn-with-badge">
                   אבחון חכם <span className="badge-new">חדש!</span>
-                </Link>
+                </Link> */}
               </div>
             </div>
 

@@ -8,7 +8,7 @@ import '../styles/header.css';
 const getDefaultNavItems = () => [
   { path: '/', label: 'ראשי' },
   { path: '/services', label: 'תחומי טיפול' },
-  { path: '/ai-assessment', label: 'אבחון חכם', isNew: true },
+
   { path: '/about', label: 'קצת עליי' },
   { path: '/blog', label: 'בלוג מקצועי' },
   { path: '/testimonials', label: 'מטופלים מספרים' },
@@ -21,7 +21,7 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [headerContent, setHeaderContent] = useState(null);
   const [navItems, setNavItems] = useState(getDefaultNavItems());
-  
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -49,7 +49,9 @@ export default function Header() {
         if (content) {
           setHeaderContent(content);
           if (content.navigation?.items) {
-            setNavItems(content.navigation.items);
+            // Filter out 'ai-assessment' if it comes from YAML
+            const filteredItems = content.navigation.items.filter(item => item.path !== '/ai-assessment');
+            setNavItems(filteredItems);
           }
         }
       } catch (error) {
@@ -65,9 +67,9 @@ export default function Header() {
       <div className="container header-container">
         {/* Logo */}
         <Link to="/" className="logo-container">
-          <img 
-            src={logo} 
-            alt="הדס תודה לוגו" 
+          <img
+            src={logo}
+            alt="הדס תודה לוגו"
             className={`logo ${scrolled ? 'scrolled' : ''}`}
           />
           <div className="logo-text">
@@ -75,22 +77,22 @@ export default function Header() {
             <p className={`site-subtitle ${scrolled ? 'scrolled' : ''}`}>{headerContent?.site?.subtitle || "קלינאית תקשורת"}</p>
           </div>
         </Link>
-        
+
         {/* Mobile menu button */}
-        <button 
-          onClick={toggleMenu} 
+        <button
+          onClick={toggleMenu}
           className="mobile-menu-button"
           aria-label="תפריט"
         >
           {isMenuOpen ? '✕' : '☰'}
         </button>
-        
+
         {/* Desktop Navigation */}
         <nav className="desktop-nav">
           {navItems.map((item) => (
-            <Link 
+            <Link
               key={item.path}
-              to={item.path} 
+              to={item.path}
               className={`nav-link ${location.pathname === item.path ? 'active' : ''} ${item.isNew ? 'new-feature' : ''}`}
             >
               {item.label}
@@ -99,14 +101,14 @@ export default function Header() {
           ))}
         </nav>
       </div>
-      
+
       {/* Mobile Navigation */}
       {isMenuOpen && (
         <div className="mobile-nav">
           {navItems.map((item) => (
-            <Link 
+            <Link
               key={item.path}
-              to={item.path} 
+              to={item.path}
               className={`mobile-nav-link ${location.pathname === item.path ? 'active' : ''} ${item.isNew ? 'new-feature' : ''}`}
               onClick={() => setIsMenuOpen(false)}
             >
