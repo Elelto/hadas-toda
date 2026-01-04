@@ -5,7 +5,7 @@ import SEOHead from '../components/SEOHead';
 import { init, send } from '@emailjs/browser';
 import '../styles/contact.css';
 import AuroraBackground from '../components/AuroraBackground';
-import { FaPhone, FaWhatsapp, FaEnvelope, FaMapMarkerAlt, FaMap, FaFacebookF, FaInstagram, FaPlus, FaMinus, FaExternalLinkAlt } from 'react-icons/fa';
+import { FaPhone, FaWhatsapp, FaEnvelope, FaMapMarkerAlt, FaMap, FaFacebookF, FaInstagram, FaPlus, FaMinus, FaExternalLinkAlt, FaArrowLeft } from 'react-icons/fa';
 
 // התחל את השירות של EmailJS עם המפתח הציבורי
 init("l9xXgXVINGFdgI8KJ");
@@ -288,8 +288,20 @@ export default function Contact() {
     }
   };
 
+  // Mouse tracking for spotlight effect
+  const handleMouseMove = (e) => {
+    const cards = document.getElementsByClassName('bento-card');
+    for (const card of cards) {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
+    }
+  };
+
   return (
-    <div className="contact-page">
+    <div className="contact-page-bento" onMouseMove={handleMouseMove}>
       <AuroraBackground />
       <SEOHead
         title="יצירת קשר"
@@ -298,194 +310,154 @@ export default function Contact() {
         canonicalUrl="/contact"
         structuredData={structuredData}
       />
-      <div className="contact-hero">
+
+      <div className="bento-content-wrapper">
         <div className="container">
-          <h1 className="contact-title" data-aos="fade-down">{contactContent.hero?.title || "יצירת קשר"}</h1>
-          <p className="contact-subtitle" data-aos="fade-up" data-aos-delay="300">{contactContent.hero?.subtitle || "להתייעצות, שאלות או קביעת פגישה – אשמח לשוחח!"}</p>
+          <div className="bento-header text-center">
+            <h1 className="bento-title" data-aos="fade-down">{contactContent.hero?.title || "יצירת קשר"}</h1>
+            <p className="bento-subtitle" data-aos="fade-up" data-aos-delay="100">{contactContent.hero?.subtitle || "להתייעצות, שאלות או קביעת פגישה – אשמח לשוחח!"}</p>
+          </div>
+
+          <div className="bento-grid">
+            {/* 1. Main Form Card */}
+            <div className="bento-card form-card" data-aos="fade-up" data-aos-delay="200">
+              <div className="card-bg-effect"></div>
+              <div className="sound-wave-animation">
+                {[...Array(5)].map((_, i) => <div key={i} className="bar"></div>)}
+              </div>
+              <h2 className="card-title">{contactContent.form?.title || "שלח/י הודעה"}</h2>
+              <form className="bento-form" ref={form} onSubmit={handleSubmit}>
+                <div className="bento-form-row">
+                  <div className="form-group-bento">
+                    <label htmlFor="user_name">שם מלא</label>
+                    <input type="text" id="user_name" name="user_name" value={formData.user_name} onChange={handleChange} className={formErrors.user_name ? 'error' : ''} placeholder="שם מלא" />
+                  </div>
+                  <div className="form-group-bento">
+                    <label htmlFor="user_phone">טלפון</label>
+                    <input type="tel" id="user_phone" name="user_phone" value={formData.user_phone} onChange={handleChange} className={formErrors.user_phone ? 'error' : ''} placeholder="מספר טלפון" />
+                  </div>
+                </div>
+                <div className="form-group-bento">
+                  <label htmlFor="user_email">אימייל</label>
+                  <input type="email" id="user_email" name="user_email" value={formData.user_email} onChange={handleChange} className={formErrors.user_email ? 'error' : ''} placeholder="כתובת אימייל" />
+                </div>
+                <div className="form-group-bento full-height">
+                  <label htmlFor="message">הודעה</label>
+                  <textarea id="message" name="message" value={formData.message} onChange={handleChange} rows="4" className={formErrors.message ? 'error' : ''} placeholder="כיצד אוכל לעזור?"></textarea>
+                </div>
+
+                <input type="hidden" name="recipient_email" value="hadas.toda.info@gmail.com" />
+
+                <button type="submit" className={`bento-submit-btn ${loading ? 'loading' : ''}`} disabled={loading}>
+                  {loading ? 'שולח...' : 'שליחה'}
+                  <FaArrowLeft className="btn-icon" />
+                </button>
+
+                {success && <div className="bento-feedback success">ההודעה נשלחה בהצלחה!</div>}
+                {error && <div className="bento-feedback error">אירעה שגיאה בשליחה.</div>}
+              </form>
+            </div>
+
+            {/* 2. Phone Card */}
+            <a href={`tel:${contactContent.contact_info?.phone || "0506796209"}`} className="bento-card phone-card" data-aos="fade-up" data-aos-delay="300">
+              <div className="card-bg-effect"></div>
+              <div className="pop-out-icon phone-3d">
+                <FaPhone />
+              </div>
+              <div className="bento-card-content">
+                <span className="card-label">טלפון</span>
+                <span className="card-value">{contactContent.contact_info?.phone || "050-6796209"}</span>
+                <span className="card-action">חייג עכשיו</span>
+              </div>
+            </a>
+
+            {/* 3. WhatsApp Card */}
+            <a href={`https://wa.me/${contactContent.contact_info?.whatsapp || "972506796209"}`} target="_blank" rel="noopener noreferrer" className="bento-card whatsapp-card" data-aos="fade-up" data-aos-delay="400">
+              <div className="card-bg-effect"></div>
+              <div className="pop-out-icon whatsapp-3d">
+                <FaWhatsapp />
+              </div>
+              <div className="bento-card-content">
+                <span className="card-label">ווטסאפ</span>
+                <span className="card-value">זמינה לשיחה</span>
+                <span className="card-action">שלח הודעה</span>
+              </div>
+            </a>
+
+            {/* 4. Email Card */}
+            <a href={`mailto:${contactContent.contact_info?.email || "hadas.toda.info@gmail.com"}`} className="bento-card email-card" data-aos="fade-up" data-aos-delay="500">
+              <div className="card-bg-effect"></div>
+              <div className="pop-out-icon email-3d">
+                <FaEnvelope />
+              </div>
+              <div className="bento-card-content">
+                <span className="card-label">מייל</span>
+                <span className="card-value">hadas.toda.info@gmail.com</span>
+                <span className="card-action">כתוב לי</span>
+              </div>
+            </a>
+
+            {/* 5. Map Card */}
+            <div className="bento-card map-card" data-aos="fade-up" data-aos-delay="600">
+              <div className="card-bg-effect"></div>
+              <div className="map-overlay">
+                <div className="map-pin-3d">
+                  <FaMapMarkerAlt />
+                </div>
+                <div className="address-badge">
+                  {contactContent.contact_info?.address || "שיכון ג', בני ברק"}
+                </div>
+              </div>
+              <iframe
+                title="מיקום הקליניקה"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13520.846147508547!2d34.82549323022461!3d32.08510975!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x151d4a3f1f2b099d%3A0x2677dd5d196b8718!2z16nXmdeZ15XXnyDXkSfigJwsINeR16DXmSDXkdeo16c!5e0!3m2!1siw!2sil!4v1717998118455!5m2!1siw!2sil"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </div>
+
+            {/* 6. Social Card */}
+            <div className="bento-card social-card" data-aos="fade-up" data-aos-delay="700">
+              <div className="card-bg-effect"></div>
+              <div className="social-content">
+                <span className="social-label">עקבו אחרי</span>
+                <div className="social-icons-wrapper">
+                  <a href={contactContent.contact_info?.social?.facebook || "https://www.facebook.com/profile.php?id=61566802899787"} target="_blank" rel="noopener noreferrer" className="social-btn facebook">
+                    <FaFacebookF />
+                  </a>
+                  <a href={contactContent.contact_info?.social?.instagram || "https://www.instagram.com/hadas_toda/"} target="_blank" rel="noopener noreferrer" className="social-btn instagram">
+                    <FaInstagram />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       <div className="container">
-        <section className="contact-section">
-
-          <div className="contact-container">
-            <div className="contact-info-card" data-aos="fade-up">
-              <div className="info-title-wrapper">
-                <h2 className="info-title" id="contact-details-title" data-aos="fade-up" data-aos-delay="200">{contactContent.contact_info?.title || "פרטי התקשרות"}</h2>
-              </div>
-
-              <div className="contact-details" data-aos="fade-up" data-aos-delay="400">
-                <div className="contact-item">
-                  <div className="contact-icon icon-phone"><FaPhone /></div>
-                  <div className="contact-text">
-                    <span className="contact-label">טלפון</span>
-                    <a href={`tel:${contactContent.contact_info?.phone || "0506796209"}`} className="contact-link">{contactContent.contact_info?.phone || "050-6796209"}</a>
-                  </div>
+        <section className="organic-faq-section" data-aos="fade-up">
+          <h2 className="organic-section-title text-center">{contactContent.faq_title || contactContent.faq?.title || "שאלות נפוצות"}</h2>
+          <div className="organic-faq-grid">
+            {(contactContent.faq_items || contactContent.faq?.items)?.map((faqItem, index) => (
+              <div key={index} className={`organic-faq-item ${openFaq === index ? 'active' : ''}`} onClick={() => toggleFaq(index)}>
+                <div className="faq-head">
+                  <span className="question-text">{faqItem.question}</span>
+                  <span className="toggle-icon">{openFaq === index ? '−' : '+'}</span>
                 </div>
-
-                <div className="contact-item">
-                  <div className="contact-icon icon-whatsapp"><FaWhatsapp /></div>
-                  <div className="contact-text">
-                    <span className="contact-label">ווטסאפ</span>
-                    <a href={`https://wa.me/${contactContent.contact_info?.whatsapp || "972506796209"}`} target="_blank" rel="noopener noreferrer" className="contact-link contact-link-whatsapp">שלח/י הודעה <span className="whatsapp-icon"><FaExternalLinkAlt size={12} /></span></a>
-                  </div>
-                </div>
-
-                <div className="contact-item">
-                  <div className="contact-icon icon-email"><FaEnvelope /></div>
-                  <div className="contact-text">
-                    <span className="contact-label">מייל</span>
-                    <a href={`mailto:${contactContent.contact_info?.email || "hadas.toda.info@gmail.com"}`} className="contact-link">{contactContent.contact_info?.email || "hadas.toda.info@gmail.com"}</a>
-                  </div>
-                </div>
-
-                <div className="contact-item">
-                  <div className="contact-icon icon-map"><FaMapMarkerAlt /></div>
-                  <div className="contact-text">
-                    <span className="contact-label">כתובת</span>
-                    <a href={contactContent.contact_info?.map_url || "https://maps.google.com/?q=שיכון+ג+בני+ברק"} target="_blank" rel="noopener noreferrer" className="contact-link location-link">{contactContent.contact_info?.address || "שיכון ג', בני ברק"} <span className="map-icon"><FaMap /></span></a>
-                  </div>
-                </div>
-
-                <div className="contact-map" data-aos="zoom-in" data-aos-delay="600">
-                  <iframe
-                    title="מיקום הקליניקה"
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13520.846147508547!2d34.82549323022461!3d32.08510975!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x151d4a3f1f2b099d%3A0x2677dd5d196b8718!2z16nXmdeZ15XXnyDXkSfigJwsINeR16DXmSDXkdeo16c!5e0!3m2!1siw!2sil!4v1717998118455!5m2!1siw!2sil"
-                    width="100%"
-                    height="200"
-                    style={{ border: 0, borderRadius: '8px', marginTop: '1.5rem' }}
-                    allowFullScreen=""
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                  ></iframe>
-                </div>
-
-                <div className="contact-social" data-aos="fade-up" data-aos-delay="800">
-                  <h3 className="social-title">עקבו אחרי</h3>
-                  <div className="social-links">
-                    <a href={contactContent.contact_info?.social?.facebook || "https://www.facebook.com/profile.php?id=61566802899787"} target="_blank" rel="noopener noreferrer" className="social-link social-facebook" aria-label="פייסבוק">
-                      <div className="social-icon"><FaFacebookF /></div>
-                    </a>
-                    <a href={contactContent.contact_info?.social?.instagram || "https://www.instagram.com/hadas_toda/"} target="_blank" rel="noopener noreferrer" className="social-link social-instagram" aria-label="אינסטגרם">
-                      <div className="social-icon"><FaInstagram /></div>
-                    </a>
-                  </div>
+                <div className="faq-body">
+                  <p>{faqItem.answer}</p>
                 </div>
               </div>
-            </div>
-
-            <div className="contact-form-card" data-aos="fade-up">
-              <div className="form-title-wrapper">
-                <h2 className="form-title" data-aos="fade-up" data-aos-delay="200">{contactContent.form?.title || "שלח/י הודעה"}</h2>
-              </div>
-              <form className="contact-form" ref={form} onSubmit={handleSubmit} data-aos="fade-up" data-aos-delay="400">
-                <div className="form-group">
-                  <label htmlFor="user_name" className="form-label">שם</label>
-                  <input
-                    type="text"
-                    id="user_name"
-                    name="user_name"
-                    className={`form-control ${formErrors.user_name ? 'is-invalid' : ''}`}
-                    value={formData.user_name}
-                    onChange={handleChange}
-                  />
-                  {formErrors.user_name && <div className="form-error">{formErrors.user_name}</div>}
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="user_email" className="form-label">אימייל</label>
-                  <input
-                    type="email"
-                    id="user_email"
-                    name="user_email"
-                    className={`form-control ${formErrors.user_email ? 'is-invalid' : ''}`}
-                    value={formData.user_email}
-                    onChange={handleChange}
-                  />
-                  {formErrors.user_email && <div className="form-error">{formErrors.user_email}</div>}
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="user_phone" className="form-label">טלפון <span className="optional-field">(אופציונלי)</span></label>
-                  <input
-                    type="tel"
-                    id="user_phone"
-                    name="user_phone"
-                    className={`form-control ${formErrors.user_phone ? 'is-invalid' : ''}`}
-                    value={formData.user_phone}
-                    onChange={handleChange}
-                    placeholder="050-1234567"
-                  />
-                  {formErrors.user_phone && <div className="form-error">{formErrors.user_phone}</div>}
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="message" className="form-label">הודעה</label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    className={`form-control ${formErrors.message ? 'is-invalid' : ''}`}
-                    rows="4"
-                    value={formData.message}
-                    onChange={handleChange}
-                    placeholder="אנא כתבו את הודעתכם כאן..."
-                  ></textarea>
-                  {formErrors.message && <div className="form-error">{formErrors.message}</div>}
-                </div>
-
-                {/* שדה נסתר לכתובת המייל של היעד */}
-                <input type="hidden" name="recipient_email" value="hadas.toda.info@gmail.com" />
-
-                <button type="submit" className={`btn form-submit ${loading ? 'loading' : ''}`} disabled={loading}>
-                  <span className="btn-text">{loading ? 'שולח...' : 'שלח/י הודעה'}</span>
-                  {loading && <span className="spinner"></span>}
-                </button>
-
-                {success && (
-                  <div className="form-feedback success">
-                    <div className="feedback-icon">✓</div>
-                    <div className="feedback-message">
-                      <strong>ההודעה נשלחה בהצלחה!</strong>
-                      <p>תודה על פנייתך, אחזור אליך בהקדם.</p>
-                    </div>
-                  </div>
-                )}
-
-                {error && (
-                  <div className="form-feedback error">
-                    <div className="feedback-icon">!</div>
-                    <div className="feedback-message">
-                      <strong>אירעה שגיאה בשליחת ההודעה</strong>
-                      <p>אנא נסו שוב מאוחר יותר או צרו קשר באמצעי אחר.</p>
-                    </div>
-                  </div>
-                )}
-              </form>
-            </div>
-          </div>
-        </section>
-
-        <section className="faq-section">
-          <div className="container">
-            <div className="faq-title-wrapper">
-              <h2 className="faq-title" data-aos="fade-up">{contactContent.faq_title || "שאלות נפוצות"}</h2>
-            </div>
-            <div className="faq-container" data-aos="fade-up" data-aos-delay="200">
-              {contactContent.faq_items?.map((faqItem, index) => (
-                <div key={index} className={`faq-item ${openFaq === index ? 'active' : ''}`} onClick={() => toggleFaq(index)}>
-                  <div className="faq-question">
-                    <span>{faqItem.question}</span>
-                    <div className="faq-icon">{openFaq === index ? <FaMinus /> : <FaPlus />}</div>
-                  </div>
-                  <div className="faq-answer">
-                    <p>{faqItem.answer}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+            ))}
           </div>
         </section>
       </div>
     </div>
   );
 }
+
