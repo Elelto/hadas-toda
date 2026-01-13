@@ -1,19 +1,120 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import SEOHead from '../components/SEOHead';
 import StructuredData from '../components/StructuredData';
 import AOS from 'aos';
 import '../styles/bnei-brak.css';
+import { init, send } from '@emailjs/browser';
+import '../styles/contact.css';
+import { FaPhone, FaWhatsapp, FaEnvelope, FaMapMarkerAlt, FaFacebookF, FaInstagram, FaArrowLeft } from 'react-icons/fa';
+
+// Initialize EmailJS
+init("l9xXgXVINGFdgI8KJ");
 
 const BneiBrak = () => {
   const [activeAccordion, setActiveAccordion] = useState(null);
 
+  // Form State
+  const form = useRef();
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
+  const [formData, setFormData] = useState({
+    user_name: '',
+    user_email: '',
+    user_phone: '',
+    message: ''
+  });
+  const [formErrors, setFormErrors] = useState({});
+
   useEffect(() => {
     window.scrollTo(0, 0);
-    // Refresh AOS to detect new elements
     setTimeout(() => {
       AOS.refresh();
     }, 100);
   }, []);
+
+  // Form Handlers
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    if (formErrors[name]) {
+      setFormErrors(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    if (!formData.user_name.trim()) errors.user_name = 'נא להזין שם';
+    if (!formData.user_email.trim()) errors.user_email = 'נא להזין כתובת אימייל';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.user_email)) errors.user_email = 'כתובת האימייל אינה תקינה';
+    if (formData.user_phone.trim() && !/^0[2-9]\d{7,8}$/.test(formData.user_phone)) errors.user_phone = 'מספר הטלפון אינו תקין';
+    if (!formData.message.trim()) errors.message = 'נא להזין הודעה';
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    setLoading(true);
+    setSuccess(false);
+    setError(false);
+
+    const serviceID = 'service_zm8sd32';
+    const templateID = 'template_abcdxis';
+    const publicKey = 'l9xXgXVINGFdgI8KJ';
+
+    const mainParams = {
+      to_name: 'הדס תודה',
+      user_name: formData.user_name,
+      user_email: formData.user_email,
+      user_phone: formData.user_phone || 'לא צוין',
+      message: formData.message,
+      to_email: 'hadas.toda.info@gmail.com',
+      email: 'hadas.toda.info@gmail.com',
+      recipient: 'hadas.toda.info@gmail.com',
+      reply_to: formData.user_email
+    };
+
+    send(serviceID, templateID, mainParams, publicKey)
+      .then(() => {
+        // Auto-reply
+        const replyParams = {
+          user_name: formData.user_name,
+          user_email: formData.user_email,
+          user_phone: formData.user_phone || 'לא צוין',
+          message: formData.message,
+          to_name: formData.user_name,
+          to_email: formData.user_email,
+          email: formData.user_email,
+          reply_to: 'hadas.toda.info@gmail.com'
+        };
+        send(serviceID, 'template_vmm0l2g', replyParams, publicKey)
+          .catch(err => console.error('Reply error:', err));
+
+        setSuccess(true);
+        setLoading(false);
+        setFormData({ user_name: '', user_email: '', user_phone: '', message: '' });
+      })
+      .catch((err) => {
+        console.error('Send error:', err);
+        setError(true);
+        setLoading(false);
+      });
+  };
+
+  // Mouse tracking for spotlight effect
+  const handleMouseMove = (e) => {
+    const cards = document.getElementsByClassName('bento-card');
+    for (const card of cards) {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
+    }
+  };
 
   const seoData = {
     title: "קלינאית תקשורת בבני ברק | הדס תודה M.A - אבחון וטיפול מקצועי",
@@ -29,7 +130,7 @@ const BneiBrak = () => {
       icon: "🗣️"
     },
     {
-      title: "טיפול בצרידות וקול", 
+      title: "טיפול בצרידות וקול",
       description: "אבחון ושיקום קולי לסובלים מצרידות כרונית, יבלות, פוליפים או עייפות קולית. התמחות מיוחדת בטיפול באנשי מקצוע הקול: מורים, גננות, מרצים, חזנים וזמרים.",
       icon: "🎵"
     },
@@ -86,19 +187,23 @@ const BneiBrak = () => {
     setActiveAccordion(activeAccordion === index ? null : index);
   };
 
-  const clinicInfo = {
-    location: "שיכון ג', בני ברק",
+  const contactInfo = {
     phone: "050-679-6209",
+    whatsapp: "972506796209",
     email: "hadas.toda.info@gmail.com",
-    areas: ["בני ברק", "רמת גן", "גבעתיים", "פתח תקווה", "תל אביב"]
+    address: "שיכון ג', בני ברק",
+    social: {
+      facebook: "https://www.facebook.com/profile.php?id=61566802899787",
+      instagram: "https://www.instagram.com/hadas_toda/"
+    }
   };
 
   return (
     <>
       <SEOHead {...seoData} />
       <StructuredData type="services" />
-      
-      <div className="bnei-brak-page-v2">
+
+      <div className="bnei-brak-page-v2" onMouseMove={handleMouseMove}>
         {/* Modern Hero Section */}
         <section className="bb-hero">
           <div className="bb-hero-overlay"></div>
@@ -150,7 +255,7 @@ const BneiBrak = () => {
               <div className="header-underline"></div>
               <p>מעטפת טיפולית מקצועית המותאמת לצרכים האישיים שלך</p>
             </div>
-            
+
             <div className="bb-services-grid">
               {services.map((service, index) => (
                 <div key={index} className="bb-service-card" data-aos="fade-up" data-aos-delay={index * 100}>
@@ -170,7 +275,7 @@ const BneiBrak = () => {
               <div className="bb-about-visual">
                 <div className="visual-decoration circle-bg"></div>
                 <div className="visual-decoration dots"></div>
-                
+
                 <div className="visual-card main-card">
                   <h3><span className="icon">✨</span> הגישה הטיפולית</h3>
                   <ul>
@@ -192,7 +297,7 @@ const BneiBrak = () => {
                     </li>
                   </ul>
                 </div>
-                
+
                 <div className="visual-card stat-card">
                   <span className="number">100%</span>
                   <span className="text">מחויבות להצלחה</span>
@@ -248,8 +353,8 @@ const BneiBrak = () => {
             </div>
             <div className="faq-container">
               {faqs.map((faq, index) => (
-                <div 
-                  key={index} 
+                <div
+                  key={index}
                   className={`faq-item ${activeAccordion === index ? 'active' : ''}`}
                   onClick={() => toggleAccordion(index)}
                 >
@@ -266,49 +371,128 @@ const BneiBrak = () => {
           </div>
         </section>
 
-        {/* Contact / CTA Section */}
-        <section id="contact" className="bb-contact section-padding">
+        {/* Contact / Benton Grid Section */}
+        <section id="contact" className="contact-page-bento section-padding">
           <div className="container">
-            <div className="contact-box-wrapper" data-aos="fade-up">
-              <div className="contact-details">
-                <h2>בואו נדבר</h2>
-                <p>אני מזמינה אתכם ליצור קשר להתייעצות ראשונית או לתיאום תור.</p>
-                
-                <div className="contact-list">
-                  <div className="contact-item">
-                    <span className="icon">📍</span>
-                    <div>
-                      <strong>כתובת הקליניקה:</strong>
-                      <p>{clinicInfo.location}</p>
+            <div className="bento-header text-center">
+              <h2 className="bento-title" style={{ fontSize: '3rem' }}>בואו נדבר</h2>
+              <p className="bento-subtitle">אני מזמינה אותך ליצור קשר להתייעצות ראשונית או לתיאום תור</p>
+            </div>
+
+            <div className="bento-grid">
+              {/* 1. Main Form Card */}
+              <div className="bento-card form-card" data-aos="fade-up">
+                <div className="card-bg-effect"></div>
+                <div className="sound-wave-animation">
+                  {[...Array(5)].map((_, i) => <div key={i} className="bar"></div>)}
+                </div>
+                <h2 className="card-title">שלח/י הודעה</h2>
+                <form className="bento-form" ref={form} onSubmit={handleSubmit}>
+                  <div className="bento-form-row">
+                    <div className="form-group-bento">
+                      <label htmlFor="user_name">שם מלא</label>
+                      <input type="text" id="user_name" name="user_name" value={formData.user_name} onChange={handleChange} className={formErrors.user_name ? 'error' : ''} placeholder="שם מלא" />
+                    </div>
+                    <div className="form-group-bento">
+                      <label htmlFor="user_phone">טלפון</label>
+                      <input type="tel" id="user_phone" name="user_phone" value={formData.user_phone} onChange={handleChange} className={formErrors.user_phone ? 'error' : ''} placeholder="מספר טלפון" />
                     </div>
                   </div>
-                  <div className="contact-item">
-                    <span className="icon">📞</span>
-                    <div>
-                      <strong>טלפון:</strong>
-                      <p><a href={`tel:+972${clinicInfo.phone.replace(/-/g, '')}`}>{clinicInfo.phone}</a></p>
-                    </div>
+                  <div className="form-group-bento">
+                    <label htmlFor="user_email">אימייל</label>
+                    <input type="email" id="user_email" name="user_email" value={formData.user_email} onChange={handleChange} className={formErrors.user_email ? 'error' : ''} placeholder="כתובת אימייל" />
                   </div>
-                  <div className="contact-item">
-                    <span className="icon">✉️</span>
-                    <div>
-                      <strong>דוא"ל:</strong>
-                      <p><a href={`mailto:${clinicInfo.email}`}>{clinicInfo.email}</a></p>
-                    </div>
+                  <div className="form-group-bento full-height">
+                    <label htmlFor="message">הודעה</label>
+                    <textarea id="message" name="message" value={formData.message} onChange={handleChange} rows="4" className={formErrors.message ? 'error' : ''} placeholder="כיצד אוכל לעזור?"></textarea>
+                  </div>
+
+                  <input type="hidden" name="recipient_email" value="hadas.toda.info@gmail.com" />
+
+                  <button type="submit" className={`bento-submit-btn ${loading ? 'loading' : ''}`} disabled={loading}>
+                    {loading ? 'שולח...' : 'שליחה'}
+                    <FaArrowLeft className="btn-icon" />
+                  </button>
+
+                  {success && <div className="bento-feedback success">ההודעה נשלחה בהצלחה!</div>}
+                  {error && <div className="bento-feedback error">אירעה שגיאה בשליחה.</div>}
+                </form>
+              </div>
+
+              {/* 2. Phone Card */}
+              <a href={`tel:${contactInfo.phone}`} className="bento-card phone-card" data-aos="fade-up" data-aos-delay="100">
+                <div className="card-bg-effect"></div>
+                <div className="pop-out-icon phone-3d">
+                  <FaPhone />
+                </div>
+                <div className="bento-card-content">
+                  <span className="card-label">טלפון</span>
+                  <span className="card-value">{contactInfo.phone}</span>
+                  <span className="card-action">חייג עכשיו</span>
+                </div>
+              </a>
+
+              {/* 3. WhatsApp Card */}
+              <a href={`https://wa.me/${contactInfo.whatsapp}`} target="_blank" rel="noopener noreferrer" className="bento-card whatsapp-card" data-aos="fade-up" data-aos-delay="200">
+                <div className="card-bg-effect"></div>
+                <div className="pop-out-icon whatsapp-3d">
+                  <FaWhatsapp />
+                </div>
+                <div className="bento-card-content">
+                  <span className="card-label">ווטסאפ</span>
+                  <span className="card-value">זמינה לשיחה</span>
+                  <span className="card-action">שלח הודעה</span>
+                </div>
+              </a>
+
+              {/* 4. Email Card */}
+              <a href={`mailto:${contactInfo.email}`} className="bento-card email-card" data-aos="fade-up" data-aos-delay="300">
+                <div className="card-bg-effect"></div>
+                <div className="pop-out-icon email-3d">
+                  <FaEnvelope />
+                </div>
+                <div className="bento-card-content">
+                  <span className="card-label">מייל</span>
+                  <span className="card-value">hadas.toda.info@gmail.com</span>
+                  <span className="card-action">כתוב לי</span>
+                </div>
+              </a>
+
+              {/* 5. Map Card */}
+              <div className="bento-card map-card" data-aos="fade-up" data-aos-delay="400">
+                <div className="card-bg-effect"></div>
+                <div className="map-overlay">
+                  <div className="map-pin-3d">
+                    <FaMapMarkerAlt />
+                  </div>
+                  <div className="address-badge">
+                    {contactInfo.address}
                   </div>
                 </div>
+                <iframe
+                  title="מיקום הקליניקה"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13520.846147508547!2d34.82549323022461!3d32.08510975!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x151d4a3f1f2b099d%3A0x2677dd5d196b8718!2z16nXmdeZ15XXnyDXkSfigJwsINeR16DXmSDXkdeo16c!5e0!3m2!1siw!2sil!4v1717998118455!5m2!1siw!2sil"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen=""
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                ></iframe>
               </div>
-              
-              <div className="contact-map-area">
-                <div className="map-placeholder">
-                  {/* אפשר להוסיף כאן מפה אמיתית של גוגל בעתיד */}
-                  <div className="map-card">
-                    <h3>אזורי שירות</h3>
-                    <div className="tags-cloud">
-                      {clinicInfo.areas.map((area, i) => (
-                        <span key={i} className="area-tag">{area}</span>
-                      ))}
-                    </div>
+
+              {/* 6. Social Card */}
+              <div className="bento-card social-card" data-aos="fade-up" data-aos-delay="500">
+                <div className="card-bg-effect"></div>
+                <div className="social-content">
+                  <span className="social-label">עקבו אחרי</span>
+                  <div className="social-icons-wrapper">
+                    <a href={contactInfo.social.facebook} target="_blank" rel="noopener noreferrer" className="social-btn facebook">
+                      <FaFacebookF />
+                    </a>
+                    <a href={contactInfo.social.instagram} target="_blank" rel="noopener noreferrer" className="social-btn instagram">
+                      <FaInstagram />
+                    </a>
                   </div>
                 </div>
               </div>
