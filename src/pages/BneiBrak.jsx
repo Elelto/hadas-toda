@@ -61,6 +61,18 @@ const BneiBrak = () => {
     setSuccess(false);
     setError(false);
 
+    // קבלת תאריך ושעה נוכחיים
+    const now = new Date();
+    const currentDate = now.toLocaleDateString('he-IL', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    const currentTime = now.toLocaleTimeString('he-IL', { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+
     const serviceID = 'service_zm8sd32';
     const templateID = 'template_abcdxis';
     const publicKey = 'l9xXgXVINGFdgI8KJ';
@@ -71,6 +83,8 @@ const BneiBrak = () => {
       user_email: formData.user_email,
       user_phone: formData.user_phone || 'לא צוין',
       message: formData.message,
+      current_date: currentDate,
+      current_time: currentTime,
       to_email: 'hadas.toda.info@gmail.com',
       email: 'hadas.toda.info@gmail.com',
       recipient: 'hadas.toda.info@gmail.com',

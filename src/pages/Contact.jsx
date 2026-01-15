@@ -161,6 +161,18 @@ export default function Contact() {
     const phone = formData.user_phone;
     const message = formData.message;
 
+    // קבלת תאריך ושעה נוכחיים
+    const now = new Date();
+    const currentDate = now.toLocaleDateString('he-IL', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    const currentTime = now.toLocaleTimeString('he-IL', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
     // הגדרת פרטי EmailJS
     const serviceID = 'service_zm8sd32';
     const templateID = 'template_abcdxis';
@@ -173,6 +185,8 @@ export default function Contact() {
       user_email: email,
       user_phone: phone || 'לא צוין',
       message: message,
+      current_date: currentDate,
+      current_time: currentTime,
       to_email: 'hadas.toda.info@gmail.com', // כתובת נמען מפורשת
       email: 'hadas.toda.info@gmail.com',     // ניסיון נוסף לכתובת בפורמט אחר
       recipient: 'hadas.toda.info@gmail.com',  // ניסיון נוסף
