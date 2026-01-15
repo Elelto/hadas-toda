@@ -3,8 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist",
     "dev": "node scripts/sync-content.js && vite",
     "update-blog": "node scripts/update-blog-data.js",
     "prebuild": "npm run update-blog && node scripts/generate-sitemap.js",
@@ -37,7 +35,6 @@
     "@vheemstra/vite-plugin-imagemin": "^2.2.1",
     "@vitejs/plugin-react": "^4.0.0",
     "concurrently": "^8.2.2",
-    "gh-pages": "^6.3.0",
     "netlify-cms-proxy-server": "^1.3.24",
     "sharp": "^0.34.5",
     "stylelint-config-standard": "^38.0.0",
