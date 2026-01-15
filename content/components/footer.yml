@@ -1,0 +1,10 @@
+copyright: "© 2024 הדס תודה - קלינאית תקשורת. כל הזכויות שמורות."
+links:
+  - name: "בית"
+    path: "/"
+  - name: "אודות"
+    path: "/about"
+  - name: "שירותים"
+    path: "/services"
+  - name: "יצירת קשר"
+    path: "/contact"

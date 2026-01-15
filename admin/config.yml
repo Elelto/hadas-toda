@@ -1,0 +1,199 @@
+# הגדרות בסיסיות
+backend:
+  name: git-gateway
+  branch: main
+  site_domain: hadas-toda.netlify.app
+  commit_messages:
+    create: 'Create {{collection}} "{{slug}}"'
+    update: 'Update {{collection}} "{{slug}}"'
+    delete: 'Delete {{collection}} "{{slug}}"'
+    uploadMedia: 'Upload "{{path}}"'
+    deleteMedia: 'Delete "{{path}}"'
+
+# הגדרת בדיקה מקומית ללא צורך בהתחברות
+local_backend:
+  url: http://localhost:8081/api/v1
+
+# הגדרות פיתוח - מניעת הפניה לאתר החי
+display_url: http://localhost:5173
+site_url: https://hadas-toda.co.il
+logo_url: http://localhost:5173/favicon/logo.png
+
+# הגדרות מדיה
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+# הגדרת שפה
+locale: 'he'
+
+# הגדרות עורך
+slug:
+  encoding: "ascii"
+  clean_accents: true
+
+# אוספים
+collections:
+  - name: "blog"
+    label: "פוסטים בבלוג"
+    folder: "src/content/blog"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "כותרת", name: "title", widget: "string" }
+      - { label: "תאריך פרסום", name: "date", widget: "datetime" }
+      - { label: "תקציר", name: "excerpt", widget: "text" }
+      - { label: "תמונת נושא", name: "image", widget: "image" }
+      - { label: "קטגוריות", name: "categories", widget: "list", required: false }
+      - { label: "תוכן הפוסט", name: "body", widget: "markdown" }
+
+  # עריכת תכני האתר
+  - name: "pages"
+    label: "דפי האתר"
+    files:
+      - name: "home"
+        label: "דף הבית"
+        file: "src/content/pages/home.yml"
+        fields:
+          - label: "סקציית הגיבור"
+            name: "hero"
+            widget: "object"
+            fields:
+              - { label: "כותרת ראשית", name: "title", widget: "string" }
+              - { label: "כותרת משנה", name: "subtitle", widget: "string" }
+              - { label: "תיאור", name: "description", widget: "text" }
+              - { label: "טקסט כפתור ייעוץ", name: "cta_text", widget: "string" }
+              - { label: "טקסט כפתור שירותים", name: "services_text", widget: "string" }
+          
+          - label: "סקציית המלצות"
+            name: "testimonials"
+            widget: "object"
+            fields:
+              - { label: "כותרת", name: "title", widget: "string" }
+              - { label: "כותרת משנה", name: "subtitle", widget: "string" }
+              - label: "המלצות"
+                name: "items"
+                widget: "list"
+                fields:
+                  - { label: "ציטוט", name: "quote", widget: "text" }
+                  - { label: "שם המליץ", name: "author", widget: "string" }
+          
+          - label: "סקציית שירותים"
+            name: "services"
+            widget: "object"
+            fields:
+              - { label: "כותרת", name: "title", widget: "string" }
+              - { label: "כותרת משנה", name: "subtitle", widget: "string" }
+              - label: "שירותי קול"
+                name: "voice_services"
+                widget: "list"
+                fields:
+                  - { label: "שם השירות", name: "name", widget: "string" }
+              - label: "שירותי שפה ודיבור"
+                name: "speech_services"
+                widget: "list"
+                fields:
+                  - { label: "שם השירות", name: "name", widget: "string" }
+          
+          - label: "סקציית אודות"
+            name: "about"
+            widget: "object"
+            fields:
+              - { label: "כותרת", name: "title", widget: "string" }
+              - { label: "פסקה 1", name: "paragraph1", widget: "text" }
+              - { label: "פסקה 2", name: "paragraph2", widget: "text" }
+              - { label: "פסקה 3", name: "paragraph3", widget: "text" }
+          
+          - label: "סקציית בלוג"
+            name: "blog_section"
+            widget: "object"
+            fields:
+              - { label: "כותרת", name: "title", widget: "string" }
+              - { label: "כותרת משנה", name: "subtitle", widget: "string" }
+
+      - name: "about"
+        label: "דף אודות"
+        file: "src/content/pages/about.yml"
+        fields:
+          - { label: "כותרת ראשית", name: "title", widget: "string" }
+          - { label: "כותרת משנה", name: "subtitle", widget: "string" }
+          - { label: "פסקה 1", name: "paragraph1", widget: "text" }
+          - { label: "פסקה 2", name: "paragraph2", widget: "text" }
+          - { label: "פסקה 3", name: "paragraph3", widget: "text" }
+          - { label: "פסקה מודגשת", name: "highlight", widget: "text" }
+          - { label: "כותרת הכשרות", name: "qualifications_title", widget: "string" }
+          - label: "רשימת הכשרות"
+            name: "qualifications"
+            widget: "list"
+            fields:
+              - { label: "הכשרה", name: "item", widget: "string" }
+          - { label: "כותרת השתלמויות", name: "courses_title", widget: "string" }
+          - label: "רשימת השתלמויות"
+            name: "courses"
+            widget: "list"
+            fields:
+              - { label: "שם ההשתלמות", name: "name", widget: "string" }
+              - { label: "מרצה", name: "instructor", widget: "string" }
+          - { label: "ציטוט", name: "quote", widget: "text" }
+
+      - name: "services"
+        label: "דף שירותים"
+        file: "src/content/pages/services.yml"
+        fields:
+          - { label: "כותרת ראשית", name: "title", widget: "string" }
+          - { label: "כותרת משנה", name: "subtitle", widget: "string" }
+          - label: "שירותים"
+            name: "services"
+            widget: "list"
+            fields:
+              - { label: "שם השירות", name: "title", widget: "string" }
+              - { label: "תיאור", name: "description", widget: "text" }
+          - { label: "כותרת תהליך הטיפול", name: "process_title", widget: "string" }
+          - label: "שלבי הטיפול"
+            name: "process_steps"
+            widget: "list"
+            fields:
+              - { label: "כותרת השלב", name: "title", widget: "string" }
+              - { label: "תיאור השלב", name: "description", widget: "string" }
+
+      - name: "contact"
+        label: "דף יצירת קשר"
+        file: "src/content/pages/contact.yml"
+        fields:
+          - { label: "כותרת ראשית", name: "title", widget: "string" }
+          - { label: "כותרת משנה", name: "subtitle", widget: "string" }
+          - { label: "כותרת פרטי התקשרות", name: "contact_details_title", widget: "string" }
+          - { label: "כותרת טופס", name: "form_title", widget: "string" }
+          - { label: "כותרת שאלות נפוצות", name: "faq_title", widget: "string" }
+          - label: "שאלות נפוצות"
+            name: "faq_items"
+            widget: "list"
+            fields:
+              - { label: "שאלה", name: "question", widget: "string" }
+              - { label: "תשובה", name: "answer", widget: "text" }
+
+  # עריכת רכיבי ממשק
+  - name: "components"
+    label: "רכיבי ממשק"
+    files:
+      - name: "header"
+        label: "תפריט עליון"
+        file: "src/content/components/header.yml"
+        fields:
+          - label: "פריטי תפריט"
+            name: "menu_items"
+            widget: "list"
+            fields:
+              - { label: "שם הקישור", name: "name", widget: "string" }
+              - { label: "כתובת", name: "path", widget: "string" }
+
+      - name: "footer"
+        label: "תחתית האתר"
+        file: "src/content/components/footer.yml"
+        fields:
+          - { label: "טקסט זכויות יוצרים", name: "copyright", widget: "string" }
+          - label: "קישורים"
+            name: "links"
+            widget: "list"
+            fields:
+              - { label: "שם הקישור", name: "name", widget: "string" }
+              - { label: "כתובת", name: "path", widget: "string" }

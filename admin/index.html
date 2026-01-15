@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ניהול תוכן - הדס תודה</title>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./admin-rtl.css">
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <!-- הוספת אייקונים מ-Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+<body>
+  <!-- האלמנט הזה חיוני לרנדור של ה-CMS -->
+  <div id="nc-root"></div>
+
+  <!-- טעינת ה-CMS עם הגדרות מותאמות -->
+  <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+  <script src="./preview-templates.js"></script>
+  <script>
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", user => {
+        if (!user) {
+          window.netlifyIdentity.on("login", () => {
+            // Stay on localhost after login
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+              document.location.href = "http://localhost:5173/admin/";
+            } else {
+              document.location.href = "/admin/";
+            }
+          });
+        }
+      });
+    }
+    
+    // הוספת אנימציה לטעינה
+    document.addEventListener('DOMContentLoaded', function() {
+      const root = document.getElementById('nc-root');
+      if (root) {
+        const loadingEl = document.createElement('div');
+        loadingEl.className = 'custom-loading';
+        loadingEl.innerHTML = '<div class="spinner"></div><p>טוען את ממשק הניהול...</p>';
+        root.appendChild(loadingEl);
+        
+        // הסרת האנימציה לאחר טעינת הממשק
+        setTimeout(() => {
+          if (loadingEl.parentNode) {
+            loadingEl.style.opacity = '0';
+            setTimeout(() => {
+              if (loadingEl.parentNode) loadingEl.remove();
+            }, 500);
+          }
+        }, 3000);
+      }
+    });
+
+    // וידוא שה-CMS נטען כראוי
+    window.addEventListener('load', function() {
+      setTimeout(() => {
+        if (!window.CMS) {
+          console.error('Netlify CMS failed to load');
+          const root = document.getElementById('nc-root');
+          if (root) {
+            root.innerHTML = '<div style="padding: 20px; text-align: center; font-family: Assistant, sans-serif;"><h2>שגיאה בטעינת ממשק הניהול</h2><p>אנא רעננו את הדף או פנו לתמיכה טכנית</p></div>';
+          }
+        }
+      }, 5000);
+    });
+  </script>
+</body>
+</html>
