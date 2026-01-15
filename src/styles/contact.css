@@ -481,6 +481,77 @@
   transform: translateX(-5px);
 }
 
+/* Error States for Form Inputs */
+.form-group-bento input.error,
+.form-group-bento textarea.error {
+  border: 2px solid #ef4444;
+  background: rgba(254, 226, 226, 0.3);
+  animation: shake 0.3s ease;
+}
+
+.form-group-bento input.error:focus,
+.form-group-bento textarea.error:focus {
+  border-color: #dc2626;
+  background: rgba(254, 226, 226, 0.2);
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15);
+}
+
+/* Error Message Styling */
+/* Error Message Styling */
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #c0392b;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 0.75rem;
+  background: rgba(255, 235, 238, 0.8);
+  padding: 0.6rem 1rem;
+  border-radius: 12px;
+  border-right: 3px solid #e74c3c;
+  animation: slideDown 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  line-height: 1.4;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
+.error-message svg {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+/* Shake Animation for Error Fields */
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-5px);
+  }
+
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+/* Slide Down Animation for Error Messages */
+/* Slide Down Animation for Error Messages */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
 /* Map Card */
 .map-card {
   padding: 0;

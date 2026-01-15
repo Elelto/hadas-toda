@@ -5,7 +5,7 @@ import AOS from 'aos';
 import '../styles/bnei-brak.css';
 import { init, send } from '@emailjs/browser';
 import '../styles/contact.css';
-import { FaPhone, FaWhatsapp, FaEnvelope, FaMapMarkerAlt, FaFacebookF, FaInstagram, FaArrowLeft } from 'react-icons/fa';
+import { FaPhone, FaWhatsapp, FaEnvelope, FaMapMarkerAlt, FaFacebookF, FaInstagram, FaArrowLeft, FaExclamationCircle } from 'react-icons/fa';
 
 // Initialize EmailJS
 init("l9xXgXVINGFdgI8KJ");
@@ -387,24 +387,48 @@ const BneiBrak = () => {
                   {[...Array(5)].map((_, i) => <div key={i} className="bar"></div>)}
                 </div>
                 <h2 className="card-title">שלח/י הודעה</h2>
-                <form className="bento-form" ref={form} onSubmit={handleSubmit}>
+                <form className="bento-form" ref={form} onSubmit={handleSubmit} noValidate>
                   <div className="bento-form-row">
                     <div className="form-group-bento">
-                      <label htmlFor="user_name">שם מלא</label>
+                      <label htmlFor="user_name">שם מלא *</label>
                       <input type="text" id="user_name" name="user_name" value={formData.user_name} onChange={handleChange} className={formErrors.user_name ? 'error' : ''} placeholder="שם מלא" />
+                      {formErrors.user_name && (
+                        <div className="error-message">
+                          <FaExclamationCircle />
+                          <span>{formErrors.user_name}</span>
+                        </div>
+                      )}
                     </div>
                     <div className="form-group-bento">
-                      <label htmlFor="user_phone">טלפון</label>
+                      <label htmlFor="user_phone">טלפון (אופציונלי)</label>
                       <input type="tel" id="user_phone" name="user_phone" value={formData.user_phone} onChange={handleChange} className={formErrors.user_phone ? 'error' : ''} placeholder="מספר טלפון" />
+                      {formErrors.user_phone && (
+                        <div className="error-message">
+                          <FaExclamationCircle />
+                          <span>{formErrors.user_phone}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="form-group-bento">
-                    <label htmlFor="user_email">אימייל</label>
-                    <input type="email" id="user_email" name="user_email" value={formData.user_email} onChange={handleChange} className={formErrors.user_email ? 'error' : ''} placeholder="כתובת אימייל" />
+                    <label htmlFor="user_email">אימייל *</label>
+                    <input type="email" id="user_email" name="user_email" value={formData.user_email} onChange={handleChange} className={formErrors.user_email ? 'error' : ''} placeholder="דוגמה: name@example.com" />
+                    {formErrors.user_email && (
+                      <div className="error-message">
+                        <FaExclamationCircle />
+                        <span>{formErrors.user_email}</span>
+                      </div>
+                    )}
                   </div>
                   <div className="form-group-bento full-height">
-                    <label htmlFor="message">הודעה</label>
+                    <label htmlFor="message">הודעה *</label>
                     <textarea id="message" name="message" value={formData.message} onChange={handleChange} rows="4" className={formErrors.message ? 'error' : ''} placeholder="כיצד אוכל לעזור?"></textarea>
+                    {formErrors.message && (
+                      <div className="error-message">
+                        <FaExclamationCircle />
+                        <span>{formErrors.message}</span>
+                      </div>
+                    )}
                   </div>
 
                   <input type="hidden" name="recipient_email" value="hadas.toda.info@gmail.com" />
