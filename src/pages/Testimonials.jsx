@@ -16,24 +16,14 @@ export default function Testimonials() {
   }, []);
 
   // SEO structured data for testimonials page
+  // Note: Removed Review schema as testimonials are not verified reviews
+  // Future: Can integrate Google Business reviews widget or link
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "WebPage",
     "name": "המלצות - הדס תודה",
     "description": "המלצות ממטופלים על הטיפול בקלינאות התקשורת של הדס תודה - סיפורי הצלחה בטיפול בגמגום, צרידות ובעיות קול",
-    "url": "https://www.hadas-toda.co.il/testimonials",
-    "mainEntity": {
-      "@type": "MedicalBusiness",
-      "name": "הדס תודה - קלינאית תקשורת",
-      "review": testimonials.map((testimonial) => ({
-        "@type": "Review",
-        "author": {
-          "@type": "Person",
-          "name": testimonial.name
-        },
-        "reviewBody": testimonial.text
-      }))
-    }
+    "url": "https://www.hadas-toda.co.il/testimonials"
   };
 
   return (
