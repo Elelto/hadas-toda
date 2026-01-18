@@ -63,14 +63,14 @@ const BneiBrak = () => {
 
     // קבלת תאריך ושעה נוכחיים
     const now = new Date();
-    const currentDate = now.toLocaleDateString('he-IL', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    const currentDate = now.toLocaleDateString('he-IL', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
-    const currentTime = now.toLocaleTimeString('he-IL', { 
-      hour: '2-digit', 
-      minute: '2-digit' 
+    const currentTime = now.toLocaleTimeString('he-IL', {
+      hour: '2-digit',
+      minute: '2-digit'
     });
 
     const serviceID = 'service_zm8sd32';
@@ -154,9 +154,19 @@ const BneiBrak = () => {
       icon: "👶"
     },
     {
-      title: "טיפול בהיגוי",
-      description: "טיפול בשיבושי היגוי (כמו 'ש' שורקת, קושי בהגיית 'ר') לילדים ומבוגרים. שיפור מובנות הדיבור באמצעות תרגול ממוקד ומהנה.",
+      title: "טיפול בהיגוי ומובנות דיבור",
+      description: "טיפול בשיבושי היגוי (כמו 'ש' שורקת, קושי בהגיית 'ר') לילדים ומבוגרים, לרבות שיפור מובנות הדיבור והבהרת ההגייה. עבודה ממוקדת לשיפור בהירות הדיבור.",
       icon: "✨"
+    },
+    {
+      title: "טיפול בתפקודי פה ודחיקת לשון",
+      description: "טיפול בתפקודי פה, דחיקת לשון, ושיפור תפקוד השרירים המעורבים בתהליך הדיבור והבליעה. טיפול מקצועי לילדים ומבוגרים.",
+      icon: "👅"
+    },
+    {
+      title: "שיפור מובנות דיבור",
+      description: "שיפור מובנות הדיבור והבהרת ההגייה לאנשים שדיבורם לא מובן מספيק. עבודה על בהירות ויעילות תקשורתית.",
+      icon: "🗣️"
     }
   ];
 
@@ -227,7 +237,7 @@ const BneiBrak = () => {
               <h1>הדס תודה <span className="text-highlight">M.A</span></h1>
               <p className="bb-subtitle">טיפול מקצועי, אישי ומסור לילדים ומבוגרים</p>
               <p className="bb-description">
-                מתמחה בטיפול בגמגום, הפרעות קול וצרידות, ועיכוב שפתי.
+                מתמחה בטיפולי קול, היגוי, גמגום, תפקודי פה ומובנות דיבור.
                 <br />
                 בקליניקה נעימה ומאובזרת בשיכון ג'.
               </p>

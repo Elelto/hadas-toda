@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 
 const StructuredData = ({ type = 'organization', pageData = {} }) => {
   const baseUrl = 'https://www.hadas-toda.co.il';
-  
+
   // נתוני העסק הבסיסיים
   const organizationData = {
     "@context": "https://schema.org",
@@ -11,7 +11,7 @@ const StructuredData = ({ type = 'organization', pageData = {} }) => {
     "@id": `${baseUrl}/#organization`,
     "name": "הדס תודה - קלינאית תקשורת",
     "alternateName": "Hadas Toda Speech Therapist",
-    "description": "קלינאית תקשורת מוסמכת בבני ברק המתמחה בטיפול בגמגום, צרידות, בעיות קול ועיכוב שפתי לילדים ומבוגרים",
+    "description": "קלינאית תקשורת מוסמכת (M.A) בבני ברק המתמחה בטיפולי קול, היגוי, גמגום, תפקודי פה ומובנות דיבור לילדים ומבוגרים",
     "url": baseUrl,
     "logo": `${baseUrl}/images/logo.png`,
     "image": `${baseUrl}/images/logo.png`,
@@ -36,7 +36,7 @@ const StructuredData = ({ type = 'organization', pageData = {} }) => {
         "name": "בני ברק"
       },
       {
-        "@type": "City", 
+        "@type": "City",
         "name": "רמת גן"
       },
       {
@@ -53,12 +53,11 @@ const StructuredData = ({ type = 'organization', pageData = {} }) => {
       }
     ],
     "serviceType": [
-      "טיפול בגמגום",
-      "טיפול בצרידות", 
-      "טיפול בבעיות קול",
-      "טיפול בעיכוב שפתי",
-      "שיקום קול למורים ומרצים",
-      "הכנה לכיתה א'"
+      "טיפולי קול וצרידות",
+      "טיפול בהיגוי ושיבושי הגייה",
+      "טיפול בגמגום ושטף דיבור",
+      "טיפול בתפקודי פה ודחיקת לשון",
+      "שיפור מובנות דיבור והבהרת דיבור"
     ],
     "medicalSpecialty": "Speech-Language Pathology",
     "priceRange": "$$",
@@ -81,22 +80,32 @@ const StructuredData = ({ type = 'organization', pageData = {} }) => {
     "serviceType": [
       {
         "@type": "MedicalTherapy",
-        "name": "טיפול בגמגום",
-        "description": "טיפול מקצועי בגמגום התפתחותי ונרכש"
-      },
-      {
-        "@type": "MedicalTherapy", 
-        "name": "טיפול בצרידות",
-        "description": "טיפול בהפרעות הגייה וצרידות"
+        "name": "טיפולי קול וצרידות",
+        "description": "אבחון וטיפול בהפרעות קול וצרידות. שיקום קולי מקצועי"
       },
       {
         "@type": "MedicalTherapy",
-        "name": "טיפול בבעיות קול",
-        "description": "שיקום קול וטיפול בצרידות קול"
+        "name": "טיפול בהיגוי",
+        "description": "טיפול בשיבושי היגוי והגייה לילדים ומבוגרים"
+      },
+      {
+        "@type": "MedicalTherapy",
+        "name": "טיפול בגמגום",
+        "description": "התמודדות עם גמגום והפרעות שטף דיבור"
+      },
+      {
+        "@type": "MedicalTherapy",
+        "name": "טיפול בתפקודי פה",
+        "description": "טיפול בתפקודי פה, דחיקת לשון ושיפור תפקוד השרירים"
+      },
+      {
+        "@type": "MedicalTherapy",
+        "name": "שיפור מובנות דיבור",
+        "description": "שיפור מובנות הדיבור והבהרת ההגייה"
       }
     ],
     "areaServed": {
-      "@type": "Country", 
+      "@type": "Country",
       "name": "ישראל"
     }
   };
@@ -108,7 +117,7 @@ const StructuredData = ({ type = 'organization', pageData = {} }) => {
     "@id": `${baseUrl}/#person`,
     "name": "הדס תודה",
     "jobTitle": "קלינאית תקשורת מוסמכת",
-    "description": "קלינאית תקשורת מוסמכת עם התמחות בטיפול בגמגום, צרידות ובעיות קול",
+    "description": "קלינאית תקשורת מוסמכת (M.A) עם התמחות בטיפולי קול, היגוי, גמגום, תפקודי פה ומובנות דיבור",
     "url": baseUrl,
     "image": `${baseUrl}/images/logo.png`,
     "telephone": "+972-50-679-6209",
@@ -122,12 +131,12 @@ const StructuredData = ({ type = 'organization', pageData = {} }) => {
       "description": "M.A בקלינאות תקשורת"
     },
     "knowsAbout": [
-      "גמגום",
-      "צרידות", 
-      "בעיות קול",
-      "עיכוב שפתי",
-      "קלינאות תקשורת",
-      "שיקום קול"
+      "טיפולי קול וצרידות",
+      "היגוי ושיבושי הגייה",
+      "גמגום ושטף דיבור",
+      "תפקודי פה ודחיקת לשון",
+      "מובנות דיבור",
+      "קלינאות תקשורת"
     ],
     "alumniOf": {
       "@type": "EducationalOrganization",
@@ -180,7 +189,7 @@ const StructuredData = ({ type = 'organization', pageData = {} }) => {
 
   // בחירת הנתונים לפי סוג הדף
   let structuredData = [];
-  
+
   switch (type) {
     case 'home':
       structuredData = [organizationData, personData, medicalServiceData];

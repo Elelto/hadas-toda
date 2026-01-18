@@ -8,7 +8,7 @@ import '../styles/about.css';
 const getDefaultAboutContent = () => ({
   hero: {
     title: "נעים להכיר, הדס תודה",
-    subtitle: "קלינאית תקשורת (M.A), מומחית בטיפול בקול, צרידות, שפה ודיבור לילדים ומבוגרים"
+    subtitle: "קלינאית תקשורת (M.A), מתמחה בטיפולי קול, היגוי, גמגום, תפקודי פה ומובנות דיבור"
   },
   content: {
     title: "מסע אל הקול הפנימי והחיצוני",
@@ -130,7 +130,7 @@ export default function About() {
     "@type": "Person",
     "name": "הדס תודה",
     "jobTitle": "קלינאית תקשורת",
-    "description": "קלינאית תקשורת מוסמכת (M.A) עם התמחות בטיפול בקול, צרידות, שפה ודיבור לילדים ומבוגרים",
+    "description": "קלינאית תקשורת מוסמכת (M.A) עם התמחות בטיפולי קול, היגוי, גמגום, תפקודי פה ומובנות דיבור לילדים ומבוגרים",
     "url": "https://www.hadas-toda.co.il/about",
     "worksFor": {
       "@type": "MedicalBusiness",
@@ -158,7 +158,7 @@ export default function About() {
     <div className="about-page">
       <SEOHead
         title="אודות"
-        description="הדס תודה - קלינאית תקשורת מוסמכת (M.A) עם התמחות בטיפול בקול, צרידות, שפה ודיבור. ניסיון רב בעבודה עם ילדים ומבוגרים."
+        description="הדס תודה - קלינאית תקשורת מוסמכת (M.A) עם התמחות בטיפולי קול, היגוי, גמגום, תפקודי פה ומובנות דיבור."
         keywords="הדס תודה, קלינאית תקשורת, M.A, ניסיון מקצועי, טיפול בקול, צרידות, אודות"
         canonicalUrl="/about"
         structuredData={structuredData}
@@ -169,7 +169,7 @@ export default function About() {
           <div className="about-subtitle" data-aos="fade-up" data-aos-delay="300">{aboutContent.hero?.subtitle || "קלינאית תקשורת (M.A), מומחית בטיפול בקול, צרידות, שפה ודיבור לילדים ומבוגרים"}</div>
         </div>
       </section>
-      
+
       {/* Bio Section - White Background */}
       <section className="section-bio">
         <div className="container">
@@ -183,7 +183,7 @@ export default function About() {
           </div>
         </div>
       </section>
-      
+
       {/* Qualifications Section - Light Background */}
       <section className="section-qualifications">
         <div className="container">
@@ -195,7 +195,7 @@ export default function About() {
           </ul>
         </div>
       </section>
-      
+
       {/* Courses Section - White Background */}
       {aboutContent.courses && aboutContent.courses.length > 0 && (
         <section className="section-courses">
@@ -214,7 +214,7 @@ export default function About() {
           </div>
         </section>
       )}
-      
+
       <section className="about-quote">
         <div className="container">
           <div className="quote">

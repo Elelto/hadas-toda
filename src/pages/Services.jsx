@@ -12,10 +12,11 @@ const getDefaultServicesContent = () => ({
     subtitle: "מגוון שירותים מקצועיים בתחום קלינאות התקשורת"
   },
   services: [
-    { title: 'טיפול בגמגום', desc: 'התמודדות עם גמגום בקרב ילדים ומבוגרים באמצעות שיטות מגוונות ומותאמות אישית.' },
-    { title: 'שיפור שפה ודיבור', desc: 'עבודה על שפה, הגייה, שטף דיבור והבנת הנשמע.' },
-    { title: 'טיפול בקול', desc: 'שיקום וטיפוח הקול, תרגילים לשיפור איכות הקול ומניעת מאמץ קולי.' },
-    { title: 'הדרכת הורים', desc: 'הדרכה וליווי הורים לתמיכה בתהליך הטיפולי.' },
+    { title: 'טיפולי קול', desc: 'אבחון וטיפול בהפרעות קול וצרידות. שיקום קולי מקצועי למורים, מרצים וכל מי שמשתמש בקול באופן מקצועי.' },
+    { title: 'היגוי', desc: 'טיפול בשיבושי היגוי והגייה לילדים ומבוגרים. עבודה ממוקדת על צלילים ספציפיים ושיפור בהירות הדיבור.' },
+    { title: 'גמגום', desc: 'התמודדות עם גמגום והפרעות שטף דיבור באמצעות שיטות טיפוליות מוכחות ומותאמות אישית.' },
+    { title: 'תפקודי פה', desc: 'טיפול בתפקודי פה, דחיקת לשון, ושיפור תפקוד השרירים המעורבים בתהליך הדיבור והבליעה.' },
+    { title: 'מובנות דיבור', desc: 'שיפור מובנות הדיבור והבהרת ההגייה לאנשים שדיבורם לא מובן מספיק. עבודה על בהירות ויעילות תקשורתית.' },
   ],
   process: {
     title: "איך מתנהל הטיפול?",
@@ -47,13 +48,13 @@ export default function Services() {
             title: content.process_title || "איך מתנהל הטיפול?",
             steps: Array.isArray(content.process_steps)
               ? content.process_steps.map(step => ({
-                  title: step.title || "",
-                  description: step.description || ""
-                }))
+                title: step.title || "",
+                description: step.description || ""
+              }))
               : Object.values(content.process_steps || {}).map(step => ({
-                  title: step.title || "",
-                  description: step.description || ""
-                }))
+                title: step.title || "",
+                description: step.description || ""
+              }))
           }
         };
         setServicesContent(transformedContent);
@@ -149,7 +150,7 @@ export default function Services() {
               <h1 className="services-title" data-aos="fade-down">{servicesContent.hero?.title || "תחומי טיפול"}</h1>
               <p className="services-subtitle" data-aos="fade-up" data-aos-delay="200">{servicesContent.hero?.subtitle || "מגוון שירותים מקצועיים בתחום קלינאות התקשורת"}</p>
             </div>
-            
+
             <div className="services-grid">
               {servicesContent.services?.map((service, index) => (
                 <div key={index} className="service-card" data-aos="fade-up" data-aos-delay={400 + (index * 100)}>
@@ -158,7 +159,7 @@ export default function Services() {
                 </div>
               ))}
             </div>
-            
+
             <div className="services-info">
               <h2 className="info-title" data-aos="fade-up">{servicesContent.process?.title || "איך מתנהל הטיפול?"}</h2>
               <div className="info-steps">

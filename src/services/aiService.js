@@ -6,34 +6,42 @@ class SpeechTherapyAIService {
     this.apiKey = import.meta.env.VITE_OPENAI_API_KEY;
     // כפה שימוש ב-gpt-3.5-turbo עד שיהיה גישה ל-gpt-4
     this.model = 'gpt-3.5-turbo';
-    
+
     console.log(`🤖 משתמש במודל: ${this.model}`);
-    
+
     // בסיס ידע מקצועי
     this.knowledgeBase = {
-      systemPrompt: `את הדס תודה, קלינאית תקשורת מנוסה ומומחית עם התמחות בתחומים הבאים:
+      systemPrompt: `את הדס תודה, קלינאית תקשורת מנוסה ומומחית עם התמחות בחמישה תחומים עיקריים:
       
-      1. הפרעות קול וצרידות (Voice Disorders):
+      1. טיפולי קול וצרידות (Voice Disorders):
          - צרידות כרונית ואקוטית
          - שיקום קולי מקצועי
          - ליווי קולי למורים ומרצים
          - בעיות קול אצל זמרים ומשתמשי קול מקצועיים
       
-      2. הפרעות דיבור והיגוי (Speech Disorders):
+      2. היגוי (Articulation):
          - שיבושי היגוי וארטיקולציה
          - בעיות בצלילים ספציפיים (ר, ל, ס, ש)
-         - קשיי דיבור אצל ילדים ומבוגרים
+         - קשיי הגייה אצל ילדים ומבוגרים
+         - שיפור בהירות הדיבור
       
-      3. הפרעות שפה (Language Disorders):
-         - עיכובי שפה אצל ילדים
-         - בעיות הבנה והבעה
-         - קשיי ארגון מסר ושליפה
-         - הכנה לכיתה א' - היבטים שפתיים
-      
-      4. הפרעות שטף דיבור (Fluency Disorders):
-         - גמגום וחזרות
-         - הפסקות לא רצוניות
+      3. גמגום (Stuttering):
+         - גמגום התפתחותי ונרכש
+         - הפרעות שטף דיבור
+         - חזרות והפסקות לא רצוניות
          - קשיי שטף במבוגרים וילדים
+      
+      4. תפקודי פה (Oral Functions):
+         - דחיקת לשון
+         - תפקוד שרירי הפה והלשון
+         - בעיות בליעה הקשורות בדיבור
+         - תיאום תנועות הפה לדיבור
+      
+      5. מובנות דיבור (Speech Intelligibility):
+         - שיפור בהירות הדיבור
+         - הבהרת הגייה
+         - עבודה על דיבור מובן יותר
+         - שיפור יעילות תקשורתית
       
       הסגנון שלך כהדס תודה:
       - דבר בגוף ראשון נקבה ("אני מבינה", "אני ממליצה")
@@ -45,10 +53,10 @@ class SpeechTherapyAIService {
       - המלץ על פגישה מקצועית במקרים הרלוונטיים
       
       תמיד ענה בעברית בסגנון אישי וחם של הדס תודה.`,
-      
+
       assessmentCategories: {
         voice: 'בעיות קול וצרידות',
-        speech: 'דיבור והיגוי', 
+        speech: 'דיבור והיגוי',
         language: 'שפה ותקשורת',
         fluency: 'שטף דיבור'
       }
@@ -62,7 +70,7 @@ class SpeechTherapyAIService {
       console.log('🔧 סביבת פיתוח - מנסה קריאה ישירה ל-OpenAI');
       return await this.generateQuestionDirectly(conversationHistory);
     }
-    
+
     try {
       const response = await fetch(this.functionURL, {
         method: 'POST',
@@ -81,7 +89,7 @@ class SpeechTherapyAIService {
 
       const result = await response.json();
       return result;
-      
+
     } catch (error) {
       console.error('Dynamic question generation error:', error);
       return {
@@ -99,7 +107,7 @@ class SpeechTherapyAIService {
       console.log('🔧 סביבת פיתוח - מנסה אבחון ישיר ב-OpenAI');
       return await this.generateAssessmentDirectly(conversationHistory);
     }
-    
+
     try {
       const response = await fetch(this.functionURL, {
         method: 'POST',
@@ -118,7 +126,7 @@ class SpeechTherapyAIService {
 
       const result = await response.json();
       return result;
-      
+
     } catch (error) {
       console.error('Assessment generation error:', error);
       // fallback לאבחון מקומי במקרה של שגיאה
@@ -261,7 +269,7 @@ ${conversationHistory.map(msg => `${msg.type === 'user' ? 'מטופל' : 'הדס
 
       const assessment = JSON.parse(assessmentText);
       console.log('✅ אבחון נוצר בהצלחה:', assessment);
-      
+
       return {
         success: true,
         assessment: assessment
@@ -278,14 +286,14 @@ ${conversationHistory.map(msg => `${msg.type === 'user' ? 'מטופל' : 'הדס
     const userResponses = conversationHistory
       .filter(msg => msg.type === 'user')
       .map(msg => msg.content);
-    
+
     const allText = userResponses.join(' ').toLowerCase();
-    
+
     // זיהוי ספציפי של סוג הבעיה
     let category = 'הפרעת תקשורת';
     let specificDiagnosis = 'הפרעת תקשורת לא מוגדרת';
     let urgency = 'בינונית';
-    
+
     if (allText.includes('קול') || allText.includes('צרוד')) {
       category = 'הפרעות קול וצרידות';
       specificDiagnosis = 'הפרעת קול';
@@ -300,7 +308,7 @@ ${conversationHistory.map(msg => `${msg.type === 'user' ? 'מטופל' : 'הדס
       category = 'הפרעות שפה';
       specificDiagnosis = 'עיכוב שפה';
     }
-    
+
     return {
       success: true,
       assessment: {
@@ -356,7 +364,7 @@ ${conversationHistory.map(msg => `${msg.type === 'user' ? 'מטופל' : 'הדס
       feedback: userFeedback,
       model: this.model
     };
-    
+
     // לעתיד: שליחה למסד נתונים או API לאחסון
     console.log('Case saved for learning:', caseData);
     return caseData;
@@ -373,20 +381,20 @@ ${conversationHistory.map(msg => `${msg.type === 'user' ? 'מטופל' : 'הדס
         details: { hasBasicProblem: false, hasSeverity: false, hasDuration: false, hasContext: false }
       };
     }
-    
+
     const userResponses = conversationHistory.filter(msg => msg.type === 'user');
-    
+
     let score = 0;
     let hasBasicProblem = false;
     let hasSpecificSymptoms = false;
     let hasContextInfo = false;
     let hasDuration = false;
     let hasImpact = false;
-    
+
     const allUserText = userResponses.map(msg => msg.content.toLowerCase()).join(' ');
-    
+
     console.log('🔍 מנתח טקסט משתמש:', allUserText);
-    
+
     // בדיקת זיהוי בעיה בסיסית
     const problemKeywords = ['קול', 'דיבור', 'גמגום', 'צרידות', 'קושי', 'בעיה', 'לא יכול', 'קשה', 'הי', 'שלום'];
     if (problemKeywords.some(keyword => allUserText.includes(keyword))) {
@@ -394,7 +402,7 @@ ${conversationHistory.map(msg => `${msg.type === 'user' ? 'מטופל' : 'הדס
       score += 25;
       console.log('✅ זוהתה בעיה בסיסית (+25)');
     }
-    
+
     // בדיקת תסמינים ספציפיים
     const symptomKeywords = ['צרוד', 'נתקע', 'חוזר', 'לא ברור', 'כואב', 'עייף', 'מתמתן', 'מחמיר', 'כן', 'לא'];
     if (symptomKeywords.some(keyword => allUserText.includes(keyword))) {
@@ -402,7 +410,7 @@ ${conversationHistory.map(msg => `${msg.type === 'user' ? 'מטופל' : 'הדס
       score += 20;
       console.log('✅ זוהו תסמינים ספציפיים (+20)');
     }
-    
+
     // בדיקת הקשר (מתי, איפה, עם מי)
     const contextKeywords = ['בעבודה', 'בבית', 'עם אנשים', 'בטלפון', 'בבוקר', 'בערב', 'סטרס', 'לחץ', 'סיטואציות'];
     if (contextKeywords.some(keyword => allUserText.includes(keyword))) {
@@ -410,7 +418,7 @@ ${conversationHistory.map(msg => `${msg.type === 'user' ? 'מטופל' : 'הדס
       score += 15;
       console.log('✅ זוהה מידע הקשרי (+15)');
     }
-    
+
     // בדיקת משך זמן
     const durationKeywords = ['שבוע', 'חודש', 'שנה', 'זמן', 'התחיל', 'מאז', 'תמיד', 'לאחרונה'];
     if (durationKeywords.some(keyword => allUserText.includes(keyword))) {
@@ -418,7 +426,7 @@ ${conversationHistory.map(msg => `${msg.type === 'user' ? 'מטופל' : 'הדס
       score += 15;
       console.log('✅ זוהה מידע על משך זמן (+15)');
     }
-    
+
     // בדיקת השפעה על חיי היומיום
     const impactKeywords = ['מפריע', 'קשה', 'לא יכול', 'נמנע', 'בושה', 'חרדה', 'משפיע', 'בעיה'];
     if (impactKeywords.some(keyword => allUserText.includes(keyword))) {
@@ -426,11 +434,11 @@ ${conversationHistory.map(msg => `${msg.type === 'user' ? 'מטופל' : 'הדס
       score += 25;
       console.log('✅ זוהתה השפעה על חיי היומיום (+25)');
     }
-    
+
     console.log(`📊 ציון סופי: ${score}%, מוכן לאבחון: ${score >= 60 && hasBasicProblem}`);
-    
+
     const isReadyForAssessment = score >= 60 && hasBasicProblem;
-    
+
     return {
       score,
       isReadyForAssessment,

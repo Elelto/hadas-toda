@@ -13,16 +13,59 @@ import testimonials from '../data/testimonials';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 
+import {
+  FaMicrophoneAlt,
+  FaCommentDots,
+  FaStream,
+  FaAppleAlt,
+  FaAssistiveListeningSystems
+} from 'react-icons/fa';
+
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
+// Specialization Configuration (Icon + Color)
+const specializationConfig = {
+  'voice': {
+    icon: <FaMicrophoneAlt />,
+    color: '#FF6B6B', // Coral Red
+    bg: '#FFE5E5'
+  },
+  'articulation': {
+    icon: <FaCommentDots />,
+    color: '#4ECDC4', // Turquoise
+    bg: '#E0F7FA'
+  },
+  'stuttering': {
+    icon: <FaStream />, // Stream/Flow for fluency
+    color: '#A18CD1', // Purple
+    bg: '#F3E5F5'
+  },
+  'oral': {
+    icon: <FaAppleAlt />, // Apple for eating/swallowing/oral function
+    color: '#FFB74D', // Orange
+    bg: '#FFF3E0'
+  },
+  'intelligibility': {
+    icon: <FaAssistiveListeningSystems />, // Hearing/Understanding
+    color: '#4DB6AC', // Teal
+    bg: '#E0F2F1'
+  },
+  // Fallbacks
+  '🎤': { icon: <FaMicrophoneAlt />, color: '#FF6B6B', bg: '#FFE5E5' },
+  '🗣️': { icon: <FaCommentDots />, color: '#4ECDC4', bg: '#E0F7FA' },
+  '💬': { icon: <FaStream />, color: '#A18CD1', bg: '#F3E5F5' },
+  '👅': { icon: <FaAppleAlt />, color: '#FFB74D', bg: '#FFF3E0' },
+  '🔊': { icon: <FaAssistiveListeningSystems />, color: '#4DB6AC', bg: '#E0F2F1' }
+};
+
 // Fallback content function
 const getDefaultHomeContent = () => ({
   hero: {
     title: "הדס תודה",
-    subtitle: "קלינאית תקשורת מומחית לשפה, דיבור וקול",
+    subtitle: "קלינאית תקשורת מומחית בטיפולי קול, היגוי, גמגום ותפקודי פה",
     description: "נעים להכיר, אני הדס. אני מלווה ילדים ומבוגרים במסעם לשיפור התקשורת והביטחון העצמי. בין אם מדובר באתגרי שפה והיגוי אצל ילדים, או בצרידות וקשיי קול אצל מבוגרים – אני כאן כדי להקשיב, לאבחן ולהתאים תוכנית טיפול אישית שתביא לתוצאות.",
     cta_text: "קביעת פגישת ייעוץ",
     services_text: "לגלות עוד על הטיפולים"
@@ -42,25 +85,40 @@ const getDefaultHomeContent = () => ({
     ]
   },
   services: {
-    title: "תחומי המומחיות שלי",
-    subtitle: "מגוון השירותים המקצועיים שאני מציעה לילדים ומבוגרים",
-    voice_services: [
-      { name: "טיפול בצרידות ובעיות קול" },
-      { name: "שיקום קולי מקצועי" },
-      { name: "ליווי קולי (מורים, מרצים)" },
-      { name: "טיפול בגמגום" }
-    ],
-    speech_services: [
-      { name: "אבחון וטיפול בעיכוב שפתי" },
-      { name: "טיפול בשיבושי היגוי" },
-      { name: "שיפור יכולות ארגון מסר ושליפה" },
-      { name: "הכנה לכיתה א׳ – היבטים שפתיים ותקשורתיים" }
+    title: " תחומי ההתמחות שלי",
+    subtitle: "התחומים המקצועיים המרכזיים שבהם אני מתמחה ומספקת טיפול מקצועי",
+    specializations: [
+      {
+        name: "טיפולי קול",
+        icon: "voice",
+        description: "אבחון וטיפול בהפרעות קול וצרידות. שיקום קולי למורים, מרצים וכל מי שמשתמש בקול באופן מקצועי."
+      },
+      {
+        name: "היגוי",
+        icon: "articulation",
+        description: "טיפול בשיבושי היגוי והגייה. עבודה ממוקדת על צלילים ספציפיים ושיפור בהירות הדיבור."
+      },
+      {
+        name: "גמגום",
+        icon: "stuttering",
+        description: "התמודדות עם גמגום והפרעות שטף דיבור באמצעות שיטות טיפוליות מוכחות ומותאמות אישית."
+      },
+      {
+        name: "תפקודי פה",
+        icon: "oral",
+        description: "טיפול בתפקודי פה, דחיקת לשון, ושיפור תפקוד השרירים המעורבים בדיבור ובליעה."
+      },
+      {
+        name: "מובנות דיבור",
+        icon: "intelligibility",
+        description: "שיפור מובנות הדיבור והבהרת ההגייה לאנשים שדיבורם לא מובן מספיק."
+      }
     ]
   },
   about: {
     title: "נעים להכיר, אני הדס",
     paragraph1: "שמי הדס תודה, קלינאית תקשורת (M.A) עם תשוקה אמיתית לעזור לאנשים למצוא את קולם – תרתי משמע. אני מאמינה שביכולתה של תקשורת טובה לפתוח דלתות, לבנות גשרים ולהעצים כל אדם.",
-    paragraph2: "הניסיון שלי כולל עבודה עם מגוון רחב של גילאים ואתגרים: החל מליווי התפתחותי של ילדים בתחומי השפה והדיבור, דרך טיפול בקשיי היגוי ושטף, ועד להתמחות מעמיקה באבחון וטיפול בבעיות קול וצרידות אצל ילדים ומבוגרים.",
+    paragraph2: "הניסיון שלי כולל עבודה עם מגוון רחב של גילאים ואתגרים: טיפולי קול וצרידות, היגוי ושיבושי הגייה, גמגום ושטף דיבור, תפקודי פה ודחיקת לשון, ושיפור מובנות דיבור.",
     paragraph3: "בקליניקה שלי, כל מטופל מקבל יחס אישי ותוכנית טיפול המותאמת בדיוק עבורו. אני משלבת ידע מקצועי עדכני עם גישה יצירתית ורגישה, כדי להפוך את התהליך הטיפולי לחוויה חיובית ומקדמת."
   },
   blog_section: {
@@ -198,36 +256,34 @@ export default function Home() {
               <p>{homeContent?.services?.subtitle}</p>
             </div>
 
-            <div className="services-split-grid">
-              {/* Voice Services */}
-              <div className="service-group glass-card" data-aos="fade-up">
-                <h3 className="group-title">🎤 שירותי קול וגמגום</h3>
-                <div className="bb-services-grid home-services-grid">
-                  {homeContent?.services?.voice_services?.map((service, index) => (
-                    <div key={index} className="bb-service-card compact-card glass-card">
-                      <div className="service-icon-wrapper small-icon">
-                        {['🗣️', '🎭', '🎤', '💬'][index % 4]}
-                      </div>
-                      <h3>{service.name}</h3>
+            <div className="bb-services-grid-specializations">
+              {homeContent?.services?.specializations?.map((spec, index) => {
+                const config = specializationConfig[spec.icon] || specializationConfig['voice'];
+                return (
+                  <div
+                    key={index}
+                    className="bb-specialization-card glass-card"
+                    data-aos="fade-up"
+                    data-aos-delay={index * 100}
+                    style={{
+                      '--hover-color': config.color
+                    }}
+                  >
+                    <div
+                      className="spec-icon"
+                      style={{
+                        color: config.color,
+                        background: config.bg,
+                        boxShadow: `0 4px 15px ${config.color}30`
+                      }}
+                    >
+                      {config.icon}
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Speech Services */}
-              <div className="service-group glass-card" data-aos="fade-up" data-aos-delay="200">
-                <h3 className="group-title">🗣️ שירותי שפה ודיבור</h3>
-                <div className="bb-services-grid home-services-grid">
-                  {homeContent?.services?.speech_services?.map((service, index) => (
-                    <div key={index} className="bb-service-card compact-card glass-card">
-                      <div className="service-icon-wrapper small-icon">
-                        {['📊', '🔤', '🧩', '✏️'][index % 4]}
-                      </div>
-                      <h3>{service.name}</h3>
-                    </div>
-                  ))}
-                </div>
-              </div>
+                    <h3 className="spec-title" style={{ color: '#2d3748' }}>{spec.name}</h3>
+                    <p className="spec-description">{spec.description}</p>
+                  </div>
+                );
+              })}
             </div>
 
             <div className="services-cta-wrapper">
