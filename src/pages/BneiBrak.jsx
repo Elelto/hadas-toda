@@ -5,7 +5,36 @@ import AOS from 'aos';
 import '../styles/bnei-brak.css';
 import { init, send } from '@emailjs/browser';
 import '../styles/contact.css';
-import { FaPhone, FaWhatsapp, FaEnvelope, FaMapMarkerAlt, FaFacebookF, FaInstagram, FaArrowLeft, FaExclamationCircle } from 'react-icons/fa';
+import { FaPhone, FaWhatsapp, FaEnvelope, FaMapMarkerAlt, FaFacebookF, FaInstagram, FaArrowLeft, FaExclamationCircle, FaMicrophoneAlt, FaCommentDots, FaStream, FaAppleAlt, FaAssistiveListeningSystems } from 'react-icons/fa';
+
+// Specialization Configuration (Icon + Color) - same as Home.jsx
+const specializationConfig = {
+  'voice': {
+    icon: <FaMicrophoneAlt />,
+    color: '#FF6B6B', // Coral Red
+    bg: '#FFE5E5'
+  },
+  'articulation': {
+    icon: <FaCommentDots />,
+    color: '#4ECDC4', // Turquoise
+    bg: '#E0F7FA'
+  },
+  'stuttering': {
+    icon: <FaStream />,
+    color: '#A18CD1', // Purple
+    bg: '#F3E5F5'
+  },
+  'oral': {
+    icon: <FaAppleAlt />,
+    color: '#FFB74D', // Orange
+    bg: '#FFF3E0'
+  },
+  'intelligibility': {
+    icon: <FaAssistiveListeningSystems />,
+    color: '#4DB6AC', // Teal
+    bg: '#E0F2F1'
+  }
+};
 
 // Initialize EmailJS
 init("l9xXgXVINGFdgI8KJ");
@@ -141,32 +170,27 @@ const BneiBrak = () => {
     {
       title: "טיפול בגמגום (Stuttering)",
       description: "גישה טיפולית מתקדמת לשיפור שטף הדיבור והביטחון העצמי. הטיפול מותאם אישית לילדים, נוער ומבוגרים, ומשלב טכניקות להפחתת המאמץ בדיבור ושינוי עמדות כלפי הגמגום.",
-      icon: "🗣️"
+      icon: "stuttering"
     },
     {
       title: "טיפול בצרידות וקול",
       description: "אבחון ושיקום קולי לסובלים מצרידות כרונית, יבלות, פוליפים או עייפות קולית. התמחות מיוחדת בטיפול באנשי מקצוע הקול: מורים, גננות, מרצים, חזנים וזמרים.",
-      icon: "🎵"
+      icon: "voice"
     },
     {
       title: "התפתחות שפה ודיבור",
       description: "אבחון וטיפול בילדים עם איחור שפתי, שיבושי היגוי וקשיים בתקשורת. הדרכת הורים צמודה כחלק בלתי נפרד מהתהליך לקידום הילד בסביבתו הטבעית.",
-      icon: "👶"
+      icon: "articulation"
     },
     {
       title: "טיפול בהיגוי ומובנות דיבור",
       description: "טיפול בשיבושי היגוי (כמו 'ש' שורקת, קושי בהגיית 'ר') לילדים ומבוגרים, לרבות שיפור מובנות הדיבור והבהרת ההגייה. עבודה ממוקדת לשיפור בהירות הדיבור.",
-      icon: "✨"
+      icon: "intelligibility"
     },
     {
       title: "טיפול בתפקודי פה ודחיקת לשון",
       description: "טיפול בתפקודי פה, דחיקת לשון, ושיפור תפקוד השרירים המעורבים בתהליך הדיבור והבליעה. טיפול מקצועי לילדים ומבוגרים.",
-      icon: "👅"
-    },
-    {
-      title: "שיפור מובנות דיבור",
-      description: "שיפור מובנות הדיבור והבהרת ההגייה לאנשים שדיבורם לא מובן מספيק. עבודה על בהירות ויעילות תקשורתית.",
-      icon: "🗣️"
+      icon: "oral"
     }
   ];
 
@@ -280,14 +304,34 @@ const BneiBrak = () => {
               <p>מעטפת טיפולית מקצועית המותאמת לצרכים האישיים שלך</p>
             </div>
 
-            <div className="bb-services-grid">
-              {services.map((service, index) => (
-                <div key={index} className="bb-service-card" data-aos="fade-up" data-aos-delay={index * 100}>
-                  <div className="service-icon-wrapper">{service.icon}</div>
-                  <h3>{service.title}</h3>
-                  <p>{service.description}</p>
-                </div>
-              ))}
+            <div className="bb-services-grid-specializations">
+              {services.map((service, index) => {
+                const config = specializationConfig[service.icon] || specializationConfig['voice'];
+                return (
+                  <div
+                    key={index}
+                    className="bb-specialization-card glass-card"
+                    data-aos="fade-up"
+                    data-aos-delay={index * 100}
+                    style={{
+                      '--hover-color': config.color
+                    }}
+                  >
+                    <div
+                      className="spec-icon"
+                      style={{
+                        color: config.color,
+                        background: config.bg,
+                        boxShadow: `0 4px 15px ${config.color}30`
+                      }}
+                    >
+                      {config.icon}
+                    </div>
+                    <h3 className="spec-title">{service.title}</h3>
+                    <p className="spec-description">{service.description}</p>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </section>
