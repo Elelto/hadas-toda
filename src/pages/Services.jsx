@@ -4,6 +4,42 @@ import AOS from 'aos';
 import SEOHead from '../components/SEOHead';
 import StructuredData from '../components/StructuredData';
 import '../styles/services.css';
+import {
+  FaMicrophoneAlt,
+  FaCommentDots,
+  FaStream,
+  FaAppleAlt,
+  FaAssistiveListeningSystems
+} from 'react-icons/fa';
+
+// Specialization Configuration (Icon + Color)
+const specializationConfig = {
+  'voice': {
+    icon: <FaMicrophoneAlt />,
+    color: '#FF6B6B',
+    bg: '#FFE5E5'
+  },
+  'articulation': {
+    icon: <FaCommentDots />,
+    color: '#4ECDC4',
+    bg: '#E0F7FA'
+  },
+  'stuttering': {
+    icon: <FaStream />,
+    color: '#A18CD1',
+    bg: '#F3E5F5'
+  },
+  'oral': {
+    icon: <FaAppleAlt />,
+    color: '#FFB74D',
+    bg: '#FFF3E0'
+  },
+  'intelligibility': {
+    icon: <FaAssistiveListeningSystems />,
+    color: '#4DB6AC',
+    bg: '#E0F2F1'
+  }
+};
 
 // Default content fallback
 const getDefaultServicesContent = () => ({
@@ -32,6 +68,12 @@ const getDefaultServicesContent = () => ({
 export default function Services() {
   const [servicesContent, setServicesContent] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [expandedIndex, setExpandedIndex] = useState(null); // Accordion state
+
+  // Toggle accordion
+  const toggleAccordion = (index) => {
+    setExpandedIndex(expandedIndex === index ? null : index);
+  };
 
   // Load YAML content
   useEffect(() => {
@@ -151,22 +193,56 @@ export default function Services() {
               <p className="services-subtitle" data-aos="fade-up" data-aos-delay="200">{servicesContent.hero?.subtitle || "מגוון שירותים מקצועיים בתחום קלינאות התקשורת"}</p>
             </div>
 
-            <div className="services-grid">
-              {servicesContent.services?.map((service, index) => (
-                <div key={index} className="service-card" data-aos="fade-up" data-aos-delay={400 + (index * 100)}>
-                  <h3 className="service-title">{service.title}</h3>
-                  <p className="service-description">{service.desc || service.description}</p>
-                </div>
-              ))}
+            {/* Services Journey (Zig-Zag Layout) */}
+            <div className="services-journey">
+              {servicesContent.services?.map((service, index) => {
+                const config = specializationConfig[service.icon] || specializationConfig['voice'];
+                const isEven = index % 2 === 0;
+
+                return (
+                  <div
+                    key={index}
+                    className={`journey-station ${isEven ? 'even' : 'odd'}`}
+                    data-aos={isEven ? "fade-right" : "fade-left"}
+                    data-aos-delay={100}
+                  >
+                    <div className="station-visual">
+                      <div
+                        className="visual-circle"
+                        style={{
+                          background: `linear-gradient(135deg, ${config.bg} 0%, white 100%)`,
+                          boxShadow: `0 20px 40px ${config.color}20`
+                        }}
+                      >
+                        <div className="visual-icon" style={{ color: config.color }}>
+                          {config.icon}
+                        </div>
+                      </div>
+                      <div className="visual-blob" style={{ background: config.color }}></div>
+                    </div>
+
+                    <div className="station-content">
+                      <div className="station-number" style={{ color: config.color, opacity: 0.1 }}>0{index + 1}</div>
+                      <h3 className="station-title">{service.title}</h3>
+                      <p className="station-description">{service.desc || service.description}</p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
-            <div className="services-info">
-              <h2 className="info-title" data-aos="fade-up">{servicesContent.process?.title || "איך מתנהל הטיפול?"}</h2>
-              <div className="info-steps">
+            {/* Process Timeline Section */}
+            <div className="process-section">
+              <h2 className="process-title" data-aos="fade-up">{servicesContent.process?.title || "איך מתנהל הטיפול?"}</h2>
+              <div className="timeline-container">
                 {servicesContent.process?.steps?.map((step, index) => (
-                  <div key={index} className="info-step" data-aos={index % 2 === 0 ? "fade-right" : "fade-left"} data-aos-delay={200 + (index * 200)}>
-                    <div className="step-number">{step.number}</div>
-                    <div className="step-content">
+                  <div key={index} className="timeline-step" data-aos="fade-up" data-aos-delay={index * 150}>
+                    <div className="timeline-marker">
+                      <div className="timeline-dot"></div>
+                      <div className="timeline-line"></div>
+                    </div>
+                    <div className="timeline-content">
+                      <div className="step-number-badge">{step.number}</div>
                       <h3>{step.title}</h3>
                       <p>{step.description}</p>
                     </div>

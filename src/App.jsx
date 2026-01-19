@@ -15,6 +15,7 @@ import BlogPost from './pages/BlogPost';
 import Admin from './pages/Admin';
 import AIAssessmentPage from './pages/AIAssessment';
 import BneiBrak from './pages/BneiBrak';
+import OnlineTherapy from './pages/OnlineTherapy';
 import AccessibilityWidget from './components/AccessibilityWidget';
 import './styles/global.css';
 import AOS from 'aos';
@@ -75,6 +76,7 @@ function App() {
               <Route path="/testimonials" element={<Testimonials />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/bnei-brak" element={<BneiBrak />} />
+              <Route path="/online-therapy" element={<OnlineTherapy />} />
               <Route path="/ai-assessment" element={<AIAssessmentPage />} />
               <Route path="/dashboard" element={<Admin />} />
               {/* Redirect /admin/ to the Netlify CMS admin interface */}
