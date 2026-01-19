@@ -278,7 +278,7 @@ const BneiBrak = () => {
               <div className="shape-circle"></div>
               <div className="shape-content">
                 <div className="stat-box">
-                  <span className="stat-number">10+</span>
+                  <span className="stat-number">7+</span>
                   <span className="stat-label">שנות ניסיון</span>
                 </div>
                 <div className="stat-box">

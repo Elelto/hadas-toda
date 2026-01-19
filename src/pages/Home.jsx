@@ -225,7 +225,7 @@ export default function Home() {
               <div className="shape-circle home-shape-bg"></div>
               <div className="shape-content">
                 <div className="stat-box glass-card">
-                  <span className="stat-number">10+</span>
+                  <span className="stat-number">7+</span>
                   <span className="stat-label">שנות ניסיון</span>
                 </div>
                 <div className="stat-box glass-card">
@@ -338,7 +338,7 @@ export default function Home() {
                   </div>
 
                   <div className="visual-card stat-card glass-card">
-                    <span className="number">10+</span>
+                    <span className="number">7+</span>
                     <span className="text">שנות ניסיון</span>
                   </div>
                 </div>
