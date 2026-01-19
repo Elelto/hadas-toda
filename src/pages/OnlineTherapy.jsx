@@ -307,7 +307,7 @@ const OnlineTherapy = () => {
                                 </div>
                                 <div className="stat-box glass-card" style={{ bottom: '20%', left: '-10px' }}>
                                     <span className="stat-number">100%</span>
-                                    <span className="stat-label">פרטיות</span>
+                                    <span className="stat-label">היברדי</span>
                                 </div>
                             </div>
                         </div>
