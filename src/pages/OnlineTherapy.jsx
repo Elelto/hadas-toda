@@ -299,30 +299,15 @@ const OnlineTherapy = () => {
                             </div>
                         </div>
                         <div className="bb-hero-shape" data-aos="fade-left" data-aos-delay="200">
-                            <div className="video-mockup">
-                                <div className="mockup-header">
-                                    <span className="mockup-header-dot" style={{ background: '#FF5F56' }}></span>
-                                    <span className="mockup-header-dot" style={{ background: '#FFBD2E' }}></span>
-                                    <span className="mockup-header-dot" style={{ background: '#27C93F' }}></span>
+                            <div className="shape-circle online-shape-bg"></div>
+                            <div className="shape-content">
+                                <div className="stat-box glass-card" style={{ top: '15%', right: '-10px' }}>
+                                    <span className="stat-number"><FaVideo /></span>
+                                    <span className="stat-label">זום / וידאו</span>
                                 </div>
-                                <div className="mockup-screen">
-                                    <div className="video-participant therapist">
-                                        <div className="avatar">
-                                            <span>👩‍⚕️</span>
-                                        </div>
-                                        <span className="name">הדס תודה</span>
-                                    </div>
-                                    <div className="video-participant patient">
-                                        <div className="avatar">
-                                            <span>👋</span>
-                                        </div>
-                                        <span className="name">אנחנו כאן</span>
-                                    </div>
-                                </div>
-                                <div className="mockup-controls">
-                                    <span className="control mic"><FaMicrophoneAlt size={16} /></span>
-                                    <span className="control video"><FaVideo size={16} /></span>
-                                    <span className="control end"><FaPhone size={16} style={{ transform: 'rotate(135deg)' }} /></span>
+                                <div className="stat-box glass-card" style={{ bottom: '20%', left: '-10px' }}>
+                                    <span className="stat-number">100%</span>
+                                    <span className="stat-label">פרטיות</span>
                                 </div>
                             </div>
                         </div>
