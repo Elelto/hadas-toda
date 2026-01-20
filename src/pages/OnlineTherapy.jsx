@@ -5,7 +5,7 @@ import AOS from 'aos';
 import '../styles/online-therapy.css';
 import '../styles/contact.css';
 import { init, send } from '@emailjs/browser';
-import { FaPhone, FaWhatsapp, FaEnvelope, FaLaptop, FaClock, FaHome, FaUserMd, FaCheckCircle, FaVideo, FaArrowLeft, FaExclamationCircle, FaMicrophoneAlt, FaCommentDots, FaStream, FaAppleAlt, FaAssistiveListeningSystems, FaChild } from 'react-icons/fa';
+import { FaPhone, FaWhatsapp, FaEnvelope, FaLaptop, FaClock, FaHome, FaUserMd, FaCheckCircle, FaVideo, FaArrowLeft, FaExclamationCircle, FaMicrophoneAlt, FaCommentDots, FaStream, FaAppleAlt, FaAssistiveListeningSystems, FaChild, FaMapMarkerAlt, FaFacebookF, FaInstagram } from 'react-icons/fa';
 
 // Specialization Configuration (Icon + Color)
 const specializationConfig = {
@@ -261,7 +261,24 @@ const OnlineTherapy = () => {
     const contactInfo = {
         phone: "050-679-6209",
         whatsapp: "972506796209",
-        email: "hadas.toda.info@gmail.com"
+        email: "hadas.toda.info@gmail.com",
+        address: "שיכון ג', בני ברק",
+        social: {
+            facebook: "https://www.facebook.com/profile.php?id=61566802899787",
+            instagram: "https://www.instagram.com/hadas_toda/"
+        }
+    };
+
+    // Mouse tracking for spotlight effect
+    const handleMouseMove = (e) => {
+        const cards = document.getElementsByClassName('bento-card');
+        for (const card of cards) {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+        }
     };
 
     return (
@@ -313,9 +330,8 @@ const OnlineTherapy = () => {
                         </div>
                     </div>
                     <div className="wave-bottom">
-                        {/* Using simple wave svg */}
-                        <svg viewBox="0 0 1440 120" xmlns="http://www.w3.org/2000/svg">
-                            <path fill="#ffffff" fillOpacity="1" d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"></path>
+                        <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                            <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" className="shape-fill"></path>
                         </svg>
                     </div>
                 </section>
@@ -451,110 +467,161 @@ const OnlineTherapy = () => {
                             <p>השאירו פרטים ואחזור אליכם בהקדם</p>
                         </div>
 
-                        <div className="contact-wrapper">
-                            <div className="contact-info-cards">
-                                <a href={`tel:${contactInfo.phone}`} className="contact-info-card" data-aos="fade-up">
-                                    <FaPhone />
-                                    <span className="label">טלפון</span>
-                                    <span className="value">{contactInfo.phone}</span>
-                                </a>
-                                <a href={`https://wa.me/${contactInfo.whatsapp}`} className="contact-info-card whatsapp" target="_blank" rel="noopener noreferrer" data-aos="fade-up" data-aos-delay="100">
-                                    <FaWhatsapp />
-                                    <span className="label">וואטסאפ</span>
-                                    <span className="value">שלחו הודעה</span>
-                                </a>
-                                <a href={`mailto:${contactInfo.email}`} className="contact-info-card" data-aos="fade-up" data-aos-delay="200">
-                                    <FaEnvelope />
-                                    <span className="label">אימייל</span>
-                                    <span className="value">{contactInfo.email}</span>
-                                </a>
-                            </div>
-
-                            <div className="contact-form-card" data-aos="fade-up" data-aos-delay="300">
-                                <form className="online-form" ref={form} onSubmit={handleSubmit} noValidate>
-                                    <div className="form-row">
-                                        <div className="form-group">
-                                            <label htmlFor="user_name">שם מלא *</label>
+                        <div className="contact-wrapper" onMouseMove={handleMouseMove}>
+                            <div className="bento-grid" style={{ maxWidth: '100%', padding: 0 }}>
+                                {/* 1. Main Form Card */}
+                                <div className="bento-card form-card" data-aos="fade-up">
+                                    <div className="card-bg-effect"></div>
+                                    <div className="sound-wave-animation">
+                                        {[...Array(5)].map((_, i) => <div key={i} className="bar"></div>)}
+                                    </div>
+                                    <h2 className="card-title">השאירו פרטים</h2>
+                                    <form className="bento-form" ref={form} onSubmit={handleSubmit} noValidate>
+                                        <div className="bento-form-row">
+                                            <div className="form-group-bento">
+                                                <label htmlFor="user_name">שם מלא *</label>
+                                                <input
+                                                    type="text"
+                                                    id="user_name"
+                                                    name="user_name"
+                                                    value={formData.user_name}
+                                                    onChange={handleChange}
+                                                    className={formErrors.user_name ? 'error' : ''}
+                                                    placeholder="שם מלא"
+                                                />
+                                                {formErrors.user_name && (
+                                                    <div className="error-message">
+                                                        <FaExclamationCircle />
+                                                        <span>{formErrors.user_name}</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="form-group-bento">
+                                                <label htmlFor="user_phone">טלפון</label>
+                                                <input
+                                                    type="tel"
+                                                    id="user_phone"
+                                                    name="user_phone"
+                                                    value={formData.user_phone}
+                                                    onChange={handleChange}
+                                                    className={formErrors.user_phone ? 'error' : ''}
+                                                    placeholder="מספר טלפון"
+                                                />
+                                                {formErrors.user_phone && (
+                                                    <div className="error-message">
+                                                        <FaExclamationCircle />
+                                                        <span>{formErrors.user_phone}</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div className="form-group-bento">
+                                            <label htmlFor="user_email">אימייל *</label>
                                             <input
-                                                type="text"
-                                                id="user_name"
-                                                name="user_name"
-                                                value={formData.user_name}
+                                                type="email"
+                                                id="user_email"
+                                                name="user_email"
+                                                value={formData.user_email}
                                                 onChange={handleChange}
-                                                className={formErrors.user_name ? 'error' : ''}
-                                                placeholder="שם מלא"
+                                                className={formErrors.user_email ? 'error' : ''}
+                                                placeholder="דוגמה: name@example.com"
                                             />
-                                            {formErrors.user_name && (
+                                            {formErrors.user_email && (
                                                 <div className="error-message">
                                                     <FaExclamationCircle />
-                                                    <span>{formErrors.user_name}</span>
+                                                    <span>{formErrors.user_email}</span>
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="form-group">
-                                            <label htmlFor="user_phone">טלפון</label>
-                                            <input
-                                                type="tel"
-                                                id="user_phone"
-                                                name="user_phone"
-                                                value={formData.user_phone}
+                                        <div className="form-group-bento full-height">
+                                            <label htmlFor="message">הודעה *</label>
+                                            <textarea
+                                                id="message"
+                                                name="message"
+                                                value={formData.message}
                                                 onChange={handleChange}
-                                                className={formErrors.user_phone ? 'error' : ''}
-                                                placeholder="מספר טלפון"
-                                            />
-                                            {formErrors.user_phone && (
+                                                rows="4"
+                                                className={formErrors.message ? 'error' : ''}
+                                                placeholder="ספרו לי קצת על עצמכם ועל מה שתרצו לטפל"
+                                            ></textarea>
+                                            {formErrors.message && (
                                                 <div className="error-message">
                                                     <FaExclamationCircle />
-                                                    <span>{formErrors.user_phone}</span>
+                                                    <span>{formErrors.message}</span>
                                                 </div>
                                             )}
                                         </div>
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="user_email">אימייל *</label>
-                                        <input
-                                            type="email"
-                                            id="user_email"
-                                            name="user_email"
-                                            value={formData.user_email}
-                                            onChange={handleChange}
-                                            className={formErrors.user_email ? 'error' : ''}
-                                            placeholder="דוגמה: name@example.com"
-                                        />
-                                        {formErrors.user_email && (
-                                            <div className="error-message">
-                                                <FaExclamationCircle />
-                                                <span>{formErrors.user_email}</span>
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="message">הודעה *</label>
-                                        <textarea
-                                            id="message"
-                                            name="message"
-                                            value={formData.message}
-                                            onChange={handleChange}
-                                            rows="4"
-                                            className={formErrors.message ? 'error' : ''}
-                                            placeholder="ספרו לי קצת על עצמכם ועל מה שתרצו לטפל"
-                                        ></textarea>
-                                        {formErrors.message && (
-                                            <div className="error-message">
-                                                <FaExclamationCircle />
-                                                <span>{formErrors.message}</span>
-                                            </div>
-                                        )}
-                                    </div>
 
-                                    <button type="submit" className={`submit-btn ${loading ? 'loading' : ''}`} disabled={loading}>
-                                        {loading ? 'שולח...' : 'שליחה'}
-                                        <FaArrowLeft className="btn-icon" />
-                                    </button>
+                                        <button type="submit" className={`bento-submit-btn ${loading ? 'loading' : ''}`} disabled={loading}>
+                                            {loading ? 'שולח...' : 'שליחה'}
+                                            <FaArrowLeft className="btn-icon" />
+                                        </button>
 
-                                    {success && <div className="feedback success"><FaCheckCircle /> ההודעה נשלחה בהצלחה! אחזור אליכם בהקדם.</div>}
-                                    {error && <div className="feedback error">אירעה שגיאה בשליחה. נסו שוב או צרו קשר בטלפון.</div>}
-                                </form>
+                                        {success && <div className="feedback success"><FaCheckCircle /> ההודעה נשלחה בהצלחה!</div>}
+                                        {error && <div className="feedback error">אירעה שגיאה בשליחה.</div>}
+                                    </form>
+                                </div>
+
+                                {/* 2. Phone Card */}
+                                <a href={`tel:${contactInfo.phone}`} className="bento-card phone-card" data-aos="fade-up" data-aos-delay="100">
+                                    <div className="card-bg-effect"></div>
+                                    <div className="pop-out-icon phone-3d">
+                                        <FaPhone />
+                                    </div>
+                                    <div className="bento-card-content">
+                                        <span className="card-label">טלפון</span>
+                                        <span className="card-value">{contactInfo.phone}</span>
+                                        <span className="card-action">חייג עכשיו</span>
+                                    </div>
+                                </a>
+
+                                {/* 3. WhatsApp Card */}
+                                <a href={`https://wa.me/${contactInfo.whatsapp}`} target="_blank" rel="noopener noreferrer" className="bento-card whatsapp-card" data-aos="fade-up" data-aos-delay="200">
+                                    <div className="card-bg-effect"></div>
+                                    <div className="pop-out-icon whatsapp-3d">
+                                        <FaWhatsapp />
+                                    </div>
+                                    <div className="bento-card-content">
+                                        <span className="card-label">ווטסאפ</span>
+                                        <span className="card-value">זמינה לשיחה</span>
+                                        <span className="card-action">שלח הודעה</span>
+                                    </div>
+                                </a>
+
+                                {/* 4. Email Card */}
+                                <a href={`mailto:${contactInfo.email}`} className="bento-card email-card" data-aos="fade-up" data-aos-delay="300">
+                                    <div className="card-bg-effect"></div>
+                                    <div className="pop-out-icon email-3d">
+                                        <FaEnvelope />
+                                    </div>
+                                    <div className="bento-card-content">
+                                        <span className="card-label">מייל</span>
+                                        <span className="card-value">Send Email</span>
+                                        <span className="card-action">כתוב לי</span>
+                                    </div>
+                                </a>
+
+                                {/* 5. Map Card - Replaced with Social/Info or kept generic */}
+                                {/* Since online therapy doesn't strictly need a map, maybe we skip it or show location anyway? 
+                                     The user said "consistency", so let's include the social card instead of map maybe? 
+                                     Or just use the Layout from Contact.jsx. 
+                                     Let's use Social Card in place of Map for Online page or just add it. 
+                                     Actually, let's keep consistency with 4 columns. 
+                                 */}
+                                <div className="bento-card social-card" data-aos="fade-up" data-aos-delay="400" style={{ gridColumn: 'span 1' }}>
+                                    <div className="card-bg-effect"></div>
+                                    <div className="social-content">
+                                        <span className="social-label">עקבו אחרי</span>
+                                        <div className="social-icons-wrapper">
+                                            <a href={contactInfo.social.facebook} target="_blank" rel="noopener noreferrer" className="social-btn facebook">
+                                                <FaFacebookF />
+                                            </a>
+                                            <a href={contactInfo.social.instagram} target="_blank" rel="noopener noreferrer" className="social-btn instagram">
+                                                <FaInstagram />
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
