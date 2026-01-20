@@ -153,7 +153,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    // ScrollToTop component already handles scrolling on mount
     // Refresh AOS to detect new elements
     setTimeout(() => {
       AOS.refresh();

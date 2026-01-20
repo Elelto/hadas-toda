@@ -61,7 +61,7 @@ const OnlineTherapy = () => {
     const [formErrors, setFormErrors] = useState({});
 
     useEffect(() => {
-        window.scrollTo(0, 0);
+        // ScrollToTop component already handles scrolling on mount
         setTimeout(() => {
             AOS.refresh();
         }, 100);

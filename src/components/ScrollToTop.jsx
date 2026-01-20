@@ -6,9 +6,9 @@ const ScrollToTop = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    // חזרה לראש העמוד בכל מעבר בין עמודים
-    window.scrollTo(0, 0);
-    
+    // חזרה לראש העמוד בכל מעבר בין עמודים - מיידי ללא אנימציה
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+
     // רענון AOS אחרי מעבר בין דפים
     setTimeout(() => {
       AOS.refresh();
