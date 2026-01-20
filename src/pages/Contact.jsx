@@ -54,6 +54,7 @@ const getDefaultContactContent = () => ({
   }
 });
 
+
 export default function Contact() {
   const form = useRef();
   const [loading, setLoading] = useState(false);
@@ -68,6 +69,9 @@ export default function Contact() {
     message: ''
   });
   const [formErrors, setFormErrors] = useState({});
+
+  // Detect mobile devices for performance optimization
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
 
   // Load YAML content
   useEffect(() => {

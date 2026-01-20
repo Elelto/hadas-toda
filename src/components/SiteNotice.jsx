@@ -13,15 +13,28 @@ const SiteNotice = () => {
 
     if (!isBlogPage) {
       setIsVisible(false);
+      setIsClosing(false);
       return;
     }
 
-    // Show notice immediately on blog pages
+    // Check if user already closed the notice in this session
+    const hasClosedNotice = sessionStorage.getItem('siteNotice_closed');
+
+    if (hasClosedNotice) {
+      setIsVisible(false);
+      return;
+    }
+
+    // Show notice immediately on blog pages (only if not previously closed)
     setIsVisible(true);
+    setIsClosing(false);
   }, [location.pathname]);
 
   const handleClose = () => {
     setIsClosing(true);
+
+    // Save to sessionStorage so it won't show again this session
+    sessionStorage.setItem('siteNotice_closed', 'true');
 
     // Hide after animation completes
     setTimeout(() => {
