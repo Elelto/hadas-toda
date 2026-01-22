@@ -131,7 +131,7 @@ export default function About() {
     "name": "הדס תודה",
     "jobTitle": "קלינאית תקשורת",
     "description": "קלינאית תקשורת מוסמכת (M.A) עם התמחות בטיפולי קול, היגוי, גמגום, תפקודי פה ומובנות דיבור לילדים ומבוגרים",
-    "url": "https://www.hadas-toda.co.il/about",
+    "url": "https://hadas-toda.co.il/about",
     "worksFor": {
       "@type": "MedicalBusiness",
       "name": "הדס תודה - קלינאית תקשורת"

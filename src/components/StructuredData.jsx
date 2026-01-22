@@ -2,7 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
 const StructuredData = ({ type = 'organization', pageData = {} }) => {
-  const baseUrl = 'https://www.hadas-toda.co.il';
+  const baseUrl = 'https://hadas-toda.co.il';
 
   // נתוני העסק הבסיסיים
   const organizationData = {

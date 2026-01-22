@@ -284,7 +284,7 @@ export default function Contact() {
       "@type": "MedicalBusiness",
       "name": "הדס תודה - קלינאית תקשורת",
       "description": "יצירת קשר עם הדס תודה - קלינאית תקשורת מוסמכת לקביעת פגישות וייעוץ מקצועי",
-      "url": "https://www.hadas-toda.co.il/contact",
+      "url": "https://hadas-toda.co.il/contact",
       "telephone": "+972-50-679-6209",
       "email": "hadas.toda.info@gmail.com",
       "address": {

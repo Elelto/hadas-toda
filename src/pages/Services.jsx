@@ -134,7 +134,7 @@ export default function Services() {
     "@type": "MedicalBusiness",
     "name": "הדס תודה - שירותי קלינאות תקשורת",
     "description": "שירותי קלינאות תקשורת מקצועיים: טיפול בגמגום, צרידות, בעיות קול, עיכוב שפתי ושיבושי היגוי",
-    "url": "https://www.hadas-toda.co.il/services",
+    "url": "https://hadas-toda.co.il/services",
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
       "name": "שירותי טיפול בתקשורת",

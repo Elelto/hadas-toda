@@ -46,7 +46,7 @@ export default function Blog() {
     "@type": "Blog",
     "name": "הבלוג המקצועי - הדס תודה",
     "description": "מאמרים מקצועיים, טיפים וחידושים בתחום קלינאות התקשורת, גמגום, צרידות ובעיות קול",
-    "url": "https://www.hadas-toda.co.il/blog",
+    "url": "https://hadas-toda.co.il/blog",
     "author": {
       "@type": "Person",
       "name": "הדס תודה",
@@ -55,13 +55,13 @@ export default function Blog() {
     "publisher": {
       "@type": "Organization",
       "name": "הדס תודה - קלינאית תקשורת",
-      "url": "https://www.hadas-toda.co.il"
+      "url": "https://hadas-toda.co.il"
     },
     "blogPost": blogPosts.slice(0, 5).map(post => ({
       "@type": "BlogPosting",
       "headline": post.title,
       "description": post.excerpt,
-      "url": `https://www.hadas-toda.co.il/blog/${post.slug}`,
+      "url": `https://hadas-toda.co.il/blog/${post.slug}`,
       "datePublished": post.date,
       "author": {
         "@type": "Person",
@@ -85,7 +85,7 @@ export default function Blog() {
           <p className="page-subtitle" data-aos="fade-up" data-aos-delay="200">מאמרים, טיפים וחידושים בתחום קלינאות התקשורת</p>
         </div>
       </section>
-      
+
       <section className="blog-content">
         <div className="container">
           {/* סינון לפי קטגוריות */}
@@ -93,7 +93,7 @@ export default function Blog() {
             <div className="filter-label">סינון לפי נושא:</div>
             <div className="filter-options">
               {categories.map(category => (
-                <button 
+                <button
                   key={category.id}
                   className={`filter-btn ${filter === category.id ? 'active' : ''}`}
                   onClick={() => setFilter(category.id)}
@@ -103,7 +103,7 @@ export default function Blog() {
               ))}
             </div>
           </div>
-          
+
           {/* רשימת המאמרים */}
           <div className="blog-posts-grid">
             {filteredPosts.length > 0 ? (

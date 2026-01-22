@@ -23,7 +23,7 @@ export default function Testimonials() {
     "@type": "WebPage",
     "name": "המלצות - הדס תודה",
     "description": "המלצות ממטופלים על הטיפול בקלינאות התקשורת של הדס תודה - סיפורי הצלחה בטיפול בגמגום, צרידות ובעיות קול",
-    "url": "https://www.hadas-toda.co.il/testimonials"
+    "url": "https://hadas-toda.co.il/testimonials"
   };
 
   return (

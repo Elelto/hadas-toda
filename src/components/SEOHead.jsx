@@ -12,7 +12,7 @@ const SEOHead = ({
   structuredData,
   noindex = false
 }) => {
-  const siteUrl = 'https://www.hadas-toda.co.il';
+  const siteUrl = 'https://hadas-toda.co.il';
   const defaultImage = `${siteUrl}/images/logo.png`;
 
   const fullTitle = title ? `${title} | הדס תודה - קלינאית תקשורת` : 'הדס תודה | קלינאית תקשורת מוסמכת';
