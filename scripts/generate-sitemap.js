@@ -38,6 +38,7 @@ function getBlogPosts() {
 const staticPages = [
     { url: '/', priority: '1.0', changefreq: 'weekly' },
     { url: '/bnei-brak', priority: '0.9', changefreq: 'monthly' },
+    { url: '/online-therapy', priority: '0.9', changefreq: 'monthly' },
     { url: '/services', priority: '0.9', changefreq: 'monthly' },
     { url: '/blog', priority: '0.8', changefreq: 'weekly' },
     { url: '/about', priority: '0.8', changefreq: 'monthly' },
