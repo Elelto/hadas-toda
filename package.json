@@ -7,6 +7,7 @@
     "update-blog": "node scripts/update-blog-data.js",
     "prebuild": "npm run update-blog && node scripts/generate-sitemap.js",
     "build": "node scripts/sync-content.js && vite build",
+    "postbuild": "node scripts/inject-seo-meta.js",
     "preview": "vite preview",
     "cms": "npx netlify-cms-proxy-server",
     "sync-content": "node scripts/sync-content.js",
@@ -41,6 +42,7 @@
     "vite-plugin-image-optimizer": "^2.0.3",
     "vite-plugin-imagemin": "^0.6.1",
     "vite-plugin-markdown": "^2.2.0",
-    "vite-plugin-node-polyfills": "^0.25.0"
+    "vite-plugin-node-polyfills": "^0.25.0",
+    "vite-plugin-prerender": "^1.0.8"
   }
 }

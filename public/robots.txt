@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://www.hadas-toda.co.il/sitemap.xml
+Sitemap: https://hadas-toda.co.il/sitemap.xml
 
 # Disallow admin areas
 Disallow: /admin/
@@ -17,3 +17,5 @@ Allow: /contact
 Allow: /blog
 Allow: /testimonials
 Allow: /ai-assessment
+Allow: /online-therapy
+Allow: /bnei-brak

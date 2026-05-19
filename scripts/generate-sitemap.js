@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const matter = require('gray-matter');
 
-const DOMAIN = 'https://www.hadas-toda.co.il';
+const DOMAIN = 'https://hadas-toda.co.il';
 
 console.log('🗺️  Generating sitemap...');
 

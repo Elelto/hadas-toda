@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
+import vitePrerender from 'vite-plugin-prerender';
 
 export default defineConfig({
   plugins: [
@@ -28,7 +29,21 @@ export default defineConfig({
       webp: {
         quality: 80,
       },
-    })
+    }),
+    // Prerendering — מייצר HTML סטטי לכל נתיב כדי שגוגלבוט יראה תוכן מלא
+    vitePrerender({
+      staticDir: resolve(__dirname, 'dist'),
+      routes: [
+        '/',
+        '/online-therapy',
+        '/bnei-brak',
+        '/services',
+        '/about',
+        '/contact',
+        '/blog',
+        '/testimonials',
+      ],
+    }),
   ],
   base: "/",
   server: {

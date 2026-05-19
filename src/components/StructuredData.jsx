@@ -187,6 +187,64 @@ const StructuredData = ({ type = 'organization', pageData = {} }) => {
     }
   } : null;
 
+  // נתוני שירות אונליין (טלרפואה)
+  const onlineTherapyData = {
+    "@context": "https://schema.org",
+    "@type": "MedicalBusiness",
+    "@id": `${baseUrl}/online-therapy#online-service`,
+    "name": "הדס תודה - קלינאית תקשורת אונליין",
+    "alternateName": "Hadas Toda Online Speech Therapy",
+    "description": "טיפולי קלינאות תקשורת אונליין עם הדס תודה M.A. טיפול מקצועי בגמגום, צרידות, בעיות קול והיגוי מהבית דרך זום",
+    "url": `${baseUrl}/online-therapy`,
+    "telephone": "+972-50-679-6209",
+    "priceRange": "$$",
+    "image": `${baseUrl}/images/logo.png`,
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "IL",
+      "addressLocality": "בני ברק"
+    },
+    "availableChannel": {
+      "@type": "ServiceChannel",
+      "serviceType": "Online",
+      "availableLanguage": "he",
+      "serviceUrl": `${baseUrl}/online-therapy`,
+      "serviceSmsNumber": "+972-50-679-6209"
+    },
+    "areaServed": {
+      "@type": "Country",
+      "name": "ישראל"
+    },
+    "medicalSpecialty": "Speech-Language Pathology",
+    "serviceType": [
+      "קלינאית תקשורת אונליין",
+      "טיפול גמגום אונליין",
+      "טיפול קול מרחוק",
+      "טיפול בצרידות אונליין",
+      "קלינאית תקשורת זום",
+      "טיפול שפה מרחוק",
+      "טלרפואה - קלינאות תקשורת"
+    ],
+    "provider": {
+      "@id": `${baseUrl}/#person`
+    }
+  };
+
+  // FAQPage schema — מוצג ישירות בתוצאות גוגל!
+  const onlineFaqData = pageData.faqs ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${baseUrl}/online-therapy#faq`,
+    "mainEntity": pageData.faqs.map(faq => ({
+      "@type": "Question",
+      "name": faq.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.answer
+      }
+    }))
+  } : null;
+
   // בחירת הנתונים לפי סוג הדף
   let structuredData = [];
 
@@ -205,6 +263,9 @@ const StructuredData = ({ type = 'organization', pageData = {} }) => {
       break;
     case 'blogPost':
       structuredData = [organizationData, blogPostData].filter(Boolean);
+      break;
+    case 'onlineTherapy':
+      structuredData = [organizationData, onlineTherapyData, onlineFaqData].filter(Boolean);
       break;
     default:
       structuredData = [organizationData];
