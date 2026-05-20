@@ -65,9 +65,7 @@ const SEOHead = ({
 
         {/* Structured Data */}
         {structuredData && (
-          <script type="application/ld+json">
-            {JSON.stringify(structuredData)}
-          </script>
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
         )}
       </Helmet>
 

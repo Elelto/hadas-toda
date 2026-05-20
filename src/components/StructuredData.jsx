@@ -274,9 +274,7 @@ const StructuredData = ({ type = 'organization', pageData = {} }) => {
   return (
     <Helmet>
       {structuredData.map((data, index) => (
-        <script key={index} type="application/ld+json">
-          {JSON.stringify(data, null, 2)}
-        </script>
+        <script key={index} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
       ))}
     </Helmet>
   );
