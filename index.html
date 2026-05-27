@@ -129,8 +129,7 @@
     }
     </script>
 
-  <!-- Netlify Identity Widget -->
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <!-- Netlify Identity Widget loaded dynamically if URL hash contains identity tokens to avoid stealing focus on page load -->
 
   <!-- Start Single Page Apps for GitHub Pages -->
   <script type="text/javascript">
@@ -157,30 +156,48 @@
 
   <!-- Netlify Identity Redirect Script -->
   <script>
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on("init", user => {
-        if (!user) {
-          window.netlifyIdentity.on("login", () => {
-            document.location.href = "/admin/";
-          });
-        }
-      });
-
-      // טיפול בטוקן הזמנה
+    (function () {
       const hash = window.location.hash;
-      if (hash && hash.includes('invite_token')) {
-        const token = hash.replace('#invite_token=', '');
-        window.netlifyIdentity.open('signup');
-        window.netlifyIdentity.gotrue.acceptInvite(token, true)
-          .then(() => {
-            console.log('הזמנה התקבלה בהצלחה');
-          })
-          .catch(err => {
-            console.error('שגיאה בקבלת ההזמנה:', err);
-            window.netlifyIdentity.open('signup');
-          });
+      const isIdentityFlow = hash && (
+        hash.includes('invite_token') ||
+        hash.includes('recovery_token') ||
+        hash.includes('access_token') ||
+        hash.includes('confirmation_token') ||
+        hash.includes('email_change_token')
+      );
+
+      if (isIdentityFlow) {
+        const script = document.createElement('script');
+        script.src = 'https://identity.netlify.com/v1/netlify-identity-widget.js';
+        script.async = true;
+        script.onload = () => {
+          if (window.netlifyIdentity) {
+            window.netlifyIdentity.on("init", user => {
+              if (!user) {
+                window.netlifyIdentity.on("login", () => {
+                  document.location.href = "/admin/";
+                });
+              }
+            });
+
+            // טיפול בטוקן הזמנה
+            if (hash.includes('invite_token')) {
+              const token = hash.replace('#invite_token=', '');
+              window.netlifyIdentity.open('signup');
+              window.netlifyIdentity.gotrue.acceptInvite(token, true)
+                .then(() => {
+                  console.log('הזמנה התקבלה בהצלחה');
+                })
+                .catch(err => {
+                  console.error('שגיאה בקבלת ההזמנה:', err);
+                  window.netlifyIdentity.open('signup');
+                });
+            }
+          }
+        };
+        document.head.appendChild(script);
       }
-    }
+    })();
   </script>
 </body>
 
