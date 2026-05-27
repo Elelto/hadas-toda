@@ -6,6 +6,7 @@ import '../styles/bnei-brak.css';
 import { init, send } from '@emailjs/browser';
 import '../styles/contact.css';
 import { FaPhone, FaWhatsapp, FaEnvelope, FaMapMarkerAlt, FaFacebookF, FaInstagram, FaArrowLeft, FaExclamationCircle, FaMicrophoneAlt, FaCommentDots, FaStream, FaAppleAlt, FaAssistiveListeningSystems } from 'react-icons/fa';
+import { getExperienceYearsLabel } from '../utils/experience';
 
 // Specialization Configuration (Icon + Color) - same as Home.jsx
 const specializationConfig = {
@@ -41,6 +42,7 @@ init("l9xXgXVINGFdgI8KJ");
 
 const BneiBrak = () => {
   const [activeAccordion, setActiveAccordion] = useState(null);
+  const experienceYearsLabel = getExperienceYearsLabel();
 
   // Form State
   const form = useRef();
@@ -278,7 +280,7 @@ const BneiBrak = () => {
               <div className="shape-circle"></div>
               <div className="shape-content">
                 <div className="stat-box">
-                  <span className="stat-number">7+</span>
+                  <span className="stat-number">{experienceYearsLabel}</span>
                   <span className="stat-label">שנות ניסיון</span>
                 </div>
                 <div className="stat-box">
