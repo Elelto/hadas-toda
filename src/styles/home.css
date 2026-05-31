@@ -45,14 +45,16 @@
 /* Home Page specific stat box positioning to avoid overlap */
 .home-hero-wrapper .stat-box:nth-child(1) {
   top: 10%;
-  right: -20px;
+  /* Changed from -20px to 5px — negative right values cause overflow */
+  right: 5px;
   left: auto;
   animation-delay: 0s;
 }
 
 .home-hero-wrapper .stat-box:nth-child(2) {
   bottom: 15%;
-  left: -20px;
+  /* Changed from -20px to 5px */
+  left: 5px;
   right: auto;
   animation-delay: 1.5s;
 }
@@ -60,8 +62,8 @@
 .home-hero-wrapper .stat-box:nth-child(3) {
   top: auto;
   bottom: 25%;
-  /* Positioned in lower right quadrant */
-  right: -30px;
+  /* Changed from -30px to 5px */
+  right: 5px;
   left: auto;
   animation-delay: 3s;
 }
@@ -69,22 +71,18 @@
 @media (max-width: 768px) {
   .home-hero-wrapper .stat-box:nth-child(1) {
     top: 0;
-    right: 15px;
-    /* Added spacing */
+    right: 10px;
   }
 
   .home-hero-wrapper .stat-box:nth-child(2) {
     bottom: 0;
-    left: 15px;
-    /* Added spacing */
+    left: 10px;
   }
 
   .home-hero-wrapper .stat-box:nth-child(3) {
     top: 40%;
     left: auto;
-    right: 15px;
-    /* Added spacing */
-    /* Move to right side on mobile too for variety */
+    right: 10px;
     bottom: auto;
   }
 }
@@ -595,15 +593,177 @@
     grid-template-columns: 1fr;
   }
 
-  .reverse-layout-mobile> :first-child {
+  .reverse-layout-mobile > :first-child {
     order: 2;
   }
 
-  .reverse-layout-mobile> :last-child {
+  .reverse-layout-mobile > :last-child {
     order: 1;
   }
 
   .quote-text {
     font-size: 1.5rem;
+  }
+
+  /* Ensure blog grid never causes overflow */
+  .blog-grid-modern {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================
+   480px breakpoint — covers 320px–480px range
+   ========================================= */
+@media (max-width: 480px) {
+  .home-hero-wrapper {
+    padding-top: 80px;
+    overflow: hidden;
+  }
+
+  /* Heading: use clamp + block so it wraps naturally */
+  .bb-hero-text h1,
+  .home-hero-wrapper h1 {
+    font-size: clamp(1.7rem, 7.5vw, 2.2rem);
+    display: block;
+    white-space: normal;
+    word-break: break-word;
+    max-width: 100%;
+  }
+
+  /* CTA button group: wrap and go full-width */
+  .bb-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .bb-btn {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    white-space: normal;
+  }
+
+  /* Badge wave next to badge: hide on mobile to avoid overflow */
+  .badge-wave {
+    display: none;
+  }
+
+  /* Hero badge container: don't overflow */
+  .hero-badge-container {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  /* Quote section */
+  .home-quote-modern {
+    padding: 60px 0;
+  }
+
+  .quote-text {
+    font-size: 1.2rem;
+    word-break: break-word;
+  }
+
+  .quote-mark {
+    font-size: 2.5rem;
+  }
+
+  /* Blog grid: 1 column */
+  .blog-grid-modern {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  /* Blog card image height */
+  .blog-card-image {
+    height: 160px;
+  }
+
+  /* Specialization cards: ensure no margin overflow */
+  .bb-services-grid-specializations {
+    gap: 1rem;
+    padding: 0;
+  }
+
+  .bb-specialization-card {
+    flex: 1 1 100%;
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  /* About section: prevent card bleed */
+  .bb-about-wrapper {
+    gap: 1.5rem;
+  }
+
+  .bb-about-visual {
+    height: auto;
+  }
+
+  .visual-card.main-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 1.25rem;
+    box-sizing: border-box;
+  }
+
+  .visual-card.stat-card {
+    /* Take it out of absolute flow on mobile */
+    position: relative;
+    left: auto;
+    bottom: auto;
+    margin-top: 1rem;
+    width: fit-content;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  /* Section header text sizing */
+  .section-header-center {
+    margin: 0 auto 40px;
+  }
+
+  .section-header-center h2 {
+    font-size: clamp(1.3rem, 6vw, 1.7rem);
+    white-space: normal;
+    word-break: break-word;
+  }
+}
+
+/* =========================================
+   320px breakpoint — narrowest phones
+   ========================================= */
+@media (max-width: 360px) {
+  .bb-hero-text h1,
+  .home-hero-wrapper h1 {
+    font-size: clamp(1.5rem, 8vw, 1.9rem);
+  }
+
+  .bb-btn {
+    padding: 11px 12px;
+    font-size: 0.9rem;
+  }
+
+  .stat-number {
+    font-size: 1.2rem;
+  }
+
+  .section-header-center h2 {
+    font-size: clamp(1.2rem, 7vw, 1.5rem);
+  }
+
+  .bb-description {
+    font-size: 0.95rem;
+  }
+
+  .bb-subtitle {
+    font-size: 0.95rem;
   }
 }

@@ -10,18 +10,24 @@
 
 /* Hero Image Shape - specific for Online Therapy */
 .online-shape-bg {
-    width: 450px;
-    height: 450px;
-    /* Placeholder gradient until image is available */
-    background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
-    background-image: url('/images/uploads/Gemini_Generated_Image_2hy4r32hy4r32hy4.png');
-    background-size: cover;
-    background-position: center;
-    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-    animation: morph 8s ease-in-out infinite;
-    box-shadow: inset 0 0 0 10px rgba(255, 255, 255, 0.2), 0 20px 40px rgba(0, 0, 0, 0.1);
-    position: relative;
-    z-index: 1;
+  /* Was: width: 450px; height: 450px — hardcoded, bypassed responsive fix
+     Fix: match the same min() constraint as .shape-circle in bnei-brak.css */
+  width: min(450px, 90vw);
+  height: min(450px, 90vw);
+  max-width: 100%;
+  box-sizing: border-box;
+  /* Placeholder gradient until image is available */
+  background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+  background-image: url('/images/uploads/Gemini_Generated_Image_2hy4r32hy4r32hy4.png');
+  background-size: cover;
+  background-position: center;
+  border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+  animation: morph 8s ease-in-out infinite;
+  box-shadow: inset 0 0 0 10px rgba(255, 255, 255, 0.2), 0 20px 40px rgba(0, 0, 0, 0.1);
+  position: relative;
+  /* z-index: 1 stays — the shape itself should be below stat-boxes (z-index:2)
+     but the parent .bb-hero-shape needs its own stacking context (see below) */
+  z-index: 1;
 }
 
 /* Hide the old video mockup styles if no longer needed, or keep for reference */
@@ -205,30 +211,119 @@
 
 /* Responsive */
 @media (max-width: 992px) {
-    .benefits-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+  .benefits-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 
-    .process-timeline {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 2rem;
-    }
+  .process-timeline {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+  }
 
-    .process-timeline::before {
-        display: none;
-    }
+  .process-timeline::before {
+    display: none;
+  }
 
-    .process-step {
-        flex: 1 1 40%;
-    }
+  .process-step {
+    flex: 1 1 40%;
+  }
+
+  /* When the hero grid collapses to 1 column, ensure the shape area
+     sits BELOW the text in stacking order — prevent it painting over buttons */
+  .online-therapy-page .bb-hero-shape {
+    /* Explicit z-index lower than bb-hero-text so text/buttons are always on top */
+    z-index: 0;
+    /* Limit shape height so it doesn't intrude into text column space */
+    height: 320px;
+  }
+
+  .online-therapy-page .online-shape-bg {
+    width: min(300px, 85vw);
+    height: min(300px, 85vw);
+  }
 }
 
 @media (max-width: 768px) {
+  .mockup-screen {
+    grid-template-columns: 1fr;
+  }
 
+  .benefits-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
 
+  /* Stack process steps vertically on mobile */
+  .process-step {
+    flex: 1 1 100%;
+  }
+}
 
-    .mockup-screen {
-        grid-template-columns: 1fr;
-    }
+/* =========================================
+   Mobile hero overlap fix: 320px–480px
+   ========================================= */
+@media (max-width: 480px) {
+  /* The hero text column must always paint ABOVE the shape column.
+     Root cause: .bb-hero-content collapses to 1 column, and the second
+     grid child (.bb-hero-shape) paints after the first — but its
+     absolutely-positioned .shape-content children (z-index:2) can
+     visually overflow upward into the text/button area.
+     Fix: give .bb-hero-text an explicit z-index and isolate .bb-hero-shape. */
+  .online-therapy-page .bb-hero-text {
+    position: relative;
+    z-index: 10;   /* Always above the shape area */
+    /* Ensure buttons have their own painting layer */
+  }
+
+  .online-therapy-page .bb-hero-text .bb-actions {
+    position: relative;
+    z-index: 10;
+    /* Guarantee buttons are not obscured by anything */
+    isolation: isolate;
+  }
+
+  .online-therapy-page .bb-hero-shape {
+    /* Push shape area below text in the stacking order */
+    z-index: 0;
+    /* Shrink height so the shape doesn't spill into viewport height above */
+    height: 260px;
+    /* Prevent shape-content's absolute children from escaping upward */
+    overflow: hidden;
+  }
+
+  .online-therapy-page .online-shape-bg {
+    width: min(220px, 78vw);
+    height: min(220px, 78vw);
+  }
+
+  /* The stat-boxes inside shape-content have inline styles with
+     negative positions (right: -10px, left: -10px).
+     We override those here to keep them contained. */
+  .online-therapy-page .bb-hero-shape .stat-box {
+    /* Override inline right/left: -10px to prevent bleed */
+    right: 5px !important;
+    left: 5px !important;
+    max-width: calc(50vw - 20px);
+    padding: 8px 14px;
+  }
+
+  .benefits-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .benefit-card {
+    padding: 1.5rem 1rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .online-therapy-page .bb-hero-shape {
+    height: 220px;
+  }
+
+  .online-therapy-page .online-shape-bg {
+    width: min(190px, 76vw);
+    height: min(190px, 76vw);
+  }
 }

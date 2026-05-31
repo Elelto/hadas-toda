@@ -61,6 +61,9 @@
   background: linear-gradient(135deg, #fdfbfd 0%, #f4f0f6 100%);
   overflow: hidden;
   padding-top: 60px;
+  /* Prevent child overflow from escaping the section */
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* Background decorative elements */
@@ -179,8 +182,10 @@
 
 /* Abstract organic shape */
 .shape-circle {
-  width: 450px;
-  height: 450px;
+  /* Replaced fixed 450px with a responsive size that shrinks on mobile */
+  width: min(450px, 90vw);
+  height: min(450px, 90vw);
+  max-width: 100%;
   background-image: url('/images/uploads/Gemini_Generated_Image_z8xsjwz8xsjwz8xs.png');
   background-size: cover;
   background-position: center;
@@ -190,6 +195,7 @@
     0 20px 40px rgba(0, 0, 0, 0.1);
   position: relative;
   z-index: 1;
+  box-sizing: border-box;
 }
 
 @keyframes morph {
@@ -224,6 +230,9 @@
   flex-direction: column;
   align-items: center;
   animation: float 4s ease-in-out infinite;
+  /* Prevent stat-box from overflowing its container */
+  max-width: calc(100% - 30px);
+  box-sizing: border-box;
 }
 
 .stat-box:nth-child(1) {
@@ -351,6 +360,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  /* Contain absolutely-positioned children */
+  overflow: visible;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .visual-card {
@@ -790,12 +803,13 @@
   }
 
   .bb-hero-shape {
-    height: 350px;
+    height: 320px;
   }
 
   .shape-circle {
-    width: 300px;
-    height: 300px;
+    /* Responsive: never exceeds screen width */
+    width: min(300px, 85vw);
+    height: min(300px, 85vw);
   }
 
   .section-padding {
@@ -931,5 +945,154 @@
     padding: 2rem 1.5rem;
     flex: 1 1 100%;
     max-width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+/* =========================================
+   Mobile-first: 480px and below
+   ========================================= */
+@media (max-width: 480px) {
+  .bb-hero {
+    min-height: auto;
+    padding-top: 80px;
+    padding-bottom: 60px;
+  }
+
+  .bb-hero-content {
+    /* Force single column on very small screens */
+    grid-template-columns: 1fr !important;
+    gap: 2rem;
+    padding: 0;
+  }
+
+  .bb-hero-text h1 {
+    font-size: clamp(1.8rem, 7vw, 2.2rem);
+    /* Allow heading to wrap naturally */
+    white-space: normal;
+    word-break: break-word;
+    display: block;
+  }
+
+  /* ROOT CAUSE FIX: when bb-hero-content collapses to 1 column,
+     .bb-hero-shape (z-index not set) is placed after .bb-hero-text in DOM order.
+     Its .shape-content child has z-index:2 and paints in the same stacking context,
+     meaning it can visually appear over the buttons above it in the flow.
+     Solution: give .bb-hero-text an explicit z-index so it creates its own
+     stacking context that always wins over .bb-hero-shape. */
+  .bb-hero-text {
+    position: relative;
+    z-index: 10;   /* Always above the shape area */
+  }
+
+  .bb-actions {
+    position: relative;
+    z-index: 10;
+    isolation: isolate;  /* Each button group creates its own compositing layer */
+  }
+
+  /* Ensure shape stays below text in stacking order */
+  .bb-hero-shape {
+    z-index: 0;
+    /* Contain absolute children so they don't escape upward into button space */
+    overflow: hidden;
+  }
+
+  .bb-subtitle {
+    font-size: 1rem;
+  }
+
+  .bb-description {
+    font-size: 1rem;
+    max-width: 100%;
+  }
+
+  .bb-actions {
+    /* Wrap buttons when they don't fit side by side */
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+  }
+
+  .bb-btn {
+    /* Buttons take full width on tiny screens */
+    width: 100%;
+    justify-content: center;
+    padding: 12px 20px;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+
+  .bb-hero-shape {
+    /* Hide hero shape on very small screens to avoid clutter */
+    height: 280px;
+  }
+
+  .shape-circle {
+    width: min(240px, 80vw);
+    height: min(240px, 80vw);
+  }
+
+  .stat-box {
+    /* Keep stat boxes inside the shape area */
+    padding: 10px 16px;
+    max-width: calc(50vw - 20px);
+  }
+
+  .stat-number {
+    font-size: 1.3rem;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+  }
+
+  .bb-about-wrapper {
+    gap: 2rem;
+  }
+
+  .bb-about-visual {
+    height: auto;
+    min-height: 300px;
+  }
+
+  .visual-card.main-card {
+    width: 95%;
+    padding: 1.5rem;
+    box-sizing: border-box;
+  }
+
+  .visual-card.stat-card {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    margin-top: 1rem;
+    width: auto;
+    min-width: 0;
+  }
+
+  .bb-specialization-card {
+    padding: 1.5rem 1rem;
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .section-header-center h2 {
+    font-size: clamp(1.4rem, 6vw, 1.8rem);
+  }
+
+  .section-padding {
+    padding: 40px 0;
+  }
+
+  .testimonial-card {
+    padding: 1.5rem;
+    box-sizing: border-box;
+    min-height: auto;
+  }
+
+  .contact-details {
+    padding: 2rem 1.5rem;
   }
 }
