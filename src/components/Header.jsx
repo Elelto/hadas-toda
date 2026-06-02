@@ -12,6 +12,7 @@ const getDefaultNavItems = () => [
   { path: '/about', label: 'קצת עליי' },
   { path: '/blog', label: 'בלוג מקצועי' },
   { path: '/testimonials', label: 'מטופלים מספרים' },
+  { path: '/online-therapy', label: 'טיפול אונליין' },
   { path: '/contact', label: 'דברו איתי' }
 ];
 

@@ -11,7 +11,5 @@ menu_items:
     path: "/testimonials"
   - name: "בלוג"
     path: "/blog"
-  - name: "טיפול אונליין"
-    path: "/online-therapy"
   - name: "יצירת קשר"
     path: "/contact"

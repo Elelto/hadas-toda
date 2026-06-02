@@ -19,6 +19,7 @@ const getDefaultFooterContent = () => ({
       { path: '/services', label: 'תחומי טיפול' },
       { path: '/about', label: 'קצת עליי' },
       { path: '/testimonials', label: 'מטופלים מספרים' },
+      { path: '/online-therapy', label: 'טיפול אונליין' },
       { path: '/contact', label: 'יצירת קשר' }
     ]
   },
