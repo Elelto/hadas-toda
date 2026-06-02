@@ -6,5 +6,7 @@ links:
     path: "/about"
   - name: "שירותים"
     path: "/services"
+  - name: "טיפול אונליין"
+    path: "/online-therapy"
   - name: "יצירת קשר"
     path: "/contact"
