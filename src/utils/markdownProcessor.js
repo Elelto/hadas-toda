@@ -38,7 +38,10 @@ export function extractSlugFromFilename(fileName) {
 }
 
 export function markdownToHtml(markdown = '') {
-  return markdownRenderer.render(normalizeMarkdown(markdown));
+  const html = markdownRenderer.render(normalizeMarkdown(markdown));
+  return html
+    .replace(/<table>/g, '<div class="table-container"><table>')
+    .replace(/<\/table>/g, '</table></div>');
 }
 
 export function processMarkdown(fileContent, fileName) {
