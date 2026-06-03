@@ -8,6 +8,10 @@ const markdownRenderer = new MarkdownIt({
   breaks: false
 });
 
+function normalizeMarkdown(markdown = '') {
+  return String(markdown).replace(/\\[ \t]*(\r?\n)/g, '$1');
+}
+
 export function formatDateToHebrew(dateString) {
   try {
     const date = new Date(dateString);
@@ -34,7 +38,7 @@ export function extractSlugFromFilename(fileName) {
 }
 
 export function markdownToHtml(markdown = '') {
-  return markdownRenderer.render(markdown);
+  return markdownRenderer.render(normalizeMarkdown(markdown));
 }
 
 export function processMarkdown(fileContent, fileName) {

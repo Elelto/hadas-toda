@@ -10,8 +10,12 @@ const markdownRenderer = new MarkdownIt({
   breaks: false
 });
 
+function normalizeMarkdown(markdown = '') {
+  return String(markdown).replace(/\\[ \t]*(\r?\n)/g, '$1');
+}
+
 function markdownToHtml(markdown = '') {
-  return markdownRenderer.render(markdown);
+  return markdownRenderer.render(normalizeMarkdown(markdown));
 }
 
 function formatDateToHebrew(dateString) {

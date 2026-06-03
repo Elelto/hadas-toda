@@ -37,9 +37,11 @@ collections:
     label: "פוסטים בבלוג"
     folder: "src/content/blog"
     create: true
+    identifier_field: "slug"
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
       - { label: "כותרת", name: "title", widget: "string" }
+      - { label: "Slug באנגלית", name: "slug", widget: "string", hint: "Use lowercase English letters, numbers, and hyphens only. Example: word-retrieval-vs-stuttering" }
       - { label: "תאריך פרסום", name: "date", widget: "datetime" }
       - { label: "תקציר", name: "excerpt", widget: "text" }
       - { label: "תמונת נושא", name: "image", widget: "image" }
