@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 const GoogleAnalytics = ({ trackingId }) => {
   // קבלת tracking ID ממשתני סביבה או מהפרמטר
   const gaTrackingId = trackingId || import.meta.env.VITE_GA_TRACKING_ID;
+  const gadsTrackingId = import.meta.env.VITE_GADS_TRACKING_ID;
   
   if (!gaTrackingId) return null;
 
@@ -24,6 +25,8 @@ const GoogleAnalytics = ({ trackingId }) => {
             allow_ad_personalization_signals: false,
             cookie_flags: 'SameSite=None;Secure'
           });
+          
+          ${gadsTrackingId ? `gtag('config', '${gadsTrackingId}');` : ''}
           
           // Event tracking for better insights
           gtag('event', 'page_view', {
