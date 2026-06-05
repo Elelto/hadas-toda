@@ -11,6 +11,21 @@
     gtag('config', 'AW-18195144777');
     gtag('config', 'G-CGWRG6HMY6');
   </script>
+  <!-- Google Ads Conversion Helper - fires before browser navigates away -->
+  <script>
+    function gtagSendEvent(url) {
+      var callback = function () {
+        if (typeof url === 'string') {
+          window.location = url;
+        }
+      };
+      gtag('event', 'ads_conversion___1', {
+        'event_callback': callback,
+        'event_timeout': 2000,
+      });
+      return false;
+    }
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0" />
   <meta name="theme-color" content="#c891ac" />

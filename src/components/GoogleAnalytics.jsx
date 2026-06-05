@@ -56,14 +56,22 @@ const GoogleAnalytics = ({ trackingId }) => {
                 eventName = 'whatsapp_click';
               }
               
-              // 3. Fire the event if a matching eventName was determined
+              // 3. Fire events if a matching eventName was determined
               if (eventName && typeof gtag === 'function') {
+                // GA4 event - for Analytics reporting
                 gtag('event', eventName, {
                   'event_category': 'Contact',
                   'event_label': label,
                   'link_url': href || '',
                   'link_text': anchor.innerText || anchor.textContent || ''
                 });
+                
+                // Google Ads conversion event - fires for ALL contact link clicks
+                // Uses gtagSendEvent helper (defined in index.html) to ensure
+                // the event is sent before the browser navigates away
+                if (typeof gtagSendEvent === 'function') {
+                  gtagSendEvent(href || null);
+                }
               }
             }, false);
           }
