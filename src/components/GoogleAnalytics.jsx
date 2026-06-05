@@ -10,29 +10,16 @@ const GoogleAnalytics = ({ trackingId }) => {
 
   return (
     <Helmet>
-      {/* Google Analytics */}
-      <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}></script>
+      {/* Additional page_view tracking + Hybrid Contact Click Listener */}
       <script>
         {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', '${gaTrackingId}', {
-            page_title: document.title,
-            page_location: window.location.href,
-            anonymize_ip: true,
-            allow_google_signals: false,
-            allow_ad_personalization_signals: false,
-            cookie_flags: 'SameSite=None;Secure'
-          });
-          
-          ${gadsTrackingId ? `gtag('config', '${gadsTrackingId}');` : ''}
-          
-          // Event tracking for better insights
-          gtag('event', 'page_view', {
-            page_title: document.title,
-            page_location: window.location.href
-          });
+          // Additional page_view event tracking for SPA navigation
+          if (typeof gtag === 'function') {
+            gtag('event', 'page_view', {
+              page_title: document.title,
+              page_location: window.location.href
+            });
+          }
 
           // Global Event Listener for Hybrid Contact Tracking (WhatsApp, Phone, Email)
           if (!window.__gaClickTrackingRegistered) {
@@ -70,7 +57,7 @@ const GoogleAnalytics = ({ trackingId }) => {
               }
               
               // 3. Fire the event if a matching eventName was determined
-              if (eventName) {
+              if (eventName && typeof gtag === 'function') {
                 gtag('event', eventName, {
                   'event_category': 'Contact',
                   'event_label': label,
