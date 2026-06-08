@@ -10,7 +10,7 @@ import SEOHead from '../components/SEOHead';
 import StructuredData from '../components/StructuredData';
 import blogPosts from '../data/blogPosts';
 import testimonials from '../data/testimonials';
-import { getExperienceYearsLabel } from '../utils/experience';
+import { getExperienceYearsLabel, getPatientsCountLabel } from '../utils/experience';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 
@@ -132,6 +132,7 @@ export default function Home() {
   const [homeContent, setHomeContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const experienceYearsLabel = getExperienceYearsLabel();
+  const patientsCountLabel = getPatientsCountLabel();
 
   // Load YAML content
   useEffect(() => {
@@ -231,7 +232,7 @@ export default function Home() {
                   <span className="stat-label">שנות ניסיון</span>
                 </div>
                 <div className="stat-box glass-card">
-                  <span className="stat-number">100+</span>
+                  <span className="stat-number">{patientsCountLabel}</span>
                   <span className="stat-label">מטופלים מרוצים</span>
                 </div>
                 <div className="stat-box glass-card">
