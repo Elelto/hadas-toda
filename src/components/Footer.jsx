@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { loadYamlContent } from '../utils/yamlLoader';
+import { buildWhatsAppUrl, WHATSAPP_PHONE } from '../utils/whatsapp';
 import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaWhatsapp, FaFacebook, FaInstagram, FaArrowLeft } from 'react-icons/fa';
 import '../styles/footer.css';
 
@@ -73,7 +74,7 @@ export default function Footer() {
               טיפול בשפה, דיבור, קול וגמגום.
             </p>
             <div className="social-icons">
-              <a href="https://wa.me/972506796209" target="_blank" rel="noopener noreferrer" className="social-icon whatsapp">
+              <a href={buildWhatsAppUrl(WHATSAPP_PHONE)} target="_blank" rel="noopener noreferrer" className="social-icon whatsapp">
                 <FaWhatsapp />
               </a>
               <a href="#" className="social-icon facebook">

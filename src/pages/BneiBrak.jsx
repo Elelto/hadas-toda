@@ -7,6 +7,7 @@ import { init, send } from '@emailjs/browser';
 import '../styles/contact.css';
 import { FaPhone, FaWhatsapp, FaEnvelope, FaMapMarkerAlt, FaFacebookF, FaInstagram, FaArrowLeft, FaExclamationCircle, FaMicrophoneAlt, FaCommentDots, FaStream, FaAppleAlt, FaAssistiveListeningSystems } from 'react-icons/fa';
 import { getExperienceYearsLabel } from '../utils/experience';
+import { buildWhatsAppUrl, resolveWhatsAppPhone, WHATSAPP_MESSAGES, WHATSAPP_PHONE } from '../utils/whatsapp';
 
 // Specialization Configuration (Icon + Color) - same as Home.jsx
 const specializationConfig = {
@@ -239,7 +240,7 @@ const BneiBrak = () => {
 
   const contactInfo = {
     phone: "050-679-6209",
-    whatsapp: "972506796209",
+    whatsapp: WHATSAPP_PHONE,
     email: "hadas.toda.info@gmail.com",
     address: "שיכון ג', בני ברק",
     social: {
@@ -527,7 +528,7 @@ const BneiBrak = () => {
               </a>
 
               {/* 3. WhatsApp Card */}
-              <a href={`https://wa.me/${contactInfo.whatsapp}`} target="_blank" rel="noopener noreferrer" className="bento-card whatsapp-card" data-aos="fade-up" data-aos-delay="200">
+              <a href={buildWhatsAppUrl(resolveWhatsAppPhone(contactInfo), WHATSAPP_MESSAGES.bneiBrak)} target="_blank" rel="noopener noreferrer" className="bento-card whatsapp-card" data-aos="fade-up" data-aos-delay="200">
                 <div className="card-bg-effect"></div>
                 <div className="pop-out-icon whatsapp-3d">
                   <FaWhatsapp />

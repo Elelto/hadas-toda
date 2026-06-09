@@ -54,6 +54,7 @@ const GoogleAnalytics = ({ trackingId }) => {
                 label = href.substring(7); // Use raw email as label
               } else if (hrefLower.indexOf('https://wa.me/') === 0 || hrefLower.indexOf('https://api.whatsapp.com/') === 0) {
                 eventName = 'whatsapp_click';
+                label = 'whatsapp';
               }
               
               // 3. Fire events if a matching eventName was determined
@@ -70,7 +71,13 @@ const GoogleAnalytics = ({ trackingId }) => {
                 // Uses gtagSendEvent helper (defined in index.html) to ensure
                 // the event is sent before the browser navigates away
                 if (typeof gtagSendEvent === 'function') {
-                  gtagSendEvent(href || null);
+                  var openInNewTab = anchor.getAttribute('target') === '_blank';
+                  // Same-tab links (tel/mailto): wait for conversion, then navigate.
+                  // _blank links (WhatsApp): let the browser open the tab; callback must not redirect this page.
+                  if (!openInNewTab) {
+                    event.preventDefault();
+                  }
+                  gtagSendEvent(href || null, { openInNewTab: openInNewTab });
                 }
               }
             }, false);

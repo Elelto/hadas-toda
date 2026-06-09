@@ -6,6 +6,7 @@ import { init, send } from '@emailjs/browser';
 import '../styles/contact.css';
 import AuroraBackground from '../components/AuroraBackground';
 import { FaPhone, FaWhatsapp, FaEnvelope, FaMapMarkerAlt, FaMap, FaFacebookF, FaInstagram, FaPlus, FaMinus, FaExternalLinkAlt, FaArrowLeft, FaExclamationCircle } from 'react-icons/fa';
+import { buildWhatsAppUrl, resolveWhatsAppPhone, WHATSAPP_MESSAGES, WHATSAPP_PHONE } from '../utils/whatsapp';
 
 // התחל את השירות של EmailJS עם המפתח הציבורי
 init("l9xXgXVINGFdgI8KJ");
@@ -19,7 +20,7 @@ const getDefaultContactContent = () => ({
   contact_info: {
     title: "פרטי התקשרות",
     phone: "050-6796209",
-    whatsapp: "972506796209",
+    whatsapp: WHATSAPP_PHONE,
     email: "hadas.toda.info@gmail.com",
     address: "שיכון ג', בני ברק",
     map_url: "https://maps.google.com/?q=שיכון+ג+בני+ברק",
@@ -414,7 +415,7 @@ export default function Contact() {
             </a>
 
             {/* 3. WhatsApp Card */}
-            <a href={`https://wa.me/${contactContent.contact_info?.whatsapp || "972506796209"}`} target="_blank" rel="noopener noreferrer" className="bento-card whatsapp-card" data-aos="fade-up" data-aos-delay="400">
+            <a href={buildWhatsAppUrl(resolveWhatsAppPhone(contactContent.contact_info), WHATSAPP_MESSAGES.contact)} target="_blank" rel="noopener noreferrer" className="bento-card whatsapp-card" data-aos="fade-up" data-aos-delay="400">
               <div className="card-bg-effect"></div>
               <div className="pop-out-icon whatsapp-3d">
                 <FaWhatsapp />

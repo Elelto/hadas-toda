@@ -13,11 +13,13 @@
   </script>
   <!-- Google Ads Conversion Helper - fires before browser navigates away -->
   <script>
-    function gtagSendEvent(url) {
+    function gtagSendEvent(url, options) {
+      options = options || {};
+      var openInNewTab = options.openInNewTab === true;
       var callback = function () {
-        if (typeof url === 'string') {
-          window.location = url;
-        }
+        // _blank links already opened by the browser; only navigate same-tab links here
+        if (typeof url !== 'string' || openInNewTab) return;
+        window.location = url;
       };
       gtag('event', 'ads_conversion___1', {
         'event_callback': callback,
