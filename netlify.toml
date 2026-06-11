@@ -50,8 +50,48 @@
   to = "/images/:splat"
   status = 200
 
+# מניעת הפניית דפי נחיתה ל-SPA
+[[redirects]]
+  from = "/landing/*"
+  to = "/landing/:splat"
+  status = 200
+
 # הגדרת ברירת מחדל לכל הנתיבים האחרים
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
+# הגדרת Edge Functions עבור בדיקות A/B בדפי נחיתה
+[[edge_functions]]
+  path = "/landing/gimgum"
+  function = "ab-gimgum"
+
+[[edge_functions]]
+  path = "/landing/gimgum/"
+  function = "ab-gimgum"
+
+[[edge_functions]]
+  path = "/landing/kol"
+  function = "ab-kol"
+
+[[edge_functions]]
+  path = "/landing/kol/"
+  function = "ab-kol"
+
+[[edge_functions]]
+  path = "/landing/higuy"
+  function = "ab-higuy"
+
+[[edge_functions]]
+  path = "/landing/higuy/"
+  function = "ab-higuy"
+
+[[edge_functions]]
+  path = "/landing/peh"
+  function = "ab-peh"
+
+[[edge_functions]]
+  path = "/landing/peh/"
+  function = "ab-peh"
+
