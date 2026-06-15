@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>טיפול אונליין בתפקודי פה ודיבור - הדס תודה</title>
   <meta name="description" content="קלינאית תקשורת מוסמכת (M.A) מציעה טיפול אונליין בתפקודי פה, חיזוק שרירי פה, לעיסה ובליעה.">
-  <link rel="stylesheet" href="../shared/style.css">
+  <link rel="stylesheet" href="/landing/shared/style.css">
   <link rel="icon" href="/favicon.ico">
 </head>
 <body data-page="peh" data-variant="B">
@@ -24,9 +24,15 @@
 
   <!-- Hero Section (Professional Angle) -->
   <section class="hero">
-    <div class="hero-container">
+    <div class="hero-blob hero-blob-1"></div>
+      <div class="hero-blob hero-blob-2"></div>
+      <div class="hero-container">
       <div class="hero-content">
         <span class="hero-badge">קלינאית תקשורת מוסמכת M.A</span>
+        <div class="trust-badge-hero">
+          <span class="icon-badge">★</span>
+          <span>קלינאית תקשורת מוסמכת משרד הבריאות</span>
+        </div>
         <h1 class="hero-title">טיפול אונליין מקצועי בתפקודי פה ודיבור</h1>
         <p class="hero-subtitle">
           שיקום, חיזוק והפעלה נכונה של שרירי הפה, הלשון והלסת בשיטות קליניות מתקדמות ומבוססות מחקר, בליווי קלינאית תקשורת מוסמכת (M.A) לתוצאות מעשיות.
@@ -124,6 +130,7 @@
 
       <div class="testimonials-grid">
         <div class="testimonial-card">
+          <div class="stars-rating">★★★★★</div>
           <div class="quote-bubble">
             "הגעתי להדס בעקבות חולשה משמעותית בשרירי הלסת והפה שהשפיעה על הלעיסה והדיבור שלי לאחר טיפול שיניים מורכב. דרך התרגילים המדויקים והסבלנות הרבה שלה אונליין, החזרתי לעצמי את השליטה בשרירים ואת היכולת לאכול בקלות."
           </div>
@@ -137,6 +144,7 @@
         </div>
 
         <div class="testimonial-card">
+          <div class="stars-rating">★★★★★</div>
           <div class="quote-bubble">
             "הדס פשוט מדהימה. היא אבחנה בדיוק את קשיי הלעיסה והפקת הצלילים שלי, בנתה לי תוכנית עבודה ביתית ממוקדת אונליין, ועזרה לי לחזק את שרירי הלשון והשפתיים בצורה הדרגתית ויעילה מאוד."
           </div>
@@ -205,29 +213,162 @@
         <p>מלאו את הפרטים הבאים ונחזור אליכם תוך 24 שעות עם מידע מותאם אישית.</p>
       </div>
 
+      
       <div class="form-container">
-        <form class="lead-form" name="oral-motor-lead-form" method="POST" data-netlify="true">
-          <div class="form-group">
-            <label for="fullName">שם מלא</label>
-            <input type="text" id="fullName" name="fullName" placeholder="ישראל ישראלי" required>
+        <div class="form-progress">
+          <div class="progress-track">
+            <div class="progress-fill"></div>
+          </div>
+          <div class="step-indicators">
+            <span class="step-indicator active" data-step="1">קהל יעד</span>
+            <span class="step-indicator" data-step="2">אפיון הקושי</span>
+            <span class="step-indicator" data-step="3">פרטי התקשרות</span>
+          </div>
+        </div>
+
+        <form class="lead-form" name="oral-lead-form" method="POST" data-netlify="true">
+          <!-- Step 1 -->
+          <div class="form-step active" data-step="1">
+            <h3 class="step-title">עבור מי הטיפול?</h3>
+            <div class="step-options-grid">
+              <div class="option-card">
+                <span class="option-icon">👤</span>
+                <span class="option-label">מבוגרים</span>
+                <input type="radio" name="targetAge" value="adult">
+              </div>
+              <div class="option-card">
+                <span class="option-icon">🎓</span>
+                <span class="option-label">בני נוער</span>
+                <input type="radio" name="targetAge" value="teen">
+              </div>
+              <div class="option-card">
+                <span class="option-icon">👶</span>
+                <span class="option-label">ילדים</span>
+                <input type="radio" name="targetAge" value="child">
+              </div>
+            </div>
+            <div class="form-navigation">
+              <div></div>
+              <button type="button" class="btn btn-next">המשך לשלב הבא &larr;</button>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label for="phone">מספר טלפון</label>
-            <input type="tel" id="phone" name="phone" placeholder="050-1234567" required>
+          <!-- Step 2 -->
+          <div class="form-step" data-step="2">
+            <h3 class="step-title">מהם האתגרים המרכזיים שתרצו לפתור?</h3>
+            <div class="checkbox-options-list">
+              
+              <div class="checkbox-card">
+                <input type="checkbox" name="difficulties" value="chewing">
+                <span class="checkbox-text">קושי בלעיסה, בליעה או התמודדות עם מרקמי מזון שונים</span>
+              </div>
+              
+              <div class="checkbox-card">
+                <input type="checkbox" name="difficulties" value="drooling">
+                <span class="checkbox-text">נזילת רוק לא רצונית או חולשה בשרירי הפנים והלשון</span>
+              </div>
+              
+              <div class="checkbox-card">
+                <input type="checkbox" name="difficulties" value="breathing">
+                <span class="checkbox-text">נשימת פה קבועה (במקום נשימה מהאף) ופה פתוח במנוחה</span>
+              </div>
+              
+              <div class="checkbox-card">
+                <input type="checkbox" name="difficulties" value="speech">
+                <span class="checkbox-text">שיבוש בהגיית צלילים עקב חולשת איברי הפה</span>
+              </div>
+              
+            </div>
+            <div class="form-navigation">
+              <button type="button" class="btn btn-prev">&rarr; חזרה</button>
+              <button type="button" class="btn btn-next">המשך &larr;</button>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label for="time">מתי נוח לכם שנתקשר?</label>
-            <select id="time" name="preferredTime">
-              <option value="morning">בוקר (9:00 - 12:00)</option>
-              <option value="noon">צהריים (12:00 - 16:00)</option>
-              <option value="evening">ערב (16:00 - 20:00)</option>
-            </select>
-          </div>
+          <!-- Step 3 -->
+          <div class="form-step" data-step="3">
+            <h3 class="step-title">השאירו פרטים לשיחת ייעוץ והתאמה</h3>
+            <div class="form-group">
+              <label for="fullName">שם מלא</label>
+              <input type="text" id="fullName" name="fullName" placeholder="ישראל ישראלי" required>
+            </div>
 
-          <button type="submit" class="btn-submit">שליחת פרטים</button>
+            <div class="form-group">
+              <label for="phone">מספר טלפון</label>
+              <input type="tel" id="phone" name="phone" placeholder="050-1234567" required>
+            </div>
+
+            <div class="form-group">
+              <label for="time">מתי נוח לכם שנתקשר?</label>
+              <select id="time" name="preferredTime">
+                <option value="morning">בוקר (9:00 - 12:00)</option>
+                <option value="noon">צהריים (12:00 - 16:00)</option>
+                <option value="evening">ערב (16:00 - 20:00)</option>
+              </select>
+            </div>
+
+            <div class="form-navigation">
+              <button type="button" class="btn btn-prev">&rarr; חזרה</button>
+              <button type="submit" class="btn-submit">שליחת פרטים לקביעת שיחה</button>
+            </div>
+          </div>
         </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Accordion Section -->
+  <section class="faq-section">
+    <div class="container">
+      <div class="section-header">
+        <div class="line-decor"></div>
+        <h2>שאלות נפוצות</h2>
+        <p>כל מה שחשוב לדעת על תהליך הטיפול אונליין וההתאמה אליכם</p>
+      </div>
+      <div class="faq-container">
+        <div class="faq-list">
+          
+          <div class="faq-item">
+            <button class="faq-trigger">
+              <span>איך עובד טיפול אונליין בתפקודי פה (מיופונקציונלי)?</span>
+              <span class="faq-icon-arrow">▼</span>
+            </button>
+            <div class="faq-content">
+              <p>הטיפול מתמקד בחיזוק שרירי הלשון, השפתיים והלחיים באמצעות תרגילים מותאמים אישית המשפרים את הלעיסה, הבליעה, נשימת האף ומנח הלשון במנוחה. המפגשים אונליין כוללים הדגמות מול המצלמה ומעקב צמוד אחר ביצוע התרגילים.</p>
+            </div>
+          </div>
+          
+          <div class="faq-item">
+            <button class="faq-trigger">
+              <span>באילו גילים הטיפול בתפקודי פה רלוונטי?</span>
+              <span class="faq-icon-arrow">▼</span>
+            </button>
+            <div class="faq-content">
+              <p>הטיפול מתאים לילדים (החל מגיל 4-5), לבני נוער ולמבוגרים. בילדים הוא חיוני במיוחד כדי למנוע השפעה שלילית על התפתחות הלסתות ויישור השיניים.</p>
+            </div>
+          </div>
+          
+          <div class="faq-item">
+            <button class="faq-trigger">
+              <span>האם נדרש שיתוף פעולה של ההורים?</span>
+              <span class="faq-icon-arrow">▼</span>
+            </button>
+            <div class="faq-content">
+              <p>כן, שיתוף פעולה והדרכת ההורים הם קריטיים בטיפול בילדים. תרגול יומיומי קצר של כ-5 דקות בבית עוזר לשנות הרגלים ישנים (כמו דחיפת לשון או מציצת אצבע) ולהשיג תוצאות מצוינות.</p>
+            </div>
+          </div>
+          
+          <div class="faq-item">
+            <button class="faq-trigger">
+              <span>האם יש החזרים מקופות חולים או ביטוחים?</span>
+              <span class="faq-icon-arrow">▼</span>
+            </button>
+            <div class="faq-content">
+              <p>כקלינאית תקשורת מוסמכת ומורשית משרד הבריאות, ניתן לקבל קבלות מפורטות לצורך הגשת בקשות להחזרים כספיים דרך ביטוחי בריאות פרטיים או סעיפי סיוע שונים (בהתאם לתנאי הפוליסה שלכם).</p>
+            </div>
+          </div>
+          
+        </div>
       </div>
     </div>
   </section>
@@ -263,6 +404,18 @@
     </div>
   </div>
 
-  <script src="../shared/track.js"></script>
+  <!-- Sticky Mobile Action Bar -->
+  <div class="sticky-mobile-bar">
+    <a href="tel:050-6796209" class="sticky-btn sticky-btn-phone">
+      <span class="sticky-btn-icon">📞</span>
+      <span>חיוג טלפוני</span>
+    </a>
+    <a href="https://wa.me/972506796209" target="_blank" rel="noopener noreferrer" class="sticky-btn sticky-btn-whatsapp">
+      <span class="sticky-btn-icon">💬</span>
+      <span>צ'אט WhatsApp</span>
+    </a>
+  </div>
+
+  <script src="/landing/shared/track.js"></script>
 </body>
 </html>

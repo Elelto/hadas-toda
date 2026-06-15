@@ -5,8 +5,30 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 import vitePrerender from 'vite-plugin-prerender';
 
+// Plugin שמדמה את Netlify Edge Functions (A/B routing) בסביבת dev
+function landingAbDevPlugin() {
+  const topics = ['gimgum', 'kol', 'higuy', 'peh'];
+  return {
+    name: 'landing-ab-dev',
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        const url = req.url?.split('?')[0];
+        for (const topic of topics) {
+          if (url === `/landing/${topic}` || url === `/landing/${topic}/`) {
+            // מפנה לvariant-a בסביבת dev (אפשר לשנות ידנית)
+            req.url = `/landing/${topic}/variant-a.html`;
+            break;
+          }
+        }
+        next();
+      });
+    },
+  };
+}
+
 export default defineConfig({
   plugins: [
+    landingAbDevPlugin(),
     react(),
     nodePolyfills({
       include: ['buffer', 'process', 'util'],
