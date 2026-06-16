@@ -136,7 +136,10 @@ export default function Contact() {
       errors.user_email = 'כתובת האימייל אינה תקינה';
     }
 
-    if (formData.user_phone.trim() && !/^0[2-9]\d{7,8}$/.test(formData.user_phone)) {
+    const phone = formData.user_phone.replace(/[\s-]/g, '');
+    if (!phone) {
+      errors.user_phone = 'נא להזין מספר טלפון';
+    } else if (!/^(0[2-489]\d{7}|05\d{8}|07[2-9]\d{7})$/.test(phone)) {
       errors.user_phone = 'מספר הטלפון אינו תקין';
     }
 
@@ -358,7 +361,7 @@ export default function Contact() {
                     )}
                   </div>
                   <div className="form-group-bento">
-                    <label htmlFor="user_phone">טלפון (אופציונלי)</label>
+                    <label htmlFor="user_phone">טלפון *</label>
                     <input type="tel" id="user_phone" name="user_phone" value={formData.user_phone} onChange={handleChange} className={formErrors.user_phone ? 'error' : ''} placeholder="מספר טלפון" />
                     {formErrors.user_phone && (
                       <div className="error-message">
