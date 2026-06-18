@@ -145,4 +145,5 @@ out
 .agent/skills/ui-ux-pro-max/
 .claude/
 
-
+# Ignore generated optimized images to prevent repo bloat
+public/images/recommendation/optimized/
