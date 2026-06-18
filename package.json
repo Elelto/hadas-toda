@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "node scripts/sync-content.js && vite",
     "update-blog": "node scripts/update-blog-data.js",
-    "prebuild": "npm run update-blog && node scripts/generate-sitemap.js",
+    "optimize-rec": "node scripts/optimize-recommendations.js",
+    "prebuild": "npm run update-blog && node scripts/generate-sitemap.js && npm run optimize-rec",
     "build": "node scripts/sync-content.js && vite build",
     "postbuild": "node scripts/inject-seo-meta.js",
     "preview": "vite preview",
@@ -19,6 +20,7 @@
     "@emailjs/browser": "^4.4.1",
     "aos": "^2.3.4",
     "buffer": "^6.0.3",
+    "framer-motion": "^12.40.0",
     "gray-matter": "^4.0.3",
     "js-yaml": "^4.1.0",
     "markdown-it": "^12.3.2",

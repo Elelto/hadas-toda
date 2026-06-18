@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { loadYamlContent } from '../utils/yamlLoader';
 import AOS from 'aos';
@@ -9,7 +9,6 @@ import AuroraBackground from '../components/AuroraBackground';
 import SEOHead from '../components/SEOHead';
 import StructuredData from '../components/StructuredData';
 import blogPosts from '../data/blogPosts';
-import testimonials from '../data/testimonials';
 import { getExperienceYearsLabel, getPatientsCountLabel } from '../utils/experience';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
@@ -74,16 +73,6 @@ const getDefaultHomeContent = () => ({
   testimonials: {
     title: "קולות מהקליניקה",
     subtitle: "מה אומרים המטופלים שלי על הטיפול והתוצאות",
-    items: [
-      {
-        quote: "אחרי שנים של צרידות כרונית, הגעתי להדס וסוף סוף מצאתי מענה. הטיפול המקצועי והיחס האישי החזירו לי את הקול ואת שמחת החיים.",
-        author: "יעל, מורה"
-      },
-      {
-        quote: "הבן שלי התקשה מאוד עם היגוי נכון של הרבה צלילים. אחרי מספר חודשים עם הדס, השיפור היה מדהים. היא ידעה בדיוק איך לגשת אליו ולגרום לו לשתף פעולה.",
-        author: "רונית, אמא לילד בן 5"
-      }
-    ]
   },
   services: {
     title: " תחומי ההתמחות שלי",
@@ -128,11 +117,27 @@ const getDefaultHomeContent = () => ({
   }
 });
 
+// Recommendation images (1–10)
+const REC_IMAGES = Array.from({ length: 10 }, (_, i) => i + 1);
+
 export default function Home() {
   const [homeContent, setHomeContent] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [lightboxImage, setLightboxImage] = useState(null);
   const experienceYearsLabel = getExperienceYearsLabel();
   const patientsCountLabel = getPatientsCountLabel();
+
+  // Keyboard navigation for lightbox
+  useEffect(() => {
+    if (!lightboxImage) return;
+    const handleKey = (e) => {
+      if (e.key === 'Escape') setLightboxImage(null);
+      if (e.key === 'ArrowLeft') setLightboxImage(prev => prev === 1 ? 10 : prev - 1);
+      if (e.key === 'ArrowRight') setLightboxImage(prev => prev === 10 ? 1 : prev + 1);
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [lightboxImage]);
 
   // Load YAML content
   useEffect(() => {
@@ -218,9 +223,6 @@ export default function Home() {
                 <Link to="/contact" className="bb-btn btn-soft-glow btn-soft-glow-primary">
                   {homeContent?.hero?.cta_text || 'קביעת פגישת ייעוץ'}
                 </Link>
-                {/* <Link to="/ai-assessment" className="bb-btn btn-soft-glow btn-soft-glow-outline btn-with-badge">
-                  אבחון חכם <span className="badge-new">חדש!</span>
-                </Link> */}
               </div>
             </div>
 
@@ -360,7 +362,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Testimonials */}
+        {/* Recommendation Images Carousel */}
         <section className="bb-testimonials section-padding">
           <div className="container">
             <div className="section-header-center">
@@ -372,14 +374,14 @@ export default function Home() {
             <div className="testimonials-carousel-wrapper" data-aos="fade-up">
               <Swiper
                 modules={[Autoplay, Pagination, Navigation]}
-                spaceBetween={30}
+                spaceBetween={24}
                 slidesPerView={1}
                 centeredSlides={true}
                 slideToClickedSlide={true}
                 loop={true}
-                loopedSlides={3}
+                loopedSlides={4}
                 autoplay={{
-                  delay: 5000,
+                  delay: 4500,
                   disableOnInteraction: false,
                 }}
                 pagination={{
@@ -388,25 +390,50 @@ export default function Home() {
                 }}
                 navigation={true}
                 breakpoints={{
-                  768: {
+                  640: {
                     slidesPerView: 2,
-                    spaceBetween: 30,
+                    spaceBetween: 20,
                   },
-                  1200: {
+                  1024: {
                     slidesPerView: 3,
-                    spaceBetween: 30,
+                    spaceBetween: 24,
                   },
                 }}
                 className="testimonials-swiper"
               >
-                {testimonials.map((item, index) => (
-                  <SwiperSlide key={item.id || index}>
-                    <div className="testimonial-card glass-card">
-                      <div className="quote-icon">❝</div>
-                      <p className="testimonial-text">{item.text}</p>
-                      <div className="testimonial-author">
-                        <span className="author-name">{item.name}</span>
-                        <span className="author-location">מטופל/ת</span>
+                {REC_IMAGES.map((num) => (
+                  <SwiperSlide key={num}>
+                    <div
+                      className="rec-image-card glass-card"
+                      onClick={() => setLightboxImage(num)}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`המלצה ${num} - לחץ להגדלה`}
+                      onKeyDown={(e) => e.key === 'Enter' && setLightboxImage(num)}
+                    >
+                      <div className="rec-image-wrapper">
+                        <picture>
+                          <source
+                            srcSet={`/images/recommendation/optimized/${num}-thumb.webp`}
+                            type="image/webp"
+                          />
+                          <img
+                            src={`/images/recommendation/optimized/${num}-thumb.jpg`}
+                            alt={`המלצה ממטופל ${num}`}
+                            className="rec-image"
+                            loading="lazy"
+                            width="400"
+                            height="560"
+                          />
+                        </picture>
+                        <div className="rec-image-overlay" aria-hidden="true">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="11" cy="11" r="8"/>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                            <line x1="11" y1="8" x2="11" y2="14"/>
+                            <line x1="8" y1="11" x2="14" y2="11"/>
+                          </svg>
+                        </div>
                       </div>
                     </div>
                   </SwiperSlide>
@@ -421,6 +448,59 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* Lightbox */}
+        {lightboxImage && (
+          <div
+            className="rec-lightbox-overlay"
+            onClick={() => setLightboxImage(null)}
+            role="dialog"
+            aria-modal="true"
+            aria-label="תצוגת המלצה מוגדלת"
+          >
+            <button
+              className="rec-lightbox-close"
+              onClick={() => setLightboxImage(null)}
+              aria-label="סגור"
+            >
+              ✕
+            </button>
+
+            <button
+              className="rec-lightbox-nav rec-lightbox-prev"
+              onClick={(e) => { e.stopPropagation(); setLightboxImage(prev => prev === 1 ? 10 : prev - 1); }}
+              aria-label="הקודם"
+            >
+              ‹
+            </button>
+
+            <div
+              className="rec-lightbox-content"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <picture>
+                <source
+                  srcSet={`/images/recommendation/optimized/${lightboxImage}.webp`}
+                  type="image/webp"
+                />
+                <img
+                  src={`/images/recommendation/optimized/${lightboxImage}.jpg`}
+                  alt={`המלצה ממטופל ${lightboxImage}`}
+                  className="rec-lightbox-img"
+                />
+              </picture>
+              <div className="rec-lightbox-counter">{lightboxImage} / 10</div>
+            </div>
+
+            <button
+              className="rec-lightbox-nav rec-lightbox-next"
+              onClick={(e) => { e.stopPropagation(); setLightboxImage(prev => prev === 10 ? 1 : prev + 1); }}
+              aria-label="הבא"
+            >
+              ›
+            </button>
+          </div>
+        )}
 
         {/* Blog Preview */}
         <section className="home-blog-modern section-padding bg-light">

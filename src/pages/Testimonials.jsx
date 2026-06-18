@@ -1,12 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import AOS from 'aos';
 import { FaQuoteRight } from 'react-icons/fa';
 import SEOHead from '../components/SEOHead';
-import testimonials from '../data/testimonials';
 import '../styles/testimonials.css';
 
+// Recommendation images (1–10)
+const REC_IMAGES = Array.from({ length: 10 }, (_, i) => i + 1);
+
 export default function Testimonials() {
+  const [lightboxImage, setLightboxImage] = useState(null);
+
   useEffect(() => {
     // Refresh AOS when component mounts
     const timer = setTimeout(() => {
@@ -14,6 +18,18 @@ export default function Testimonials() {
     }, 100);
     return () => clearTimeout(timer);
   }, []);
+
+  // Keyboard navigation for lightbox
+  useEffect(() => {
+    if (!lightboxImage) return;
+    const handleKey = (e) => {
+      if (e.key === 'Escape') setLightboxImage(null);
+      if (e.key === 'ArrowLeft') setLightboxImage(prev => prev === 1 ? 10 : prev - 1);
+      if (e.key === 'ArrowRight') setLightboxImage(prev => prev === 10 ? 1 : prev + 1);
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [lightboxImage]);
 
   // SEO structured data for testimonials page
   // Note: Removed Review schema as testimonials are not verified reviews
@@ -49,30 +65,99 @@ export default function Testimonials() {
       <div className="container">
         <section className="testimonials-section">
 
-          <div className="testimonials-grid">
-            {testimonials.map((testimonial, index) => (
-              <div key={testimonial.id} className="testimonial-card" data-aos="fade-up" data-aos-delay={100}>
-
-                <div className="quote-icon-wrapper">
-                  <FaQuoteRight className="quote-icon" />
-                </div>
-
-                <p className="testimonial-text">
-                  {testimonial.text}
-                </p>
-
-                <div className="testimonial-footer">
-                  <div className="author-info">
-                    <h3 className="author-name">{testimonial.name}</h3>
-                    <div className="author-details">
-                      {testimonial.childName && testimonial.childGender ? `הורה של ${testimonial.childName}, ${testimonial.childGender} ${testimonial.childAge}` : (testimonial.childName ? `הורה של ${testimonial.childName}, גיל ${testimonial.childAge}` : '')}
-                    </div>
+          <div className="testimonials-gallery">
+            {REC_IMAGES.map((num, index) => (
+              <div
+                key={num}
+                className="rec-image-card glass-card"
+                data-aos="fade-up"
+                data-aos-delay={Math.min(index * 80, 400)}
+                onClick={() => setLightboxImage(num)}
+                role="button"
+                tabIndex={0}
+                aria-label={`המלצה ${num} - לחץ להגדלה`}
+                onKeyDown={(e) => e.key === 'Enter' && setLightboxImage(num)}
+              >
+                <div className="rec-image-wrapper">
+                  <picture>
+                    <source
+                      srcSet={`/images/recommendation/optimized/${num}-thumb.webp`}
+                      type="image/webp"
+                    />
+                    <img
+                      src={`/images/recommendation/optimized/${num}-thumb.jpg`}
+                      alt={`המלצה ממטופל ${num}`}
+                      className="rec-image"
+                      loading={num <= 3 ? 'eager' : 'lazy'}
+                      width="400"
+                      height="560"
+                    />
+                  </picture>
+                  <div className="rec-image-overlay" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="11" cy="11" r="8"/>
+                      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                      <line x1="11" y1="8" x2="11" y2="14"/>
+                      <line x1="8" y1="11" x2="14" y2="11"/>
+                    </svg>
                   </div>
                 </div>
-
               </div>
             ))}
           </div>
+
+          {/* Lightbox */}
+          {lightboxImage && (
+            <div
+              className="rec-lightbox-overlay"
+              onClick={() => setLightboxImage(null)}
+              role="dialog"
+              aria-modal="true"
+              aria-label="תצוגת המלצה מוגדלת"
+            >
+              <button
+                className="rec-lightbox-close"
+                onClick={() => setLightboxImage(null)}
+                aria-label="סגור"
+              >
+                ✕
+              </button>
+
+              <button
+                className="rec-lightbox-nav rec-lightbox-prev"
+                onClick={(e) => { e.stopPropagation(); setLightboxImage(prev => prev === 1 ? 10 : prev - 1); }}
+                aria-label="הקודם"
+              >
+                ‹
+              </button>
+
+              <div
+                className="rec-lightbox-content"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <picture>
+                  <source
+                    srcSet={`/images/recommendation/optimized/${lightboxImage}.webp`}
+                    type="image/webp"
+                  />
+                  <img
+                    src={`/images/recommendation/optimized/${lightboxImage}.jpg`}
+                    alt={`המלצה ממטופל ${lightboxImage}`}
+                    className="rec-lightbox-img"
+                  />
+                </picture>
+                <div className="rec-lightbox-counter">{lightboxImage} / 10</div>
+              </div>
+
+              <button
+                className="rec-lightbox-nav rec-lightbox-next"
+                onClick={(e) => { e.stopPropagation(); setLightboxImage(prev => prev === 10 ? 1 : prev + 1); }}
+                aria-label="הבא"
+              >
+                ›
+              </button>
+            </div>
+          )}
 
           <div className="share-testimonial" data-aos="zoom-in" data-aos-delay="200">
             <div className="share-content">

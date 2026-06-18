@@ -1,14 +1,12 @@
-<<<<<<< HEAD
 # Node
 node_modules/
 dist/
 .env
 .DS_Store
 *.log
-=======
+
 # Logs
 logs
-*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -47,7 +45,6 @@ bower_components
 build/Release
 
 # Dependency directories
-node_modules/
 jspm_packages/
 
 # Snowpack dependency directory (https://snowpack.dev/)
@@ -81,7 +78,6 @@ web_modules/
 .yarn-integrity
 
 # dotenv environment variable files
-.env
 .env.development.local
 .env.test.local
 .env.production.local
@@ -97,7 +93,6 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
 
 # Gatsby files
 .cache/
@@ -110,7 +105,6 @@ dist
 
 # vuepress v2.x temp and cache directory
 .temp
-.cache
 
 # vitepress build output
 **/.vitepress/dist
@@ -142,7 +136,12 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
->>>>>>> a7742b1a90feb75a0427f756110512f5f832281b
+
 
 # Local Netlify folder
 .netlify
+
+# Agent and temporary configurations
+.agent/
+.claude/
+
