@@ -1,246 +1,1185 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/global.css';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { doc, setDoc, deleteDoc, collection, getDocs } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { auth, db, storage } from '../services/firebase';
+import Auth from '../components/admin/Auth';
+import { loadFirebaseContent, loadFirebaseCollection } from '../utils/firebaseLoader';
+import { migrateDataToFirebase } from '../utils/migrateData';
 import '../styles/admin.css';
-import netlifyIdentity from 'netlify-identity-widget';
-
-// Force CSS reload
-const adminCssUrl = new URL('../styles/admin.css', import.meta.url).href;
 
 const Admin = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
-  const [error, setError] = useState('');
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState({ text: '', type: '' }); // type: 'success' | 'error'
+
+  // Migration State
+  const [migrating, setMigrating] = useState(false);
+  const [migrationLogs, setMigrationLogs] = useState([]);
+
+  // Data States
   const [blogPosts, setBlogPosts] = useState([]);
-  const [treatments, setTreatments] = useState([]);
-  const [testimonials, setTestimonials] = useState([]);
+  const [editingBlogPost, setEditingBlogPost] = useState(null); // null, 'new', or post object
+  const [editingPage, setEditingPage] = useState('home'); // 'home', 'about', 'services', 'contact', 'testimonials'
+  const [pageData, setPageData] = useState(null);
+  const [componentData, setComponentData] = useState(null);
+  const [editingComponent, setEditingComponent] = useState('header'); // 'header', 'footer'
 
-  // Initialize Netlify Identity
+  // Stats for Dashboard
+  const [stats, setStats] = useState({ postsCount: 0, testimonialsCount: 0 });
+
+  // 1. Auth check
   useEffect(() => {
-    netlifyIdentity.init();
-  }, []);
-
-  // Handle Netlify Identity authentication
-  const handleLogin = () => {
-    netlifyIdentity.open();
-    netlifyIdentity.on('login', (user) => {
-      setUser(user);
-      setIsAuthenticated(true);
-      netlifyIdentity.close();
-    });
-    netlifyIdentity.on('error', (err) => {
-      setError('שגיאת התחברות: ' + err.message);
-    });
-  };
-
-  useEffect(() => {
-    // Check if user is already authenticated with Netlify Identity
-    const currentUser = netlifyIdentity.currentUser();
-    if (currentUser) {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      setIsAuthenticated(true);
-    }
-    
-    // Mock data for demonstration
-    setBlogPosts([
-      { id: 1, title: 'שיקום תקשורת לאחר שבץ', date: '2025-04-10', status: 'פורסם' },
-      { id: 2, title: 'עיכוב התפתחות שפה', date: '2025-04-20', status: 'פורסם' },
-      { id: 3, title: 'דיסלקציה - מעבר לקשיי קריאה', date: '2025-05-15', status: 'פורסם' }
-    ]);
-    
-    setTreatments([
-      { id: 1, title: 'טיפול בהפרעות שפה', active: true },
-      { id: 2, title: 'טיפול בגמגום', active: true },
-      { id: 3, title: 'שיקום לאחר שבץ', active: true }
-    ]);
-    
-    setTestimonials([
-      { id: 1, author: 'דני כהן', content: 'הטיפול עם הדס שינה את חיי לחלוטין', active: true },
-      { id: 2, author: 'מיכל לוי', content: 'הדס היא מטפלת מקצועית ומסורה', active: true }
-    ]);
+      setCheckingAuth(false);
+    });
+    return unsubscribe;
   }, []);
 
-  const handleLogout = () => {
-    netlifyIdentity.logout();
-    setIsAuthenticated(false);
-    setUser(null);
+  // Fetch stats and blog posts when authenticated
+  useEffect(() => {
+    if (user) {
+      fetchBlogPosts();
+      fetchTestimonialsCount();
+    }
+  }, [user]);
+
+  const fetchBlogPosts = async () => {
+    setLoading(true);
+    const posts = await loadFirebaseCollection('blog', 'date', 'desc');
+    setBlogPosts(posts);
+    setStats(prev => ({ ...prev, postsCount: posts.length }));
+    setLoading(false);
   };
 
-  // Add CSS directly to the component
+  const fetchTestimonialsCount = async () => {
+    const tData = await loadFirebaseContent('pages', 'testimonials');
+    if (tData && tData.images) {
+      setStats(prev => ({ ...prev, testimonialsCount: tData.images.length }));
+    }
+  };
+
+  // Load page data when changing page tab or page selection
   useEffect(() => {
-    // Create a link element for the admin CSS
-    const linkElement = document.createElement('link');
-    linkElement.rel = 'stylesheet';
-    linkElement.href = adminCssUrl;
-    linkElement.id = 'admin-css-link';
-    
-    // Add it to the document head
-    document.head.appendChild(linkElement);
-    
-    // Clean up function
-    return () => {
-      const existingLink = document.getElementById('admin-css-link');
-      if (existingLink) {
-        document.head.removeChild(existingLink);
+    if (user && activeTab === 'pages') {
+      loadPageToEdit(editingPage);
+    }
+  }, [user, activeTab, editingPage]);
+
+  // Load component data when changing component tab
+  useEffect(() => {
+    if (user && activeTab === 'components') {
+      loadComponentToEdit(editingComponent);
+    }
+  }, [user, activeTab, editingComponent]);
+
+  const loadPageToEdit = async (pageId) => {
+    setLoading(true);
+    const data = await loadFirebaseContent('pages', pageId);
+    setPageData(data || {});
+    setLoading(false);
+  };
+
+  const loadComponentToEdit = async (compId) => {
+    setLoading(true);
+    const data = await loadFirebaseContent('components', compId);
+    setComponentData(data || {});
+    setLoading(false);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      setUser(null);
+    } catch (err) {
+      console.error('Logout error:', err);
+    }
+  };
+
+  const showMsg = (text, type = 'success') => {
+    setMessage({ text, type });
+    setTimeout(() => setMessage({ text: '', type: '' }), 5000);
+  };
+
+  // 2. Migration Trigger
+  const runMigration = async () => {
+    if (!window.confirm('האם את/ה בטוח/ה שברצונך להעביר את כל קבצי ה-YAML וה-Markdown המקומיים ל-Firebase? פעולה זו תדרוס נתונים קיימים ב-Firebase.')) {
+      return;
+    }
+    setMigrating(true);
+    setMigrationLogs([]);
+    try {
+      await migrateDataToFirebase((logs) => {
+        setMigrationLogs(logs);
+      });
+      showMsg('המיגרציה הושלמה בהצלחה!');
+      fetchBlogPosts();
+      fetchTestimonialsCount();
+    } catch (error) {
+      showMsg('שגיאה במיגרציה: ' + error.message, 'error');
+    } finally {
+      setMigrating(false);
+    }
+  };
+
+  // 3. Image Upload Utility
+  const handleImageUpload = async (e, onUrlObtained) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setLoading(true);
+    showMsg('מעלה תמונה...', 'success');
+    try {
+      const fileRef = ref(storage, `uploads/${Date.now()}_${file.name}`);
+      const snapshot = await uploadBytes(fileRef, file);
+      const url = await getDownloadURL(snapshot.ref);
+      onUrlObtained(url);
+      showMsg('התמונה הועלתה בהצלחה!');
+    } catch (err) {
+      console.error('Upload error:', err);
+      showMsg('שגיאה בהעלאת התמונה: ' + err.message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 4. Save Page changes
+  const savePageData = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await setDoc(doc(db, 'pages', editingPage), pageData);
+      showMsg('העמוד עודכן בהצלחה!');
+    } catch (err) {
+      showMsg('שגיאה בשמירת העמוד: ' + err.message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 5. Save Component changes
+  const saveComponentData = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await setDoc(doc(db, 'components', editingComponent), componentData);
+      showMsg('הרכיב עודכן בהצלחה!');
+    } catch (err) {
+      showMsg('שגיאה בשמירת הרכיב: ' + err.message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 6. Save/Delete Blog Post
+  const saveBlogPost = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      // Validate slug
+      if (!editingBlogPost.slug || !/^[a-z0-9-]+$/.test(editingBlogPost.slug)) {
+        showMsg('ה-Slug באנגלית חייב להכיל אותיות קטנות, מספרים ומקפים בלבד (למשל: speech-therapy).', 'error');
+        setLoading(false);
+        return;
       }
-    };
-  }, []);
+
+      // Format Hebrew Date for display based on YYYY-MM-DD
+      const dateParts = editingBlogPost.date.split('-');
+      let formattedDate = editingBlogPost.formattedDate || '';
+      if (dateParts.length === 3) {
+        const months = ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר'];
+        const day = parseInt(dateParts[2], 10);
+        const month = months[parseInt(dateParts[1], 10) - 1];
+        const year = dateParts[0];
+        formattedDate = `${day} ב${month} ${year}`;
+      }
+
+      const postPayload = {
+        ...editingBlogPost,
+        formattedDate,
+        createdAt: editingBlogPost.createdAt || new Date().toISOString()
+      };
+
+      await setDoc(doc(db, 'blog', editingBlogPost.slug), postPayload);
+      showMsg('הפוסט נשמר בהצלחה!');
+      setEditingBlogPost(null);
+      fetchBlogPosts();
+    } catch (err) {
+      showMsg('שגיאה בשמירת הפוסט: ' + err.message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteBlogPost = async (slug) => {
+    if (!window.confirm('האם את/ה בטוח/ה שברצונך למחוק פוסט זה?')) return;
+    setLoading(true);
+    try {
+      await deleteDoc(doc(db, 'blog', slug));
+      showMsg('הפוסט נמחק בהצלחה!');
+      fetchBlogPosts();
+    } catch (err) {
+      showMsg('שגיאה במחיקת הפוסט: ' + err.message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (checkingAuth) {
+    return (
+      <div className="admin-login-wrapper">
+        <div className="login-card" style={{ textAlign: 'center' }}>
+          <h2>טוען...</h2>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Auth onLoginSuccess={(u) => setUser(u)} />;
+  }
 
   return (
     <div className="admin-container">
-      <div className="admin-header">
-        <h1>אזור ניהול</h1>
+      <div className="admin-dashboard-layout">
+        
+        {/* Sidebar */}
+        <aside className="admin-sidebar">
+          <div className="sidebar-logo">
+            <img src="/favicon/logo.png" alt="לוגו" onError={(e) => e.target.style.display = 'none'} />
+            <h2>הדס תודה</h2>
+          </div>
+          <nav>
+            <ul className="sidebar-menu">
+              <li>
+                <button 
+                  className={`sidebar-item-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
+                  onClick={() => { setActiveTab('dashboard'); setEditingBlogPost(null); }}
+                >
+                  <span className="sidebar-item-icon">📊</span>
+                  <span>לוח בקרה</span>
+                </button>
+              </li>
+              <li>
+                <button 
+                  className={`sidebar-item-btn ${activeTab === 'pages' ? 'active' : ''}`}
+                  onClick={() => { setActiveTab('pages'); setEditingBlogPost(null); }}
+                >
+                  <span className="sidebar-item-icon">📄</span>
+                  <span>עריכת עמודי האתר</span>
+                </button>
+              </li>
+              <li>
+                <button 
+                  className={`sidebar-item-btn ${activeTab === 'blog' ? 'active' : ''}`}
+                  onClick={() => { setActiveTab('blog'); }}
+                >
+                  <span className="sidebar-item-icon">📝</span>
+                  <span>ניהול בלוג</span>
+                </button>
+              </li>
+              <li>
+                <button 
+                  className={`sidebar-item-btn ${activeTab === 'components' ? 'active' : ''}`}
+                  onClick={() => { setActiveTab('components'); setEditingBlogPost(null); }}
+                >
+                  <span className="sidebar-item-icon">⚙️</span>
+                  <span>תפריטים ותחתית</span>
+                </button>
+              </li>
+            </ul>
+          </nav>
+          <div className="sidebar-footer">
+            <button onClick={handleLogout} className="btn-logout">🔓 התנתק מהמערכת</button>
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <main className="admin-main-content">
+          
+          {/* Top Bar */}
+          <div className="admin-top-bar">
+            <h1>אזור ניהול האתר</h1>
+            <div className="admin-user-menu">
+              <span className="admin-username">{user.email}</span>
+            </div>
+          </div>
+
+          {/* Toast Message */}
+          {message.text && (
+            <div className={`login-error ${message.type === 'error' ? '' : 'success'}`} style={{ 
+              borderColor: message.type === 'error' ? 'var(--blush)' : '#2e7d32',
+              backgroundColor: message.type === 'error' ? 'rgba(180, 68, 112, 0.1)' : '#e8f5e9',
+              color: message.type === 'error' ? 'var(--blush)' : '#2e7d32'
+            }}>
+              <span>{message.type === 'error' ? '⚠️' : '✅'}</span>
+              <span>{message.text}</span>
+            </div>
+          )}
+
+          {/* TAB: Dashboard Summary */}
+          {activeTab === 'dashboard' && (
+            <div>
+              <div className="admin-grid">
+                <div className="widget-card" onClick={() => setActiveTab('blog')}>
+                  <div className="widget-icon-wrapper">📝</div>
+                  <div className="widget-info">
+                    <h3>פוסטים בבלוג</h3>
+                    <div className="widget-value">{stats.postsCount}</div>
+                  </div>
+                </div>
+                <div className="widget-card" onClick={() => { setActiveTab('pages'); setEditingPage('testimonials'); }}>
+                  <div className="widget-icon-wrapper">💬</div>
+                  <div className="widget-info">
+                    <h3>המלצות באתר</h3>
+                    <div className="widget-value">{stats.testimonialsCount}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Migration Utility Box */}
+              <div className="panel-card" style={{ marginTop: '2rem' }}>
+                <div className="panel-header">
+                  <h2>סנכרון ראשוני ל-Firebase</h2>
+                </div>
+                <p style={{ marginBottom: '1.5rem', color: '#666' }}>
+                  אם זו הפעם הראשונה שאת/ה מפעיל/ה את המערכת החדשה, לחץ/י על הכפתור למטה כדי להעתיק את כל התוכן הקיים מהקוד ישירות למסד הנתונים של Firebase. זה יבצע העלאה אוטומטית של כל הדפים והבלוגים.
+                </p>
+                <button 
+                  onClick={runMigration} 
+                  className="btn-add" 
+                  disabled={migrating}
+                  style={{ background: migrating ? '#999' : 'linear-gradient(90deg, var(--secondary) 0%, var(--bali-hai) 100%)' }}
+                >
+                  {migrating ? 'מעביר נתונים...' : '🚀 העבר תוכן קיים ל-Firebase'}
+                </button>
+
+                {migrationLogs.length > 0 && (
+                  <div className="migration-log-box">
+                    {migrationLogs.map((logLine, idx) => (
+                      <div key={idx}>{logLine}</div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* TAB: Pages Content Editing */}
+          {activeTab === 'pages' && pageData && (
+            <div className="panel-card">
+              <div className="panel-header">
+                <h2>עריכת תוכן עמודים</h2>
+                <select 
+                  value={editingPage} 
+                  onChange={(e) => setEditingPage(e.target.value)}
+                  className="login-input"
+                  style={{ width: '220px', marginTop: 0 }}
+                >
+                  <option value="home">דף הבית</option>
+                  <option value="about">דף אודות</option>
+                  <option value="services">דף שירותים</option>
+                  <option value="contact">דף יצירת קשר</option>
+                  <option value="testimonials">דף המלצות ותמונות</option>
+                </select>
+              </div>
+
+              {loading ? (
+                <h3>טוען נתוני עמוד...</h3>
+              ) : (
+                <form onSubmit={savePageData} className="admin-form">
+                  
+                  {/* EDIT FORM: HOME PAGE */}
+                  {editingPage === 'home' && (
+                    <div>
+                      <h3>סקציית הגיבור (Hero)</h3>
+                      <div className="admin-input-group">
+                        <div className="form-group">
+                          <label className="form-group-label">כותרת ראשית</label>
+                          <input 
+                            type="text" 
+                            className="login-input"
+                            value={pageData.hero?.title || ''}
+                            onChange={(e) => setPageData({
+                              ...pageData,
+                              hero: { ...pageData.hero, title: e.target.value }
+                            })}
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label className="form-group-label">כותרת משנה</label>
+                          <input 
+                            type="text" 
+                            className="login-input"
+                            value={pageData.hero?.subtitle || ''}
+                            onChange={(e) => setPageData({
+                              ...pageData,
+                              hero: { ...pageData.hero, subtitle: e.target.value }
+                            })}
+                          />
+                        </div>
+                      </div>
+                      <div className="form-group" style={{ marginTop: '1rem' }}>
+                        <label className="form-group-label">תיאור</label>
+                        <textarea 
+                          className="admin-textarea"
+                          value={pageData.hero?.description || ''}
+                          onChange={(e) => setPageData({
+                            ...pageData,
+                            hero: { ...pageData.hero, description: e.target.value }
+                          })}
+                        />
+                      </div>
+                      <div className="admin-input-group" style={{ marginTop: '1rem' }}>
+                        <div className="form-group">
+                          <label className="form-group-label">טקסט כפתור ראשי</label>
+                          <input 
+                            type="text" 
+                            className="login-input"
+                            value={pageData.hero?.cta_text || ''}
+                            onChange={(e) => setPageData({
+                              ...pageData,
+                              hero: { ...pageData.hero, cta_text: e.target.value }
+                            })}
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label className="form-group-label">טקסט כפתור שירותים</label>
+                          <input 
+                            type="text" 
+                            className="login-input"
+                            value={pageData.hero?.services_text || ''}
+                            onChange={(e) => setPageData({
+                              ...pageData,
+                              hero: { ...pageData.hero, services_text: e.target.value }
+                            })}
+                          />
+                        </div>
+                      </div>
+
+                      <h3 style={{ marginTop: '2rem' }}>סקציית אודות (דף הבית)</h3>
+                      <div className="form-group">
+                        <label className="form-group-label">כותרת אודות</label>
+                        <input 
+                          type="text" 
+                          className="login-input"
+                          value={pageData.about?.title || ''}
+                          onChange={(e) => setPageData({
+                            ...pageData,
+                            about: { ...pageData.about, title: e.target.value }
+                          })}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label className="form-group-label">פסקה ראשונה</label>
+                        <textarea 
+                          className="admin-textarea"
+                          value={pageData.about?.paragraph1 || ''}
+                          onChange={(e) => setPageData({
+                            ...pageData,
+                            about: { ...pageData.about, paragraph1: e.target.value }
+                          })}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* EDIT FORM: ABOUT PAGE */}
+                  {editingPage === 'about' && (
+                    <div>
+                      <div className="admin-input-group">
+                        <div className="form-group">
+                          <label className="form-group-label">כותרת ראשית</label>
+                          <input 
+                            type="text" 
+                            className="login-input"
+                            value={pageData.title || ''}
+                            onChange={(e) => setPageData({ ...pageData, title: e.target.value })}
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label className="form-group-label">כותרת משנה</label>
+                          <input 
+                            type="text" 
+                            className="login-input"
+                            value={pageData.subtitle || ''}
+                            onChange={(e) => setPageData({ ...pageData, subtitle: e.target.value })}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="form-group" style={{ marginTop: '1rem' }}>
+                        <label className="form-group-label">פסקת פתיחה</label>
+                        <textarea 
+                          className="admin-textarea"
+                          value={pageData.paragraph1 || ''}
+                          onChange={(e) => setPageData({ ...pageData, paragraph1: e.target.value })}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label className="form-group-label">פסקה 2</label>
+                        <textarea 
+                          className="admin-textarea"
+                          value={pageData.paragraph2 || ''}
+                          onChange={(e) => setPageData({ ...pageData, paragraph2: e.target.value })}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label className="form-group-label">פסקה 3</label>
+                        <textarea 
+                          className="admin-textarea"
+                          value={pageData.paragraph3 || ''}
+                          onChange={(e) => setPageData({ ...pageData, paragraph3: e.target.value })}
+                        />
+                      </div>
+
+                      <h3 style={{ marginTop: '2rem' }}>הכשרות מקצועיות</h3>
+                      <div className="form-group">
+                        <label className="form-group-label">כותרת סקציית הכשרות</label>
+                        <input 
+                          type="text" 
+                          className="login-input"
+                          value={pageData.qualifications_title || ''}
+                          onChange={(e) => setPageData({ ...pageData, qualifications_title: e.target.value })}
+                        />
+                      </div>
+                      <label className="form-group-label">רשימת הכשרות (לחץ לעריכה/מחיקה)</label>
+                      {(pageData.qualifications || []).map((q, idx) => (
+                        <div key={idx} className="list-editor-item">
+                          <input 
+                            type="text" 
+                            className="login-input"
+                            value={q.item || ''}
+                            onChange={(e) => {
+                              const newQuals = [...pageData.qualifications];
+                              newQuals[idx] = { item: e.target.value };
+                              setPageData({ ...pageData, qualifications: newQuals });
+                            }}
+                          />
+                          <button 
+                            type="button" 
+                            className="btn-remove-item"
+                            onClick={() => {
+                              const newQuals = pageData.qualifications.filter((_, i) => i !== idx);
+                              setPageData({ ...pageData, qualifications: newQuals });
+                            }}
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      ))}
+                      <button 
+                        type="button" 
+                        className="btn-add-item"
+                        onClick={() => {
+                          const newQuals = [...(pageData.qualifications || []), { item: '' }];
+                          setPageData({ ...pageData, qualifications: newQuals });
+                        }}
+                      >
+                        ➕ הוסף הכשרה
+                      </button>
+                    </div>
+                  )}
+
+                  {/* EDIT FORM: SERVICES PAGE */}
+                  {editingPage === 'services' && (
+                    <div>
+                      <div className="admin-input-group">
+                        <div className="form-group">
+                          <label className="form-group-label">כותרת ראשית</label>
+                          <input 
+                            type="text" 
+                            className="login-input"
+                            value={pageData.title || ''}
+                            onChange={(e) => setPageData({ ...pageData, title: e.target.value })}
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label className="form-group-label">כותרת משנה</label>
+                          <input 
+                            type="text" 
+                            className="login-input"
+                            value={pageData.subtitle || ''}
+                            onChange={(e) => setPageData({ ...pageData, subtitle: e.target.value })}
+                          />
+                        </div>
+                      </div>
+
+                      <h3 style={{ marginTop: '2rem' }}>רשימת השירותים המוצעים</h3>
+                      {(pageData.services || []).map((s, idx) => (
+                        <div key={idx} style={{ padding: '1rem', backgroundColor: '#f9f9fc', borderRadius: '8px', marginBottom: '1rem' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <h4>שירות #{idx + 1}</h4>
+                            <button 
+                              type="button" 
+                              className="btn-remove-item"
+                              onClick={() => {
+                                const newServs = pageData.services.filter((_, i) => i !== idx);
+                                setPageData({ ...pageData, services: newServs });
+                              }}
+                            >
+                              הסר שירות
+                            </button>
+                          </div>
+                          <div className="form-group">
+                            <label className="form-group-label">שם השירות</label>
+                            <input 
+                              type="text" 
+                              className="login-input"
+                              value={s.title || ''}
+                              onChange={(e) => {
+                                const newServs = [...pageData.services];
+                                newServs[idx] = { ...s, title: e.target.value };
+                                setPageData({ ...pageData, services: newServs });
+                              }}
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label className="form-group-label">תיאור השירות</label>
+                            <textarea 
+                              className="admin-textarea"
+                              value={s.description || ''}
+                              onChange={(e) => {
+                                const newServs = [...pageData.services];
+                                newServs[idx] = { ...s, description: e.target.value };
+                                setPageData({ ...pageData, services: newServs });
+                              }}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                      <button 
+                        type="button" 
+                        className="btn-add-item"
+                        onClick={() => {
+                          const newServs = [...(pageData.services || []), { title: '', description: '' }];
+                          setPageData({ ...pageData, services: newServs });
+                        }}
+                      >
+                        ➕ הוסף שירות חדש
+                      </button>
+                    </div>
+                  )}
+
+                  {/* EDIT FORM: CONTACT PAGE */}
+                  {editingPage === 'contact' && (
+                    <div>
+                      <div className="admin-input-group">
+                        <div className="form-group">
+                          <label className="form-group-label">כותרת עמוד</label>
+                          <input 
+                            type="text" 
+                            className="login-input"
+                            value={pageData.title || ''}
+                            onChange={(e) => setPageData({ ...pageData, title: e.target.value })}
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label className="form-group-label">כותרת משנה</label>
+                          <input 
+                            type="text" 
+                            className="login-input"
+                            value={pageData.subtitle || ''}
+                            onChange={(e) => setPageData({ ...pageData, subtitle: e.target.value })}
+                          />
+                        </div>
+                      </div>
+
+                      <h3 style={{ marginTop: '2rem' }}>שאלות נפוצות (FAQ)</h3>
+                      {(pageData.faq_items || []).map((faq, idx) => (
+                        <div key={idx} style={{ padding: '1rem', backgroundColor: '#f9f9fc', borderRadius: '8px', marginBottom: '1rem' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <h4>שאלה #{idx + 1}</h4>
+                            <button 
+                              type="button" 
+                              className="btn-remove-item"
+                              onClick={() => {
+                                const newFaqs = pageData.faq_items.filter((_, i) => i !== idx);
+                                setPageData({ ...pageData, faq_items: newFaqs });
+                              }}
+                            >
+                              הסר שאלה
+                            </button>
+                          </div>
+                          <div className="form-group">
+                            <label className="form-group-label">שאלה</label>
+                            <input 
+                              type="text" 
+                              className="login-input"
+                              value={faq.question || ''}
+                              onChange={(e) => {
+                                const newFaqs = [...pageData.faq_items];
+                                newFaqs[idx] = { ...faq, question: e.target.value };
+                                setPageData({ ...pageData, faq_items: newFaqs });
+                              }}
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label className="form-group-label">תשובה</label>
+                            <textarea 
+                              className="admin-textarea"
+                              value={faq.answer || ''}
+                              onChange={(e) => {
+                                const newFaqs = [...pageData.faq_items];
+                                newFaqs[idx] = { ...faq, answer: e.target.value };
+                                setPageData({ ...pageData, faq_items: newFaqs });
+                              }}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                      <button 
+                        type="button" 
+                        className="btn-add-item"
+                        onClick={() => {
+                          const newFaqs = [...(pageData.faq_items || []), { question: '', answer: '' }];
+                          setPageData({ ...pageData, faq_items: newFaqs });
+                        }}
+                      >
+                        ➕ הוסף שאלה נפוצה
+                      </button>
+                    </div>
+                  )}
+
+                  {/* EDIT FORM: TESTIMONIALS (IMAGES) */}
+                  {editingPage === 'testimonials' && (
+                    <div>
+                      <div className="admin-input-group">
+                        <div className="form-group">
+                          <label className="form-group-label">כותרת עמוד המלצות</label>
+                          <input 
+                            type="text" 
+                            className="login-input"
+                            value={pageData.title || ''}
+                            onChange={(e) => setPageData({ ...pageData, title: e.target.value })}
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label className="form-group-label">כותרת משנה</label>
+                          <input 
+                            type="text" 
+                            className="login-input"
+                            value={pageData.subtitle || ''}
+                            onChange={(e) => setPageData({ ...pageData, subtitle: e.target.value })}
+                          />
+                        </div>
+                      </div>
+
+                      <h3 style={{ marginTop: '2rem' }}>גלריית תמונות המלצה</h3>
+                      <div className="image-preview-container">
+                        {(pageData.images || []).map((img, idx) => (
+                          <div key={idx} className="image-preview-wrapper" style={{ border: img.hide ? '2px solid red' : '1px solid #ddd' }}>
+                            <img src={img.image} alt={img.alt} />
+                            <button 
+                              type="button" 
+                              className="btn-delete-img"
+                              onClick={() => {
+                                const newImgs = pageData.images.filter((_, i) => i !== idx);
+                                setPageData({ ...pageData, images: newImgs });
+                              }}
+                              title="מחק תמונה"
+                            >
+                              ✕
+                            </button>
+                            <div style={{ position: 'absolute', bottom: 0, right: 0, left: 0, background: 'rgba(0,0,0,0.6)', padding: '2px', display: 'flex', justifyContent: 'space-between' }}>
+                              <input 
+                                type="checkbox" 
+                                checked={img.hide || false}
+                                onChange={(e) => {
+                                  const newImgs = [...pageData.images];
+                                  newImgs[idx] = { ...img, hide: e.target.checked };
+                                  setPageData({ ...pageData, images: newImgs });
+                                }}
+                                title="הסתר מהאתר"
+                              />
+                              <input 
+                                type="text" 
+                                value={img.alt || ''} 
+                                onChange={(e) => {
+                                  const newImgs = [...pageData.images];
+                                  newImgs[idx] = { ...img, alt: e.target.value };
+                                  setPageData({ ...pageData, images: newImgs });
+                                }}
+                                placeholder="Alt"
+                                style={{ width: '80%', background: 'transparent', border: 'none', color: 'white', fontSize: '0.75rem', textAlign: 'right' }}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="admin-image-uploader" style={{ marginTop: '1.5rem' }}>
+                        <div className="uploader-content">
+                          <span className="uploader-icon">📷</span>
+                          <span>לחץ להעלאת תמונת המלצה חדשה</span>
+                          <input 
+                            type="file" 
+                            accept="image/*"
+                            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }}
+                            onChange={(e) => handleImageUpload(e, (url) => {
+                              const newImgs = [...(pageData.images || []), { image: url, alt: 'המלצה חדשה', hide: false }];
+                              setPageData({ ...pageData, images: newImgs });
+                            })}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="form-footer-actions">
+                    <button type="submit" className="btn-save" disabled={loading}>
+                      {loading ? 'שומר...' : '💾 שמור שינויים בעמוד'}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          )}
+
+          {/* TAB: Blog Posts List and Editor */}
+          {activeTab === 'blog' && (
+            <div className="panel-card">
+              
+              {/* List View */}
+              {editingBlogPost === null && (
+                <div>
+                  <div className="panel-header">
+                    <h2>ניהול פוסטים בבלוג</h2>
+                    <button 
+                      onClick={() => setEditingBlogPost({
+                        title: '',
+                        slug: '',
+                        date: new Date().toISOString().split('T')[0],
+                        excerpt: '',
+                        image: '',
+                        categories: [],
+                        content: ''
+                      })}
+                      className="btn-add"
+                    >
+                      ➕ הוסף פוסט חדש
+                    </button>
+                  </div>
+
+                  {loading ? (
+                    <h3>טוען פוסטים...</h3>
+                  ) : (
+                    <div className="admin-list">
+                      {blogPosts.map((post) => (
+                        <div key={post.id || post.slug} className="admin-item-row">
+                          <div className="item-info">
+                            <span className="item-title">{post.title}</span>
+                            <span className="item-meta">
+                              <span>📅 תאריך: {post.formattedDate || post.date}</span>
+                              <span>🔗 Slug: {post.slug}</span>
+                            </span>
+                          </div>
+                          <div className="item-actions">
+                            <button 
+                              onClick={() => setEditingBlogPost(post)}
+                              className="btn-action"
+                            >
+                              ✏️ ערוך
+                            </button>
+                            <button 
+                              onClick={() => deleteBlogPost(post.slug)}
+                              className="btn-action danger"
+                            >
+                              🗑️ מחק
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                      {blogPosts.length === 0 && <p>לא נמצאו פוסטים בבלוג. אנא בצע סנכרון ראשוני או הוסף פוסט חדש.</p>}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Editor View */}
+              {editingBlogPost !== null && (
+                <div>
+                  <div className="panel-header">
+                    <h2>{editingBlogPost.createdAt ? 'עריכת פוסט בבלוג' : 'יצירת פוסט חדש בבלוג'}</h2>
+                    <button 
+                      onClick={() => setEditingBlogPost(null)}
+                      className="btn-cancel"
+                    >
+                      ביטול וחזרה לרשימה
+                    </button>
+                  </div>
+
+                  <form onSubmit={saveBlogPost} className="admin-form">
+                    <div className="form-group">
+                      <label className="form-group-label">כותרת הפוסט</label>
+                      <input 
+                        type="text" 
+                        required
+                        className="login-input"
+                        value={editingBlogPost.title}
+                        onChange={(e) => setEditingBlogPost({ ...editingBlogPost, title: e.target.value })}
+                        placeholder="רשום כותרת פוסט מעניינת..."
+                      />
+                    </div>
+
+                    <div className="admin-input-group">
+                      <div className="form-group">
+                        <label className="form-group-label">Slug באנגלית (מזהה בקישור)</label>
+                        <input 
+                          type="text" 
+                          required
+                          className="login-input"
+                          value={editingBlogPost.slug}
+                          onChange={(e) => setEditingBlogPost({ ...editingBlogPost, slug: e.target.value })}
+                          placeholder="word-retrieval-vs-stuttering"
+                          hint="אותיות קטנות באנגלית ומקפים בלבד."
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label className="form-group-label">תאריך פרסום</label>
+                        <input 
+                          type="date" 
+                          required
+                          className="login-input"
+                          value={editingBlogPost.date}
+                          onChange={(e) => setEditingBlogPost({ ...editingBlogPost, date: e.target.value })}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-group">
+                      <label className="form-group-label">תקציר הפוסט (יוצג בדף הבלוגים הראשי)</label>
+                      <textarea 
+                        required
+                        className="admin-textarea"
+                        value={editingBlogPost.excerpt}
+                        onChange={(e) => setEditingBlogPost({ ...editingBlogPost, excerpt: e.target.value })}
+                        placeholder="רשום תקציר קצר שמושך לקרוא..."
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label className="form-group-label">קטגוריות (מופרדות בפסיקים)</label>
+                      <input 
+                        type="text" 
+                        className="login-input"
+                        value={editingBlogPost.categories ? editingBlogPost.categories.join(', ') : ''}
+                        onChange={(e) => setEditingBlogPost({ 
+                          ...editingBlogPost, 
+                          categories: e.target.value.split(',').map(cat => cat.trim()).filter(Boolean) 
+                        })}
+                        placeholder="speech, voice, children, tips"
+                      />
+                    </div>
+
+                    {/* Image Upload for Post */}
+                    <div className="form-group">
+                      <label className="form-group-label">תמונת נושא לפוסט</label>
+                      {editingBlogPost.image && (
+                        <div style={{ marginBottom: '1rem', width: '200px', height: '120px', overflow: 'hidden', borderRadius: '8px' }}>
+                          <img src={editingBlogPost.image} alt="תמונת נושא" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        </div>
+                      )}
+                      <div className="admin-image-uploader">
+                        <div className="uploader-content">
+                          <span className="uploader-icon">🖼️</span>
+                          <span>לחץ להעלאת תמונת נושא חדשה</span>
+                          <input 
+                            type="file" 
+                            accept="image/*"
+                            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }}
+                            onChange={(e) => handleImageUpload(e, (url) => {
+                              setEditingBlogPost({ ...editingBlogPost, image: url });
+                            })}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Content Markdown Area */}
+                    <div className="form-group">
+                      <label className="form-group-label">תוכן הפוסט (תומך ב-HTML או Markdown)</label>
+                      <textarea 
+                        required
+                        className="admin-textarea"
+                        style={{ minHeight: '350px' }}
+                        value={editingBlogPost.content}
+                        onChange={(e) => setEditingBlogPost({ ...editingBlogPost, content: e.target.value })}
+                        placeholder="כאן כותבים את תוכן המאמר בפירוט..."
+                      />
+                    </div>
+
+                    <div className="form-footer-actions">
+                      <button 
+                        type="button" 
+                        onClick={() => setEditingBlogPost(null)} 
+                        className="btn-cancel"
+                        style={{ marginLeft: '1rem' }}
+                      >
+                        ביטול
+                      </button>
+                      <button type="submit" className="btn-save" disabled={loading}>
+                        {loading ? 'שומר פוסט...' : '💾 שמור ופרסם פוסט'}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* TAB: Components Layout Editing (Header/Footer) */}
+          {activeTab === 'components' && componentData && (
+            <div className="panel-card">
+              <div className="panel-header">
+                <h2>ניהול רכיבי ממשק</h2>
+                <select 
+                  value={editingComponent} 
+                  onChange={(e) => setEditingComponent(e.target.value)}
+                  className="login-input"
+                  style={{ width: '220px', marginTop: 0 }}
+                >
+                  <option value="header">תפריט עליון (Header)</option>
+                  <option value="footer">תחתית האתר (Footer)</option>
+                </select>
+              </div>
+
+              {loading ? (
+                <h3>טוען נתונים...</h3>
+              ) : (
+                <form onSubmit={saveComponentData} className="admin-form">
+                  
+                  {/* EDIT HEADER COMPONENT */}
+                  {editingComponent === 'header' && (
+                    <div>
+                      <label className="form-group-label">קישורי התפריט העליון</label>
+                      {(componentData.menu_items || []).map((item, idx) => (
+                        <div key={idx} className="list-editor-item" style={{ gap: '10px' }}>
+                          <input 
+                            type="text" 
+                            className="login-input"
+                            value={item.name || ''}
+                            onChange={(e) => {
+                              const newItems = [...componentData.menu_items];
+                              newItems[idx] = { ...item, name: e.target.value };
+                              setComponentData({ ...componentData, menu_items: newItems });
+                            }}
+                            placeholder="שם הקישור (למשל: אודות)"
+                          />
+                          <input 
+                            type="text" 
+                            className="login-input"
+                            value={item.path || ''}
+                            onChange={(e) => {
+                              const newItems = [...componentData.menu_items];
+                              newItems[idx] = { ...item, path: e.target.value };
+                              setComponentData({ ...componentData, menu_items: newItems });
+                            }}
+                            placeholder="נתיב הקישור (למשל: /about)"
+                          />
+                          <button 
+                            type="button" 
+                            className="btn-remove-item"
+                            onClick={() => {
+                              const newItems = componentData.menu_items.filter((_, i) => i !== idx);
+                              setComponentData({ ...componentData, menu_items: newItems });
+                            }}
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      ))}
+                      <button 
+                        type="button" 
+                        className="btn-add-item"
+                        onClick={() => {
+                          const newItems = [...(componentData.menu_items || []), { name: '', path: '' }];
+                          setComponentData({ ...componentData, menu_items: newItems });
+                        }}
+                      >
+                        ➕ הוסף קישור לתפריט
+                      </button>
+                    </div>
+                  )}
+
+                  {/* EDIT FOOTER COMPONENT */}
+                  {editingComponent === 'footer' && (
+                    <div>
+                      <div className="form-group">
+                        <label className="form-group-label">טקסט זכויות יוצרים (Copyright)</label>
+                        <input 
+                          type="text" 
+                          className="login-input"
+                          value={componentData.copyright || ''}
+                          onChange={(e) => setComponentData({ ...componentData, copyright: e.target.value })}
+                        />
+                      </div>
+
+                      <label className="form-group-label" style={{ marginTop: '2rem' }}>קישורי תחתית האתר</label>
+                      {(componentData.links || []).map((link, idx) => (
+                        <div key={idx} className="list-editor-item" style={{ gap: '10px' }}>
+                          <input 
+                            type="text" 
+                            className="login-input"
+                            value={link.name || ''}
+                            onChange={(e) => {
+                              const newLinks = [...componentData.links];
+                              newLinks[idx] = { ...link, name: e.target.value };
+                              setComponentData({ ...componentData, links: newLinks });
+                            }}
+                            placeholder="שם הקישור"
+                          />
+                          <input 
+                            type="text" 
+                            className="login-input"
+                            value={link.path || ''}
+                            onChange={(e) => {
+                              const newLinks = [...componentData.links];
+                              newLinks[idx] = { ...link, path: e.target.value };
+                              setComponentData({ ...componentData, links: newLinks });
+                            }}
+                            placeholder="נתיב"
+                          />
+                          <button 
+                            type="button" 
+                            className="btn-remove-item"
+                            onClick={() => {
+                              const newLinks = componentData.links.filter((_, i) => i !== idx);
+                              setComponentData({ ...componentData, links: newLinks });
+                            }}
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      ))}
+                      <button 
+                        type="button" 
+                        className="btn-add-item"
+                        onClick={() => {
+                          const newLinks = [...(componentData.links || []), { name: '', path: '' }];
+                          setComponentData({ ...componentData, links: newLinks });
+                        }}
+                      >
+                        ➕ הוסף קישור בתחתית
+                      </button>
+                    </div>
+                  )}
+
+                  <div className="form-footer-actions">
+                    <button type="submit" className="btn-save" disabled={loading}>
+                      {loading ? 'שומר...' : '💾 שמור שינויים ברכיב'}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          )}
+
+        </main>
       </div>
-      
-      {!isAuthenticated ? (
-        <div className="login-form">
-          <h2>התחברות לאזור הניהול</h2>
-          {error && <p className="error-message">{error}</p>}
-          <p>כדי להיכנס לאזור הניהול, יש להתחבר באמצעות חשבון מנהל מאושר.</p>
-          <button 
-            onClick={handleLogin} 
-            className="btn btn-primary"
-            style={{ marginTop: '20px' }}
-          >
-            התחבר עם Netlify Identity
-          </button>
-        </div>
-      ) : (
-        <div className="admin-dashboard">
-          <div className="admin-welcome">
-            <h2>ברוכים הבאים לאזור הניהול, {user?.user_metadata?.full_name || user?.email || 'מנהל'}</h2>
-            <button 
-              onClick={handleLogout}
-              className="btn btn-danger"
-            >
-              התנתק
-            </button>
-          </div>
-          
-          <div className="tabs">
-            <button 
-              className={`tab ${activeTab === 'dashboard' ? 'active' : ''}`}
-              onClick={() => setActiveTab('dashboard')}
-            >
-              לוח בקרה
-            </button>
-            <button 
-              className={`tab ${activeTab === 'blog' ? 'active' : ''}`}
-              onClick={() => setActiveTab('blog')}
-            >
-              ניהול בלוג
-            </button>
-            <button 
-              className={`tab ${activeTab === 'treatments' ? 'active' : ''}`}
-              onClick={() => setActiveTab('treatments')}
-            >
-              ניהול טיפולים
-            </button>
-            <button 
-              className={`tab ${activeTab === 'testimonials' ? 'active' : ''}`}
-              onClick={() => setActiveTab('testimonials')}
-            >
-              ניהול המלצות
-            </button>
-          </div>
-          
-          <div className="tab-content">
-            {activeTab === 'dashboard' && (
-              <div className="admin-sections">
-                <div className="admin-section" onClick={() => setActiveTab('blog')}>
-                  <div className="admin-section-icon">📝</div>
-                  <h3>ניהול בלוג</h3>
-                  <p>ניהול {blogPosts.length} פוסטים בבלוג</p>
-                </div>
-                
-                <div className="admin-section" onClick={() => setActiveTab('treatments')}>
-                  <div className="admin-section-icon">🤲</div>
-                  <h3>ניהול טיפולים</h3>
-                  <p>ניהול {treatments.length} טיפולים</p>
-                </div>
-                
-                <div className="admin-section" onClick={() => setActiveTab('testimonials')}>
-                  <div className="admin-section-icon">💬</div>
-                  <h3>ניהול המלצות</h3>
-                  <p>ניהול {testimonials.length} המלצות</p>
-                </div>
-              </div>
-            )}
-            
-            {activeTab === 'blog' && (
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                  <h3>ניהול פוסטים בבלוג</h3>
-                  <button className="btn btn-primary">הוסף פוסט חדש</button>
-                </div>
-                
-                {blogPosts.map(post => (
-                  <div key={post.id} className="blog-post-item">
-                    <div>
-                      <strong>{post.title}</strong>
-                      <div>תאריך: {post.date} | סטטוס: {post.status}</div>
-                    </div>
-                    <div className="blog-post-actions">
-                      <button className="btn btn-primary btn-sm">ערוך</button>
-                      <button className="btn btn-danger btn-sm">מחק</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-            
-            {activeTab === 'treatments' && (
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                  <h3>ניהול טיפולים</h3>
-                  <button className="btn btn-primary">הוסף טיפול חדש</button>
-                </div>
-                
-                {treatments.map(treatment => (
-                  <div key={treatment.id} className="blog-post-item">
-                    <div>
-                      <strong>{treatment.title}</strong>
-                      <div>סטטוס: {treatment.active ? 'פעיל' : 'לא פעיל'}</div>
-                    </div>
-                    <div className="blog-post-actions">
-                      <button className="btn btn-primary btn-sm">ערוך</button>
-                      <button className="btn btn-danger btn-sm">מחק</button>
-                      <button className="btn btn-sm" style={{backgroundColor: treatment.active ? '#e67e22' : '#2ecc71', color: 'white'}}>
-                        {treatment.active ? 'השבת' : 'הפעל'}
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-            
-            {activeTab === 'testimonials' && (
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                  <h3>ניהול המלצות</h3>
-                  <button className="btn btn-primary">הוסף המלצה חדשה</button>
-                </div>
-                
-                {testimonials.map(testimonial => (
-                  <div key={testimonial.id} className="blog-post-item">
-                    <div>
-                      <strong>{testimonial.author}</strong>
-                      <div>"{testimonial.content}"</div>
-                    </div>
-                    <div className="blog-post-actions">
-                      <button className="btn btn-primary btn-sm">ערוך</button>
-                      <button className="btn btn-danger btn-sm">מחק</button>
-                      <button className="btn btn-sm" style={{backgroundColor: testimonial.active ? '#e67e22' : '#2ecc71', color: 'white'}}>
-                        {testimonial.active ? 'השבת' : 'הפעל'}
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 };

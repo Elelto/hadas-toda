@@ -3,14 +3,33 @@ import { Link } from 'react-router-dom';
 import blogPosts from '../data/blogPosts';
 import AOS from 'aos';
 import SEOHead from '../components/SEOHead';
+import { loadFirebaseCollection } from '../utils/firebaseLoader';
 import '../styles/blog.css';
 
 export default function Blog() {
   const [filter, setFilter] = useState('all');
+  const [posts, setPosts] = useState(blogPosts);
   const [filteredPosts, setFilteredPosts] = useState(blogPosts);
 
+  // Load from Firebase on mount
   useEffect(() => {
-    setFilteredPosts(blogPosts);
+    const fetchPosts = async () => {
+      try {
+        const firebasePosts = await loadFirebaseCollection('blog', 'date', 'desc');
+        if (firebasePosts && firebasePosts.length > 0) {
+          // Map to match the existing properties
+          const formatted = firebasePosts.map(p => ({
+            ...p,
+            date: p.formattedDate || p.date // use hebrew date if available
+          }));
+          setPosts(formatted);
+          setFilteredPosts(filter === 'all' ? formatted : formatted.filter(post => post.categories.includes(filter)));
+        }
+      } catch (err) {
+        console.error('Error loading posts from Firebase, using static fallback:', err);
+      }
+    };
+    fetchPosts();
   }, []);
 
   useEffect(() => {
@@ -34,11 +53,11 @@ export default function Blog() {
   // סינון המאמרים לפי הקטגוריה הנבחרת
   useEffect(() => {
     if (filter === 'all') {
-      setFilteredPosts(blogPosts);
+      setFilteredPosts(posts);
     } else {
-      setFilteredPosts(blogPosts.filter(post => post.categories.includes(filter)));
+      setFilteredPosts(posts.filter(post => post.categories.includes(filter)));
     }
-  }, [filter]);
+  }, [filter, posts]);
 
   // SEO structured data for blog page
   const structuredData = {
@@ -57,7 +76,7 @@ export default function Blog() {
       "name": "הדס תודה - קלינאית תקשורת",
       "url": "https://hadas-toda.co.il"
     },
-    "blogPost": blogPosts.slice(0, 5).map(post => ({
+    "blogPost": posts.slice(0, 5).map(post => ({
       "@type": "BlogPosting",
       "headline": post.title,
       "description": post.excerpt,

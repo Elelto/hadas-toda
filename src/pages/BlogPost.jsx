@@ -1,31 +1,52 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import '../styles/blog.css';
 import blogPosts from '../data/blogPosts';
 import SEOHead from '../components/SEOHead';
 import StructuredData from '../components/StructuredData';
+import { loadFirebaseCollection } from '../utils/firebaseLoader';
 
 export default function BlogPost() {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const [posts, setPosts] = useState(blogPosts);
+
+  // Load from Firebase on mount
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const firebasePosts = await loadFirebaseCollection('blog', 'date', 'desc');
+        if (firebasePosts && firebasePosts.length > 0) {
+          const formatted = firebasePosts.map(p => ({
+            ...p,
+            date: p.formattedDate || p.date
+          }));
+          setPosts(formatted);
+        }
+      } catch (err) {
+        console.error('Error loading posts from Firebase, using static fallback:', err);
+      }
+    };
+    fetchPosts();
+  }, []);
   
   // מציאת המאמר המבוקש לפי ה-slug
-  const post = blogPosts.find(post => post.slug === slug);
+  const post = posts.find(post => post.slug === slug);
   
   // אם המאמר לא נמצא, מעבר לעמוד הבלוג הראשי
   useEffect(() => {
-    if (!post) {
+    if (posts.length > 0 && !post) {
       navigate('/blog');
     }
-  }, [post, navigate]);
+  }, [post, navigate, posts]);
   
   // אם המאמר לא נמצא, לא מציגים כלום בזמן שמתבצע ניתוב מחדש
   if (!post) return null;
   
   // מציאת המאמרים הקודם והבא
-  const currentIndex = blogPosts.findIndex(p => p.slug === slug);
-  const prevPost = currentIndex > 0 ? blogPosts[currentIndex - 1] : null;
-  const nextPost = currentIndex < blogPosts.length - 1 ? blogPosts[currentIndex + 1] : null;
+  const currentIndex = posts.findIndex(p => p.slug === slug);
+  const prevPost = currentIndex > 0 ? posts[currentIndex - 1] : null;
+  const nextPost = currentIndex < posts.length - 1 ? posts[currentIndex + 1] : null;
 
   return (
     <>
@@ -119,7 +140,7 @@ export default function BlogPost() {
           <div className="related-posts">
             <h3 className="related-posts-title">מאמרים נוספים שעשויים לעניין אותך</h3>
             <div className="related-posts-grid">
-              {blogPosts
+              {posts
                 .filter(p => p.slug !== slug && p.categories.some(cat => post.categories.includes(cat)))
                 .slice(0, 3)
                 .map(relatedPost => (

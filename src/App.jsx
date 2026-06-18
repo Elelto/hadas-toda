@@ -79,8 +79,8 @@ function App() {
               <Route path="/online-therapy" element={<OnlineTherapy />} />
               <Route path="/ai-assessment" element={<AIAssessmentPage />} />
               <Route path="/dashboard" element={<Admin />} />
-              {/* Redirect /admin/ to the Netlify CMS admin interface */}
-              <Route path="/admin/*" element={<Navigate to="/admin/index.html" replace />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/admin/*" element={<Admin />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </main>

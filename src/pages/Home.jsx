@@ -9,6 +9,7 @@ import AuroraBackground from '../components/AuroraBackground';
 import SEOHead from '../components/SEOHead';
 import StructuredData from '../components/StructuredData';
 import blogPosts from '../data/blogPosts';
+import { loadFirebaseCollection } from '../utils/firebaseLoader';
 import { getExperienceYearsLabel, getPatientsCountLabel } from '../utils/experience';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
@@ -161,6 +162,8 @@ export default function Home() {
     return () => window.removeEventListener('keydown', handleKey);
   }, [lightboxIndex, testimonialsContent]);
 
+  const [posts, setPosts] = useState(blogPosts);
+
   // Load YAML content
   useEffect(() => {
     const loadContent = async () => {
@@ -183,6 +186,19 @@ export default function Home() {
         }
       } catch (error) {
         console.error('Error loading testimonials content:', error);
+      }
+
+      try {
+        const firebasePosts = await loadFirebaseCollection('blog', 'date', 'desc');
+        if (firebasePosts && firebasePosts.length > 0) {
+          const formatted = firebasePosts.map(p => ({
+            ...p,
+            date: p.formattedDate || p.date
+          }));
+          setPosts(formatted);
+        }
+      } catch (error) {
+        console.error('Error loading posts from Firebase in Home page:', error);
       } finally {
         setLoading(false);
       }
@@ -582,8 +598,8 @@ export default function Home() {
             </div>
 
             <div className="blog-grid-modern">
-              {blogPosts.slice(0, 3).map((post, index) => (
-                <div key={post.id} className="blog-card-modern glass-card" data-aos="fade-up" data-aos-delay={index * 100} data-aos-anchor=".home-blog-modern" data-aos-offset="0">
+              {posts.slice(0, 3).map((post, index) => (
+                <div key={post.id || post.slug} className="blog-card-modern glass-card" data-aos="fade-up" data-aos-delay={index * 100} data-aos-anchor=".home-blog-modern" data-aos-offset="0">
                   <div className="blog-card-image">
                     {post.image ? (
                       <img src={post.image} alt={post.title} className="blog-image-real" />

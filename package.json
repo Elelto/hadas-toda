@@ -20,6 +20,7 @@
     "@emailjs/browser": "^4.4.1",
     "aos": "^2.3.4",
     "buffer": "^6.0.3",
+    "firebase": "^12.15.0",
     "framer-motion": "^12.40.0",
     "gray-matter": "^4.0.3",
     "js-yaml": "^4.1.0",
