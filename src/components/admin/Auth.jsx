@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../services/firebase';
+import { FaExclamationTriangle } from 'react-icons/fa';
 import '../../styles/admin.css';
 
 const Auth = ({ onLoginSuccess }) => {
@@ -54,7 +55,9 @@ const Auth = ({ onLoginSuccess }) => {
 
         {error && (
           <div className="login-error" role="alert">
-            <span className="error-icon">⚠️</span>
+            <span className="error-icon" style={{ display: 'flex', alignItems: 'center' }}>
+              <FaExclamationTriangle />
+            </span>
             <span>{error}</span>
           </div>
         )}

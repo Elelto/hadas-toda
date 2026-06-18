@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { doc, setDoc, deleteDoc, collection, getDocs } from 'firebase/firestore';
+import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { auth, db, storage } from '../services/firebase';
 import Auth from '../components/admin/Auth';
 import { loadFirebaseContent, loadFirebaseCollection } from '../utils/firebaseLoader';
 import { migrateDataToFirebase } from '../utils/migrateData';
+import { 
+  FaChartBar, FaFileAlt, FaPenSquare, FaCog, FaSignOutAlt, 
+  FaComments, FaRocket, FaTrash, FaEdit, FaPlus, 
+  FaSave, FaCamera, FaImage, FaTimes, FaUser 
+} from 'react-icons/fa';
 import '../styles/admin.css';
 
 const Admin = () => {
@@ -259,7 +264,7 @@ const Admin = () => {
                   className={`sidebar-item-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
                   onClick={() => { setActiveTab('dashboard'); setEditingBlogPost(null); }}
                 >
-                  <span className="sidebar-item-icon">📊</span>
+                  <FaChartBar className="sidebar-item-icon" />
                   <span>לוח בקרה</span>
                 </button>
               </li>
@@ -268,7 +273,7 @@ const Admin = () => {
                   className={`sidebar-item-btn ${activeTab === 'pages' ? 'active' : ''}`}
                   onClick={() => { setActiveTab('pages'); setEditingBlogPost(null); }}
                 >
-                  <span className="sidebar-item-icon">📄</span>
+                  <FaFileAlt className="sidebar-item-icon" />
                   <span>עריכת עמודי האתר</span>
                 </button>
               </li>
@@ -277,7 +282,7 @@ const Admin = () => {
                   className={`sidebar-item-btn ${activeTab === 'blog' ? 'active' : ''}`}
                   onClick={() => { setActiveTab('blog'); }}
                 >
-                  <span className="sidebar-item-icon">📝</span>
+                  <FaPenSquare className="sidebar-item-icon" />
                   <span>ניהול בלוג</span>
                 </button>
               </li>
@@ -286,14 +291,17 @@ const Admin = () => {
                   className={`sidebar-item-btn ${activeTab === 'components' ? 'active' : ''}`}
                   onClick={() => { setActiveTab('components'); setEditingBlogPost(null); }}
                 >
-                  <span className="sidebar-item-icon">⚙️</span>
+                  <FaCog className="sidebar-item-icon" />
                   <span>תפריטים ותחתית</span>
                 </button>
               </li>
             </ul>
           </nav>
           <div className="sidebar-footer">
-            <button onClick={handleLogout} className="btn-logout">🔓 התנתק מהמערכת</button>
+            <button onClick={handleLogout} className="btn-logout">
+              <FaSignOutAlt style={{ marginLeft: '6px' }} />
+              התנתק מהמערכת
+            </button>
           </div>
         </aside>
 
@@ -304,6 +312,7 @@ const Admin = () => {
           <div className="admin-top-bar">
             <h1>אזור ניהול האתר</h1>
             <div className="admin-user-menu">
+              <FaUser style={{ marginLeft: '8px', color: 'var(--primary)' }} />
               <span className="admin-username">{user.email}</span>
             </div>
           </div>
@@ -325,14 +334,18 @@ const Admin = () => {
             <div>
               <div className="admin-grid">
                 <div className="widget-card" onClick={() => setActiveTab('blog')}>
-                  <div className="widget-icon-wrapper">📝</div>
+                  <div className="widget-icon-wrapper">
+                    <FaPenSquare />
+                  </div>
                   <div className="widget-info">
                     <h3>פוסטים בבלוג</h3>
                     <div className="widget-value">{stats.postsCount}</div>
                   </div>
                 </div>
                 <div className="widget-card" onClick={() => { setActiveTab('pages'); setEditingPage('testimonials'); }}>
-                  <div className="widget-icon-wrapper">💬</div>
+                  <div className="widget-icon-wrapper">
+                    <FaComments />
+                  </div>
                   <div className="widget-info">
                     <h3>המלצות באתר</h3>
                     <div className="widget-value">{stats.testimonialsCount}</div>
@@ -354,7 +367,12 @@ const Admin = () => {
                   disabled={migrating}
                   style={{ background: migrating ? '#999' : 'linear-gradient(90deg, var(--secondary) 0%, var(--bali-hai) 100%)' }}
                 >
-                  {migrating ? 'מעביר נתונים...' : '🚀 העבר תוכן קיים ל-Firebase'}
+                  {migrating ? 'מעביר נתונים...' : (
+                    <>
+                      <FaRocket style={{ marginLeft: '8px' }} />
+                      העבר תוכן קיים ל-Firebase
+                    </>
+                  )}
                 </button>
 
                 {migrationLogs.length > 0 && (
@@ -567,7 +585,7 @@ const Admin = () => {
                               setPageData({ ...pageData, qualifications: newQuals });
                             }}
                           >
-                            🗑️
+                            <FaTrash />
                           </button>
                         </div>
                       ))}
@@ -579,7 +597,8 @@ const Admin = () => {
                           setPageData({ ...pageData, qualifications: newQuals });
                         }}
                       >
-                        ➕ הוסף הכשרה
+                        <FaPlus style={{ marginLeft: '6px' }} />
+                        הוסף הכשרה
                       </button>
                     </div>
                   )}
@@ -616,11 +635,13 @@ const Admin = () => {
                             <button 
                               type="button" 
                               className="btn-remove-item"
+                              style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
                               onClick={() => {
                                 const newServs = pageData.services.filter((_, i) => i !== idx);
                                 setPageData({ ...pageData, services: newServs });
                               }}
                             >
+                              <FaTrash />
                               הסר שירות
                             </button>
                           </div>
@@ -659,7 +680,8 @@ const Admin = () => {
                           setPageData({ ...pageData, services: newServs });
                         }}
                       >
-                        ➕ הוסף שירות חדש
+                        <FaPlus style={{ marginLeft: '6px' }} />
+                        הוסף שירות חדש
                       </button>
                     </div>
                   )}
@@ -696,11 +718,13 @@ const Admin = () => {
                             <button 
                               type="button" 
                               className="btn-remove-item"
+                              style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
                               onClick={() => {
                                 const newFaqs = pageData.faq_items.filter((_, i) => i !== idx);
                                 setPageData({ ...pageData, faq_items: newFaqs });
                               }}
                             >
+                              <FaTrash />
                               הסר שאלה
                             </button>
                           </div>
@@ -739,7 +763,8 @@ const Admin = () => {
                           setPageData({ ...pageData, faq_items: newFaqs });
                         }}
                       >
-                        ➕ הוסף שאלה נפוצה
+                        <FaPlus style={{ marginLeft: '6px' }} />
+                        הוסף שאלה נפוצה
                       </button>
                     </div>
                   )}
@@ -782,7 +807,7 @@ const Admin = () => {
                               }}
                               title="מחק תמונה"
                             >
-                              ✕
+                              <FaTimes />
                             </button>
                             <div style={{ position: 'absolute', bottom: 0, right: 0, left: 0, background: 'rgba(0,0,0,0.6)', padding: '2px', display: 'flex', justifyContent: 'space-between' }}>
                               <input 
@@ -813,8 +838,8 @@ const Admin = () => {
 
                       <div className="admin-image-uploader" style={{ marginTop: '1.5rem' }}>
                         <div className="uploader-content">
-                          <span className="uploader-icon">📷</span>
-                          <span>לחץ להעלאת תמונת המלצה חדשה</span>
+                          <FaCamera size={30} className="uploader-icon" />
+                          <span>לחץ להעלאת תמונת המלצה</span>
                           <input 
                             type="file" 
                             accept="image/*"
@@ -831,7 +856,12 @@ const Admin = () => {
 
                   <div className="form-footer-actions">
                     <button type="submit" className="btn-save" disabled={loading}>
-                      {loading ? 'שומר...' : '💾 שמור שינויים בעמוד'}
+                      {loading ? 'שומר...' : (
+                        <>
+                          <FaSave style={{ marginLeft: '8px' }} />
+                          שמור שינויים בעמוד
+                        </>
+                      )}
                     </button>
                   </div>
                 </form>
@@ -860,7 +890,8 @@ const Admin = () => {
                       })}
                       className="btn-add"
                     >
-                      ➕ הוסף פוסט חדש
+                      <FaPlus style={{ marginLeft: '6px' }} />
+                      הוסף פוסט חדש
                     </button>
                   </div>
 
@@ -881,14 +912,18 @@ const Admin = () => {
                             <button 
                               onClick={() => setEditingBlogPost(post)}
                               className="btn-action"
+                              style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
                             >
-                              ✏️ ערוך
+                              <FaEdit />
+                              ערוך
                             </button>
                             <button 
                               onClick={() => deleteBlogPost(post.slug)}
                               className="btn-action danger"
+                              style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
                             >
-                              🗑️ מחק
+                              <FaTrash />
+                              מחק
                             </button>
                           </div>
                         </div>
@@ -935,7 +970,6 @@ const Admin = () => {
                           value={editingBlogPost.slug}
                           onChange={(e) => setEditingBlogPost({ ...editingBlogPost, slug: e.target.value })}
                           placeholder="word-retrieval-vs-stuttering"
-                          hint="אותיות קטנות באנגלית ומקפים בלבד."
                         />
                       </div>
                       <div className="form-group">
@@ -985,7 +1019,7 @@ const Admin = () => {
                       )}
                       <div className="admin-image-uploader">
                         <div className="uploader-content">
-                          <span className="uploader-icon">🖼️</span>
+                          <FaImage size={30} className="uploader-icon" />
                           <span>לחץ להעלאת תמונת נושא חדשה</span>
                           <input 
                             type="file" 
@@ -1022,7 +1056,12 @@ const Admin = () => {
                         ביטול
                       </button>
                       <button type="submit" className="btn-save" disabled={loading}>
-                        {loading ? 'שומר פוסט...' : '💾 שמור ופרסם פוסט'}
+                        {loading ? 'שומר פוסט...' : (
+                          <>
+                            <FaSave style={{ marginLeft: '8px' }} />
+                            שמור ופרסם פוסט
+                          </>
+                        )}
                       </button>
                     </div>
                   </form>
@@ -1067,7 +1106,7 @@ const Admin = () => {
                               newItems[idx] = { ...item, name: e.target.value };
                               setComponentData({ ...componentData, menu_items: newItems });
                             }}
-                            placeholder="שם הקישור (למשל: אודות)"
+                            placeholder="שם הקישור"
                           />
                           <input 
                             type="text" 
@@ -1078,7 +1117,7 @@ const Admin = () => {
                               newItems[idx] = { ...item, path: e.target.value };
                               setComponentData({ ...componentData, menu_items: newItems });
                             }}
-                            placeholder="נתיב הקישור (למשל: /about)"
+                            placeholder="נתיב"
                           />
                           <button 
                             type="button" 
@@ -1088,7 +1127,7 @@ const Admin = () => {
                               setComponentData({ ...componentData, menu_items: newItems });
                             }}
                           >
-                            🗑️
+                            <FaTrash />
                           </button>
                         </div>
                       ))}
@@ -1100,7 +1139,8 @@ const Admin = () => {
                           setComponentData({ ...componentData, menu_items: newItems });
                         }}
                       >
-                        ➕ הוסף קישור לתפריט
+                        <FaPlus style={{ marginLeft: '6px' }} />
+                        הוסף קישור לתפריט
                       </button>
                     </div>
                   )}
@@ -1151,7 +1191,7 @@ const Admin = () => {
                               setComponentData({ ...componentData, links: newLinks });
                             }}
                           >
-                            🗑️
+                            <FaTrash />
                           </button>
                         </div>
                       ))}
@@ -1163,14 +1203,20 @@ const Admin = () => {
                           setComponentData({ ...componentData, links: newLinks });
                         }}
                       >
-                        ➕ הוסף קישור בתחתית
+                        <FaPlus style={{ marginLeft: '6px' }} />
+                        הוסף קישור בתחתית
                       </button>
                     </div>
                   )}
 
                   <div className="form-footer-actions">
                     <button type="submit" className="btn-save" disabled={loading}>
-                      {loading ? 'שומר...' : '💾 שמור שינויים ברכיב'}
+                      {loading ? 'שומר...' : (
+                        <>
+                          <FaSave style={{ marginLeft: '8px' }} />
+                          שמור שינויים ברכיב
+                        </>
+                      )}
                     </button>
                   </div>
                 </form>

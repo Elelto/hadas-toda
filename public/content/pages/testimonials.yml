@@ -1,25 +1,37 @@
 title: הקול שלכם, הסיפור שלי
-subtitle: >-
-  אין דבר מרגש יותר מלראות את השינוי בחיי המטופלים שלי.
-  כאן תוכלו לקרוא על החוויות האישיות וסיפורי ההצלחה מהקליניקה.
+subtitle: אין דבר מרגש יותר מלראות את השינוי בחיי המטופלים שלי. כאן תוכלו לקרוא
+  על החוויות האישיות וסיפורי ההצלחה מהקליניקה.
 images:
   - image: /images/uploads/rec-1.jpeg
-    alt: "המלצה ממטופל 1"
+    alt: המלצה ממטופל 1
+    hide: false
   - image: /images/uploads/rec-2.jpeg
-    alt: "המלצה ממטופל 2"
+    alt: המלצה ממטופל 2
+    hide: false
   - image: /images/uploads/rec-3.jpeg
-    alt: "המלצה ממטופל 3"
+    alt: המלצה ממטופל 3
+    hide: false
   - image: /images/uploads/rec-4.jpeg
-    alt: "המלצה ממטופל 4"
+    alt: המלצה ממטופל 4
+    hide: false
   - image: /images/uploads/rec-5.jpeg
-    alt: "המלצה ממטופל 5"
+    alt: המלצה ממטופל 5
+    hide: false
   - image: /images/uploads/rec-6.jpeg
-    alt: "המלצה ממטופל 6"
+    alt: המלצה ממטופל 6
+    hide: false
   - image: /images/uploads/rec-7.jpeg
-    alt: "המלצה ממטופל 7"
-  - image: /images/uploads/rec-8.jpeg
-    alt: "המלצה ממטופל 8"
+    alt: המלצה ממטופל 7
+    hide: false
+  - image: /images/uploads/8.jpeg
+    alt: המלצה ממטופל 8
+    hide: false
   - image: /images/uploads/rec-9.jpeg
-    alt: "המלצה ממטופל 9"
+    alt: המלצה ממטופל 9
+    hide: false
   - image: /images/uploads/rec-10.jpeg
-    alt: "המלצה ממטופל 10"
+    alt: המלצה ממטופל 10
+    hide: false
+  - hide: true
+    image: /images/uploads/8.jpeg
+    alt: יעל
