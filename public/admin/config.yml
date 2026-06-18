@@ -186,6 +186,7 @@ collections:
             fields:
               - { label: "תמונה", name: "image", widget: "image" }
               - { label: "טקסט חלופי קצר (Alt)", name: "alt", widget: "string", hint: "חשוב לנגישות ו-SEO. תאר בקצרה את תוכן ההמלצה או מי המליץ." }
+              - { label: "הסר מהאתר (הסתרה זמנית)", name: "hide", widget: "boolean", default: false }
 
   # עריכת רכיבי ממשק
   - name: "components"

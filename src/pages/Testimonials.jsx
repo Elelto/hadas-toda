@@ -69,7 +69,7 @@ export default function Testimonials() {
     setUseFallback(prev => ({ ...prev, [id]: true }));
   };
 
-  const images = content?.images || [];
+  const images = (content?.images || []).filter(img => !img.hide);
   const title = content?.title || 'הקול שלכם, הסיפור שלי';
   const subtitle = content?.subtitle || 'אין דבר מרגש יותר מלראות את השינוי בחיי המטופלים שלי. כאן תוכלו לקרוא על החוויות האישיות וסיפורי ההצלחה מהקליניקה.';
 

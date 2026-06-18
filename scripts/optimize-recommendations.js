@@ -50,7 +50,7 @@ async function optimizeImages() {
   let totalOutBytes = 0;
 
   for (const item of imagesList) {
-    if (!item.image) continue;
+    if (!item.image || item.hide === true) continue;
 
     // Resolve source path (YAML paths start with / e.g. /images/uploads/rec-1.jpeg)
     const relativeSrcPath = item.image.startsWith('/') ? item.image.substring(1) : item.image;

@@ -143,14 +143,19 @@ export default function Home() {
   const experienceYearsLabel = getExperienceYearsLabel();
   const patientsCountLabel = getPatientsCountLabel();
 
+  const handleImageError = (id) => {
+    setUseFallback(prev => ({ ...prev, [id]: true }));
+  };
+
+  const activeImages = (testimonialsContent?.images || []).filter(img => !img.hide);
+
   // Keyboard navigation for lightbox
   useEffect(() => {
-    if (lightboxIndex === null || !testimonialsContent?.images) return;
+    if (lightboxIndex === null || activeImages.length === 0) return;
     const handleKey = (e) => {
-      const images = testimonialsContent.images;
       if (e.key === 'Escape') setLightboxIndex(null);
-      if (e.key === 'ArrowLeft') setLightboxIndex(prev => prev === 0 ? images.length - 1 : prev - 1);
-      if (e.key === 'ArrowRight') setLightboxIndex(prev => prev === images.length - 1 ? 0 : prev + 1);
+      if (e.key === 'ArrowLeft') setLightboxIndex(prev => prev === 0 ? activeImages.length - 1 : prev - 1);
+      if (e.key === 'ArrowRight') setLightboxIndex(prev => prev === activeImages.length - 1 ? 0 : prev + 1);
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
@@ -427,7 +432,7 @@ export default function Home() {
                 }}
                 className="testimonials-swiper"
               >
-                {testimonialsContent?.images?.map((item, index) => {
+                {activeImages?.map((item, index) => {
                   const paths = getImgPaths(item.image);
                   const itemId = item.image || index;
                   return (
@@ -492,11 +497,11 @@ export default function Home() {
         </section>
 
         {/* Lightbox */}
-        {lightboxIndex !== null && testimonialsContent?.images?.[lightboxIndex] && (() => {
-          const currentItem = testimonialsContent.images[lightboxIndex];
+        {lightboxIndex !== null && activeImages[lightboxIndex] && (() => {
+          const currentItem = activeImages[lightboxIndex];
           const paths = getImgPaths(currentItem.image);
           const itemId = currentItem.image || lightboxIndex;
-          const images = testimonialsContent.images;
+          const images = activeImages;
 
           return (
             <div
