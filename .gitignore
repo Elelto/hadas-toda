@@ -142,6 +142,7 @@ out
 .netlify
 
 # Agent and temporary configurations
-.agent/
+.agent/skills/ui-ux-pro-max/
 .claude/
+
 
