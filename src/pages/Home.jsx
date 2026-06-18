@@ -513,7 +513,7 @@ export default function Home() {
 
             <div className="blog-grid-modern">
               {blogPosts.slice(0, 3).map((post, index) => (
-                <div key={post.id} className="blog-card-modern glass-card" data-aos="fade-up" data-aos-delay={index * 100}>
+                <div key={post.id} className="blog-card-modern glass-card" data-aos="fade-up" data-aos-delay={index * 100} data-aos-anchor=".home-blog-modern" data-aos-offset="0">
                   <div className="blog-card-image">
                     {post.image ? (
                       <img src={post.image} alt={post.title} className="blog-image-real" />
