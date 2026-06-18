@@ -28,10 +28,10 @@ images:
     hide: false
   - image: /images/uploads/rec-9.jpeg
     alt: המלצה ממטופל 9
-    hide: true
+    hide: false
   - image: /images/uploads/rec-10.jpeg
     alt: המלצה ממטופל 10
-    hide: true
-  - hide: false
+    hide: false
+  - hide: true
     image: /images/uploads/8.jpeg
     alt: יעל
