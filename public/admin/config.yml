@@ -173,6 +173,20 @@ collections:
               - { label: "שאלה", name: "question", widget: "string" }
               - { label: "תשובה", name: "answer", widget: "text" }
 
+      - name: "testimonials"
+        label: "דף המלצות"
+        file: "src/content/pages/testimonials.yml"
+        fields:
+          - { label: "כותרת ראשית", name: "title", widget: "string" }
+          - { label: "כותרת משנה", name: "subtitle", widget: "string" }
+          - label: "תמונות המלצה"
+            name: "images"
+            widget: "list"
+            summary: "{{fields.alt}}"
+            fields:
+              - { label: "תמונה", name: "image", widget: "image" }
+              - { label: "טקסט חלופי קצר (Alt)", name: "alt", widget: "string", hint: "חשוב לנגישות ו-SEO. תאר בקצרה את תוכן ההמלצה או מי המליץ." }
+
   # עריכת רכיבי ממשק
   - name: "components"
     label: "רכיבי ממשק"

@@ -117,27 +117,44 @@ const getDefaultHomeContent = () => ({
   }
 });
 
-// Recommendation images (1–10)
-const REC_IMAGES = Array.from({ length: 10 }, (_, i) => i + 1);
+// Helper to resolve dynamic image paths and their optimized versions
+const getImgPaths = (imagePath) => {
+  if (!imagePath) return {};
+  const parts = imagePath.split('/');
+  const filename = parts[parts.length - 1];
+  const lastDot = filename.lastIndexOf('.');
+  const name = lastDot !== -1 ? filename.substring(0, lastDot) : filename;
+  
+  return {
+    original: imagePath,
+    fullWebp: `/images/recommendation/optimized/${name}.webp`,
+    fullJpg: `/images/recommendation/optimized/${name}.jpg`,
+    thumbWebp: `/images/recommendation/optimized/${name}-thumb.webp`,
+    thumbJpg: `/images/recommendation/optimized/${name}-thumb.jpg`
+  };
+};
 
 export default function Home() {
   const [homeContent, setHomeContent] = useState(null);
+  const [testimonialsContent, setTestimonialsContent] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [lightboxImage, setLightboxImage] = useState(null);
+  const [lightboxIndex, setLightboxIndex] = useState(null);
+  const [useFallback, setUseFallback] = useState({});
   const experienceYearsLabel = getExperienceYearsLabel();
   const patientsCountLabel = getPatientsCountLabel();
 
   // Keyboard navigation for lightbox
   useEffect(() => {
-    if (!lightboxImage) return;
+    if (lightboxIndex === null || !testimonialsContent?.images) return;
     const handleKey = (e) => {
-      if (e.key === 'Escape') setLightboxImage(null);
-      if (e.key === 'ArrowLeft') setLightboxImage(prev => prev === 1 ? 10 : prev - 1);
-      if (e.key === 'ArrowRight') setLightboxImage(prev => prev === 10 ? 1 : prev + 1);
+      const images = testimonialsContent.images;
+      if (e.key === 'Escape') setLightboxIndex(null);
+      if (e.key === 'ArrowLeft') setLightboxIndex(prev => prev === 0 ? images.length - 1 : prev - 1);
+      if (e.key === 'ArrowRight') setLightboxIndex(prev => prev === images.length - 1 ? 0 : prev + 1);
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [lightboxImage]);
+  }, [lightboxIndex, testimonialsContent]);
 
   // Load YAML content
   useEffect(() => {
@@ -152,6 +169,15 @@ export default function Home() {
       } catch (error) {
         console.error('Error loading home content:', error);
         setHomeContent(getDefaultHomeContent());
+      }
+
+      try {
+        const testContent = await loadYamlContent('/content/pages/testimonials.yml');
+        if (testContent) {
+          setTestimonialsContent(testContent);
+        }
+      } catch (error) {
+        console.error('Error loading testimonials content:', error);
       } finally {
         setLoading(false);
       }
@@ -401,43 +427,59 @@ export default function Home() {
                 }}
                 className="testimonials-swiper"
               >
-                {REC_IMAGES.map((num) => (
-                  <SwiperSlide key={num}>
-                    <div
-                      className="rec-image-card glass-card"
-                      onClick={() => setLightboxImage(num)}
-                      role="button"
-                      tabIndex={0}
-                      aria-label={`המלצה ${num} - לחץ להגדלה`}
-                      onKeyDown={(e) => e.key === 'Enter' && setLightboxImage(num)}
-                    >
-                      <div className="rec-image-wrapper">
-                        <picture>
-                          <source
-                            srcSet={`/images/recommendation/optimized/${num}-thumb.webp`}
-                            type="image/webp"
-                          />
-                          <img
-                            src={`/images/recommendation/optimized/${num}-thumb.jpg`}
-                            alt={`המלצה ממטופל ${num}`}
-                            className="rec-image"
-                            loading="lazy"
-                            width="400"
-                            height="560"
-                          />
-                        </picture>
-                        <div className="rec-image-overlay" aria-hidden="true">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="11" cy="11" r="8"/>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                            <line x1="11" y1="8" x2="11" y2="14"/>
-                            <line x1="8" y1="11" x2="14" y2="11"/>
-                          </svg>
+                {testimonialsContent?.images?.map((item, index) => {
+                  const paths = getImgPaths(item.image);
+                  const itemId = item.image || index;
+                  return (
+                    <SwiperSlide key={itemId}>
+                      <div
+                        className="rec-image-card glass-card"
+                        onClick={() => setLightboxIndex(index)}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={item.alt || `המלצה ${index + 1} - לחץ להגדלה`}
+                        onKeyDown={(e) => e.key === 'Enter' && setLightboxIndex(index)}
+                      >
+                        <div className="rec-image-wrapper">
+                          {useFallback[itemId] ? (
+                            <img
+                              src={paths.original}
+                              alt={item.alt || `המלצה ממטופל ${index + 1}`}
+                              className="rec-image"
+                              loading="lazy"
+                              width="400"
+                              height="560"
+                            />
+                          ) : (
+                            <picture>
+                              <source
+                                srcSet={paths.thumbWebp}
+                                type="image/webp"
+                              />
+                              <img
+                                src={paths.thumbJpg}
+                                alt={item.alt || `המלצה ממטופל ${index + 1}`}
+                                className="rec-image"
+                                loading="lazy"
+                                width="400"
+                                height="560"
+                                onError={() => handleImageError(itemId)}
+                              />
+                            </picture>
+                          )}
+                          <div className="rec-image-overlay" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <circle cx="11" cy="11" r="8"/>
+                              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                              <line x1="11" y1="8" x2="11" y2="14"/>
+                              <line x1="8" y1="11" x2="14" y2="11"/>
+                            </svg>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </SwiperSlide>
-                ))}
+                    </SwiperSlide>
+                  );
+                })}
               </Swiper>
             </div>
 
@@ -450,57 +492,80 @@ export default function Home() {
         </section>
 
         {/* Lightbox */}
-        {lightboxImage && (
-          <div
-            className="rec-lightbox-overlay"
-            onClick={() => setLightboxImage(null)}
-            role="dialog"
-            aria-modal="true"
-            aria-label="תצוגת המלצה מוגדלת"
-          >
-            <button
-              className="rec-lightbox-close"
-              onClick={() => setLightboxImage(null)}
-              aria-label="סגור"
-            >
-              ✕
-            </button>
+        {lightboxIndex !== null && testimonialsContent?.images?.[lightboxIndex] && (() => {
+          const currentItem = testimonialsContent.images[lightboxIndex];
+          const paths = getImgPaths(currentItem.image);
+          const itemId = currentItem.image || lightboxIndex;
+          const images = testimonialsContent.images;
 
-            <button
-              className="rec-lightbox-nav rec-lightbox-prev"
-              onClick={(e) => { e.stopPropagation(); setLightboxImage(prev => prev === 1 ? 10 : prev - 1); }}
-              aria-label="הקודם"
-            >
-              ‹
-            </button>
-
+          return (
             <div
-              className="rec-lightbox-content"
-              onClick={(e) => e.stopPropagation()}
+              className="rec-lightbox-overlay"
+              onClick={() => setLightboxIndex(null)}
+              role="dialog"
+              aria-modal="true"
+              aria-label="תצוגת המלצה מוגדלת"
             >
-              <picture>
-                <source
-                  srcSet={`/images/recommendation/optimized/${lightboxImage}.webp`}
-                  type="image/webp"
-                />
-                <img
-                  src={`/images/recommendation/optimized/${lightboxImage}.jpg`}
-                  alt={`המלצה ממטופל ${lightboxImage}`}
-                  className="rec-lightbox-img"
-                />
-              </picture>
-              <div className="rec-lightbox-counter">{lightboxImage} / 10</div>
-            </div>
+              <button
+                className="rec-lightbox-close"
+                onClick={() => setLightboxIndex(null)}
+                aria-label="סגור"
+              >
+                ✕
+              </button>
 
-            <button
-              className="rec-lightbox-nav rec-lightbox-next"
-              onClick={(e) => { e.stopPropagation(); setLightboxImage(prev => prev === 10 ? 1 : prev + 1); }}
-              aria-label="הבא"
-            >
-              ›
-            </button>
-          </div>
-        )}
+              <button
+                className="rec-lightbox-nav rec-lightbox-prev"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLightboxIndex(prev => prev === 0 ? images.length - 1 : prev - 1);
+                }}
+                aria-label="הקודם"
+              >
+                ‹
+              </button>
+
+              <div
+                className="rec-lightbox-content"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {useFallback[itemId] ? (
+                  <img
+                    src={paths.original}
+                    alt={currentItem.alt || `המלצה ממטופל ${lightboxIndex + 1}`}
+                    className="rec-lightbox-img"
+                  />
+                ) : (
+                  <picture>
+                    <source
+                      srcSet={paths.fullWebp}
+                      type="image/webp"
+                    />
+                    <img
+                      src={paths.fullJpg}
+                      alt={currentItem.alt || `המלצה ממטופל ${lightboxIndex + 1}`}
+                      className="rec-lightbox-img"
+                      onError={() => handleImageError(itemId)}
+                    />
+                  </picture>
+                )}
+                <div className="rec-lightbox-counter">{lightboxIndex + 1} / {images.length}</div>
+              </div>
+
+              <button
+                className="rec-lightbox-nav rec-lightbox-next"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLightboxIndex(prev => prev === images.length - 1 ? 0 : prev + 1);
+                }}
+                aria-label="הבא"
+              >
+                ›
+              </button>
+            </div>
+          );
+        })()}
+
 
         {/* Blog Preview */}
         <section className="home-blog-modern section-padding bg-light">
