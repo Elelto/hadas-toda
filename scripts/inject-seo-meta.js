@@ -8,6 +8,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const matter = require('gray-matter');
 
 const DIST = path.join(__dirname, '../dist');
 const BASE_URL = 'https://hadas-toda.co.il';
@@ -143,6 +144,39 @@ const PAGE_META = {
   },
 };
 
+// טעינת בלוגים דינמית
+function loadBlogMeta() {
+  const blogDir = path.join(__dirname, '../src/content/blog');
+  if (!fs.existsSync(blogDir)) return;
+  
+  const files = fs.readdirSync(blogDir).filter(f => f.endsWith('.md'));
+  files.forEach(file => {
+    const filePath = path.join(blogDir, file);
+    const content = fs.readFileSync(filePath, 'utf8');
+    const { data } = matter(content);
+
+    const slugMatch = file.match(/^\d{4}-\d{2}-\d{2}-(.+)\.md$/);
+    const slug = slugMatch ? slugMatch[1] : file.replace('.md', '');
+    const route = `/blog/${slug}`;
+
+    const title = data.title ? `${data.title} | הדס תודה` : 'בלוג קלינאות תקשורת | הדס תודה';
+    const description = data.excerpt || data.description || 'מאמר בבלוג קלינאות תקשורת של הדס תודה.';
+    const keywords = data.categories ? data.categories.join(', ') : 'קלינאות תקשורת, הדס תודה';
+    const ogImage = data.image ? `${BASE_URL}${data.image}` : `${BASE_URL}/images/logo.png`;
+
+    PAGE_META[route] = {
+      title,
+      description,
+      keywords,
+      canonical: `${BASE_URL}${route}`,
+      ogTitle: title,
+      ogDescription: description,
+      ogImage: ogImage
+    };
+  });
+}
+loadBlogMeta();
+
 function injectMetaToFile(filePath, meta) {
   let html = fs.readFileSync(filePath, 'utf8');
 
@@ -202,16 +236,31 @@ function injectMetaToFile(filePath, meta) {
     `<meta name="twitter:description" content="${meta.ogDescription}">`
   );
 
+  // החלפת תמונות (אם הוגדר)
+  if (meta.ogImage) {
+    html = html.replace(
+      /<meta property="og:image" content="[^"]*">/,
+      `<meta property="og:image" content="${meta.ogImage}">`
+    );
+    html = html.replace(
+      /<meta name="twitter:image" content="[^"]*">/,
+      `<meta name="twitter:image" content="${meta.ogImage}">`
+    );
+  }
+
   // הוספת schema ייעודי (אם קיים)
-  if (meta.schema || meta.faqSchema) {
-    let schemas = '';
-    if (meta.schema) {
-      schemas += `\n  <script type="application/ld+json">\n${meta.schema}\n  </script>`;
+  if (meta.schema) {
+    // מחיקת ה-MedicalBusiness הקיים והחלפתו בחדש
+    const schemaRegex = /<script type="application\/ld\+json">\s*\{\s*"@context":\s*"https:\/\/schema\.org",\s*"@type":\s*"MedicalBusiness"[\s\S]*?<\/script>/;
+    if (schemaRegex.test(html)) {
+      html = html.replace(schemaRegex, `<script type="application/ld+json">\n${meta.schema}\n  </script>`);
+    } else {
+      html = html.replace('</head>', `\n  <script type="application/ld+json">\n${meta.schema}\n  </script>\n</head>`);
     }
-    if (meta.faqSchema) {
-      schemas += `\n  <script type="application/ld+json">\n${meta.faqSchema}\n  </script>`;
-    }
-    html = html.replace('</head>', `${schemas}\n</head>`);
+  }
+
+  if (meta.faqSchema) {
+    html = html.replace('</head>', `\n  <script type="application/ld+json">\n${meta.faqSchema}\n  </script>\n</head>`);
   }
 
   fs.writeFileSync(filePath, html, 'utf8');

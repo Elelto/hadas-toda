@@ -1,9 +1,25 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
+import fs from 'fs';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 import vitePrerender from 'vite-plugin-prerender';
+
+// Helper to get all blog routes for prerendering
+function getBlogRoutes() {
+  const blogDir = resolve(__dirname, 'src/content/blog');
+  if (!fs.existsSync(blogDir)) return [];
+  
+  const files = fs.readdirSync(blogDir);
+  return files
+    .filter(file => file.endsWith('.md'))
+    .map(file => {
+      const slugMatch = file.match(/^\d{4}-\d{2}-\d{2}-(.+)\.md$/);
+      const slug = slugMatch ? slugMatch[1] : file.replace('.md', '');
+      return `/blog/${slug}`;
+    });
+}
 
 // Plugin שמדמה את Netlify Edge Functions (A/B routing) בסביבת dev
 function landingAbDevPlugin() {
@@ -64,6 +80,7 @@ export default defineConfig({
         '/contact',
         '/blog',
         '/testimonials',
+        ...getBlogRoutes()
       ],
     }),
   ],
