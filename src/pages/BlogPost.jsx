@@ -107,7 +107,15 @@ export default function BlogPost() {
           {/* מידע על הכותב */}
           <div className="blog-post-author">
             <div className="author-image">
-              <img src="/images/hadas-profile.jpg" alt="הדס תודה" />
+              <img 
+                src="/images/hadas-profile.jpg" 
+                alt="הדס תודה" 
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "/images/logo.png";
+                  e.target.style.objectFit = "contain";
+                }}
+              />
             </div>
             <div className="author-info">
               <h3>הדס תודה</h3>

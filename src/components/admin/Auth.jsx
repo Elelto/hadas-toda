@@ -55,7 +55,7 @@ const Auth = ({ onLoginSuccess }) => {
 
         {error && (
           <div className="login-error" role="alert">
-            <span className="error-icon" style={{ display: 'flex', alignItems: 'center' }}>
+            <span className="error-icon-anim" style={{ display: 'flex', alignItems: 'center' }}>
               <FaExclamationTriangle />
             </span>
             <span>{error}</span>

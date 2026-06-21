@@ -299,7 +299,7 @@ const Admin = () => {
           </nav>
           <div className="sidebar-footer">
             <button onClick={handleLogout} className="btn-logout">
-              <FaSignOutAlt style={{ marginLeft: '6px' }} />
+              <FaSignOutAlt className="btn-icon" style={{ marginLeft: '6px' }} />
               התנתק מהמערכת
             </button>
           </div>
@@ -311,9 +311,14 @@ const Admin = () => {
           {/* Top Bar */}
           <div className="admin-top-bar">
             <h1>אזור ניהול האתר</h1>
-            <div className="admin-user-menu">
-              <FaUser style={{ marginLeft: '8px', color: 'var(--primary)' }} />
-              <span className="admin-username">{user.email}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div className="admin-user-menu">
+                <FaUser style={{ marginLeft: '8px', color: 'var(--primary)' }} />
+                <span className="admin-username">{user.email}</span>
+              </div>
+              <button onClick={handleLogout} className="btn-logout mobile-logout-btn" title="התנתק מהמערכת">
+                <FaSignOutAlt className="btn-icon" />
+              </button>
             </div>
           </div>
 
@@ -369,7 +374,7 @@ const Admin = () => {
                 >
                   {migrating ? 'מעביר נתונים...' : (
                     <>
-                      <FaRocket style={{ marginLeft: '8px' }} />
+                      <FaRocket className="btn-icon" style={{ marginLeft: '8px' }} />
                       העבר תוכן קיים ל-Firebase
                     </>
                   )}
@@ -597,7 +602,7 @@ const Admin = () => {
                           setPageData({ ...pageData, qualifications: newQuals });
                         }}
                       >
-                        <FaPlus style={{ marginLeft: '6px' }} />
+                        <FaPlus className="btn-icon" style={{ marginLeft: '6px' }} />
                         הוסף הכשרה
                       </button>
                     </div>
@@ -680,7 +685,7 @@ const Admin = () => {
                           setPageData({ ...pageData, services: newServs });
                         }}
                       >
-                        <FaPlus style={{ marginLeft: '6px' }} />
+                        <FaPlus className="btn-icon" style={{ marginLeft: '6px' }} />
                         הוסף שירות חדש
                       </button>
                     </div>
@@ -763,7 +768,7 @@ const Admin = () => {
                           setPageData({ ...pageData, faq_items: newFaqs });
                         }}
                       >
-                        <FaPlus style={{ marginLeft: '6px' }} />
+                        <FaPlus className="btn-icon" style={{ marginLeft: '6px' }} />
                         הוסף שאלה נפוצה
                       </button>
                     </div>
