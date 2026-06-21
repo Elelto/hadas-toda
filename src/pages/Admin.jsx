@@ -9,8 +9,9 @@ import { migrateDataToFirebase } from '../utils/migrateData';
 import { 
   FaChartBar, FaFileAlt, FaPenSquare, FaCog, FaSignOutAlt, 
   FaComments, FaRocket, FaTrash, FaEdit, FaPlus, 
-  FaSave, FaCamera, FaImage, FaTimes, FaUser 
+  FaSave, FaCamera, FaImage, FaTimes, FaUser, FaFilePdf 
 } from 'react-icons/fa';
+import { convertPdfToImage } from '../utils/pdfToImage';
 import '../styles/admin.css';
 
 const Admin = () => {
@@ -131,21 +132,40 @@ const Admin = () => {
   };
 
   // 3. Image Upload Utility
-  const handleImageUpload = async (e, onUrlObtained) => {
+  // 3. Image/Document Upload Utility
+  const handleImageUpload = async (e, onUrlObtained, allowPdfConversion = false) => {
     const file = e.target.files[0];
     if (!file) return;
 
     setLoading(true);
-    showMsg('מעלה תמונה...', 'success');
+    showMsg('מעלה קובץ...', 'success');
     try {
-      const fileRef = ref(storage, `uploads/${Date.now()}_${file.name}`);
-      const snapshot = await uploadBytes(fileRef, file);
-      const url = await getDownloadURL(snapshot.ref);
-      onUrlObtained(url);
-      showMsg('התמונה הועלתה בהצלחה!');
+      if (allowPdfConversion && file.type === 'application/pdf') {
+        showMsg('ממיר PDF לתמונה...', 'success');
+        
+        // Upload original PDF
+        const pdfRef = ref(storage, `uploads/${Date.now()}_${file.name}`);
+        const pdfSnap = await uploadBytes(pdfRef, file);
+        const documentUrl = await getDownloadURL(pdfSnap.ref);
+        
+        // Convert to JPG and upload
+        const jpgFile = await convertPdfToImage(file);
+        const jpgRef = ref(storage, `uploads/${Date.now()}_${jpgFile.name}`);
+        const jpgSnap = await uploadBytes(jpgRef, jpgFile);
+        const imageUrl = await getDownloadURL(jpgSnap.ref);
+        
+        onUrlObtained({ image: imageUrl, document: documentUrl });
+        showMsg('ה-PDF הועלה והומר לתמונה בהצלחה!');
+      } else {
+        const fileRef = ref(storage, `uploads/${Date.now()}_${file.name}`);
+        const snapshot = await uploadBytes(fileRef, file);
+        const url = await getDownloadURL(snapshot.ref);
+        onUrlObtained(allowPdfConversion ? { image: url } : url);
+        showMsg('הקובץ הועלה בהצלחה!');
+      }
     } catch (err) {
       console.error('Upload error:', err);
-      showMsg('שגיאה בהעלאת התמונה: ' + err.message, 'error');
+      showMsg('שגיאה בהעלאת הקובץ: ' + err.message, 'error');
     } finally {
       setLoading(false);
     }
@@ -569,31 +589,63 @@ const Admin = () => {
                           onChange={(e) => setPageData({ ...pageData, qualifications_title: e.target.value })}
                         />
                       </div>
-                      <label className="form-group-label">רשימת הכשרות (לחץ לעריכה/מחיקה)</label>
-                      {(pageData.qualifications || []).map((q, idx) => (
-                        <div key={idx} className="list-editor-item">
-                          <input 
-                            type="text" 
-                            className="login-input"
-                            value={q.item || ''}
-                            onChange={(e) => {
-                              const newQuals = [...pageData.qualifications];
-                              newQuals[idx] = { item: e.target.value };
-                              setPageData({ ...pageData, qualifications: newQuals });
-                            }}
-                          />
-                          <button 
-                            type="button" 
-                            className="btn-remove-item"
-                            onClick={() => {
-                              const newQuals = pageData.qualifications.filter((_, i) => i !== idx);
-                              setPageData({ ...pageData, qualifications: newQuals });
-                            }}
-                          >
-                            <FaTrash />
-                          </button>
-                        </div>
-                      ))}
+                      
+                      <div className="admin-items-grid">
+                        {(pageData.qualifications || []).map((q, idx) => (
+                          <div key={idx} className="admin-card-item">
+                            <div className="admin-card-header">
+                              <h4>הכשרה #{idx + 1}</h4>
+                              <button 
+                                type="button" 
+                                className="btn-remove-item"
+                                onClick={() => {
+                                  const newQuals = pageData.qualifications.filter((_, i) => i !== idx);
+                                  setPageData({ ...pageData, qualifications: newQuals });
+                                }}
+                              >
+                                <FaTrash />
+                              </button>
+                            </div>
+                            
+                            {q.image && (
+                              <div className="admin-card-image-preview">
+                                <img src={q.image} alt={q.item} />
+                                {q.document && <span className="pdf-badge"><FaFilePdf /> PDF מקושר</span>}
+                              </div>
+                            )}
+                            
+                            <div className="form-group">
+                              <label className="form-group-label">תיאור ההכשרה</label>
+                              <textarea 
+                                className="admin-textarea"
+                                rows="3"
+                                value={q.item || ''}
+                                onChange={(e) => {
+                                  const newQuals = [...pageData.qualifications];
+                                  newQuals[idx].item = e.target.value;
+                                  setPageData({ ...pageData, qualifications: newQuals });
+                                }}
+                              />
+                            </div>
+                            
+                            <div className="form-group">
+                              <label className="form-group-label">תעודה (תמונה או PDF)</label>
+                              <input 
+                                type="file" 
+                                accept="image/*,application/pdf"
+                                onChange={(e) => handleImageUpload(e, (result) => {
+                                  const newQuals = [...pageData.qualifications];
+                                  newQuals[idx].image = result.image;
+                                  if (result.document) newQuals[idx].document = result.document;
+                                  setPageData({ ...pageData, qualifications: newQuals });
+                                }, true)}
+                                className="file-input"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      
                       <button 
                         type="button" 
                         className="btn-add-item"
@@ -604,6 +656,99 @@ const Admin = () => {
                       >
                         <FaPlus className="btn-icon" style={{ marginLeft: '6px' }} />
                         הוסף הכשרה
+                      </button>
+
+                      <h3 style={{ marginTop: '3rem' }}>השתלמויות מקצועיות (קורסים)</h3>
+                      <div className="form-group">
+                        <label className="form-group-label">כותרת סקציית השתלמויות</label>
+                        <input 
+                          type="text" 
+                          className="login-input"
+                          value={pageData.courses_title || ''}
+                          onChange={(e) => setPageData({ ...pageData, courses_title: e.target.value })}
+                        />
+                      </div>
+                      
+                      <div className="admin-items-grid">
+                        {(pageData.courses || []).map((c, idx) => (
+                          <div key={idx} className="admin-card-item">
+                            <div className="admin-card-header">
+                              <h4>השתלמות #{idx + 1}</h4>
+                              <button 
+                                type="button" 
+                                className="btn-remove-item"
+                                onClick={() => {
+                                  const newCourses = pageData.courses.filter((_, i) => i !== idx);
+                                  setPageData({ ...pageData, courses: newCourses });
+                                }}
+                              >
+                                <FaTrash />
+                              </button>
+                            </div>
+                            
+                            {c.image && (
+                              <div className="admin-card-image-preview">
+                                <img src={c.image} alt={c.name} />
+                                {c.document && <span className="pdf-badge"><FaFilePdf /> PDF מקושר</span>}
+                              </div>
+                            )}
+                            
+                            <div className="form-group">
+                              <label className="form-group-label">שם ההשתלמות/קורס</label>
+                              <input 
+                                type="text"
+                                className="login-input"
+                                value={c.name || ''}
+                                onChange={(e) => {
+                                  const newCourses = [...pageData.courses];
+                                  newCourses[idx].name = e.target.value;
+                                  setPageData({ ...pageData, courses: newCourses });
+                                }}
+                              />
+                            </div>
+                            
+                            <div className="form-group">
+                              <label className="form-group-label">שם המרצה/מעביר הקורס</label>
+                              <input 
+                                type="text"
+                                className="login-input"
+                                value={c.instructor || ''}
+                                onChange={(e) => {
+                                  const newCourses = [...pageData.courses];
+                                  newCourses[idx].instructor = e.target.value;
+                                  setPageData({ ...pageData, courses: newCourses });
+                                }}
+                              />
+                            </div>
+                            
+                            <div className="form-group">
+                              <label className="form-group-label">תעודה (תמונה או PDF)</label>
+                              <input 
+                                type="file" 
+                                accept="image/*,application/pdf"
+                                onChange={(e) => handleImageUpload(e, (result) => {
+                                  const newCourses = [...pageData.courses];
+                                  newCourses[idx].image = result.image;
+                                  if (result.document) newCourses[idx].document = result.document;
+                                  setPageData({ ...pageData, courses: newCourses });
+                                }, true)}
+                                className="file-input"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <button 
+                        type="button" 
+                        className="btn-add-item"
+                        onClick={() => {
+                          const newCourses = [...(pageData.courses || []), { name: '', instructor: '' }];
+                          setPageData({ ...pageData, courses: newCourses });
+                        }}
+                      >
+                        <FaPlus className="btn-icon" style={{ marginLeft: '6px' }} />
+                        הוסף השתלמות
                       </button>
                     </div>
                   )}

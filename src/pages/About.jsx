@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { FaSearchPlus, FaFilePdf, FaTimes } from 'react-icons/fa';
 import { loadYamlContent } from '../utils/yamlLoader';
 import AOS from 'aos';
 import SEOHead from '../components/SEOHead';
@@ -52,6 +53,7 @@ export default function About() {
   const [aboutContent, setAboutContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [lightboxItem, setLightboxItem] = useState(null);
 
   // Load YAML content
   useEffect(() => {
@@ -79,9 +81,9 @@ export default function About() {
               title: content.qualifications_title || content.qualifications?.title || "הכשרה, ניסיון והתמחויות",
               items: (() => {
                 if (Array.isArray(content.qualifications)) {
-                  return content.qualifications.map(item => typeof item === 'string' ? item : item.item);
+                  return content.qualifications.map(item => typeof item === 'string' ? { item } : item);
                 } else if (content.qualifications && typeof content.qualifications === 'object') {
-                  return Object.values(content.qualifications).map(item => typeof item === 'string' ? item : item.item);
+                  return Object.values(content.qualifications).map(item => typeof item === 'string' ? { item } : item);
                 }
                 return [];
               })()
@@ -128,6 +130,16 @@ export default function About() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Keyboard navigation for lightbox
+  useEffect(() => {
+    if (!lightboxItem) return;
+    const handleKey = (e) => {
+      if (e.key === 'Escape') setLightboxItem(null);
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [lightboxItem]);
 
   if (loading) {
     return <div className="loading">טוען...</div>;
@@ -204,11 +216,31 @@ export default function About() {
       <section className="section-qualifications">
         <div className="container">
           <h2 className="section-title" data-aos="fade-left">{aboutContent.qualifications?.title || "הכשרה, ניסיון והתמחויות"}</h2>
-          <ul className="qualifications-list" data-aos="fade-up" data-aos-delay="400">
-            {aboutContent.qualifications?.items?.map((item, index) => (
-              <li key={index}>{item}</li>
+          <div className="cert-gallery qualifications-list" data-aos="fade-up" data-aos-delay="400">
+            {aboutContent.qualifications?.items?.map((q, index) => (
+              <div 
+                key={index} 
+                className={`cert-card ${q.image ? 'has-image' : 'text-only'}`}
+                onClick={() => q.image ? setLightboxItem(q) : null}
+                role={q.image ? 'button' : 'listitem'}
+                tabIndex={q.image ? 0 : undefined}
+                aria-label={q.image ? `הגדל תעודה: ${q.item}` : undefined}
+              >
+                {q.image && (
+                  <div className="cert-image-wrapper">
+                    <img src={q.image} alt={q.item} className="cert-image" loading="lazy" />
+                    <div className="cert-hover-overlay">
+                      <FaSearchPlus className="zoom-icon" />
+                      <span className="hover-text">לחץ להגדלה</span>
+                    </div>
+                  </div>
+                )}
+                <div className="cert-info">
+                  <p className="cert-title">{q.item}</p>
+                </div>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       </section>
 
@@ -217,18 +249,78 @@ export default function About() {
         <section className="section-courses">
           <div className="container">
             <h2 className="section-title" data-aos="fade-right">{aboutContent.courses_title || "השתלמויות מקצועיות"}</h2>
-            <ul className="courses-list" data-aos="fade-up" data-aos-delay="400">
+            <div className="cert-gallery courses-list" data-aos="fade-up" data-aos-delay="400">
               {aboutContent.courses.map((course, index) => (
-                <li key={index} className="course-item">
-                  <span className="course-name">{course.name}</span>
-                  {course.instructor && (
-                    <span className="course-instructor">{course.instructor}</span>
+                <div 
+                  key={index} 
+                  className={`cert-card ${course.image ? 'has-image' : 'text-only'}`}
+                  onClick={() => course.image ? setLightboxItem(course) : null}
+                  role={course.image ? 'button' : 'listitem'}
+                  tabIndex={course.image ? 0 : undefined}
+                  aria-label={course.image ? `הגדל תעודה: ${course.name}` : undefined}
+                >
+                  {course.image && (
+                    <div className="cert-image-wrapper">
+                      <img src={course.image} alt={course.name} className="cert-image" loading="lazy" />
+                      <div className="cert-hover-overlay">
+                        <FaSearchPlus className="zoom-icon" />
+                        <span className="hover-text">לחץ להגדלה</span>
+                      </div>
+                    </div>
                   )}
-                </li>
+                  <div className="cert-info">
+                    <p className="cert-title course-name">{course.name}</p>
+                    {course.instructor && (
+                      <span className="cert-subtitle course-instructor">{course.instructor}</span>
+                    )}
+                  </div>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
         </section>
+      )}
+
+      {/* Lightbox */}
+      {lightboxItem && (
+        <div 
+          className="rec-lightbox-overlay" 
+          onClick={() => setLightboxItem(null)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <button 
+            className="rec-lightbox-close" 
+            onClick={() => setLightboxItem(null)}
+            aria-label="סגור חלון"
+          >
+            <FaTimes />
+          </button>
+          
+          <div className="rec-lightbox-content cert-lightbox-content" onClick={(e) => e.stopPropagation()}>
+            <img 
+              src={lightboxItem.image} 
+              alt={lightboxItem.name || lightboxItem.item} 
+              className="rec-lightbox-img" 
+            />
+            
+            <div className="cert-lightbox-details">
+              <h3 className="cert-lightbox-title">{lightboxItem.name || lightboxItem.item}</h3>
+              {lightboxItem.instructor && <p className="cert-lightbox-subtitle">{lightboxItem.instructor}</p>}
+              
+              {lightboxItem.document && (
+                <a 
+                  href={lightboxItem.document} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="cert-lightbox-pdf-btn"
+                >
+                  <FaFilePdf /> צפייה במסמך המלא (PDF)
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
       )}
 
       <section className="about-quote">

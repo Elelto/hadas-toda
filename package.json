@@ -26,6 +26,7 @@
     "js-yaml": "^5.0.0",
     "markdown-it": "^14.2.0",
     "netlify-identity-widget": "^2.0.3",
+    "pdfjs-dist": "^6.0.227",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-helmet-async": "^3.0.0",

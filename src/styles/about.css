@@ -143,29 +143,167 @@
   border-bottom: 1px solid var(--border);
 }
 
-.qualifications-list {
-  list-style: none;
-  padding: 0;
+/* Certificate Gallery (Portfolio Grid) */
+.cert-gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
+  width: 100%;
 }
 
-.qualifications-list li {
+.cert-card {
   background: white;
-  padding: 1.5rem 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
   position: relative;
-  font-size: 1.1rem;
-  line-height: 1.6;
-  border-right: 4px solid var(--accent);
-  transition: transform 0.3s ease;
+  border: 1px solid #f1f5f9;
 }
 
-.qualifications-list li:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+.cert-card.has-image {
+  cursor: zoom-in;
+}
+
+.cert-card.text-only {
+  padding: 1.5rem;
+  border-right: 4px solid var(--accent);
+  justify-content: center;
+}
+
+.cert-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  border-color: var(--secondary);
+}
+
+.cert-image-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  background: #f8fafc;
+}
+
+.cert-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.cert-card:hover .cert-image {
+  transform: scale(1.05);
+}
+
+.cert-hover-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(2px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  color: white;
+  gap: 12px;
+}
+
+.cert-card:hover .cert-hover-overlay {
+  opacity: 1;
+}
+
+.zoom-icon {
+  font-size: 2rem;
+  color: white;
+}
+
+.hover-text {
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.cert-info {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.cert-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--text);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.cert-subtitle {
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+/* Lightbox Specifics for Certificates */
+.cert-lightbox-content {
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  max-width: 900px;
+  width: 95%;
+}
+
+.cert-lightbox-content .rec-lightbox-img {
+  max-height: 70vh;
+  object-fit: contain;
+  background: white;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.cert-lightbox-details {
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(8px);
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  text-align: center;
+  color: white;
+  width: 100%;
+  max-width: 600px;
+}
+
+.cert-lightbox-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.4rem;
+}
+
+.cert-lightbox-subtitle {
+  margin: 0 0 1.5rem 0;
+  color: #cbd5e1;
+}
+
+.cert-lightbox-pdf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ef4444;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.cert-lightbox-pdf-btn:hover {
+  background: #dc2626;
+  color: white;
 }
 
 /* Courses Section */
@@ -260,28 +398,34 @@
     column-count: 1;
   }
   
-  .qualifications-list,
-  .courses-list {
+  .cert-gallery {
     display: flex;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     gap: 16px;
-    max-width: 100%;
-    padding-bottom: 20px;
+    padding-bottom: 24px;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    overscroll-behavior-x: contain; /* Prevent pull-to-refresh on swipe */
+    padding-right: 16px; /* Offset for first item */
+    padding-left: 16px; /* Space for last item */
+    margin-right: -16px; /* Break container bounds */
+    margin-left: -16px;
+    width: calc(100% + 32px);
   }
   
-  .qualifications-list::-webkit-scrollbar,
-  .courses-list::-webkit-scrollbar {
+  .cert-gallery::-webkit-scrollbar {
     display: none;
   }
   
-  .qualifications-list li,
-  .course-item {
+  .cert-card {
     scroll-snap-align: center;
-    flex: 0 0 72%;
+    flex: 0 0 75%;
     max-width: 300px;
+  }
+
+  .cert-hover-overlay {
+    display: none; /* No hover overlay on mobile */
   }
   
   .section-bio,
@@ -337,5 +481,11 @@
   
   .course-item:hover {
     transform: none;
+  }
+  
+  /* Disable hover effects on mobile */
+  .cert-card:hover {
+    transform: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
   }
 }
