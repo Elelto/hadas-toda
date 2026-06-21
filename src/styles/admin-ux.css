@@ -7,6 +7,12 @@
   padding-bottom: 8rem !important;
 }
 
+@media (max-width: 768px) {
+  .admin-main-content {
+    padding-bottom: 12rem !important;
+  }
+}
+
 /* Move accessibility widget above the sticky action bar */
 .accessibility-widget {
   bottom: 100px !important;
@@ -14,7 +20,7 @@
 
 @media (max-width: 768px) {
   .accessibility-widget {
-    bottom: 160px !important;
+    bottom: 230px !important;
   }
 }
 
@@ -33,7 +39,7 @@
   -webkit-backdrop-filter: blur(16px);
   border-top: 1px solid rgba(185, 123, 160, 0.15);
   box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.05);
-  z-index: 50;
+  z-index: 40; /* Lower than sidebar which is 50 */
 }
 
 @media (max-width: 768px) {
@@ -42,7 +48,9 @@
     gap: 0.8rem;
     right: 0;
     left: 0;
+    bottom: 72px; /* Push above the mobile bottom nav bar */
     padding: 1.2rem;
+    box-shadow: 0 -15px 30px rgba(0, 0, 0, 0.08); /* Stronger shadow on mobile to detach from nav */
   }
   
   .sticky-action-bar .btn-save, 
