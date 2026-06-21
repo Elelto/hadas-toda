@@ -7,6 +7,7 @@ import ScrollToTop from './components/ScrollToTop';
 import SiteNotice from './components/SiteNotice';
 import { Suspense, lazy } from 'react';
 import Home from './pages/Home';
+import SkeletonLoader from './components/SkeletonLoader';
 
 const About = lazy(() => import('./pages/About'));
 const Services = lazy(() => import('./pages/Services'));
