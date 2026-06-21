@@ -107,7 +107,9 @@ export default function Header() {
 
       {/* Mobile Navigation */}
       {isMenuOpen && (
-        <div className="mobile-nav">
+        <>
+          <div className="mobile-nav-backdrop" onClick={() => setIsMenuOpen(false)} aria-hidden="true"></div>
+          <div className="mobile-nav">
           {navItems.map((item) => (
             <Link
               key={item.path}
@@ -120,7 +122,8 @@ export default function Header() {
               {item.isNew && <span className="new-badge">חדש!</span>}
             </Link>
           ))}
-        </div>
+          </div>
+        </>
       )}
     </header>
   );

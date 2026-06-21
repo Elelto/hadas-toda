@@ -20,6 +20,7 @@ const AIAssessmentPage = lazy(() => import('./pages/AIAssessment'));
 const BneiBrak = lazy(() => import('./pages/BneiBrak'));
 const OnlineTherapy = lazy(() => import('./pages/OnlineTherapy'));
 import AccessibilityWidget from './components/AccessibilityWidget';
+import FloatingWhatsApp from './components/FloatingWhatsApp';
 import './styles/global.css';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -67,6 +68,7 @@ function App() {
         <ScrollToTop />
         <SiteNotice />
         <AccessibilityWidget />
+        <FloatingWhatsApp />
         <div className="app-container">
           <Header />
           <main>

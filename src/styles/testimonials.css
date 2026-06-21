@@ -79,9 +79,23 @@
 
 @media (max-width: 639px) {
   .testimonials-gallery {
-    grid-template-columns: 1fr;
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
     gap: 16px;
-    max-width: 420px;
+    max-width: 100%;
+    padding: 0 1rem 20px; /* Space for scrollbar if visible */
+    /* Hide scrollbar for a native app feel */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .testimonials-gallery::-webkit-scrollbar {
+    display: none;
+  }
+  .testimonials-gallery > * {
+    scroll-snap-align: center;
+    flex: 0 0 85%;
+    max-width: 320px;
   }
 }
 

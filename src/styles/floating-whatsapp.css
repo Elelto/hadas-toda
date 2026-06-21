@@ -1,0 +1,45 @@
+/* Floating WhatsApp Button - Mobile Only */
+.floating-whatsapp {
+  display: none; /* Hidden by default on desktop */
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background-color: #25D366; /* WhatsApp green */
+  color: white;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  align-items: center;
+  justify-content: center;
+  z-index: 999; /* Ensure it's on top of other content */
+  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+  text-decoration: none;
+}
+
+.floating-whatsapp:hover,
+.floating-whatsapp:focus-visible {
+  background-color: #128C7E;
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  outline: none;
+}
+
+.floating-whatsapp:focus-visible {
+  outline: 3px solid var(--primary, #c891ac);
+  outline-offset: 2px;
+}
+
+.floating-whatsapp-icon {
+  font-size: 32px;
+}
+
+/* Show only on mobile devices */
+@media (max-width: 768px) {
+  .floating-whatsapp {
+    display: flex;
+  }
+}
+
+/* Ensure it doesn't overlap the footer on small screens by pushing the footer content up or adjusting z-index */
+/* Actually, standard practice is to let it hover over the footer, but we'll make sure the footer padding is enough */
