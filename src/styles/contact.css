@@ -280,7 +280,7 @@
 .card-label {
   display: block;
   font-size: 0.9rem;
-  color: #888;
+  color: #4a5568;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -446,8 +446,9 @@
 .form-group-bento textarea:focus {
   background: white;
   border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(var(--primary-rgb, 185, 123, 160), 0.1);
-  outline: none;
+  box-shadow: 0 0 0 4px rgba(var(--primary-rgb, 185, 123, 160), 0.2);
+  outline: 3px solid var(--primary);
+  outline-offset: -1px;
 }
 
 .bento-submit-btn {
@@ -471,6 +472,11 @@
   background: var(--primary);
   transform: translateY(-2px);
   box-shadow: 0 10px 20px rgba(var(--primary-rgb, 185, 123, 160), 0.3);
+}
+
+.bento-submit-btn:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 4px;
 }
 
 .btn-icon {
@@ -598,7 +604,7 @@
 .social-label {
   display: block;
   font-weight: 600;
-  color: #888;
+  color: #4a5568;
   margin-bottom: 1rem;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -673,6 +679,13 @@
   cursor: pointer;
   font-weight: 600;
   color: var(--dark);
+  min-height: 44px;
+}
+
+.faq-head:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: -3px;
+  border-radius: 12px;
 }
 
 .toggle-icon {
@@ -705,4 +718,30 @@
 .organic-faq-item.active .faq-body {
   max-height: 200px;
   padding-bottom: 1.5rem;
+}
+
+/* Accessibility: Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .bento-card:hover {
+    transform: none;
+  }
+  
+  .bento-card:hover .pop-out-icon {
+    transform: none;
+  }
+  
+  .pop-out-icon {
+    transform: none !important;
+  }
+  
+  .sound-wave-animation {
+    display: none;
+  }
 }

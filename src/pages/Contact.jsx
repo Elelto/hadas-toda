@@ -472,11 +472,11 @@ export default function Contact() {
               <div className="social-content">
                 <span className="social-label">עקבו אחרי</span>
                 <div className="social-icons-wrapper">
-                  <a href={contactContent.contact_info?.social?.facebook || "https://www.facebook.com/profile.php?id=61566802899787"} target="_blank" rel="noopener noreferrer" className="social-btn facebook">
-                    <FaFacebookF />
+                  <a href={contactContent.contact_info?.social?.facebook || "https://www.facebook.com/profile.php?id=61566802899787"} target="_blank" rel="noopener noreferrer" className="social-btn facebook" aria-label="עמוד הפייסבוק של הדס תודה">
+                    <FaFacebookF aria-hidden="true" />
                   </a>
-                  <a href={contactContent.contact_info?.social?.instagram || "https://www.instagram.com/hadas_toda/"} target="_blank" rel="noopener noreferrer" className="social-btn instagram">
-                    <FaInstagram />
+                  <a href={contactContent.contact_info?.social?.instagram || "https://www.instagram.com/hadas_toda/"} target="_blank" rel="noopener noreferrer" className="social-btn instagram" aria-label="עמוד האינסטגרם של הדס תודה">
+                    <FaInstagram aria-hidden="true" />
                   </a>
                 </div>
               </div>
@@ -490,10 +490,17 @@ export default function Contact() {
           <h2 className="organic-section-title text-center">{contactContent.faq_title || contactContent.faq?.title || "שאלות נפוצות"}</h2>
           <div className="organic-faq-grid">
             {(contactContent.faq_items || contactContent.faq?.items)?.map((faqItem, index) => (
-              <div key={index} className={`organic-faq-item ${openFaq === index ? 'active' : ''}`} onClick={() => toggleFaq(index)}>
-                <div className="faq-head">
+              <div key={index} className={`organic-faq-item ${openFaq === index ? 'active' : ''}`}>
+                <div 
+                  className="faq-head" 
+                  onClick={() => toggleFaq(index)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleFaq(index); } }}
+                  tabIndex={0}
+                  role="button"
+                  aria-expanded={openFaq === index}
+                >
                   <span className="question-text">{faqItem.question}</span>
-                  <span className="toggle-icon">{openFaq === index ? '−' : '+'}</span>
+                  <span className="toggle-icon" aria-hidden="true">{openFaq === index ? '−' : '+'}</span>
                 </div>
                 <div className="faq-body">
                   <p>{faqItem.answer}</p>
