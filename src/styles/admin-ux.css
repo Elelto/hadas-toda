@@ -7,6 +7,17 @@
   padding-bottom: 8rem !important;
 }
 
+/* Move accessibility widget above the sticky action bar */
+.accessibility-widget {
+  bottom: 100px !important;
+}
+
+@media (max-width: 768px) {
+  .accessibility-widget {
+    bottom: 160px !important;
+  }
+}
+
 /* 1. Sticky Action Bar for Form Buttons */
 .sticky-action-bar {
   display: flex;
