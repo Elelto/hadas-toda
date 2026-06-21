@@ -202,12 +202,23 @@ export default function About() {
       <section className="section-bio">
         <div className="container">
           <h2 className="section-title" data-aos="fade-right">{aboutContent.content?.title || "מסע אל הקול הפנימי והחיצוני"}</h2>
-          <div className="bio-content">
-            {aboutContent.content?.paragraphs?.map((paragraph, index) => (
-              <p key={index} className={`about-text ${index === aboutContent.content.paragraphs.length - 1 ? 'highlight' : ''}`} data-aos="fade-up" data-aos-delay={200 + (index * 100)}>
-                {paragraph}
-              </p>
-            ))}
+          <div className="bio-container">
+            <div className="bio-image-wrapper" data-aos="fade-left">
+              {/* Fallback to Unsplash placeholder if local image is missing */}
+              <img 
+                src="/images/hadas-profile.webp" 
+                alt="הדס תודה - קלינאית תקשורת" 
+                className="bio-profile-image" 
+                onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop'; }} 
+              />
+            </div>
+            <div className="bio-content">
+              {aboutContent.content?.paragraphs?.map((paragraph, index) => (
+                <p key={index} className={`about-text ${index === aboutContent.content.paragraphs.length - 1 ? 'highlight' : ''}`} data-aos="fade-up" data-aos-delay={200 + (index * 100)}>
+                  {paragraph}
+                </p>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -216,17 +227,32 @@ export default function About() {
       <section className="section-qualifications">
         <div className="container">
           <h2 className="section-title" data-aos="fade-left">{aboutContent.qualifications?.title || "הכשרה, ניסיון והתמחויות"}</h2>
-          <div className="cert-gallery qualifications-list" data-aos="fade-up" data-aos-delay="400">
-            {aboutContent.qualifications?.items?.map((q, index) => (
-              <div 
-                key={index} 
-                className={`cert-card ${q.image ? 'has-image' : 'text-only'}`}
-                onClick={() => q.image ? setLightboxItem(q) : null}
-                role={q.image ? 'button' : 'listitem'}
-                tabIndex={q.image ? 0 : undefined}
-                aria-label={q.image ? `הגדל תעודה: ${q.item}` : undefined}
-              >
-                {q.image && (
+          
+          {/* Text items as a Timeline */}
+          <div className="qualifications-timeline" data-aos="fade-up" data-aos-delay="200">
+            {aboutContent.qualifications?.items?.filter(q => !q.image).map((q, index) => (
+              <div key={index} className="timeline-item">
+                <div className="timeline-dot"></div>
+                <div className="timeline-content">
+                  <p>{q.item}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Certificate Images Grid (if any exist) */}
+          {aboutContent.qualifications?.items?.filter(q => q.image).length > 0 && (
+            <div className="cert-gallery qualifications-list" data-aos="fade-up" data-aos-delay="400">
+              {aboutContent.qualifications.items.filter(q => q.image).map((q, index) => (
+                <div 
+                  key={index} 
+                  className={`cert-card has-image`}
+                  onClick={() => setLightboxItem(q)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLightboxItem(q); } }}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`הגדל תעודה: ${q.item}`}
+                >
                   <div className="cert-image-wrapper">
                     <img src={q.image} alt={q.item} className="cert-image" loading="lazy" />
                     <div className="cert-hover-overlay">
@@ -234,13 +260,13 @@ export default function About() {
                       <span className="hover-text">לחץ להגדלה</span>
                     </div>
                   </div>
-                )}
-                <div className="cert-info">
-                  <p className="cert-title">{q.item}</p>
+                  <div className="cert-info">
+                    <p className="cert-title">{q.item}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -255,6 +281,7 @@ export default function About() {
                   key={index} 
                   className={`cert-card ${course.image ? 'has-image' : 'text-only'}`}
                   onClick={() => course.image ? setLightboxItem(course) : null}
+                  onKeyDown={(e) => { if (course.image && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); setLightboxItem(course); } }}
                   role={course.image ? 'button' : 'listitem'}
                   tabIndex={course.image ? 0 : undefined}
                   aria-label={course.image ? `הגדל תעודה: ${course.name}` : undefined}
@@ -325,9 +352,18 @@ export default function About() {
 
       <section className="about-quote">
         <div className="container">
-          <div className="quote">
-            "{aboutContent.quote?.text || "הקול שלנו הוא הגשר בין עולמנו הפנימי לעולם החיצוני. אני כאן כדי לעזור לכם לבנות גשר חזק, יציב וצלול."}"
-            <div className="quote-author">- {aboutContent.quote?.author || "הדס תודה"}</div>
+          <div className="quote-card" data-aos="fade-up">
+            <div className="quote-watermark" aria-hidden="true">"</div>
+            <div className="quote-content">
+              <p className="quote-text">
+                {aboutContent.quote?.text || "הקול שלנו הוא הגשר בין עולמנו הפנימי לעולם החיצון. אני כאן כדי לעזור לכם לבנות גשר חזק, יציב וצלול."}
+              </p>
+              <div className="quote-divider"></div>
+              <div className="quote-author-wrapper">
+                <span className="quote-author-name">{aboutContent.quote?.author || "הדס תודה"}</span>
+                <span className="quote-author-title">קלינאית תקשורת (M.A)</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
