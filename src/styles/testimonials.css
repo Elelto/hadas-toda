@@ -10,8 +10,8 @@
 
 /* Hero Section */
 .testimonials-hero {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  padding: 6rem 0 4rem;
+  background: #fdfdfd;
+  padding: 8rem 0 5rem;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -28,30 +28,18 @@
   z-index: 1;
 }
 
-.testimonials-hero:after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: radial-gradient(#2a9d8f 1px, transparent 1px);
-  background-size: 30px 30px;
-  opacity: 0.1;
-  z-index: 0;
-}
-
 .testimonials-title {
-  font-size: 3rem;
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
   color: var(--primary-dark);
-  font-weight: 700;
-  margin-bottom: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  margin-bottom: 1.5rem;
   position: relative;
   z-index: 2;
 }
 
 .section-subtitle {
-  font-size: 1.25rem;
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
   color: var(--gray-dark);
   max-width: 700px;
   margin: 0 auto;
@@ -165,4 +153,19 @@
     width: 100%;
     height: 6px;
   }
+}
+
+/* Accessibility: Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  [data-aos] {
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+
+/* Focus state for CTA */
+.share-content .btn-primary:focus-visible {
+  outline: 4px solid var(--primary);
+  outline-offset: 4px;
 }

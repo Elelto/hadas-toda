@@ -563,6 +563,11 @@
   transform: scale(1.1);
 }
 
+.rec-lightbox-close:focus-visible {
+  outline: 3px solid var(--primary, #c891ac);
+  outline-offset: 2px;
+}
+
 /* Navigation arrows */
 .rec-lightbox-nav {
   position: absolute;
@@ -592,6 +597,11 @@
 .rec-lightbox-nav:hover {
   background: rgba(255, 255, 255, 0.28);
   transform: translateY(-50%) scale(1.1);
+}
+
+.rec-lightbox-nav:focus-visible {
+  outline: 3px solid var(--primary, #c891ac);
+  outline-offset: 2px;
 }
 
 /* Counter badge */
