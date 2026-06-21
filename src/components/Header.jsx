@@ -57,65 +57,6 @@ export default function Header() {
         }
       } catch (error) {
         console.warn('Could not load header content, using defaults');
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { loadYamlContent } from '../utils/yamlLoader';
-import logo from '../assets/logo.png';
-import '../styles/header.css';
-
-// Default navigation items
-const getDefaultNavItems = () => [
-  { path: '/', label: 'ראשי' },
-  { path: '/services', label: 'תחומי טיפול' },
-
-  { path: '/about', label: 'קצת עליי' },
-  { path: '/blog', label: 'בלוג מקצועי' },
-  { path: '/testimonials', label: 'מטופלים מספרים' },
-  { path: '/online-therapy', label: 'טיפול אונליין' },
-  { path: '/contact', label: 'דברו איתי' }
-];
-
-export default function Header() {
-  const location = useLocation();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [headerContent, setHeaderContent] = useState(null);
-  const [navItems, setNavItems] = useState(getDefaultNavItems());
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
-  // Load header content from YAML
-  useEffect(() => {
-    const loadContent = async () => {
-      try {
-        const content = await loadYamlContent('/content/components/header.yml');
-        if (content) {
-          setHeaderContent(content);
-          if (content.navigation?.items) {
-            // Filter out 'ai-assessment' if it comes from YAML
-            const filteredItems = content.navigation.items.filter(item => item.path !== '/ai-assessment');
-            setNavItems(filteredItems);
-          }
-        }
-      } catch (error) {
-        console.warn('Could not load header content, using defaults');
       }
     };
 
