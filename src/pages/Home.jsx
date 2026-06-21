@@ -602,7 +602,14 @@ export default function Home() {
                 <div key={post.id || post.slug} className="blog-card-modern glass-card" data-aos="fade-up" data-aos-delay={index * 100} data-aos-anchor=".home-blog-modern" data-aos-offset="0">
                   <div className="blog-card-image">
                     {post.image ? (
-                      <img src={post.image} alt={post.title} className="blog-image-real" />
+                      <img 
+                        src={post.image} 
+                        alt={post.title} 
+                        className="blog-image-real"
+                        loading="lazy"
+                        decoding="async"
+                        style={{ aspectRatio: '16/9', objectFit: 'cover' }} 
+                      />
                     ) : (
                       <div className={`blog-image-placeholder cat-${post.categories[0] || 'default'}`}></div>
                     )}

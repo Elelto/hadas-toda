@@ -5,17 +5,19 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import SiteNotice from './components/SiteNotice';
+import { Suspense, lazy } from 'react';
 import Home from './pages/Home';
-import About from './pages/About';
-import Services from './pages/Services';
-import Testimonials from './pages/Testimonials';
-import Contact from './pages/Contact';
-import Blog from './pages/Blog';
-import BlogPost from './pages/BlogPost';
-import Admin from './pages/Admin';
-import AIAssessmentPage from './pages/AIAssessment';
-import BneiBrak from './pages/BneiBrak';
-import OnlineTherapy from './pages/OnlineTherapy';
+
+const About = lazy(() => import('./pages/About'));
+const Services = lazy(() => import('./pages/Services'));
+const Testimonials = lazy(() => import('./pages/Testimonials'));
+const Contact = lazy(() => import('./pages/Contact'));
+const Blog = lazy(() => import('./pages/Blog'));
+const BlogPost = lazy(() => import('./pages/BlogPost'));
+const Admin = lazy(() => import('./pages/Admin'));
+const AIAssessmentPage = lazy(() => import('./pages/AIAssessment'));
+const BneiBrak = lazy(() => import('./pages/BneiBrak'));
+const OnlineTherapy = lazy(() => import('./pages/OnlineTherapy'));
 import AccessibilityWidget from './components/AccessibilityWidget';
 import './styles/global.css';
 import AOS from 'aos';
@@ -67,22 +69,24 @@ function App() {
         <div className="app-container">
           <Header />
           <main>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/:slug" element={<BlogPost />} />
-              <Route path="/testimonials" element={<Testimonials />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/bnei-brak" element={<BneiBrak />} />
-              <Route path="/online-therapy" element={<OnlineTherapy />} />
-              <Route path="/ai-assessment" element={<AIAssessmentPage />} />
-              <Route path="/dashboard" element={<Admin />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/admin/*" element={<Admin />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
+            <Suspense fallback={<div className="loading-screen" style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>טוען תוכן...</div>}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:slug" element={<BlogPost />} />
+                <Route path="/testimonials" element={<Testimonials />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/bnei-brak" element={<BneiBrak />} />
+                <Route path="/online-therapy" element={<OnlineTherapy />} />
+                <Route path="/ai-assessment" element={<AIAssessmentPage />} />
+                <Route path="/dashboard" element={<Admin />} />
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/admin/*" element={<Admin />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </Suspense>
           </main>
           <Footer />
         </div>

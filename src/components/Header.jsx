@@ -72,6 +72,7 @@ export default function Header() {
             src={logo}
             alt="הדס תודה לוגו"
             className={`logo ${scrolled ? 'scrolled' : ''}`}
+            fetchpriority="high"
           />
           <div className="logo-text">
             <h1 className={`site-title ${scrolled ? 'scrolled' : ''}`}>{headerContent?.site?.title || "הדס תודה"}</h1>
