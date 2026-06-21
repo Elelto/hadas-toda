@@ -91,6 +91,11 @@
   border-color: var(--primary);
 }
 
+.filter-btn:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
 /* עיצוב רשימת המאמרים */
 .blog-posts-grid {
   display: grid;
@@ -197,7 +202,7 @@
 
 .blog-card-date {
   font-size: 0.85rem;
-  color: #777;
+  color: var(--dark-light);
   margin-bottom: 10px;
 }
 
@@ -231,6 +236,12 @@
   width: 100%;
   right: auto;
   left: 0;
+}
+
+.blog-read-more:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 4px;
+  border-radius: 2px;
 }
 
 .no-posts-message {
@@ -313,8 +324,8 @@
 .blog-post-content {
   max-width: 800px;
   margin: 0 auto 50px;
-  line-height: 1.8;
-  font-size: 1.1rem;
+  line-height: 1.6;
+  font-size: 1.15rem;
   color: var(--text-color);
 }
 
@@ -677,5 +688,31 @@
 
   .blog-post-content table {
     min-width: 600px;
+  }
+}
+
+/* Accessibility: Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .blog-card:hover {
+    transform: none;
+  }
+  
+  .blog-card:hover .blog-card-image img {
+    transform: none;
+  }
+  
+  .related-post-card:hover {
+    transform: none;
+  }
+  
+  .related-post-card:hover .related-post-image img {
+    transform: none;
   }
 }

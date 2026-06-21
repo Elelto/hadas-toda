@@ -116,6 +116,7 @@ export default function Blog() {
                   key={category.id}
                   className={`filter-btn ${filter === category.id ? 'active' : ''}`}
                   onClick={() => setFilter(category.id)}
+                  aria-pressed={filter === category.id}
                 >
                   {category.label}
                 </button>
@@ -140,7 +141,11 @@ export default function Blog() {
                     <h3 className="blog-card-title">{post.title}</h3>
                     <p className="blog-card-date">{post.date}</p>
                     <p className="blog-card-excerpt">{post.excerpt}</p>
-                    <Link to={`/blog/${post.slug}`} className="blog-read-more">
+                    <Link 
+                      to={`/blog/${post.slug}`} 
+                      className="blog-read-more"
+                      aria-label={`המשך קריאה על: ${post.title}`}
+                    >
                       המשך קריאה
                     </Link>
                   </div>
