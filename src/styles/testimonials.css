@@ -94,8 +94,8 @@
   }
   .testimonials-gallery > * {
     scroll-snap-align: center;
-    flex: 0 0 85%;
-    max-width: 320px;
+    flex: 0 0 72%;
+    max-width: 300px;
   }
 }
 
