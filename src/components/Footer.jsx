@@ -74,13 +74,13 @@ export default function Footer() {
               טיפול בשפה, דיבור, קול וגמגום.
             </p>
             <div className="social-icons">
-              <a href={buildWhatsAppUrl(WHATSAPP_PHONE)} target="_blank" rel="noopener noreferrer" className="social-icon whatsapp">
+              <a href={buildWhatsAppUrl(WHATSAPP_PHONE)} target="_blank" rel="noopener noreferrer" className="social-icon whatsapp" aria-label="שלחו הודעה בוואטסאפ">
                 <FaWhatsapp />
               </a>
-              <a href="#" className="social-icon facebook">
+              <a href="#" className="social-icon facebook" aria-label="בקרו בעמוד הפייסבוק שלנו">
                 <FaFacebook />
               </a>
-              <a href="#" className="social-icon instagram">
+              <a href="#" className="social-icon instagram" aria-label="בקרו בעמוד האינסטגרם שלנו">
                 <FaInstagram />
               </a>
             </div>

@@ -67,7 +67,7 @@ export default function Header() {
     <header className={`site-header ${scrolled ? 'scrolled' : ''}`}>
       <div className="container header-container">
         {/* Logo */}
-        <Link to="/" className="logo-container">
+        <Link to="/" className="logo-container" aria-label="הדס תודה - מעבר לדף הבית">
           <img
             src={logo}
             alt="הדס תודה לוגו"
@@ -96,6 +96,7 @@ export default function Header() {
               key={item.path}
               to={item.path}
               className={`nav-link ${location.pathname === item.path ? 'active' : ''} ${item.isNew ? 'new-feature' : ''}`}
+              aria-current={location.pathname === item.path ? 'page' : undefined}
             >
               {item.label}
               {item.isNew && <span className="new-badge">חדש!</span>}
@@ -113,6 +114,7 @@ export default function Header() {
               to={item.path}
               className={`mobile-nav-link ${location.pathname === item.path ? 'active' : ''} ${item.isNew ? 'new-feature' : ''}`}
               onClick={() => setIsMenuOpen(false)}
+              aria-current={location.pathname === item.path ? 'page' : undefined}
             >
               {item.label}
               {item.isNew && <span className="new-badge">חדש!</span>}

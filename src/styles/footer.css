@@ -129,6 +129,11 @@
   color: #fff;
 }
 
+.social-icon:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
 /* Links List */
 .footer-links-list {
   list-style: none;
@@ -153,6 +158,12 @@
   transform: translateX(-3px);
 }
 
+.footer-link:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
 /* Contact Column */
 .contact-items {
   display: flex;
@@ -173,6 +184,12 @@
 
 .contact-item:hover {
   color: var(--primary);
+}
+
+.contact-item:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+  border-radius: 4px;
 }
 
 .icon-box {
