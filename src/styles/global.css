@@ -38,6 +38,11 @@ img {
 
 /* Removed content-visibility: auto as it causes scroll jumping on iOS */
 
+/* Prevent iOS Safari auto-zoom on focus */
+input, textarea, select {
+  font-size: 16px !important;
+}
+
 
 :root {
   /* Color Palette */
@@ -173,9 +178,11 @@ a:focus {
   outline-offset: 2px;
 }
 
-a:hover {
-  color: var(--primary-dark);
-  text-decoration: underline;
+@media (hover: hover) and (pointer: fine) {
+  a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+  }
 }
 
 .contaimg {
@@ -208,7 +215,7 @@ section {
 .app-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 main {
@@ -267,14 +274,16 @@ main {
   z-index: -1;
 }
 
-.btn:hover {
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-strong);
-}
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover {
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-strong);
+  }
 
-.btn:hover::before {
-  width: 100%;
+  .btn:hover::before {
+    width: 100%;
+  }
 }
 
 .btn:active {
@@ -298,12 +307,14 @@ main {
   }
 }
 
-.btn-secondary:hover,
-.btn-secondary:focus {
-  background: var(--gradient-secondary);
-  color: white;
-  border-color: var(--secondary-dark);
-  box-shadow: var(--shadow-strong);
+@media (hover: hover) and (pointer: fine) {
+  .btn-secondary:hover,
+  .btn-secondary:focus {
+    background: var(--gradient-secondary);
+    color: white;
+    border-color: var(--secondary-dark);
+    box-shadow: var(--shadow-strong);
+  }
 }
 
 .card {
@@ -335,10 +346,12 @@ main {
   opacity: 0.7;
 }
 
-.card:hover {
-  transform: translateY(-7px);
-  box-shadow: var(--shadow-strong);
-  border-top: 4px solid var(--accent);
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    transform: translateY(-7px);
+    box-shadow: var(--shadow-strong);
+    border-top: 4px solid var(--accent);
+  }
 }
 
 /* Section styling */

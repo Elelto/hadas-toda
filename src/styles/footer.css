@@ -109,8 +109,8 @@
 }
 
 .social-icon {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: #f0f0f0;
   display: flex;
@@ -123,10 +123,12 @@
   text-decoration: none;
 }
 
-.social-icon:hover {
-  transform: translateY(-2px);
-  background: var(--primary);
-  color: #fff;
+@media (hover: hover) and (pointer: fine) {
+  .social-icon:hover {
+    transform: translateY(-2px);
+    background: var(--primary);
+    color: #fff;
+  }
 }
 
 .social-icon:focus-visible {
@@ -153,10 +155,12 @@
   display: inline-block;
 }
 
-.footer-link:hover {
-  color: var(--primary);
-  transform: translateX(-3px);
-  text-decoration: none;
+@media (hover: hover) and (pointer: fine) {
+  .footer-link:hover {
+    color: var(--primary);
+    transform: translateX(-3px);
+    text-decoration: none;
+  }
 }
 
 .footer-link:focus-visible {
@@ -183,8 +187,10 @@
   transition: all 0.2s ease;
 }
 
-.contact-item:hover {
-  color: var(--primary);
+@media (hover: hover) and (pointer: fine) {
+  .contact-item:hover {
+    color: var(--primary);
+  }
 }
 
 .contact-item:focus-visible {
@@ -209,9 +215,11 @@
   transition: all 0.2s ease;
 }
 
-.contact-item:hover .icon-box {
-  border-color: var(--primary);
-  background: rgba(185, 123, 160, 0.05);
+@media (hover: hover) and (pointer: fine) {
+  .contact-item:hover .icon-box {
+    border-color: var(--primary);
+    background: rgba(185, 123, 160, 0.05);
+  }
 }
 
 /* Footer Bottom */
