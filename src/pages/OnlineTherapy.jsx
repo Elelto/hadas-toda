@@ -329,7 +329,7 @@ const OnlineTherapy = () => {
                                 </div>
                                 <div className="stat-box glass-card" style={{ bottom: '20%', left: '-10px' }}>
                                     <span className="stat-number">100%</span>
-                                    <span className="stat-label">היברדי</span>
+                                    <span className="stat-label">היברידי</span>
                                 </div>
                             </div>
                         </div>
@@ -461,12 +461,13 @@ const OnlineTherapy = () => {
                                     </button>
                                     <div
                                         id={`faq-answer-${index}`}
-                                        className="faq-answer"
-                                        style={{ maxHeight: activeAccordion === index ? '200px' : '0' }}
+                                        className={`faq-answer ${activeAccordion === index ? 'active' : ''}`}
                                         role="region"
                                         aria-labelledby={`faq-button-${index}`}
                                     >
-                                        <p>{faq.answer}</p>
+                                        <div className="faq-answer-inner">
+                                            <p>{faq.answer}</p>
+                                        </div>
                                     </div>
                                 </div>
                             ))}
@@ -569,7 +570,7 @@ const OnlineTherapy = () => {
                                         </div>
 
                                         <button type="submit" className={`bento-submit-btn ${loading ? 'loading' : ''}`} disabled={loading}>
-                                            {loading ? 'שולח...' : 'שליחה'}
+                                            {loading ? 'שולח...' : 'שלחו ונתאם שיחה'}
                                             <FaArrowLeft className="btn-icon" />
                                         </button>
 
@@ -612,7 +613,7 @@ const OnlineTherapy = () => {
                                     </div>
                                     <div className="bento-card-content">
                                         <span className="card-label">מייל</span>
-                                        <span className="card-value">Send Email</span>
+                                        <span className="card-value">כתובת מייל</span>
                                         <span className="card-action">כתוב לי</span>
                                     </div>
                                 </a>

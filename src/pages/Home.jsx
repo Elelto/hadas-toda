@@ -262,14 +262,14 @@ export default function Home() {
               <div className="hero-badge-container">
                 <span className="bb-badge">קלינאית תקשורת מוסמכת</span>
               </div>
-              <h1>{homeContent?.hero?.title || 'הדס תודה'} <span className="text-highlight">M.A</span></h1>
-              <p className="bb-subtitle">{homeContent?.hero?.subtitle || 'מומחית לשפה, דיבור וקול'}</p>
+              <h1>{homeContent?.hero?.title || 'המסע לתקשורת בטוחה מתחיל כאן'}</h1>
+              <p className="bb-subtitle">{homeContent?.hero?.subtitle || 'הדס תודה - קלינאית תקשורת מוסמכת M.A'}</p>
               <p className="bb-description">
                 {homeContent?.hero?.description}
               </p>
               <div className="bb-actions">
                 <Link to="/contact" className="bb-btn btn-soft-glow btn-soft-glow-primary">
-                  {homeContent?.hero?.cta_text || 'קביעת פגישת ייעוץ'}
+                  {homeContent?.hero?.cta_text || 'לתיאום פגישת היכרות'}
                 </Link>
               </div>
             </div>
@@ -277,18 +277,7 @@ export default function Home() {
             <div className="bb-hero-shape" data-aos="fade-left" data-aos-delay="200">
               <div className="shape-circle home-shape-bg"></div>
               <div className="shape-content">
-                <div className="stat-box glass-card">
-                  <span className="stat-number">{experienceYearsLabel}</span>
-                  <span className="stat-label">שנות ניסיון</span>
-                </div>
-                <div className="stat-box glass-card">
-                  <span className="stat-number">{patientsCountLabel}</span>
-                  <span className="stat-label">מטופלים מרוצים</span>
-                </div>
-                <div className="stat-box glass-card">
-                  <span className="stat-number">M.A</span>
-                  <span className="stat-label">תואר שני</span>
-                </div>
+                {/* Stats removed from here and moved to social proof bar below */}
               </div>
             </div>
           </div>
@@ -299,6 +288,22 @@ export default function Home() {
             </svg>
           </div>
         </section>
+
+        {/* Social Proof Bar */}
+        <div className="social-proof-bar" data-aos="fade-up" data-aos-delay="300">
+          <div className="social-proof-stat">
+            <span className="stat-number">{experienceYearsLabel}</span>
+            <span className="stat-label">שנות ניסיון</span>
+          </div>
+          <div className="social-proof-stat">
+            <span className="stat-number">{patientsCountLabel}</span>
+            <span className="stat-label">מטופלים מרוצים</span>
+          </div>
+          <div className="social-proof-stat">
+            <span className="stat-number">M.A</span>
+            <span className="stat-label">תואר שני קליני</span>
+          </div>
+        </div>
 
         {/* Services Section */}
         <section className="bb-services section-padding">
@@ -332,7 +337,7 @@ export default function Home() {
                     >
                       {config.icon}
                     </div>
-                    <h3 className="spec-title" style={{ color: '#2d3748' }}>{spec.name}</h3>
+                    <h3 className="spec-title">{spec.name}</h3>
                     <p className="spec-description">{spec.description}</p>
                   </div>
                 );
@@ -369,22 +374,22 @@ export default function Home() {
                   <div className="visual-decoration dots"></div>
 
                   <div className="visual-card main-card glass-card">
-                    <h3><span className="icon">🎯</span> למה לבחור בי?</h3>
+                    <h3><span className="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></span> הגישה הטיפולית</h3>
                     <ul>
                       <li>
-                        <span className="check-icon">✓</span>
+                        <span className="check-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
                         יחס אישי, סבלני ורגיש לכל מטופל
                       </li>
                       <li>
-                        <span className="check-icon">✓</span>
+                        <span className="check-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
                         התמחות ייחודית בהפרעות קול וצרידות
                       </li>
                       <li>
-                        <span className="check-icon">✓</span>
+                        <span className="check-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
                         זמינות גבוהה וגמישות בשעות הטיפול
                       </li>
                       <li>
-                        <span className="check-icon">✓</span>
+                        <span className="check-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
                         קליניקה נעימה ומאובזרת בבני ברק
                       </li>
                     </ul>

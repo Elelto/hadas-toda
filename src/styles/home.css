@@ -87,6 +87,45 @@
   }
 }
 
+/* Social Proof Bar Layout */
+.social-proof-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+  padding: 2rem 0;
+  background: white;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.social-proof-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.social-proof-stat .stat-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.social-proof-stat .stat-label {
+  font-size: 1rem;
+  color: var(--dark-light);
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .social-proof-bar {
+    flex-direction: column;
+    gap: 2rem;
+  }
+}
+
 .btn-with-badge {
   position: relative;
   overflow: visible;
@@ -266,7 +305,7 @@
 }
 
 .bb-specialization-card:hover .spec-icon {
-  transform: scale(1.1) rotate(5deg);
+  transform: scale(1.05) translateY(-5px);
   background: white;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
 }

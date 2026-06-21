@@ -19,7 +19,7 @@ body {
   font-size: 17px;
   letter-spacing: 0.2px;
   overflow-x: hidden;
-  font-weight: 300;
+  font-weight: 400;
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
   scroll-behavior: smooth;
@@ -88,8 +88,8 @@ input, textarea, select {
   --background-color: #fff;
 
   /* Effects */
-  --shadow: 0 8px 30px rgb(200 145 172 / 8%);
-  --shadow-strong: 0 10px 40px rgb(148 172 188 / 13%);
+  --shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
+  --shadow-strong: 0 20px 60px rgba(0, 0, 0, 0.05);
   --shadow-inset: inset 0 2px 5px rgb(190 112 144 / 5%);
   --transition: all 0.3s cubic-bezier(.4, 0, .2, 1);
 
@@ -128,13 +128,7 @@ h1 {
 
 h1::after {
   content: '';
-  position: absolute;
-  bottom: -12px;
-  left: 0;
-  width: 40px;
-  height: 4px;
-  background-color: var(--secondary);
-  border-radius: 2px;
+  display: none;
 }
 
 h2 {
@@ -149,13 +143,7 @@ h2 {
 
 h2::after {
   content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 0;
-  width: 30px;
-  height: 3px;
-  background-color: var(--secondary);
-  border-radius: 2px;
+  display: none;
 }
 
 h3 {
@@ -209,7 +197,7 @@ a:focus {
 }
 
 section {
-  padding: 5rem 0;
+  padding: clamp(4rem, 8vw, 8rem) 0;
 }
 
 .app-container {
@@ -229,11 +217,11 @@ main {
 .btn {
   display: inline-block;
   padding: 0.8em 1.8em;
-  background: linear-gradient(to right, var(--primary), var(--primary-dark));
+  background: var(--primary);
   color: white;
   border: 2px solid transparent;
   border-radius: 8px;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 1rem;
   cursor: pointer;
   text-decoration: none;
@@ -269,7 +257,7 @@ main {
   left: 0;
   width: 0;
   height: 100%;
-  background: var(--gradient-accent);
+  background: var(--primary-dark);
   transition: width 0.3s ease;
   z-index: -1;
 }
@@ -546,3 +534,18 @@ main {
   backface-visibility: hidden;
   perspective: 1000px;
 }
+
+/* Global Reduced Motion for Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-delay: -1ms !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    background-attachment: initial !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+  }
+}

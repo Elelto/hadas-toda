@@ -254,9 +254,45 @@
     gap: 1rem;
   }
 
-  /* Stack process steps vertically on mobile */
+  /* Stack process steps vertically on mobile and create vertical timeline */
+  .process-timeline {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    padding-right: 15px;
+  }
+  
+  .process-timeline::before {
+    display: block;
+    width: 2px;
+    height: 100%;
+    top: 0;
+    left: auto;
+    right: 48px; /* Aligned with center of step number */
+    background: linear-gradient(to bottom, rgba(200, 145, 172, 0.2), rgba(200, 145, 172, 0.6), rgba(200, 145, 172, 0.2));
+  }
+
   .process-step {
     flex: 1 1 100%;
+    display: flex;
+    text-align: right;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding: 0;
+  }
+  
+  .step-number {
+    margin: 0;
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    z-index: 2;
+  }
+  
+  .step-content {
+    padding-top: 10px;
   }
 }
 
@@ -380,6 +416,21 @@
     outline: 3px solid var(--primary, #c891ac);
     outline-offset: -3px;
     border-radius: 12px;
+}
+
+/* FAQ Accordion Fix using CSS Grid */
+.faq-answer {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.faq-answer.active {
+    grid-template-rows: 1fr;
+}
+
+.faq-answer-inner {
+    overflow: hidden;
 }
 
 /* Form Inputs Focus */
