@@ -171,12 +171,11 @@ a {
 a:focus {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
-  border-bottom: 1px solid var(--primary);
 }
 
 a:hover {
   color: var(--primary-dark);
-  border-bottom: 1px solid var(--accent);
+  text-decoration: underline;
 }
 
 .contaimg {

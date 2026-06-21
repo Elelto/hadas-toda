@@ -148,6 +148,7 @@
 
 .nav-link:hover {
   color: var(--cadillac);
+  text-decoration: none;
 }
 
 .nav-link.active {
@@ -270,6 +271,7 @@
 .mobile-nav-link:hover {
   background-color: var(--light);
   transform: translateX(-5px);
+  text-decoration: none;
 }
 
 /* Improve touch targets for mobile */

@@ -156,6 +156,7 @@
 .footer-link:hover {
   color: var(--primary);
   transform: translateX(-3px);
+  text-decoration: none;
 }
 
 .footer-link:focus-visible {
