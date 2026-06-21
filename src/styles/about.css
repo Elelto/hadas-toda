@@ -248,6 +248,43 @@
     font-size: 2.5rem;
   }
   
+  .about-hero {
+    padding: 6rem 0 3rem;
+  }
+  
+  .about-subtitle {
+    font-size: 1.2rem;
+  }
+  
+  .bio-content {
+    column-count: 1;
+  }
+  
+  .qualifications-list,
+  .courses-list {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 16px;
+    max-width: 100%;
+    padding-bottom: 20px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .qualifications-list::-webkit-scrollbar,
+  .courses-list::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .qualifications-list li,
+  .course-item {
+    scroll-snap-align: center;
+    flex: 0 0 85%;
+    max-width: 320px;
+    min-width: 280px;
+  }
+  
   .section-bio,
   .section-qualifications,
   .section-courses {
@@ -259,9 +296,6 @@
     text-align: left;
   }
   
-  .qualifications-list {
-    grid-template-columns: 1fr;
-  }
   
   .quote {
     font-size: 1.4rem;
