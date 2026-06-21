@@ -69,7 +69,7 @@ function App() {
         <div className="app-container">
           <Header />
           <main>
-            <Suspense fallback={<div className="loading-screen" style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>טוען תוכן...</div>}>
+            <Suspense fallback={<SkeletonLoader />}>
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
