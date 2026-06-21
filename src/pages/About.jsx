@@ -51,6 +51,7 @@ const getDefaultAboutContent = () => ({
 export default function About() {
   const [aboutContent, setAboutContent] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   // Load YAML content
   useEffect(() => {
@@ -116,6 +117,18 @@ export default function About() {
     }
   }, [aboutContent]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const totalScroll = document.documentElement.scrollTop;
+      const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scroll = `${totalScroll / windowHeight}`;
+      setScrollProgress(scroll * 100);
+    }
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   if (loading) {
     return <div className="loading">טוען...</div>;
   }
@@ -163,6 +176,9 @@ export default function About() {
         canonicalUrl="/about"
         structuredData={structuredData}
       />
+      <div className="reading-progress-container" aria-hidden="true">
+        <div className="reading-progress-bar" style={{ width: `${scrollProgress}%` }}></div>
+      </div>
       <section className="about-hero">
         <div className="container">
           <h1 className="about-title" data-aos="fade-down">{aboutContent.hero?.title || "נעים להכיר, הדס תודה"}</h1>
