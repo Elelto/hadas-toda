@@ -324,7 +324,7 @@
 .blog-post-content {
   max-width: 800px;
   margin: 0 auto 50px;
-  line-height: 1.6;
+  line-height: 1.45;
   font-size: 1.15rem;
   color: var(--text-color);
 }
@@ -355,7 +355,7 @@
 }
 
 .blog-post-content p {
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
 .blog-post-content ul, 
