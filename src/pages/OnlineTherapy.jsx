@@ -297,8 +297,7 @@ const OnlineTherapy = () => {
                 <section className="bb-hero">
                     <div className="bb-hero-overlay"></div>
                     <div className="hero-background-shapes">
-                        <div className="aurora-blob blob-1"></div>
-                        <div className="aurora-blob blob-2"></div>
+                        {/* Minimalist background - aurora blobs removed */}
                     </div>
                     <div className="container bb-hero-content">
                         <div className="bb-hero-text" data-aos="fade-up">
@@ -449,13 +448,24 @@ const OnlineTherapy = () => {
                                 <div
                                     key={index}
                                     className={`faq-item ${activeAccordion === index ? 'active' : ''}`}
-                                    onClick={() => toggleAccordion(index)}
                                 >
-                                    <div className="faq-question">
+                                    <button
+                                        id={`faq-button-${index}`}
+                                        className="faq-question"
+                                        onClick={() => toggleAccordion(index)}
+                                        aria-expanded={activeAccordion === index}
+                                        aria-controls={`faq-answer-${index}`}
+                                    >
                                         <h3>{faq.question}</h3>
-                                        <span className="faq-toggle">{activeAccordion === index ? '−' : '+'}</span>
-                                    </div>
-                                    <div className="faq-answer" style={{ maxHeight: activeAccordion === index ? '200px' : '0' }}>
+                                        <span className="faq-toggle" aria-hidden="true">{activeAccordion === index ? '−' : '+'}</span>
+                                    </button>
+                                    <div
+                                        id={`faq-answer-${index}`}
+                                        className="faq-answer"
+                                        style={{ maxHeight: activeAccordion === index ? '200px' : '0' }}
+                                        role="region"
+                                        aria-labelledby={`faq-button-${index}`}
+                                    >
                                         <p>{faq.answer}</p>
                                     </div>
                                 </div>

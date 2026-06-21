@@ -327,3 +327,50 @@
     height: min(190px, 76vw);
   }
 }
+
+/* =========================================
+   Exaggerated Minimalism & Typography
+   ========================================= */
+.online-therapy-page .bb-hero h1 {
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    margin-bottom: 1rem;
+    line-height: 1.1;
+}
+
+.online-therapy-page .bb-subtitle {
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    font-weight: 600;
+}
+
+/* =========================================
+   Accessibility & Focus States
+   ========================================= */
+.faq-question {
+    width: 100%;
+    text-align: right;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    color: var(--primary-dark);
+}
+
+.faq-question:focus-visible {
+    outline: 3px solid var(--primary, #c891ac);
+    outline-offset: -3px;
+    border-radius: 12px;
+}
+
+/* Form Inputs Focus */
+.bento-form input:focus-visible,
+.bento-form textarea:focus-visible {
+    outline: 3px solid var(--primary, #c891ac);
+    outline-offset: 2px;
+    border-color: var(--primary, #c891ac);
+}
