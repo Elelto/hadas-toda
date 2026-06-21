@@ -13,6 +13,7 @@ import {
 } from 'react-icons/fa';
 import { convertPdfToImage } from '../utils/pdfToImage';
 import '../styles/admin.css';
+import '../styles/admin-ux.css';
 
 const Admin = () => {
   const [user, setUser] = useState(null);
@@ -344,11 +345,16 @@ const Admin = () => {
 
           {/* Toast Message */}
           {message.text && (
-            <div className={`login-error ${message.type === 'error' ? '' : 'success'}`} style={{ 
-              borderColor: message.type === 'error' ? 'var(--blush)' : '#2e7d32',
-              backgroundColor: message.type === 'error' ? 'rgba(180, 68, 112, 0.1)' : '#e8f5e9',
-              color: message.type === 'error' ? 'var(--blush)' : '#2e7d32'
-            }}>
+            <div 
+              className={`login-error ${message.type === 'error' ? '' : 'success'}`} 
+              role="alert" 
+              aria-live="assertive"
+              style={{ 
+                borderColor: message.type === 'error' ? 'var(--blush)' : '#2e7d32',
+                backgroundColor: message.type === 'error' ? 'rgba(180, 68, 112, 0.1)' : '#e8f5e9',
+                color: message.type === 'error' ? 'var(--blush)' : '#2e7d32'
+              }}
+            >
               <span>{message.type === 'error' ? '⚠️' : '✅'}</span>
               <span>{message.text}</span>
             </div>
@@ -441,8 +447,8 @@ const Admin = () => {
                       <h3>סקציית הגיבור (Hero)</h3>
                       <div className="admin-input-group">
                         <div className="form-group">
-                          <label className="form-group-label">כותרת ראשית</label>
-                          <input 
+                          <label className="form-group-label" htmlFor="admin-field-1">כותרת ראשית</label>
+<input id="admin-field-1" 
                             type="text" 
                             className="login-input"
                             value={pageData.hero?.title || ''}
@@ -453,8 +459,8 @@ const Admin = () => {
                           />
                         </div>
                         <div className="form-group">
-                          <label className="form-group-label">כותרת משנה</label>
-                          <input 
+                          <label className="form-group-label" htmlFor="admin-field-2">כותרת משנה</label>
+<input id="admin-field-2" 
                             type="text" 
                             className="login-input"
                             value={pageData.hero?.subtitle || ''}
@@ -466,8 +472,8 @@ const Admin = () => {
                         </div>
                       </div>
                       <div className="form-group" style={{ marginTop: '1rem' }}>
-                        <label className="form-group-label">תיאור</label>
-                        <textarea 
+                        <label className="form-group-label" htmlFor="admin-field-3">תיאור</label>
+<textarea id="admin-field-3" 
                           className="admin-textarea"
                           value={pageData.hero?.description || ''}
                           onChange={(e) => setPageData({
@@ -478,8 +484,8 @@ const Admin = () => {
                       </div>
                       <div className="admin-input-group" style={{ marginTop: '1rem' }}>
                         <div className="form-group">
-                          <label className="form-group-label">טקסט כפתור ראשי</label>
-                          <input 
+                          <label className="form-group-label" htmlFor="admin-field-4">טקסט כפתור ראשי</label>
+<input id="admin-field-4" 
                             type="text" 
                             className="login-input"
                             value={pageData.hero?.cta_text || ''}
@@ -490,8 +496,8 @@ const Admin = () => {
                           />
                         </div>
                         <div className="form-group">
-                          <label className="form-group-label">טקסט כפתור שירותים</label>
-                          <input 
+                          <label className="form-group-label" htmlFor="admin-field-5">טקסט כפתור שירותים</label>
+<input id="admin-field-5" 
                             type="text" 
                             className="login-input"
                             value={pageData.hero?.services_text || ''}
@@ -505,8 +511,8 @@ const Admin = () => {
 
                       <h3 style={{ marginTop: '2rem' }}>סקציית אודות (דף הבית)</h3>
                       <div className="form-group">
-                        <label className="form-group-label">כותרת אודות</label>
-                        <input 
+                        <label className="form-group-label" htmlFor="admin-field-6">כותרת אודות</label>
+<input id="admin-field-6" 
                           type="text" 
                           className="login-input"
                           value={pageData.about?.title || ''}
@@ -517,8 +523,8 @@ const Admin = () => {
                         />
                       </div>
                       <div className="form-group">
-                        <label className="form-group-label">פסקה ראשונה</label>
-                        <textarea 
+                        <label className="form-group-label" htmlFor="admin-field-7">פסקה ראשונה</label>
+<textarea id="admin-field-7" 
                           className="admin-textarea"
                           value={pageData.about?.paragraph1 || ''}
                           onChange={(e) => setPageData({
@@ -535,8 +541,8 @@ const Admin = () => {
                     <div>
                       <div className="admin-input-group">
                         <div className="form-group">
-                          <label className="form-group-label">כותרת ראשית</label>
-                          <input 
+                          <label className="form-group-label" htmlFor="admin-field-8">כותרת ראשית</label>
+<input id="admin-field-8" 
                             type="text" 
                             className="login-input"
                             value={pageData.title || ''}
@@ -544,8 +550,8 @@ const Admin = () => {
                           />
                         </div>
                         <div className="form-group">
-                          <label className="form-group-label">כותרת משנה</label>
-                          <input 
+                          <label className="form-group-label" htmlFor="admin-field-9">כותרת משנה</label>
+<input id="admin-field-9" 
                             type="text" 
                             className="login-input"
                             value={pageData.subtitle || ''}
@@ -555,24 +561,24 @@ const Admin = () => {
                       </div>
 
                       <div className="form-group" style={{ marginTop: '1rem' }}>
-                        <label className="form-group-label">פסקת פתיחה</label>
-                        <textarea 
+                        <label className="form-group-label" htmlFor="admin-field-10">פסקת פתיחה</label>
+<textarea id="admin-field-10" 
                           className="admin-textarea"
                           value={pageData.paragraph1 || ''}
                           onChange={(e) => setPageData({ ...pageData, paragraph1: e.target.value })}
                         />
                       </div>
                       <div className="form-group">
-                        <label className="form-group-label">פסקה 2</label>
-                        <textarea 
+                        <label className="form-group-label" htmlFor="admin-field-11">פסקה 2</label>
+<textarea id="admin-field-11" 
                           className="admin-textarea"
                           value={pageData.paragraph2 || ''}
                           onChange={(e) => setPageData({ ...pageData, paragraph2: e.target.value })}
                         />
                       </div>
                       <div className="form-group">
-                        <label className="form-group-label">פסקה 3</label>
-                        <textarea 
+                        <label className="form-group-label" htmlFor="admin-field-12">פסקה 3</label>
+<textarea id="admin-field-12" 
                           className="admin-textarea"
                           value={pageData.paragraph3 || ''}
                           onChange={(e) => setPageData({ ...pageData, paragraph3: e.target.value })}
@@ -581,8 +587,8 @@ const Admin = () => {
 
                       <h3 style={{ marginTop: '2rem' }}>הכשרות מקצועיות</h3>
                       <div className="form-group">
-                        <label className="form-group-label">כותרת סקציית הכשרות</label>
-                        <input 
+                        <label className="form-group-label" htmlFor="admin-field-13">כותרת סקציית הכשרות</label>
+<input id="admin-field-13" 
                           type="text" 
                           className="login-input"
                           value={pageData.qualifications_title || ''}
@@ -597,7 +603,7 @@ const Admin = () => {
                               <h4>הכשרה #{idx + 1}</h4>
                               <button 
                                 type="button" 
-                                className="btn-remove-item"
+                                className="btn-remove-item" aria-label="הסר פריט"
                                 onClick={() => {
                                   const newQuals = pageData.qualifications.filter((_, i) => i !== idx);
                                   setPageData({ ...pageData, qualifications: newQuals });
@@ -615,8 +621,8 @@ const Admin = () => {
                             )}
                             
                             <div className="form-group">
-                              <label className="form-group-label">תיאור ההכשרה</label>
-                              <textarea 
+                              <label className="form-group-label" htmlFor="admin-field-14">תיאור ההכשרה</label>
+<textarea id="admin-field-14" 
                                 className="admin-textarea"
                                 rows="3"
                                 value={q.item || ''}
@@ -629,8 +635,8 @@ const Admin = () => {
                             </div>
                             
                             <div className="form-group">
-                              <label className="form-group-label">תעודה (תמונה או PDF)</label>
-                              <input 
+                              <label className="form-group-label" htmlFor="admin-field-15">תעודה (תמונה או PDF)</label>
+<input id="admin-field-15" 
                                 type="file" 
                                 accept="image/*,application/pdf"
                                 onChange={(e) => handleImageUpload(e, (result) => {
@@ -660,8 +666,8 @@ const Admin = () => {
 
                       <h3 style={{ marginTop: '3rem' }}>השתלמויות מקצועיות (קורסים)</h3>
                       <div className="form-group">
-                        <label className="form-group-label">כותרת סקציית השתלמויות</label>
-                        <input 
+                        <label className="form-group-label" htmlFor="admin-field-16">כותרת סקציית השתלמויות</label>
+<input id="admin-field-16" 
                           type="text" 
                           className="login-input"
                           value={pageData.courses_title || ''}
@@ -676,7 +682,7 @@ const Admin = () => {
                               <h4>השתלמות #{idx + 1}</h4>
                               <button 
                                 type="button" 
-                                className="btn-remove-item"
+                                className="btn-remove-item" aria-label="הסר פריט"
                                 onClick={() => {
                                   const newCourses = pageData.courses.filter((_, i) => i !== idx);
                                   setPageData({ ...pageData, courses: newCourses });
@@ -694,8 +700,8 @@ const Admin = () => {
                             )}
                             
                             <div className="form-group">
-                              <label className="form-group-label">שם ההשתלמות/קורס</label>
-                              <input 
+                              <label className="form-group-label" htmlFor="admin-field-17">שם ההשתלמות/קורס</label>
+<input id="admin-field-17" 
                                 type="text"
                                 className="login-input"
                                 value={c.name || ''}
@@ -708,8 +714,8 @@ const Admin = () => {
                             </div>
                             
                             <div className="form-group">
-                              <label className="form-group-label">שם המרצה/מעביר הקורס</label>
-                              <input 
+                              <label className="form-group-label" htmlFor="admin-field-18">שם המרצה/מעביר הקורס</label>
+<input id="admin-field-18" 
                                 type="text"
                                 className="login-input"
                                 value={c.instructor || ''}
@@ -722,8 +728,8 @@ const Admin = () => {
                             </div>
                             
                             <div className="form-group">
-                              <label className="form-group-label">תעודה (תמונה או PDF)</label>
-                              <input 
+                              <label className="form-group-label" htmlFor="admin-field-19">תעודה (תמונה או PDF)</label>
+<input id="admin-field-19" 
                                 type="file" 
                                 accept="image/*,application/pdf"
                                 onChange={(e) => handleImageUpload(e, (result) => {
@@ -758,8 +764,8 @@ const Admin = () => {
                     <div>
                       <div className="admin-input-group">
                         <div className="form-group">
-                          <label className="form-group-label">כותרת ראשית</label>
-                          <input 
+                          <label className="form-group-label" htmlFor="admin-field-20">כותרת ראשית</label>
+<input id="admin-field-20" 
                             type="text" 
                             className="login-input"
                             value={pageData.title || ''}
@@ -767,8 +773,8 @@ const Admin = () => {
                           />
                         </div>
                         <div className="form-group">
-                          <label className="form-group-label">כותרת משנה</label>
-                          <input 
+                          <label className="form-group-label" htmlFor="admin-field-21">כותרת משנה</label>
+<input id="admin-field-21" 
                             type="text" 
                             className="login-input"
                             value={pageData.subtitle || ''}
@@ -784,7 +790,7 @@ const Admin = () => {
                             <h4>שירות #{idx + 1}</h4>
                             <button 
                               type="button" 
-                              className="btn-remove-item"
+                              className="btn-remove-item" aria-label="הסר פריט"
                               style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
                               onClick={() => {
                                 const newServs = pageData.services.filter((_, i) => i !== idx);
@@ -796,8 +802,8 @@ const Admin = () => {
                             </button>
                           </div>
                           <div className="form-group">
-                            <label className="form-group-label">שם השירות</label>
-                            <input 
+                            <label className="form-group-label" htmlFor="admin-field-22">שם השירות</label>
+<input id="admin-field-22" 
                               type="text" 
                               className="login-input"
                               value={s.title || ''}
@@ -809,8 +815,8 @@ const Admin = () => {
                             />
                           </div>
                           <div className="form-group">
-                            <label className="form-group-label">תיאור השירות</label>
-                            <textarea 
+                            <label className="form-group-label" htmlFor="admin-field-23">תיאור השירות</label>
+<textarea id="admin-field-23" 
                               className="admin-textarea"
                               value={s.description || ''}
                               onChange={(e) => {
@@ -841,8 +847,8 @@ const Admin = () => {
                     <div>
                       <div className="admin-input-group">
                         <div className="form-group">
-                          <label className="form-group-label">כותרת עמוד</label>
-                          <input 
+                          <label className="form-group-label" htmlFor="admin-field-24">כותרת עמוד</label>
+<input id="admin-field-24" 
                             type="text" 
                             className="login-input"
                             value={pageData.title || ''}
@@ -850,8 +856,8 @@ const Admin = () => {
                           />
                         </div>
                         <div className="form-group">
-                          <label className="form-group-label">כותרת משנה</label>
-                          <input 
+                          <label className="form-group-label" htmlFor="admin-field-25">כותרת משנה</label>
+<input id="admin-field-25" 
                             type="text" 
                             className="login-input"
                             value={pageData.subtitle || ''}
@@ -867,7 +873,7 @@ const Admin = () => {
                             <h4>שאלה #{idx + 1}</h4>
                             <button 
                               type="button" 
-                              className="btn-remove-item"
+                              className="btn-remove-item" aria-label="הסר פריט"
                               style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
                               onClick={() => {
                                 const newFaqs = pageData.faq_items.filter((_, i) => i !== idx);
@@ -879,8 +885,8 @@ const Admin = () => {
                             </button>
                           </div>
                           <div className="form-group">
-                            <label className="form-group-label">שאלה</label>
-                            <input 
+                            <label className="form-group-label" htmlFor="admin-field-26">שאלה</label>
+<input id="admin-field-26" 
                               type="text" 
                               className="login-input"
                               value={faq.question || ''}
@@ -892,8 +898,8 @@ const Admin = () => {
                             />
                           </div>
                           <div className="form-group">
-                            <label className="form-group-label">תשובה</label>
-                            <textarea 
+                            <label className="form-group-label" htmlFor="admin-field-27">תשובה</label>
+<textarea id="admin-field-27" 
                               className="admin-textarea"
                               value={faq.answer || ''}
                               onChange={(e) => {
@@ -924,8 +930,8 @@ const Admin = () => {
                     <div>
                       <div className="admin-input-group">
                         <div className="form-group">
-                          <label className="form-group-label">כותרת עמוד המלצות</label>
-                          <input 
+                          <label className="form-group-label" htmlFor="admin-field-28">כותרת עמוד המלצות</label>
+<input id="admin-field-28" 
                             type="text" 
                             className="login-input"
                             value={pageData.title || ''}
@@ -933,8 +939,8 @@ const Admin = () => {
                           />
                         </div>
                         <div className="form-group">
-                          <label className="form-group-label">כותרת משנה</label>
-                          <input 
+                          <label className="form-group-label" htmlFor="admin-field-29">כותרת משנה</label>
+<input id="admin-field-29" 
                             type="text" 
                             className="login-input"
                             value={pageData.subtitle || ''}
@@ -950,7 +956,7 @@ const Admin = () => {
                             <img src={img.image} alt={img.alt} />
                             <button 
                               type="button" 
-                              className="btn-delete-img"
+                              className="btn-delete-img" aria-label="מחק תמונה"
                               onClick={() => {
                                 const newImgs = pageData.images.filter((_, i) => i !== idx);
                                 setPageData({ ...pageData, images: newImgs });
@@ -1004,7 +1010,7 @@ const Admin = () => {
                     </div>
                   )}
 
-                  <div className="form-footer-actions">
+                  <div className="sticky-action-bar">
                     <button type="submit" className="btn-save" disabled={loading}>
                       {loading ? 'שומר...' : (
                         <>
@@ -1099,8 +1105,8 @@ const Admin = () => {
 
                   <form onSubmit={saveBlogPost} className="admin-form">
                     <div className="form-group">
-                      <label className="form-group-label">כותרת הפוסט</label>
-                      <input 
+                      <label className="form-group-label" htmlFor="admin-field-30">כותרת הפוסט</label>
+<input id="admin-field-30" 
                         type="text" 
                         required
                         className="login-input"
@@ -1112,8 +1118,8 @@ const Admin = () => {
 
                     <div className="admin-input-group">
                       <div className="form-group">
-                        <label className="form-group-label">Slug באנגלית (מזהה בקישור)</label>
-                        <input 
+                        <label className="form-group-label" htmlFor="admin-field-31">Slug באנגלית (מזהה בקישור)</label>
+<input id="admin-field-31" 
                           type="text" 
                           required
                           className="login-input"
@@ -1123,8 +1129,8 @@ const Admin = () => {
                         />
                       </div>
                       <div className="form-group">
-                        <label className="form-group-label">תאריך פרסום</label>
-                        <input 
+                        <label className="form-group-label" htmlFor="admin-field-32">תאריך פרסום</label>
+<input id="admin-field-32" 
                           type="date" 
                           required
                           className="login-input"
@@ -1135,8 +1141,8 @@ const Admin = () => {
                     </div>
 
                     <div className="form-group">
-                      <label className="form-group-label">תקציר הפוסט (יוצג בדף הבלוגים הראשי)</label>
-                      <textarea 
+                      <label className="form-group-label" htmlFor="admin-field-33">תקציר הפוסט (יוצג בדף הבלוגים הראשי)</label>
+<textarea id="admin-field-33" 
                         required
                         className="admin-textarea"
                         value={editingBlogPost.excerpt}
@@ -1146,8 +1152,8 @@ const Admin = () => {
                     </div>
 
                     <div className="form-group">
-                      <label className="form-group-label">קטגוריות (מופרדות בפסיקים)</label>
-                      <input 
+                      <label className="form-group-label" htmlFor="admin-field-34">קטגוריות (מופרדות בפסיקים)</label>
+<input id="admin-field-34" 
                         type="text" 
                         className="login-input"
                         value={editingBlogPost.categories ? editingBlogPost.categories.join(', ') : ''}
@@ -1185,8 +1191,8 @@ const Admin = () => {
 
                     {/* Content Markdown Area */}
                     <div className="form-group">
-                      <label className="form-group-label">תוכן הפוסט (תומך ב-HTML או Markdown)</label>
-                      <textarea 
+                      <label className="form-group-label" htmlFor="admin-field-35">תוכן הפוסט (תומך ב-HTML או Markdown)</label>
+<textarea id="admin-field-35" 
                         required
                         className="admin-textarea"
                         style={{ minHeight: '350px' }}
@@ -1196,7 +1202,7 @@ const Admin = () => {
                       />
                     </div>
 
-                    <div className="form-footer-actions">
+                    <div className="sticky-action-bar">
                       <button 
                         type="button" 
                         onClick={() => setEditingBlogPost(null)} 
@@ -1271,7 +1277,7 @@ const Admin = () => {
                           />
                           <button 
                             type="button" 
-                            className="btn-remove-item"
+                            className="btn-remove-item" aria-label="הסר פריט"
                             onClick={() => {
                               const newItems = componentData.menu_items.filter((_, i) => i !== idx);
                               setComponentData({ ...componentData, menu_items: newItems });
@@ -1299,8 +1305,8 @@ const Admin = () => {
                   {editingComponent === 'footer' && (
                     <div>
                       <div className="form-group">
-                        <label className="form-group-label">טקסט זכויות יוצרים (Copyright)</label>
-                        <input 
+                        <label className="form-group-label" htmlFor="admin-field-36">טקסט זכויות יוצרים (Copyright)</label>
+<input id="admin-field-36" 
                           type="text" 
                           className="login-input"
                           value={componentData.copyright || ''}
@@ -1335,7 +1341,7 @@ const Admin = () => {
                           />
                           <button 
                             type="button" 
-                            className="btn-remove-item"
+                            className="btn-remove-item" aria-label="הסר פריט"
                             onClick={() => {
                               const newLinks = componentData.links.filter((_, i) => i !== idx);
                               setComponentData({ ...componentData, links: newLinks });
@@ -1359,7 +1365,7 @@ const Admin = () => {
                     </div>
                   )}
 
-                  <div className="form-footer-actions">
+                  <div className="sticky-action-bar">
                     <button type="submit" className="btn-save" disabled={loading}>
                       {loading ? 'שומר...' : (
                         <>

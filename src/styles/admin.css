@@ -809,19 +809,6 @@
   border: none;
   padding: 0.5rem 1.2rem;
   border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.migration-banner button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.3);
-}
-
-.migration-log-box {
-  background: #1e1e1e;
-  color: #39ff14;
   font-family: 'Courier New', Courier, monospace;
   padding: 1rem;
   border-radius: 8px;
