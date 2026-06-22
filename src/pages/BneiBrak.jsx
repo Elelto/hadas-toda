@@ -8,6 +8,30 @@ import '../styles/contact.css';
 import { FaPhone, FaWhatsapp, FaEnvelope, FaMapMarkerAlt, FaFacebookF, FaInstagram, FaArrowLeft, FaExclamationCircle, FaMicrophoneAlt, FaCommentDots, FaStream, FaAppleAlt, FaAssistiveListeningSystems } from 'react-icons/fa';
 import { getExperienceYearsLabel } from '../utils/experience';
 import { buildWhatsAppUrl, resolveWhatsAppPhone, WHATSAPP_MESSAGES, WHATSAPP_PHONE } from '../utils/whatsapp';
+import { Link } from 'react-router-dom';
+import { loadYamlContent } from '../utils/yamlLoader';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination, Navigation } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import '../styles/home.css'; // For carousel styles like rec-image-card
+
+const getImgPaths = (imagePath) => {
+  if (!imagePath) return {};
+  const parts = imagePath.split('/');
+  const filename = parts[parts.length - 1];
+  const lastDot = filename.lastIndexOf('.');
+  const name = lastDot !== -1 ? filename.substring(0, lastDot) : filename;
+  
+  return {
+    original: imagePath,
+    fullWebp: `/images/recommendation/optimized/${name}.webp`,
+    fullJpg: `/images/recommendation/optimized/${name}.jpg`,
+    thumbWebp: `/images/recommendation/optimized/${name}-thumb.webp`,
+    thumbJpg: `/images/recommendation/optimized/${name}-thumb.jpg`
+  };
+};
 
 // Specialization Configuration (Icon + Color) - same as Home.jsx
 const specializationConfig = {
@@ -45,6 +69,16 @@ const BneiBrak = () => {
   const [activeAccordion, setActiveAccordion] = useState(null);
   const experienceYearsLabel = getExperienceYearsLabel();
 
+  const [testimonialsContent, setTestimonialsContent] = useState(null);
+  const [lightboxIndex, setLightboxIndex] = useState(null);
+  const [useFallback, setUseFallback] = useState({});
+
+  const activeImages = (testimonialsContent?.images || []).filter(img => !img.hide);
+
+  const handleImageError = (id) => {
+    setUseFallback(prev => ({ ...prev, [id]: true }));
+  };
+
   // Form State
   const form = useRef();
   const [loading, setLoading] = useState(false);
@@ -64,6 +98,31 @@ const BneiBrak = () => {
       AOS.refresh();
     }, 100);
   }, []);
+
+  useEffect(() => {
+    const loadContent = async () => {
+      try {
+        const testContent = await loadYamlContent('/content/pages/testimonials.yml');
+        if (testContent) {
+          setTestimonialsContent(testContent);
+        }
+      } catch (error) {
+        console.error('Error loading testimonials content:', error);
+      }
+    };
+    loadContent();
+  }, []);
+
+  useEffect(() => {
+    if (lightboxIndex === null || activeImages.length === 0) return;
+    const handleKey = (e) => {
+      if (e.key === 'Escape') setLightboxIndex(null);
+      if (e.key === 'ArrowLeft') setLightboxIndex(prev => prev === 0 ? activeImages.length - 1 : prev - 1);
+      if (e.key === 'ArrowRight') setLightboxIndex(prev => prev === activeImages.length - 1 ? 0 : prev + 1);
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [lightboxIndex, testimonialsContent]);
 
   // Form Handlers
   const handleChange = (e) => {
@@ -202,23 +261,7 @@ const BneiBrak = () => {
     }
   ];
 
-  const testimonials = [
-    {
-      text: "הגענו להדס עם חששות רבים לגבי הדיבור של בננו. הדס קיבלה אותנו בחיוך, מקצועיות ורוגע. תוך מספר מפגשים כבר ראינו שיפור משמעותי. ממליצים בחום!",
-      name: "משפחת כהן",
-      location: "בני ברק"
-    },
-    {
-      text: "בתור מורה שסבלה מצרידות חוזרת, הטיפול אצל הדס הציל לי את הקריירה. למדתי איך להשתמש בקול נכון ואיך לשמור עליו לאורך זמן.",
-      name: "רחל ל.",
-      location: "רמת גן"
-    },
-    {
-      text: "הדס מקצועית מאוד, נעימה וקשובה. הילד חיכה למפגשים איתה כל שבוע. תודה על הכל!",
-      name: "יעל א.",
-      location: "בני ברק"
-    }
-  ];
+  // Testimonials are loaded dynamically
 
   const faqs = [
     {
@@ -402,23 +445,179 @@ const BneiBrak = () => {
         <section className="bb-testimonials section-padding">
           <div className="container">
             <div className="section-header-center">
-              <h2>ממליצים עלינו</h2>
+              <h2>{testimonialsContent?.title || 'קולות מהקליניקה'}</h2>
               <div className="header-underline"></div>
+              <p>{testimonialsContent?.subtitle || 'מה אומרים המטופלים שלי על הטיפול והתוצאות'}</p>
             </div>
-            <div className="testimonials-grid">
-              {testimonials.map((item, index) => (
-                <div key={index} className="testimonial-card" data-aos="zoom-in" data-aos-delay={index * 100}>
-                  <div className="quote-icon">❝</div>
-                  <p className="testimonial-text">{item.text}</p>
-                  <div className="testimonial-author">
-                    <span className="author-name">{item.name}</span>
-                    <span className="author-location">{item.location}</span>
-                  </div>
-                </div>
-              ))}
+
+            <div className="testimonials-carousel-wrapper" data-aos="fade-up">
+              <Swiper
+                modules={[Autoplay, Pagination, Navigation]}
+                spaceBetween={24}
+                slidesPerView={1}
+                centeredSlides={true}
+                slideToClickedSlide={true}
+                loop={true}
+                loopedSlides={4}
+                autoplay={{
+                  delay: 4500,
+                  disableOnInteraction: false,
+                }}
+                pagination={{
+                  clickable: true,
+                  dynamicBullets: true,
+                }}
+                navigation={true}
+                breakpoints={{
+                  640: {
+                    slidesPerView: 2,
+                    spaceBetween: 20,
+                  },
+                  1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 24,
+                  },
+                }}
+                className="testimonials-swiper"
+              >
+                {activeImages?.map((item, index) => {
+                  const paths = getImgPaths(item.image);
+                  const itemId = item.image || index;
+                  return (
+                    <SwiperSlide key={itemId}>
+                      <div
+                        className="rec-image-card glass-card"
+                        onClick={() => setLightboxIndex(index)}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={item.alt || `המלצה ${index + 1} - לחץ להגדלה`}
+                        onKeyDown={(e) => e.key === 'Enter' && setLightboxIndex(index)}
+                      >
+                        <div className="rec-image-wrapper">
+                          {useFallback[itemId] ? (
+                            <img
+                              src={paths.original}
+                              alt={item.alt || `המלצה ממטופל ${index + 1}`}
+                              className="rec-image"
+                              loading="lazy"
+                              width="400"
+                              height="560"
+                            />
+                          ) : (
+                            <picture>
+                              <source
+                                srcSet={paths.thumbWebp}
+                                type="image/webp"
+                              />
+                              <img
+                                src={paths.thumbJpg}
+                                alt={item.alt || `המלצה ממטופל ${index + 1}`}
+                                className="rec-image"
+                                loading="lazy"
+                                width="400"
+                                height="560"
+                                onError={() => handleImageError(itemId)}
+                              />
+                            </picture>
+                          )}
+                          <div className="rec-image-overlay" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <circle cx="11" cy="11" r="8"/>
+                              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                              <line x1="11" y1="8" x2="11" y2="14"/>
+                              <line x1="8" y1="11" x2="14" y2="11"/>
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </SwiperSlide>
+                  );
+                })}
+              </Swiper>
+            </div>
+
+            <div className="center-cta mt-5">
+              <Link to="/testimonials" className="link-arrow">
+                לכל סיפורי ההצלחה ←
+              </Link>
             </div>
           </div>
         </section>
+
+        {/* Lightbox */}
+        {lightboxIndex !== null && activeImages[lightboxIndex] && (() => {
+          const currentItem = activeImages[lightboxIndex];
+          const paths = getImgPaths(currentItem.image);
+          const itemId = currentItem.image || lightboxIndex;
+          const images = activeImages;
+
+          return (
+             <div
+               className="rec-lightbox-overlay"
+               onClick={() => setLightboxIndex(null)}
+               role="dialog"
+               aria-modal="true"
+               aria-label="תצוגת המלצה מוגדלת"
+             >
+               <button
+                 className="rec-lightbox-close"
+                 onClick={() => setLightboxIndex(null)}
+                 aria-label="סגור"
+               >
+                 ✕
+               </button>
+
+               <button
+                 className="rec-lightbox-nav rec-lightbox-prev"
+                 onClick={(e) => {
+                   e.stopPropagation();
+                   setLightboxIndex(prev => prev === 0 ? images.length - 1 : prev - 1);
+                 }}
+                 aria-label="הקודם"
+               >
+                 ‹
+               </button>
+
+               <div
+                 className="rec-lightbox-content"
+                 onClick={(e) => e.stopPropagation()}
+               >
+                 {useFallback[itemId] ? (
+                   <img
+                     src={paths.original}
+                     alt={currentItem.alt || `המלצה ממטופל ${lightboxIndex + 1}`}
+                     className="rec-lightbox-img"
+                   />
+                 ) : (
+                   <picture>
+                     <source
+                       srcSet={paths.fullWebp}
+                       type="image/webp"
+                     />
+                     <img
+                       src={paths.fullJpg}
+                       alt={currentItem.alt || `המלצה ממטופל ${lightboxIndex + 1}`}
+                       className="rec-lightbox-img"
+                       onError={() => handleImageError(itemId)}
+                     />
+                   </picture>
+                 )}
+                 <div className="rec-lightbox-counter">{lightboxIndex + 1} / {images.length}</div>
+               </div>
+
+               <button
+                 className="rec-lightbox-nav rec-lightbox-next"
+                 onClick={(e) => {
+                   e.stopPropagation();
+                   setLightboxIndex(prev => prev === images.length - 1 ? 0 : prev + 1);
+                 }}
+                 aria-label="הבא"
+               >
+                 ›
+               </button>
+             </div>
+          );
+        })()}
 
         {/* FAQ Section */}
         <section className="bb-faq section-padding bg-light">
