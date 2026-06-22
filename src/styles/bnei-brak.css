@@ -9,13 +9,17 @@
   padding: 80px 0;
 }
 
+.desktop-only {
+  display: inline;
+}
+
 .text-highlight {
   color: var(--primary-dark);
   font-weight: 500;
   font-size: 0.55em;
   opacity: 0.8;
-  margin-right: 0.5rem;
-  vertical-align: middle;
+  margin: 0;
+  display: inline-block;
 }
 
 .bg-light {
@@ -110,6 +114,11 @@
   line-height: 1.1;
   margin-bottom: 1rem;
   color: var(--dark);
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .bb-subtitle {
@@ -128,6 +137,7 @@
   margin-bottom: 2.5rem;
   max-width: 600px;
   font-weight: 400;
+  text-wrap: balance;
 }
 
 .bb-actions {
@@ -806,8 +816,13 @@
 }
 
 @media (max-width: 768px) {
+  .desktop-only {
+    display: none;
+  }
+
   .bb-hero-text h1 {
     font-size: 2.5rem;
+    justify-content: center;
   }
 
   .bb-subtitle {
@@ -982,7 +997,10 @@
     /* Allow heading to wrap naturally */
     white-space: normal;
     word-break: break-word;
-    display: block;
+    display: flex;
+    justify-content: center;
+    font-size: 2.2rem;
+    margin-bottom: 0.75rem;
   }
 
   /* ROOT CAUSE FIX: when bb-hero-content collapses to 1 column,
@@ -1009,13 +1027,20 @@
     overflow: hidden;
   }
 
+  .bb-badge {
+    margin-bottom: 1rem;
+  }
+
   .bb-subtitle {
-    font-size: 1rem;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
   }
 
   .bb-description {
     font-size: 1rem;
     max-width: 100%;
+    margin-bottom: 1.75rem;
+    line-height: 1.5;
   }
 
   .bb-actions {

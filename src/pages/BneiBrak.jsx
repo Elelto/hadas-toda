@@ -270,7 +270,7 @@ const BneiBrak = () => {
               <p className="bb-subtitle">טיפול מקצועי, אישי ומסור לילדים ומבוגרים</p>
               <p className="bb-description">
                 מתמחה בטיפולי קול, היגוי, גמגום, תפקודי פה ומובנות דיבור.
-                <br />
+                <br className="desktop-only" />
                 בקליניקה נעימה ומאובזרת בשיכון ג'.
               </p>
               <div className="bb-actions">
