@@ -26,7 +26,7 @@
 }
 
 .blog-hero .page-title {
-  font-size: 2.8rem;
+  font-size: var(--text-page-title);
   color: var(--primary-dark);
   margin-bottom: 15px;
   position: relative;
@@ -46,7 +46,7 @@
 }
 
 .blog-hero .page-subtitle {
-  font-size: 1.2rem;
+  font-size: var(--text-subtitle);
   color: var(--dark-light);
   max-width: 700px;
   margin: 30px auto 0;
@@ -639,10 +639,6 @@
 @media (max-width: 768px) {
   .blog-hero {
     padding: 60px 0 40px;
-  }
-  
-  .blog-hero .page-title {
-    font-size: 2.2rem;
   }
   
   .blog-post-title {

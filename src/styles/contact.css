@@ -28,7 +28,7 @@
 }
 
 .bento-title {
-  font-size: 4rem;
+  font-size: var(--text-page-title);
   font-weight: 800;
   color: var(--primary-dark);
   margin-bottom: 1rem;
@@ -40,7 +40,7 @@
 }
 
 .bento-subtitle {
-  font-size: 1.3rem;
+  font-size: var(--text-subtitle);
   color: #666;
   font-weight: 400;
   max-width: 500px;
@@ -146,10 +146,6 @@
   .bento-content-wrapper {
     padding-left: 0.75rem;
     padding-right: 0.75rem;
-  }
-
-  .bento-title {
-    font-size: 3rem;
   }
 
   /* Stack everything */

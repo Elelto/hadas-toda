@@ -90,7 +90,7 @@ export default function About() {
             },
             courses: content.courses || [],
             quote: {
-              text: content.quote?.text || content.quote || "הקול שלנו הוא הגשר בין עולמנו הפנימי לעולם החיצון. אני כאן כדי לעזור לכם לבנות גשר חזק, יציב וצלול.",
+              text: typeof content.quote === 'string' ? content.quote : (content.quote?.text || "הקול שלנו הוא הגשר בין עולמנו הפנימי לעולם החיצון. אני כאן כדי לעזור לכם לבנות גשר חזק, יציב וצלול."),
               author: content.quote?.author || "הדס תודה"
             }
           };
@@ -206,7 +206,7 @@ export default function About() {
             <div className="bio-image-wrapper" data-aos="fade-left">
               {/* Fallback to Unsplash placeholder if local image is missing */}
               <img 
-                src="/images/hadas-profile.webp" 
+                src="/images/hadas-profile.png" 
                 alt="הדס תודה - קלינאית תקשורת" 
                 className="bio-profile-image" 
                 onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop'; }} 

@@ -15,14 +15,25 @@
   z-index: 999; /* Ensure it's on top of other content */
   transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
   text-decoration: none;
+  animation: floating-whatsapp-pulse 13s infinite;
+}
+
+@keyframes floating-whatsapp-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6); transform: scale(1); }
+  7% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); transform: scale(1.05); }
+  14% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); transform: scale(1); }
+  21% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); transform: scale(1.05); }
+  28% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); transform: scale(1); }
+  100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); transform: scale(1); }
 }
 
 .floating-whatsapp:hover,
 .floating-whatsapp:focus-visible {
   background-color: #128C7E;
-  transform: translateY(-5px);
+  transform: translateY(-5px) scale(1.05);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
   outline: none;
+  animation: none; /* Pause pulse on hover */
 }
 
 .floating-whatsapp:focus-visible {

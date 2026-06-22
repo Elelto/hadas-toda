@@ -322,10 +322,10 @@
   .online-therapy-page .bb-hero-shape {
     /* Push shape area below text in the stacking order */
     z-index: 0;
-    /* Shrink height so the shape doesn't spill into viewport height above */
-    height: 260px;
-    /* Prevent shape-content's absolute children from escaping upward */
-    overflow: hidden;
+    /* Increase height and make visible so elements can breathe */
+    height: 300px;
+    overflow: visible;
+    margin-bottom: 50px;
   }
 
   .online-therapy-page .online-shape-bg {
@@ -333,15 +333,22 @@
     height: min(220px, 78vw);
   }
 
-  /* The stat-boxes inside shape-content have inline styles with
-     negative positions (right: -10px, left: -10px).
-     We override those here to keep them contained. */
   .online-therapy-page .bb-hero-shape .stat-box {
-    /* Override inline right/left: -10px to prevent bleed */
-    right: 5px !important;
-    left: 5px !important;
     max-width: calc(50vw - 20px);
     padding: 8px 14px;
+    transform: scale(0.85);
+  }
+
+  .online-therapy-page .bb-hero-shape .stat-box:nth-child(1) {
+    right: -5px !important;
+    left: auto !important;
+    top: 5% !important;
+  }
+
+  .online-therapy-page .bb-hero-shape .stat-box:nth-child(2) {
+    left: -5px !important;
+    right: auto !important;
+    bottom: 10% !important;
   }
 
   .benefits-grid {
@@ -383,7 +390,7 @@
    Exaggerated Minimalism & Typography
    ========================================= */
 .online-therapy-page .bb-hero h1 {
-    font-size: clamp(3rem, 8vw, 5.5rem);
+    font-size: var(--text-hero);
     font-weight: 800;
     letter-spacing: -0.04em;
     margin-bottom: 1rem;
@@ -391,7 +398,7 @@
 }
 
 .online-therapy-page .bb-subtitle {
-    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    font-size: var(--text-subtitle);
     font-weight: 600;
 }
 

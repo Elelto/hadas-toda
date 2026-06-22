@@ -432,13 +432,23 @@ const BneiBrak = () => {
                 <div
                   key={index}
                   className={`faq-item ${activeAccordion === index ? 'active' : ''}`}
-                  onClick={() => toggleAccordion(index)}
                 >
-                  <div className="faq-question">
+                  <button
+                    className="faq-question"
+                    onClick={() => toggleAccordion(index)}
+                    aria-expanded={activeAccordion === index}
+                    aria-controls={`faq-answer-${index}`}
+                  >
                     <h3>{faq.question}</h3>
-                    <span className="faq-toggle">{activeAccordion === index ? '−' : '+'}</span>
-                  </div>
-                  <div className="faq-answer" style={{ maxHeight: activeAccordion === index ? '200px' : '0' }}>
+                    <span className="faq-toggle" aria-hidden="true">{activeAccordion === index ? '−' : '+'}</span>
+                  </button>
+                  <div
+                    id={`faq-answer-${index}`}
+                    className="faq-answer"
+                    style={{ maxHeight: activeAccordion === index ? '200px' : '0' }}
+                    role="region"
+                    aria-labelledby={`faq-question-${index}`}
+                  >
                     <p>{faq.answer}</p>
                   </div>
                 </div>
@@ -533,7 +543,7 @@ const BneiBrak = () => {
               </a>
 
               {/* 3. WhatsApp Card */}
-              <a href={buildWhatsAppUrl(resolveWhatsAppPhone(contactInfo), WHATSAPP_MESSAGES.bneiBrak)} target="_blank" rel="noopener noreferrer" className="bento-card whatsapp-card" data-aos="fade-up" data-aos-delay="200">
+              <a href={buildWhatsAppUrl(resolveWhatsAppPhone(contactInfo), WHATSAPP_MESSAGES.bneiBrak)} target="_blank" rel="noopener noreferrer" className="bento-card whatsapp-card" data-aos="fade-up" data-aos-delay="200" aria-label="שלח הודעת ווטסאפ לקליניקה בבני ברק">
                 <div className="card-bg-effect"></div>
                 <div className="pop-out-icon whatsapp-3d">
                   <FaWhatsapp />
@@ -599,6 +609,7 @@ const BneiBrak = () => {
             </div>
           </div>
         </section>
+
       </div>
     </>
   );
