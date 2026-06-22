@@ -114,30 +114,24 @@
   line-height: 1.1;
   margin-bottom: 1rem;
   color: var(--dark);
-  display: flex;
-  align-items: baseline;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  gap: 0.5rem;
 }
 
 .bb-subtitle {
   font-size: var(--text-subtitle);
   font-weight: 400;
   color: var(--dark-light);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   line-height: 1.4;
   opacity: 0.9;
 }
 
 .bb-description {
   font-size: 1.15rem;
-  line-height: 1.8;
+  line-height: 1.6;
   color: var(--dark-light);
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
   max-width: 600px;
   font-weight: 400;
-  text-wrap: balance;
 }
 
 .bb-actions {
@@ -774,11 +768,13 @@
   .bb-hero-content {
     grid-template-columns: 1fr;
     text-align: center;
-    gap: 3rem;
+    gap: 2rem;
   }
 
   .bb-hero-text {
     padding-right: 0;
+    max-width: 480px;
+    margin: 0 auto;
   }
 
   .bb-description {

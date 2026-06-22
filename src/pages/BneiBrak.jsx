@@ -269,8 +269,8 @@ const BneiBrak = () => {
               <h1>הדס תודה <span className="text-highlight">M.A</span></h1>
               <p className="bb-subtitle">טיפול מקצועי, אישי ומסור לילדים ומבוגרים</p>
               <p className="bb-description">
-                מתמחה בטיפולי קול, היגוי, גמגום, תפקודי פה ומובנות דיבור.
-                <br className="desktop-only" />
+                מתמחה בטיפולי קול, היגוי, גמגום,<br />
+                תפקודי פה ומובנות דיבור.<br />
                 בקליניקה נעימה ומאובזרת בשיכון ג'.
               </p>
               <div className="bb-actions">
