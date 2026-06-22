@@ -96,7 +96,7 @@ body {
   background: #fcfbfe;
   color: var(--dark);
   direction: rtl;
-  line-height: 1.6;
+  line-height: 1.7;
   font-size: 17px;
   overflow-x: hidden;
   font-weight: 300;
@@ -118,7 +118,7 @@ strong {
   -webkit-backdrop-filter: blur(15px);
   border-bottom: 1px solid rgba(185, 123, 160, 0.08);
   z-index: 1000;
-  padding: 0.75rem 0;
+  padding: 0.4rem 0;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.01);
 }
 
@@ -270,6 +270,7 @@ strong {
   line-height: 1.15;
   margin-bottom: 1.2rem;
   font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--primary-dark);
 }
 
@@ -278,7 +279,7 @@ strong {
   font-weight: 300;
   color: var(--dark-light);
   margin-bottom: 2.2rem;
-  line-height: 1.55;
+  line-height: 1.7;
 }
 
 .hero-cta-group {
@@ -426,7 +427,9 @@ strong {
 
 /* Primary CTA Section (Above the fold/Below Hero) */
 .above-fold-cta {
-  background: white;
+  background: var(--gradient-glass);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   padding: 1.5rem 0;
   border-bottom: 1px solid rgba(185, 123, 160, 0.05);
   position: relative;
@@ -480,6 +483,7 @@ strong {
   color: var(--primary-dark);
   margin-bottom: 1rem;
   font-weight: 700;
+  letter-spacing: -0.02em;
   letter-spacing: -0.5px;
 }
 
@@ -838,6 +842,8 @@ strong {
   border-color: var(--accent-topic);
   background: rgba(var(--accent-topic-rgb), 0.03);
   box-shadow: 0 8px 25px rgba(var(--accent-topic-rgb), 0.08);
+  transform: scale(1.02) translateY(-2px);
+  border-width: 2px;
 }
 
 .option-card input[type="radio"] {
@@ -922,7 +928,7 @@ strong {
 .form-group select,
 .form-group textarea {
   width: 100%;
-  padding: 0.95rem 1.2rem;
+  padding: 1.1rem 1.3rem;
   background: #fbf9fc;
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 14px;
@@ -1275,3 +1281,154 @@ strong {
     display: none !important;
   }
 }
+
+
+/* UX/UI Micro-animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.problem-card, .benefit-card, .testimonial-card {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.problem-card:nth-child(2) { animation-delay: 0.1s; }
+.problem-card:nth-child(3) { animation-delay: 0.2s; }
+.problem-card:nth-child(4) { animation-delay: 0.3s; }
+.benefit-card:nth-child(2) { animation-delay: 0.1s; }
+.benefit-card:nth-child(3) { animation-delay: 0.2s; }
+.benefit-card:nth-child(4) { animation-delay: 0.3s; }
+.testimonial-card:nth-child(2) { animation-delay: 0.2s; }
+
+
+/* ==========================================
+   MOBILE-FIRST UX/UI OPTIMIZATIONS
+   ========================================== */
+@media (max-width: 768px) {
+  /* 1. Swipeable Carousels instead of vertical stacking */
+  .problem-grid, .benefits-grid, .testimonials-grid {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 1.25rem;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    
+    /* Hide scrollbar for cleaner look */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .problem-grid::-webkit-scrollbar, 
+  .benefits-grid::-webkit-scrollbar, 
+  .testimonials-grid::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .problem-card, .benefit-card, .testimonial-card {
+    flex: 0 0 88%;
+    scroll-snap-align: center;
+  }
+
+  /* 2. Hero Section Refinements */
+  .shape-morph {
+    width: 220px !important;
+    height: 220px !important;
+  }
+  .hero-title {
+    font-size: clamp(2rem, 8vw, 2.4rem) !important;
+  }
+  .hero-cta-group {
+    flex-direction: column;
+    width: 100%;
+  }
+  .hero-cta-group .btn {
+    width: 100%;
+    margin: 0;
+  }
+
+  /* 3. Tighter Form Container */
+  .form-container {
+    padding: 1.8rem 1.2rem !important;
+    border-radius: 18px !important;
+  }
+}
+
+/* 4. Sticky Mobile Bar Glassmorphism & Tapping Target */
+.sticky-mobile-bar {
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
+  box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.08) !important;
+  border-top: 1px solid rgba(185, 123, 160, 0.1) !important;
+}
+
+.sticky-mobile-bar .sticky-btn {
+  padding: 1.1rem 0 !important; /* Larger tap target */
+  font-weight: 700 !important;
+}
+
+.sticky-btn-whatsapp {
+  background: #25D366 !important;
+  color: white !important;
+}
+
+
+/* FLOATING WHATSAPP CSS PORTED FROM MAIN APP */
+/* Floating WhatsApp Button - Mobile Only */
+.floating-whatsapp {
+  display: none; /* Hidden by default on desktop */
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background-color: #25D366; /* WhatsApp green */
+  color: white;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  align-items: center;
+  justify-content: center;
+  z-index: 999; /* Ensure it's on top of other content */
+  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+  text-decoration: none;
+  animation: floating-whatsapp-pulse 13s infinite;
+}
+
+@keyframes floating-whatsapp-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6); transform: scale(1); }
+  7% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); transform: scale(1.05); }
+  14% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); transform: scale(1); }
+  21% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); transform: scale(1.05); }
+  28% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); transform: scale(1); }
+  100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); transform: scale(1); }
+}
+
+.floating-whatsapp:hover,
+.floating-whatsapp:focus-visible {
+  background-color: #128C7E;
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  outline: none;
+  animation: none; /* Pause pulse on hover */
+}
+
+.floating-whatsapp:focus-visible {
+  outline: 3px solid var(--primary, #c891ac);
+  outline-offset: 2px;
+}
+
+.floating-whatsapp-icon {
+  font-size: 32px;
+}
+
+/* Show only on mobile devices */
+@media (max-width: 768px) {
+  .floating-whatsapp {
+    display: flex;
+  }
+}
+
+/* Ensure it doesn't overlap the footer on small screens by pushing the footer content up or adjusting z-index */
+/* Actually, standard practice is to let it hover over the footer, but we'll make sure the footer padding is enough */

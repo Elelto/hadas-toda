@@ -9,6 +9,13 @@
   script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`;
   document.head.appendChild(script);
 
+  // 1b. Dynamically load EmailJS script
+  const emailjsScript = document.createElement('script');
+  emailjsScript.src = "https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js";
+  emailjsScript.onload = () => { emailjs.init("l9xXgXVINGFdgI8KJ"); };
+  document.head.appendChild(emailjsScript);
+
+
   // 2. Initialize tracking dataLayer
   window.dataLayer = window.dataLayer || [];
   window.gtag = function() { dataLayer.push(arguments); };
@@ -227,14 +234,33 @@
         });
         formData.set('difficulties', checkedDifficulties.join(', '));
 
-        // Submit to Netlify
-        fetch('/', {
-          method: 'POST',
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: new URLSearchParams(formData).toString()
-        })
-        .then(response => {
-          if (response.ok) {
+        
+        // Submit via EmailJS
+        const emailParams = {
+          to_name: 'הדס תודה',
+          user_name: nameInput.value,
+          user_email: formData.get('email') || 'no-email-provided@example.com',
+          user_phone: phoneInput.value,
+          message: 'נשלח מדף נחיתה: ' + pageType + ' (גרסה ' + variant + ').\n' +
+                   'גיל רלוונטי: ' + (formData.get('targetAge') || 'לא סומן') + '\n' +
+                   'שעות נוחות: ' + (formData.get('preferredTime') || 'לא סומן') + '\n' +
+                   'קשיים: ' + checkedDifficulties.join(', '),
+          to_email: 'hadas.toda.info@gmail.com',
+          recipient: 'hadas.toda.info@gmail.com',
+          reply_to: formData.get('email') || 'hadas.toda.info@gmail.com'
+        };
+
+        if (typeof emailjs === 'undefined') {
+          alert('מערכת השליחה טרם נטענה במלואה. אנא המתינו מספר שניות ונסו שוב.');
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerText = originalBtnText;
+          }
+          return;
+        }
+
+        emailjs.send('service_zm8sd32', 'template_abcdxis', emailParams)
+        .then((response) => {
             // Track Form Submit in GA4
             gtag('event', 'lp_form_submit', {
               'page_type': pageType,
@@ -266,13 +292,9 @@
               const cb = c.querySelector('input[type="checkbox"]');
               if (cb) cb.checked = false;
             });
-          } else {
-            alert('אירעה שגיאה בשליחת הטופס. אנא נסו שנית.');
-          }
-        })
-        .catch(error => {
-          console.error('Error submitting form:', error);
-          alert('אירעה שגיאה בשליחת הטופס. אנא נסו שנית.');
+        }, (error) => {
+          console.error('Error submitting form via EmailJS:', error);
+          alert('אירעה שגיאה בשליחת הטופס. אנא נסו שוב או צרו קשר טלפוני.');
         })
         .finally(() => {
           if (submitBtn) {

@@ -26,6 +26,6 @@ export function resolveWhatsAppPhone(contactInfo) {
 
 export function buildWhatsAppUrl(phone, message = WHATSAPP_MESSAGES.default) {
   const normalizedPhone = normalizeWhatsAppPhone(phone);
-  const params = message ? `?text=${encodeURIComponent(message)}` : '';
-  return `https://wa.me/${normalizedPhone}${params}`;
+  const params = message ? `&text=${encodeURIComponent(message)}` : '';
+  return `https://api.whatsapp.com/send?phone=${normalizedPhone}${params}`;
 }
