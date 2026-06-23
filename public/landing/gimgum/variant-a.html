@@ -31,8 +31,9 @@
   <!-- Mini Header -->
   <header class="mini-header">
     <div class="header-container">
-      <a href="/" class="logo">
-        הדס תודה <span class="logo-dot"></span>
+      <a href="/" class="logo" style="display: flex; align-items: center; gap: 8px;">
+        <img src="/images/logo.png" alt="הדס תודה - לוגו" style="height: 35px; width: auto;">
+        <span>הדס תודה <span class="logo-dot"></span></span>
       </a>
       <a href="tel:050-6796209" class="header-phone-btn" data-cta-name="שיחת ייעוץ מהירה - נתב עליון">
         <span>📞 חייגו</span>
@@ -46,30 +47,29 @@
       <div class="hero-blob hero-blob-2"></div>
       <div class="hero-container">
       <div class="hero-content">
-        <span class="hero-badge">טיפול אונליין ממוקד תוצאות</span>
         <div class="trust-badge-hero">
           <span class="icon-badge">★</span>
           <span>קלינאית תקשורת מוסמכת משרד הבריאות</span>
         </div>
-        <h1 class="hero-title">הגמגום עוצר בעדכם מלומר את מה שאתם באמת רוצים?</h1>
+        <h1 class="hero-title">להשתחרר מהמחסום.<br>לדבר בביטחון ובחופשיות.</h1>
         <p class="hero-subtitle">
-          אתם לא לבד, ואפשר גם אחרת. טיפול אונליין באווירה מכילה, חמה ומקצועית שיעזור לכם למצוא את הקול שלכם ולדבר בביטחון, בחופשיות ובלי מאמץ.
+          טיפול קליני אונליין באווירה מכילה, חמה ומקצועית. עזרה אמיתית במציאת הקול שלך (או של ילדך) ללא מאמץ או תחושת תקיעות.
         </p>
         <div class="hero-cta-group">
           <a href="#consultation-form" class="btn btn-primary" data-cta data-cta-name="לתיאום שיחת ייעוץ - הירו רגשי">
-            לתיאום שיחת ייעוץ אישית
+            לשיחת התאמה קצרה
           </a>
         </div>
       </div>
       <div class="hero-visual">
         <div class="shape-morph"></div>
         <div class="floating-badge badge-top-left">
-          <span class="num">10+</span>
+          <span class="num" id="dynamic-experience">7+</span>
           <span class="lbl">שנות ניסיון</span>
         </div>
         <div class="floating-badge badge-bottom-right">
-          <span class="num">100%</span>
-          <span class="lbl">יחס אישי</span>
+          <span class="num">♡</span>
+          <span class="lbl">ליווי אישי</span>
         </div>
       </div>
     </div>
@@ -86,24 +86,32 @@
 
       <div class="problem-grid">
         <div class="problem-card">
-          <div class="problem-icon">✕</div>
+          <div class="problem-icon" style="color: var(--primary-dark); background: rgba(109, 89, 122, 0.08);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><line x1="10" y1="9" x2="14" y2="13"></line><line x1="14" y1="9" x2="10" y2="13"></line></svg>
+          </div>
           <h3>הימנעות משיחות מול אנשים</h3>
-          <p>מוצאים את עצמכם נמנעים מלבצע שיחות טלפון, לדבר בציבור או להציג נושאים מול קבוצה מחשש שמישהו יבחין בקושי.</p>
+          <p>מוצאים את עצמכם או את הילד נמנעים מלבצע שיחות טלפון, לדבר בציבור או להשתתף במסגרות מחשש שמישהו יבחין בקושי.</p>
         </div>
         <div class="problem-card">
-          <div class="problem-icon">✕</div>
+          <div class="problem-icon" style="color: var(--primary-dark); background: rgba(109, 89, 122, 0.08);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          </div>
           <h3>תחושת מחנק ותקיעות</h3>
-          <p>מרגישים פיזית את התקיעות בגרון או בחזה, המילה עומדת על קצה הלשון אך לא מצליחה לצאת החוצה.</p>
+          <p>מרגישים פיזית את התקיעות בגרון או בחזה, המילה עומדת על קצה הלשון אך לא מצליחה לצאת החוצה בקלות.</p>
         </div>
         <div class="problem-card">
-          <div class="problem-icon">✕</div>
+          <div class="problem-icon" style="color: var(--primary-dark); background: rgba(109, 89, 122, 0.08);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+          </div>
           <h3>פחד מסיטואציות חברתיות</h3>
-          <p>החרדה סביב הדיבור גורמת לכם להעדיף לשתוק במקום להשמיע את קולכם במפגשים, ישיבות עבודה או ראיונות.</p>
+          <p>החרדה סביב הדיבור גורמת להעדיף לשתוק במקום להשמיע את הקול במפגשים, ישיבות עבודה או בבית הספר.</p>
         </div>
         <div class="problem-card">
-          <div class="problem-icon">✕</div>
+          <div class="problem-icon" style="color: var(--primary-dark); background: rgba(109, 89, 122, 0.08);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"></polyline><polyline points="16 17 22 17 22 11"></polyline></svg>
+          </div>
           <h3>תסכול עמוק וחוסר מימוש</h3>
-          <p>מרגישים שהסביבה לא מעריכה את היכולות המקצועיות או האישיות שלכם רק בגלל צורת הדיבור.</p>
+          <p>התחושה שהסביבה לא מעריכה את היכולות האמיתיות רק בגלל צורת הדיבור, מה שפוגע בביטחון העצמי באופן עקבי.</p>
         </div>
       </div>
     </div>
@@ -118,7 +126,7 @@
         <p>שומעים מאלו שעברו את התהליך והצליחו לשפר משמעותית את איכות הדיבור והחיים שלהם.</p>
       </div>
 
-      <div class="testimonials-grid">
+      <div class="testimonials-grid carousel-mobile">
         <div class="testimonial-card">
           <div class="stars-rating">★★★★★</div>
           <div class="quote-bubble">
@@ -143,6 +151,20 @@
             <div class="author-meta">
               <h4>מיכל, בת 34</h4>
               <span>תל אביב</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="stars-rating">★★★★★</div>
+          <div class="quote-bubble">
+            "אחרי שנים של תסכול וחוסר ביטחון, <strong>הילד שלי חזר לדבר בביטחון בגן ולשתף פעולה</strong>. העבודה עם הדס הייתה רגישה, מכילה ומאוד מדויקת לעולם של הילד. תודה על הכל!"
+          </div>
+          <div class="author-info">
+            <div class="author-avatar">ש</div>
+            <div class="author-meta">
+              <h4>שני, אמא של יונתן בן ה-5</h4>
+              <span>כפר סבא</span>
             </div>
           </div>
         </div>
@@ -222,19 +244,25 @@
             <h3 class="step-title">עבור מי הטיפול?</h3>
             <div class="step-options-grid">
               <div class="option-card">
-                <span class="option-icon">👤</span>
+                <span class="option-icon" style="color: var(--primary-dark);">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </span>
                 <span class="option-label">מבוגרים</span>
                 <input type="radio" name="targetAge" value="adult">
               </div>
               <div class="option-card">
-                <span class="option-icon">🎓</span>
-                <span class="option-label">בני נוער</span>
-                <input type="radio" name="targetAge" value="teen">
+                <span class="option-icon" style="color: var(--primary-dark);">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><path d="M20 8v6M23 11h-6"></path></svg>
+                </span>
+                <span class="option-label">ילדים ונוער</span>
+                <input type="radio" name="targetAge" value="teen_child">
               </div>
               <div class="option-card">
-                <span class="option-icon">👶</span>
-                <span class="option-label">ילדים</span>
-                <input type="radio" name="targetAge" value="child">
+                <span class="option-icon" style="color: var(--primary-dark);">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
+                </span>
+                <span class="option-label">הגיל הרך (0-6)</span>
+                <input type="radio" name="targetAge" value="toddler">
               </div>
             </div>
             <div class="form-navigation">
@@ -246,29 +274,50 @@
           <!-- Step 2 -->
           <div class="form-step" data-step="2">
             <h3 class="step-title">מהם האתגרים המרכזיים שתרצו לפתור?</h3>
-            <div class="checkbox-options-list">
-              
+            
+            <div id="diff-adult" class="checkbox-options-list">
               <div class="checkbox-card">
-                <input type="checkbox" name="difficulties" value="stuck">
-                <span class="checkbox-text">תחושת תקיעות או מחנק בגרון בזמן הדיבור</span>
+                <input type="checkbox" name="difficulties" value="stuck_adult">
+                <span class="checkbox-text">תחושת תקיעות או מחנק בדיבור</span>
               </div>
-              
               <div class="checkbox-card">
-                <input type="checkbox" name="difficulties" value="avoidance">
-                <span class="checkbox-text">הימנעות משיחות טלפון, פגישות או דיבור מול קהל</span>
+                <input type="checkbox" name="difficulties" value="avoidance_adult">
+                <span class="checkbox-text">הימנעות משיחות טלפון ודיבור קהל</span>
               </div>
-              
               <div class="checkbox-card">
-                <input type="checkbox" name="difficulties" value="anxiety">
-                <span class="checkbox-text">מתח וחרדה חברתית סביב מצבי דיבור שונים</span>
+                <input type="checkbox" name="difficulties" value="anxiety_adult">
+                <span class="checkbox-text">מתח וחרדה סביב מצבי דיבור</span>
               </div>
-              
               <div class="checkbox-card">
-                <input type="checkbox" name="difficulties" value="confidence">
-                <span class="checkbox-text">פגיעה בביטחון העצמי ותסכול מחוסר יכולת לבטא את עצמכם</span>
+                <input type="checkbox" name="difficulties" value="confidence_adult">
+                <span class="checkbox-text">פגיעה בביטחון העצמי</span>
               </div>
-              
             </div>
+
+            <div id="diff-child" class="checkbox-options-list" style="display:none;">
+              <div class="checkbox-card">
+                <input type="checkbox" name="difficulties" value="stuck_child">
+                <span class="checkbox-text">הילד נתקע או חוזר על הברות</span>
+              </div>
+              <div class="checkbox-card">
+                <input type="checkbox" name="difficulties" value="frustration_child">
+                <span class="checkbox-text">תסכול של הילד כשהוא לא מובן</span>
+              </div>
+              <div class="checkbox-card">
+                <input type="checkbox" name="difficulties" value="avoidance_child">
+                <span class="checkbox-text">הימנעות של הילד מדיבור</span>
+              </div>
+              <div class="checkbox-card">
+                <input type="checkbox" name="difficulties" value="confidence_child">
+                <span class="checkbox-text">פגיעה בביטחון העצמי של הילד</span>
+              </div>
+            </div>
+
+            <div class="checkbox-card fast-track-card" style="margin-top:15px; border-style:dashed; background: var(--bg-color);">
+              <input type="checkbox" name="difficulties" value="fast_track" id="fastTrackCb">
+              <span class="checkbox-text" style="font-weight:600;">אעדיף לפרט בשיחה טלפונית</span>
+            </div>
+
             <div class="form-navigation">
               <button type="button" class="btn btn-prev">&rarr; חזרה</button>
               <button type="button" class="btn btn-next">המשך &larr;</button>
@@ -296,6 +345,11 @@
                 <option value="evening">ערב (16:00 - 20:00)</option>
               </select>
             </div>
+            
+            <div class="form-group">
+              <label for="notes">הערה קצרה (לא חובה)</label>
+              <textarea id="notes" name="notes" placeholder="נשמח לשמוע קצת רקע..." rows="2" style="width:100%; border:1px solid #ddd; border-radius:8px; padding:0.5rem; font-family:inherit;"></textarea>
+            </div>
 
             <div class="form-navigation">
               <button type="button" class="btn btn-prev">&rarr; חזרה</button>
@@ -303,6 +357,54 @@
             </div>
           </div>
         </form>
+
+        <!-- Smart Form Logic injected specific to this page -->
+        <script>
+          document.addEventListener('DOMContentLoaded', () => {
+            const ageRadios = document.querySelectorAll('input[name="targetAge"]');
+            const adultOptions = document.getElementById('diff-adult');
+            const childOptions = document.getElementById('diff-child');
+            const fastTrackCb = document.getElementById('fastTrackCb');
+            const nextBtns = document.querySelectorAll('.btn-next');
+            
+            // Dynamic Experience Counter
+            const expSpan = document.getElementById('dynamic-experience');
+            if(expSpan) {
+              const startYear = 2019;
+              const currentYear = new Date().getFullYear();
+              expSpan.innerText = (currentYear - startYear) + '+';
+            }
+            
+            // Switch views based on age selection
+            ageRadios.forEach(radio => {
+              radio.addEventListener('change', (e) => {
+                const val = e.target.value;
+                if(val === 'teen_child' || val === 'toddler') {
+                  adultOptions.style.display = 'none';
+                  childOptions.style.display = 'grid'; // Grid like the wrapper
+                  // Uncheck adult boxes
+                  adultOptions.querySelectorAll('input').forEach(cb => { cb.checked = false; cb.closest('.checkbox-card').classList.remove('selected'); });
+                } else {
+                  adultOptions.style.display = 'grid';
+                  childOptions.style.display = 'none';
+                  // Uncheck child boxes
+                  childOptions.querySelectorAll('input').forEach(cb => { cb.checked = false; cb.closest('.checkbox-card').classList.remove('selected'); });
+                }
+              });
+            });
+
+            // Fast track skip logic
+            fastTrackCb.addEventListener('change', (e) => {
+              if(e.target.checked) {
+                // If they prefer phone call, let's auto advance them to step 3 after a brief moment
+                setTimeout(() => {
+                  const currentActiveNext = document.querySelector('.form-step.active .btn-next');
+                  if(currentActiveNext) currentActiveNext.click();
+                }, 400);
+              }
+            });
+          });
+        </script>
       </div>
     </div>
   </section>
@@ -358,6 +460,12 @@
             </div>
           </div>
           
+        </div>
+        <div class="faq-footer-cta" style="text-align:center; margin-top: 2rem;">
+          <p style="margin-bottom: 1rem; font-weight:500;">נשארו לכם עוד שאלות? סמסו לי לוואטסאפ ואענה בשמחה</p>
+          <a href="https://api.whatsapp.com/send?phone=972506796209" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+            דברו איתי בוואטסאפ
+          </a>
         </div>
       </div>
     </div>

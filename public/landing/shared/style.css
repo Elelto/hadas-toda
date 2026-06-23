@@ -1432,3 +1432,25 @@ strong {
 
 /* Ensure it doesn't overlap the footer on small screens by pushing the footer content up or adjusting z-index */
 /* Actually, standard practice is to let it hover over the footer, but we'll make sure the footer padding is enough */
+
+ / *   M o b i l e   C a r o u s e l   * / 
+ @ m e d i a   ( m a x - w i d t h :   7 6 8 p x )   { 
+     . c a r o u s e l - m o b i l e   { 
+         d i s p l a y :   f l e x   ! i m p o r t a n t ; 
+         o v e r f l o w - x :   a u t o ; 
+         s c r o l l - s n a p - t y p e :   x   m a n d a t o r y ; 
+         g a p :   1 . 5 r e m ; 
+         p a d d i n g - b o t t o m :   1 . 5 r e m ; 
+         - w e b k i t - o v e r f l o w - s c r o l l i n g :   t o u c h ; 
+         s c r o l l b a r - w i d t h :   n o n e ; 
+     } 
+     . c a r o u s e l - m o b i l e : : - w e b k i t - s c r o l l b a r   { 
+         d i s p l a y :   n o n e ; 
+     } 
+     . c a r o u s e l - m o b i l e   >   *   { 
+         m i n - w i d t h :   8 5 v w ; 
+         s c r o l l - s n a p - a l i g n :   c e n t e r ; 
+     } 
+ } 
+  
+ 
