@@ -82,7 +82,7 @@
 }
 
 .logo {
-  height: 55px;
+  height: 75px;
   width: auto;
   object-fit: contain;
   transition: all var(--transition-medium);
@@ -90,7 +90,7 @@
 }
 
 .logo.scrolled {
-  height: 45px;
+  height: 60px;
 }
 
 .logo-text {
