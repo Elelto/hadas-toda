@@ -4,11 +4,10 @@ import { loadYamlContent } from '../utils/yamlLoader';
 import logo from '../assets/logo.png';
 import '../styles/header.css';
 
-// Default navigation items (fallback if YAML fails)
 const getDefaultNavItems = () => [
   { path: '/', label: 'בית' },
-  { path: '/about', label: 'אודות' },
-  { path: '/services', label: 'שירותים' },
+  { path: '/about', label: 'קצת עלי' },
+  { path: '/services', label: 'תחומי התמחות' },
   { path: '/testimonials', label: 'המלצות' },
   { path: '/blog', label: 'בלוג' },
   { path: '/online-therapy', label: 'טיפול אונליין' },

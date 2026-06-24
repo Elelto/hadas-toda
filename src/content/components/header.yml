@@ -1,9 +1,9 @@
 menu_items:
   - name: "בית"
     path: "/"
-  - name: "אודות"
+  - name: "קצת עלי"
     path: "/about"
-  - name: "שירותים"
+  - name: "תחומי התמחות"
     path: "/services"
   - name: "המלצות"
     path: "/testimonials"

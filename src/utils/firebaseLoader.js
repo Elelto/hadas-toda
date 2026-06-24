@@ -19,7 +19,7 @@ export const loadFirebaseContent = async (collectionName, docId) => {
       // Auto-sync fix for header bug: overwriting "בני ברק" with "טיפול אונליין" from YAML
       if (collectionName === 'components' && docId === 'header') {
         const dataString = JSON.stringify(data);
-        if (dataString.includes('בני ברק') || !dataString.includes('טיפול אונליין')) {
+        if (dataString.includes('בני ברק') || !dataString.includes('טיפול אונליין') || dataString.includes('"אודות"') || dataString.includes('"שירותים"')) {
           console.log('🔄 Old header data detected in Firebase! Synchronizing with local YAML...');
           const yamlPath = `/content/${collectionName}/${docId}.yml`;
           const yamlData = await loadLocalYamlContent(yamlPath);
