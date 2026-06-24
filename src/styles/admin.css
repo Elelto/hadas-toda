@@ -936,7 +936,7 @@
     justify-content: space-around;
     padding-bottom: 0;
     gap: 0;
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   .sidebar-item-btn {
@@ -1047,5 +1047,6 @@
      a l i g n - i t e m s :   c e n t e r ; 
      g a p :   4 p x ; 
  } 
-  
+ 
+ 
  

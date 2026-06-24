@@ -1,6 +1,6 @@
 /* Bnei Brak Page Redesign - Modern & Professional */
 .bnei-brak-page-v2 {
-  overflow-x: hidden;
+  overflow-x: clip;
   background-color: #fff;
 }
 
