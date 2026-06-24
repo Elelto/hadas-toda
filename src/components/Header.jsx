@@ -95,10 +95,7 @@ export default function Header() {
               className={`logo ${scrolled ? 'scrolled' : ''}`}
               fetchPriority="high"
             />
-            <div className="logo-text">
-              <h1 className={`site-title ${scrolled ? 'scrolled' : ''}`}>{headerContent?.site?.title || "הדס תודה"}</h1>
-              <p className={`site-subtitle ${scrolled ? 'scrolled' : ''}`}>{headerContent?.site?.subtitle || "קלינאית תקשורת"}</p>
-            </div>
+
           </Link>
 
           {/* Mobile menu button */}
