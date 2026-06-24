@@ -90,7 +90,7 @@ export default function Blog() {
   };
 
   return (
-    <div className="blog-page">
+    <div className="blog-page page-reveal">
       <SEOHead
         title="בלוג"
         description="הבלוג המקצועי של הדס תודה - מאמרים, טיפים וחידושים בתחום קלינאות התקשורת, גמגום, צרידות ובעיות קול לילדים ומבוגרים."

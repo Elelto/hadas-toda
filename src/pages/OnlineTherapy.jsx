@@ -292,7 +292,7 @@ const OnlineTherapy = () => {
             <SEOHead {...seoData} />
             <StructuredData type="onlineTherapy" pageData={{ faqs }} />
 
-            <div className="online-therapy-page">
+            <div className="online-therapy-page page-reveal">
                 {/* Hero Section with Aurora Theme */}
                 <section className="bb-hero">
                     <div className="bb-hero-overlay"></div>

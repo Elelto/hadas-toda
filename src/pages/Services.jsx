@@ -3,6 +3,7 @@ import { loadYamlContent } from '../utils/yamlLoader';
 import AOS from 'aos';
 import SEOHead from '../components/SEOHead';
 import StructuredData from '../components/StructuredData';
+import InnerPageSkeleton from '../components/InnerPageSkeleton';
 import '../styles/services.css';
 import {
   FaMicrophoneAlt,
@@ -121,7 +122,7 @@ export default function Services() {
   }, [servicesContent]);
 
   if (loading) {
-    return <div className="loading">טוען...</div>;
+    return <InnerPageSkeleton />;
   }
 
   if (!servicesContent) {
@@ -178,7 +179,7 @@ export default function Services() {
   return (
     <>
       <StructuredData type="services" />
-      <div className="services-page">
+      <div className="services-page page-reveal">
         <SEOHead
           title="שירותים"
           description="שירותי קלינאות תקשורת מקצועיים של הדס תודה: טיפול בגמגום, צרידות, בעיות קול, עיכוב שפתי ושיבושי היגוי לילדים ומבוגרים."

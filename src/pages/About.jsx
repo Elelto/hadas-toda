@@ -3,6 +3,7 @@ import { FaSearchPlus, FaFilePdf, FaTimes } from 'react-icons/fa';
 import { loadYamlContent } from '../utils/yamlLoader';
 import AOS from 'aos';
 import SEOHead from '../components/SEOHead';
+import InnerPageSkeleton from '../components/InnerPageSkeleton';
 import '../styles/about.css';
 
 // Default content fallback
@@ -142,7 +143,7 @@ export default function About() {
   }, [lightboxItem]);
 
   if (loading) {
-    return <div className="loading">טוען...</div>;
+    return <InnerPageSkeleton />;
   }
 
   if (!aboutContent) {
@@ -180,7 +181,7 @@ export default function About() {
   };
 
   return (
-    <div className="about-page">
+    <div className="about-page page-reveal">
       <SEOHead
         title="אודות"
         description="הדס תודה - קלינאית תקשורת מוסמכת (M.A) עם התמחות בטיפולי קול, היגוי, גמגום, תפקודי פה ומובנות דיבור."

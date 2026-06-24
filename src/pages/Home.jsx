@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import SkeletonLoader from '../components/SkeletonLoader';
+import HomeSkeleton from '../components/HomeSkeleton';
 import { loadYamlContent } from '../utils/yamlLoader';
 import AOS from 'aos';
 import '../styles/home.css';
@@ -217,7 +217,7 @@ export default function Home() {
   }, [homeContent]);
 
   if (loading) {
-    return <SkeletonLoader />;
+    return <HomeSkeleton />;
   }
 
   // SEO structured data

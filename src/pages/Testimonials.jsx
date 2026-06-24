@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import AOS from 'aos';
 import { FaQuoteRight } from 'react-icons/fa';
 import SEOHead from '../components/SEOHead';
+import InnerPageSkeleton from '../components/InnerPageSkeleton';
 import { loadYamlContent } from '../utils/yamlLoader';
 import '../styles/testimonials.css';
 
@@ -73,6 +74,10 @@ export default function Testimonials() {
   const title = content?.title || 'הקול שלכם, הסיפור שלי';
   const subtitle = content?.subtitle || 'אין דבר מרגש יותר מלראות את השינוי בחיי המטופלים שלי. כאן תוכלו לקרוא על החוויות האישיות וסיפורי ההצלחה מהקליניקה.';
 
+  if (loading) {
+    return <InnerPageSkeleton />;
+  }
+
   // SEO structured data for testimonials page
   const structuredData = {
     "@context": "https://schema.org",
@@ -83,7 +88,7 @@ export default function Testimonials() {
   };
 
   return (
-    <div className="testimonials-page">
+    <div className="testimonials-page page-reveal">
       <SEOHead
         title="המלצות"
         description="המלצות ממטופלים על הטיפול בקלינאות התקשורת של הדס תודה. סיפורי הצלחה בטיפול בגמגום, צרידות, בעיות קול ועיכוב שפתי."
@@ -103,15 +108,6 @@ export default function Testimonials() {
 
       <div className="container">
         <section className="testimonials-section">
-          {loading ? (
-            <div className="loading-container" style={{ textAlign: 'center', padding: '3rem 0', color: 'var(--text-muted)' }}>
-              <div className="spinner" style={{ border: '4px solid rgba(0,0,0,0.1)', width: '36px', height: '36px', borderRadius: '50%', borderLeftColor: 'var(--primary-color)', animation: 'spin 1s linear infinite', margin: '0 auto 1rem auto' }}></div>
-              <p>טוען המלצות...</p>
-              <style>{`
-                @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-              `}</style>
-            </div>
-          ) : (
             <div className="testimonials-gallery">
               {images.map((item, index) => {
                 const paths = getImgPaths(item.image);
@@ -168,9 +164,6 @@ export default function Testimonials() {
                 );
               })}
             </div>
-          )}
-
-          {/* Lightbox */}
           {lightboxIndex !== null && images[lightboxIndex] && (() => {
             const currentItem = images[lightboxIndex];
             const paths = getImgPaths(currentItem.image);

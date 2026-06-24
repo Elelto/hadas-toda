@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { loadYamlContent } from '../utils/yamlLoader';
 import AOS from 'aos';
 import SEOHead from '../components/SEOHead';
+import InnerPageSkeleton from '../components/InnerPageSkeleton';
 import { init, send } from '@emailjs/browser';
 import '../styles/contact.css';
 import AuroraBackground from '../components/AuroraBackground';
@@ -273,7 +274,7 @@ export default function Contact() {
   };
 
   if (contentLoading) {
-    return <div className="loading">טוען...</div>;
+    return <InnerPageSkeleton />;
   }
 
   if (!contactContent) {
@@ -323,7 +324,7 @@ export default function Contact() {
   };
 
   return (
-    <div className="contact-page-bento" onMouseMove={handleMouseMove}>
+    <div className="contact-page-bento page-reveal" onMouseMove={handleMouseMove}>
       <AuroraBackground />
       <SEOHead
         title="יצירת קשר"

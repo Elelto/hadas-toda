@@ -302,7 +302,7 @@ const BneiBrak = () => {
       <SEOHead {...seoData} />
       <StructuredData type="services" />
 
-      <div className="bnei-brak-page-v2" onMouseMove={handleMouseMove}>
+      <div className="bnei-brak-page-v2 page-reveal" onMouseMove={handleMouseMove}>
         {/* Modern Hero Section */}
         <section className="bb-hero">
           <div className="bb-hero-overlay"></div>

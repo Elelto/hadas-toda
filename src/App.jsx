@@ -7,7 +7,7 @@ import ScrollToTop from './components/ScrollToTop';
 import SiteNotice from './components/SiteNotice';
 import { Suspense, lazy } from 'react';
 import Home from './pages/Home';
-import SkeletonLoader from './components/SkeletonLoader';
+import InnerPageSkeleton from './components/InnerPageSkeleton';
 
 const About = lazy(() => import('./pages/About'));
 const Services = lazy(() => import('./pages/Services'));
@@ -72,7 +72,7 @@ function App() {
         <div className="app-container">
           <Header />
           <main>
-            <Suspense fallback={<SkeletonLoader />}>
+            <Suspense fallback={<InnerPageSkeleton />}>
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />

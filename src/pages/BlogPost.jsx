@@ -71,7 +71,7 @@ export default function BlogPost() {
           keywords: post.categories?.join(', ') || 'קלינאות תקשורת'
         }}
       />
-      <div className="blog-post-page">
+      <div className="blog-post-page page-reveal">
         <div className="container">
           {/* כותרת המאמר */}
           <header className="blog-post-header">

@@ -1,5 +1,5 @@
 import { db } from '../services/firebase';
-import { doc, getDoc, collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { doc, getDoc, collection, getDocs, query, orderBy, setDoc } from 'firebase/firestore';
 import { loadLocalYamlContent } from './localYamlLoader';
 
 /**
@@ -14,7 +14,23 @@ export const loadFirebaseContent = async (collectionName, docId) => {
     const docSnap = await getDoc(docRef);
     
     if (docSnap.exists()) {
-      const data = docSnap.data();
+      let data = docSnap.data();
+      
+      // Auto-sync fix for header bug: overwriting "בני ברק" with "טיפול אונליין" from YAML
+      if (collectionName === 'components' && docId === 'header') {
+        const dataString = JSON.stringify(data);
+        if (dataString.includes('בני ברק') || !dataString.includes('טיפול אונליין')) {
+          console.log('🔄 Old header data detected in Firebase! Synchronizing with local YAML...');
+          const yamlPath = `/content/${collectionName}/${docId}.yml`;
+          const yamlData = await loadLocalYamlContent(yamlPath);
+          if (yamlData) {
+            await setDoc(docRef, yamlData);
+            console.log('✅ Firebase header document successfully updated with YAML data.');
+            data = yamlData; // use the newly synced data
+          }
+        }
+      }
+
       console.log(`✅ Loaded Firebase content:`, data);
       return data;
     } else {
