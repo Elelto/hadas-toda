@@ -61,9 +61,10 @@ export default function Header() {
         const content = await loadYamlContent('/content/components/header.yml');
         if (content) {
           setHeaderContent(content);
-          if (content.navigation?.items) {
+          const items = content.menu_items || content.navigation?.items;
+          if (items) {
             // Filter out 'ai-assessment' if it comes from YAML
-            const filteredItems = content.navigation.items.filter(item => item.path !== '/ai-assessment');
+            const filteredItems = items.filter(item => item.path !== '/ai-assessment');
             setNavItems(filteredItems);
           }
         }
@@ -111,7 +112,7 @@ export default function Header() {
                 className={`nav-link ${location.pathname === item.path ? 'active' : ''} ${item.isNew ? 'new-feature' : ''}`}
                 aria-current={location.pathname === item.path ? 'page' : undefined}
               >
-                {item.label}
+                {item.label || item.name}
                 {item.isNew && <span className="new-badge">חדש!</span>}
               </Link>
             ))}
@@ -132,7 +133,7 @@ export default function Header() {
               onClick={() => setIsMenuOpen(false)}
               aria-current={location.pathname === item.path ? 'page' : undefined}
             >
-              {item.label}
+              {item.label || item.name}
               {item.isNew && <span className="new-badge">חדש!</span>}
             </Link>
           ))}

@@ -239,7 +239,7 @@ export default function Home() {
   return (
     <>
       <StructuredData type="home" />
-      <div className="home-page-v2">
+      <div className="home-page-v2 page-reveal">
         <SEOHead
           title="דף הבית"
           description="הדס תודה - קלינאית תקשורת מוסמכת המתמחה בטיפול בגמגום, צרידות, בעיות קול ועיכוב שפתי לילדים ומבוגרים. טיפול מקצועי ואישי."

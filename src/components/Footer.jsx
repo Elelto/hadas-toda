@@ -31,7 +31,7 @@ const getDefaultFooterContent = () => ({
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const [footerContent, setFooterContent] = useState(null);
+  const [footerContent, setFooterContent] = useState(getDefaultFooterContent());
 
   // Load footer content from YAML
   useEffect(() => {
@@ -40,25 +40,22 @@ export default function Footer() {
         const content = await loadYamlContent('/content/components/footer.yml');
         if (content) {
           setFooterContent(content);
-        } else {
-          setFooterContent(getDefaultFooterContent());
         }
       } catch (error) {
         console.warn('Could not load footer content, using defaults');
-        setFooterContent(getDefaultFooterContent());
       }
     };
 
     loadContent();
   }, []);
 
-  if (!footerContent) {
-    return null; // Or a simple skeleton
-  }
-
   const contact = footerContent.contact || getDefaultFooterContent().contact;
-  const navItems = footerContent.navigation?.items || getDefaultFooterContent().navigation.items;
-  const copyright = footerContent.copyright || getDefaultFooterContent().copyright;
+  const navItems = footerContent.links || footerContent.navigation?.items || getDefaultFooterContent().navigation.items;
+  
+  const defaultCopyright = getDefaultFooterContent().copyright;
+  const copyrightText = typeof footerContent.copyright === 'string' 
+    ? footerContent.copyright 
+    : `© ${currentYear} ${footerContent.copyright?.text || defaultCopyright.text}. כל הזכויות שמורות.`;
 
   return (
     <footer className="site-footer">
@@ -123,7 +120,7 @@ export default function Footer() {
 
         <div className="footer-bottom">
           <div className="copyright-text">
-            &copy; {currentYear} {copyright.text}. כל הזכויות שמורות.
+            {copyrightText}
           </div>
         </div>
       </div>
