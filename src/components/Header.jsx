@@ -5,13 +5,13 @@ import logo from '../assets/logo.png';
 import '../styles/header.css';
 
 const getDefaultNavItems = () => [
-  { path: '/', label: 'בית' },
-  { path: '/about', label: 'קצת עלי' },
-  { path: '/services', label: 'תחומי התמחות' },
-  { path: '/testimonials', label: 'המלצות' },
-  { path: '/blog', label: 'בלוג' },
+  { path: '/', label: 'ראשי' },
+  { path: '/about', label: 'קצת עליי' },
+  { path: '/services', label: 'תחומי טיפול' },
+  { path: '/testimonials', label: 'מטופלים מספרים' },
+  { path: '/blog', label: 'בלוג מקצועי' },
   { path: '/online-therapy', label: 'טיפול אונליין' },
-  { path: '/contact', label: 'יצירת קשר' }
+  { path: '/contact', label: 'דברו איתי' }
 ];
 
 export default function Header() {
