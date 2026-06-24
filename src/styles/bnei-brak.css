@@ -81,6 +81,7 @@
   background: radial-gradient(circle, rgba(185, 123, 160, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
   border-radius: 50%;
   z-index: 0;
+  pointer-events: none;
 }
 
 .bb-hero-content {
@@ -453,6 +454,7 @@
 .visual-decoration {
   position: absolute;
   z-index: 1;
+  pointer-events: none;
 }
 
 .visual-decoration.circle-bg {
@@ -950,6 +952,7 @@
   border-radius: 50%;
   transition: all 0.5s ease;
   z-index: -1;
+  pointer-events: none;
 }
 
 .bb-specialization-card:hover::before {

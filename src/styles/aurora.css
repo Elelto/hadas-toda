@@ -9,6 +9,7 @@
     overflow: hidden;
     z-index: 0;
     background: linear-gradient(135deg, #fffbfd 0%, #fcf7fa 100%);
+    pointer-events: none;
 }
 
 .aurora-blur {

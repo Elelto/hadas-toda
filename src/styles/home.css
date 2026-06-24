@@ -338,6 +338,7 @@
   border-radius: 50%;
   transition: all 0.5s ease;
   z-index: -1;
+  pointer-events: none;
 }
 
 .bb-specialization-card:hover::before {

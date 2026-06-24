@@ -493,6 +493,7 @@ main {
   opacity: 0.2;
   position: absolute;
   font-family: Georgia, serif;
+  pointer-events: none;
 }
 
 .quote::before {
