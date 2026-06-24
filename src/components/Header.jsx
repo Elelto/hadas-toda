@@ -110,8 +110,13 @@ export default function Header() {
           <nav className="desktop-nav">
             {!isNavLoaded ? (
               // Skeletons
-              Array.from({ length: 7 }).map((_, i) => (
-                <div key={`skeleton-${i}`} className="nav-link-skeleton"></div>
+              getDefaultNavItems().map((item) => (
+                <div 
+                  key={`skeleton-${item.path}`} 
+                  className={`nav-link nav-link-skeleton ${location.pathname === item.path ? 'active' : ''}`}
+                >
+                  {item.label}
+                </div>
               ))
             ) : (
               navItems.map((item) => (
@@ -137,8 +142,13 @@ export default function Header() {
           <div className="mobile-nav">
             {!isNavLoaded ? (
               // Skeletons
-              Array.from({ length: 7 }).map((_, i) => (
-                <div key={`mob-skeleton-${i}`} className="mobile-nav-skeleton"></div>
+              getDefaultNavItems().map((item) => (
+                <div 
+                  key={`mob-skeleton-${item.path}`} 
+                  className={`mobile-nav-link mobile-nav-skeleton ${location.pathname === item.path ? 'active' : ''}`}
+                >
+                  {item.label}
+                </div>
               ))
             ) : (
               navItems.map((item) => (
