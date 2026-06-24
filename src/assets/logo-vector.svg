@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200" width="100%" height="100%">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&amp;display=swap');
+      .title { font-family: 'Assistant', sans-serif; font-weight: 700; font-size: 72px; fill: #658ba4; letter-spacing: -1.5px; }
+      .subtitle { font-family: 'Assistant', sans-serif; font-weight: 400; font-size: 38px; fill: #a2b1bb; letter-spacing: -0.5px; }
+    </style>
+    <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b97ba0" />
+      <stop offset="100%" stop-color="#e0b4c9" />
+    </linearGradient>
+  </defs>
+
+  <!-- Sound/Ear Wave Icon -->
+  <path d="M 100, 20 A 75,75 0 0,0 100,170" fill="none" stroke="url(#waveGradient)" stroke-width="8" stroke-linecap="round"/>
+  <path d="M 85, 45 A 50,50 0 0,0 85,145" fill="none" stroke="url(#waveGradient)" stroke-width="8" stroke-linecap="round"/>
+  <path d="M 70, 70 A 25,25 0 0,0 70,120" fill="none" stroke="url(#waveGradient)" stroke-width="8" stroke-linecap="round"/>
+  
+  <!-- Frequency Wave -->
+  <path d="M 70,120 Q 85,160 100,130 T 120,95 T 140,140 T 155,100 T 170,130 T 185,110 T 200,120" fill="none" stroke="url(#waveGradient)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Text -->
+  <text x="220" y="90" class="title">הדס תודה</text>
+  <text x="225" y="145" class="subtitle">קלינאית תקשורת M.A.</text>
+</svg>
