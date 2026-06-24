@@ -85,14 +85,8 @@
   height: 55px;
   width: auto;
   object-fit: contain;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  margin-left: 18px;
-  transition: var(--transition);
-  border-radius: 8px;
-  box-shadow: var(--shadow);
+  transition: all var(--transition-medium);
+  margin-left: 10px;
 }
 
 .logo.scrolled {
