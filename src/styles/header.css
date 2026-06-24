@@ -374,3 +374,38 @@
     padding: 0 1rem;
   }
 }
+
+/* Navigation Skeleton */
+.nav-link-skeleton {
+  width: 70px;
+  height: 24px;
+  margin: 0 18px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeletonLoading 1.5s infinite;
+  border-radius: 4px;
+}
+
+.mobile-nav-skeleton {
+  width: 150px;
+  height: 24px;
+  margin: 15px 0;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeletonLoading 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes skeletonLoading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.nav-fade-in {
+  animation: navFadeIn 0.5s ease forwards;
+}
+
+@keyframes navFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
