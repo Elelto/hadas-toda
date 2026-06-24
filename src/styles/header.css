@@ -103,7 +103,7 @@
   object-fit: contain;
   transition: all 0.3s ease;
   margin-left: 10px;
-  transform: scale(1.5);
+  transform: scale(2.1);
   transform-origin: right center;
 }
 
