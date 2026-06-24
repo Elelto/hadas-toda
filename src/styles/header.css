@@ -98,17 +98,15 @@
 }
 
 .logo {
-  height: 95px;
+  height: 55px;
   width: auto;
   object-fit: contain;
   transition: all 0.3s ease;
   margin-left: 10px;
-  transform: scale(2.1);
-  transform-origin: right center;
 }
 
 .logo.scrolled {
-  height: 75px;
+  height: 45px;
 }
 
 .logo-text {
