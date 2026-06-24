@@ -127,7 +127,10 @@
         // Select this one
         card.classList.add('selected');
         const radio = card.querySelector('input[type="radio"]');
-        if (radio) radio.checked = true;
+        if (radio) {
+          radio.checked = true;
+          radio.dispatchEvent(new Event('change', { bubbles: true }));
+        }
 
         // Visual auto-advance feedback delay
         setTimeout(() => {
