@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { loadYamlContent } from '../utils/yamlLoader';
-import logo from '../assets/logo-vector.svg';
+import logo from '../assets/logo-ai.png';
 import '../styles/header.css';
 
 const getDefaultNavItems = () => [
