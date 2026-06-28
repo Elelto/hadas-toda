@@ -24,6 +24,7 @@
     "framer-motion": "^12.40.0",
     "gray-matter": "^4.0.3",
     "js-yaml": "^5.0.0",
+    "lucide-react": "^1.21.0",
     "markdown-it": "^14.2.0",
     "netlify-identity-widget": "^2.0.3",
     "pdfjs-dist": "^6.0.227",

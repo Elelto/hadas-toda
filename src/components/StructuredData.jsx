@@ -4,19 +4,43 @@ import { Helmet } from 'react-helmet-async';
 const StructuredData = ({ type = 'organization', pageData = {} }) => {
   const baseUrl = 'https://hadas-toda.co.il';
 
-  // נתוני העסק הבסיסיים
+  // נתוני העסק הבסיסיים (כללי/ארצי)
   const organizationData = {
     "@context": "https://schema.org",
-    "@type": "MedicalBusiness",
+    "@type": "MedicalOrganization",
     "@id": `${baseUrl}/#organization`,
     "name": "הדס תודה - קלינאית תקשורת",
     "alternateName": "Hadas Toda Speech Therapist",
-    "description": "קלינאית תקשורת מוסמכת (M.A) בבני ברק המתמחה בטיפולי קול, היגוי, גמגום, תפקודי פה ומובנות דיבור לילדים ומבוגרים",
+    "description": "קלינאית תקשורת מוסמכת (M.A) המתמחה בטיפולי קול, היגוי, גמגום, תפקודי פה ומובנות דיבור לילדים ומבוגרים",
     "url": baseUrl,
     "logo": `${baseUrl}/images/logo.png`,
     "image": `${baseUrl}/images/logo.png`,
     "telephone": "+972-50-679-6209",
     "email": "hadas.toda@gmail.com",
+    "areaServed": {
+      "@type": "Country",
+      "name": "IL"
+    },
+    "serviceType": [
+      "טיפולי קול וצרידות",
+      "טיפול בהיגוי ושיבושי הגייה",
+      "טיפול בגמגום ושטף דיבור",
+      "טיפול בתפקודי פה ודחיקת לשון",
+      "שיפור מובנות דיבור והבהרת דיבור"
+    ],
+    "medicalSpecialty": "Speech-Language Pathology",
+    "priceRange": "$$",
+    "paymentAccepted": ["Cash", "Credit Card"],
+    "currenciesAccepted": "ILS",
+    "openingHours": "Mo-Th 09:00-18:00",
+    "sameAs": []
+  };
+
+  // נתוני עסק מקומיים (רק עבור בני ברק)
+  const localBneiBrakData = {
+    ...organizationData,
+    "@type": "MedicalBusiness",
+    "description": "קלינאית תקשורת מוסמכת (M.A) בבני ברק המתמחה בטיפולי קול, היגוי, גמגום, תפקודי פה ומובנות דיבור לילדים ומבוגרים",
     "address": {
       "@type": "PostalAddress",
       "addressCountry": "IL",
@@ -31,40 +55,11 @@ const StructuredData = ({ type = 'organization', pageData = {} }) => {
       "longitude": "34.8255"
     },
     "areaServed": [
-      {
-        "@type": "City",
-        "name": "בני ברק"
-      },
-      {
-        "@type": "City",
-        "name": "רמת גן"
-      },
-      {
-        "@type": "City",
-        "name": "גבעתיים"
-      },
-      {
-        "@type": "City",
-        "name": "תל אביב"
-      },
-      {
-        "@type": "AdministrativeArea",
-        "name": "מחוז המרכז"
-      }
-    ],
-    "serviceType": [
-      "טיפולי קול וצרידות",
-      "טיפול בהיגוי ושיבושי הגייה",
-      "טיפול בגמגום ושטף דיבור",
-      "טיפול בתפקודי פה ודחיקת לשון",
-      "שיפור מובנות דיבור והבהרת דיבור"
-    ],
-    "medicalSpecialty": "Speech-Language Pathology",
-    "priceRange": "$$",
-    "paymentAccepted": ["Cash", "Credit Card"],
-    "currenciesAccepted": "ILS",
-    "openingHours": "Mo-Th 09:00-18:00",
-    "sameAs": []
+      { "@type": "City", "name": "בני ברק" },
+      { "@type": "City", "name": "רמת גן" },
+      { "@type": "City", "name": "גבעתיים" },
+      { "@type": "AdministrativeArea", "name": "מחוז המרכז" }
+    ]
   };
 
   // נתוני שירותים רפואיים
@@ -190,7 +185,7 @@ const StructuredData = ({ type = 'organization', pageData = {} }) => {
   // נתוני שירות אונליין (טלרפואה)
   const onlineTherapyData = {
     "@context": "https://schema.org",
-    "@type": "MedicalBusiness",
+    "@type": "MedicalOrganization",
     "@id": `${baseUrl}/online-therapy#online-service`,
     "name": "הדס תודה - קלינאית תקשורת אונליין",
     "alternateName": "Hadas Toda Online Speech Therapy",
@@ -199,11 +194,6 @@ const StructuredData = ({ type = 'organization', pageData = {} }) => {
     "telephone": "+972-50-679-6209",
     "priceRange": "$$",
     "image": `${baseUrl}/images/logo.png`,
-    "address": {
-      "@type": "PostalAddress",
-      "addressCountry": "IL",
-      "addressLocality": "בני ברק"
-    },
     "availableChannel": {
       "@type": "ServiceChannel",
       "serviceType": "Online",
@@ -213,7 +203,7 @@ const StructuredData = ({ type = 'organization', pageData = {} }) => {
     },
     "areaServed": {
       "@type": "Country",
-      "name": "ישראל"
+      "name": "IL"
     },
     "medicalSpecialty": "Speech-Language Pathology",
     "serviceType": [
@@ -255,6 +245,9 @@ const StructuredData = ({ type = 'organization', pageData = {} }) => {
     case 'services':
       structuredData = [organizationData, medicalServiceData];
       break;
+    case 'bneiBrak':
+      structuredData = [localBneiBrakData, medicalServiceData];
+      break;
     case 'about':
       structuredData = [organizationData, personData];
       break;
@@ -266,6 +259,19 @@ const StructuredData = ({ type = 'organization', pageData = {} }) => {
       break;
     case 'onlineTherapy':
       structuredData = [organizationData, onlineTherapyData, onlineFaqData].filter(Boolean);
+      break;
+    case 'landingPage':
+      // For the dynamic A/B static landings
+      const landingData = {
+        "@context": "https://schema.org",
+        "@type": pageData.schemaType || "MedicalOrganization",
+        "name": "הדס תודה - קלינאית תקשורת",
+        "description": pageData.description,
+        "url": `${baseUrl}/landing/${pageData.slug}`,
+        "areaServed": pageData.areaServed ? { "@type": "Country", "name": pageData.areaServed } : undefined,
+        "telephone": "+972-50-679-6209"
+      };
+      structuredData = [landingData, onlineFaqData].filter(Boolean);
       break;
     default:
       structuredData = [organizationData];

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useHistoryUIState } from '../hooks/useHistoryUIState';
 import '../styles/accessibility.css';
 
 const AccessibilityWidget = () => {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useHistoryUIState('accessibilityMenu', false);
     const [settings, setSettings] = useState({
         textSize: 0, // 0: normal, 1: large, 2: xlarge
         highContrast: false,

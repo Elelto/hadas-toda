@@ -350,13 +350,14 @@ const OnlineTherapy = () => {
                             <p>היתרונות של טיפול מרחוק</p>
                         </div>
 
-                        <div className="benefits-grid">
+                        <div className="benefits-grid sticky-stack-container">
                             {benefits.map((benefit, index) => (
                                 <div
                                     key={index}
-                                    className="benefit-card"
+                                    className="benefit-card sticky-stack-card"
                                     data-aos="fade-up"
                                     data-aos-delay={index * 100}
+                                    style={{ '--index': index }}
                                 >
                                     <div className="benefit-icon">
                                         {benefit.icon}
@@ -378,16 +379,16 @@ const OnlineTherapy = () => {
                             <p>כל שירותי הקליניקה - עכשיו גם מרחוק</p>
                         </div>
 
-                        <div className="bb-services-grid-specializations">
+                        <div className="bb-services-grid-specializations sticky-stack-container">
                             {services.map((service, index) => {
                                 const config = specializationConfig[service.icon] || specializationConfig['voice'];
                                 return (
                                     <div
                                         key={index}
-                                        className="bb-specialization-card glass-card"
+                                        className="bb-specialization-card glass-card sticky-stack-card"
                                         data-aos="fade-up"
                                         data-aos-delay={index * 100}
-                                        style={{ '--hover-color': config.color }}
+                                        style={{ '--hover-color': config.color, '--index': index }}
                                     >
                                         <div
                                             className="spec-icon"

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useHistoryUIState } from '../hooks/useHistoryUIState';
 import SEOHead from '../components/SEOHead';
 import StructuredData from '../components/StructuredData';
 import AOS from 'aos';
@@ -70,7 +71,7 @@ const BneiBrak = () => {
   const experienceYearsLabel = getExperienceYearsLabel();
 
   const [testimonialsContent, setTestimonialsContent] = useState(null);
-  const [lightboxIndex, setLightboxIndex] = useState(null);
+  const [lightboxIndex, setLightboxIndex] = useHistoryUIState('lightbox', null);
   const [useFallback, setUseFallback] = useState({});
 
   const activeImages = (testimonialsContent?.images || []).filter(img => !img.hide);
@@ -300,7 +301,7 @@ const BneiBrak = () => {
   return (
     <>
       <SEOHead {...seoData} />
-      <StructuredData type="services" />
+      <StructuredData type="bneiBrak" />
 
       <div className="bnei-brak-page-v2 page-reveal" onMouseMove={handleMouseMove}>
         {/* Modern Hero Section */}
@@ -355,17 +356,18 @@ const BneiBrak = () => {
               <p>מעטפת טיפולית מקצועית המותאמת לצרכים האישיים שלך</p>
             </div>
 
-            <div className="bb-services-grid-specializations">
+            <div className="bb-services-grid-specializations sticky-stack-container">
               {services.map((service, index) => {
                 const config = specializationConfig[service.icon] || specializationConfig['voice'];
                 return (
                   <div
                     key={index}
-                    className="bb-specialization-card glass-card"
+                    className="bb-specialization-card glass-card sticky-stack-card"
                     data-aos="fade-up"
                     data-aos-delay={index * 100}
                     style={{
-                      '--hover-color': config.color
+                      '--hover-color': config.color,
+                      '--index': index
                     }}
                   >
                     <div
@@ -453,9 +455,9 @@ const BneiBrak = () => {
             <div className="testimonials-carousel-wrapper" data-aos="fade-up">
               <Swiper
                 modules={[Autoplay, Pagination, Navigation]}
-                spaceBetween={24}
-                slidesPerView={1}
-                centeredSlides={true}
+                spaceBetween={16}
+                slidesPerView={1.15}
+                centeredSlides={false}
                 slideToClickedSlide={true}
                 loop={true}
                 loopedSlides={4}
@@ -472,10 +474,12 @@ const BneiBrak = () => {
                   640: {
                     slidesPerView: 2,
                     spaceBetween: 20,
+                    centeredSlides: false,
                   },
                   1024: {
                     slidesPerView: 3,
                     spaceBetween: 24,
+                    centeredSlides: true,
                   },
                 }}
                 className="testimonials-swiper"

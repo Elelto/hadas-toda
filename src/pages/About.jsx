@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistoryUIState } from '../hooks/useHistoryUIState';
 import { FaSearchPlus, FaFilePdf, FaTimes } from 'react-icons/fa';
 import { loadYamlContent } from '../utils/yamlLoader';
 import AOS from 'aos';
@@ -54,7 +55,7 @@ export default function About() {
   const [aboutContent, setAboutContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [lightboxItem, setLightboxItem] = useState(null);
+  const [lightboxItem, setLightboxItem] = useHistoryUIState('lightboxItem', null);
 
   // Load YAML content
   useEffect(() => {
@@ -243,29 +244,31 @@ export default function About() {
 
           {/* Certificate Images Grid (if any exist) */}
           {aboutContent.qualifications?.items?.filter(q => q.image).length > 0 && (
-            <div className="cert-gallery qualifications-list" data-aos="fade-up" data-aos-delay="400">
-              {aboutContent.qualifications.items.filter(q => q.image).map((q, index) => (
-                <div 
-                  key={index} 
-                  className={`cert-card has-image`}
-                  onClick={() => setLightboxItem(q)}
-                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLightboxItem(q); } }}
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`הגדל תעודה: ${q.item}`}
-                >
-                  <div className="cert-image-wrapper">
-                    <img src={q.image} alt={q.item} className="cert-image" loading="lazy" />
-                    <div className="cert-hover-overlay">
-                      <FaSearchPlus className="zoom-icon" />
-                      <span className="hover-text">לחץ להגדלה</span>
+            <div className="fade-mask-wrapper" style={{ '--bg-color': '#f8f9fa' }}>
+              <div className="cert-gallery qualifications-list" data-aos="fade-up" data-aos-delay="400">
+                {aboutContent.qualifications.items.filter(q => q.image).map((q, index) => (
+                  <div 
+                    key={index} 
+                    className={`cert-card has-image`}
+                    onClick={() => setLightboxItem(q)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLightboxItem(q); } }}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`הגדל תעודה: ${q.item}`}
+                  >
+                    <div className="cert-image-wrapper">
+                      <img src={q.image} alt={q.item} className="cert-image" loading="lazy" />
+                      <div className="cert-hover-overlay">
+                        <FaSearchPlus className="zoom-icon" />
+                        <span className="hover-text">לחץ להגדלה</span>
+                      </div>
+                    </div>
+                    <div className="cert-info">
+                      <p className="cert-title">{q.item}</p>
                     </div>
                   </div>
-                  <div className="cert-info">
-                    <p className="cert-title">{q.item}</p>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           )}
         </div>
@@ -276,34 +279,36 @@ export default function About() {
         <section className="section-courses">
           <div className="container">
             <h2 className="section-title" data-aos="fade-right">{aboutContent.courses_title || "השתלמויות מקצועיות"}</h2>
-            <div className="cert-gallery courses-list" data-aos="fade-up" data-aos-delay="400">
-              {aboutContent.courses.map((course, index) => (
-                <div 
-                  key={index} 
-                  className={`cert-card ${course.image ? 'has-image' : 'text-only'}`}
-                  onClick={() => course.image ? setLightboxItem(course) : null}
-                  onKeyDown={(e) => { if (course.image && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); setLightboxItem(course); } }}
-                  role={course.image ? 'button' : 'listitem'}
-                  tabIndex={course.image ? 0 : undefined}
-                  aria-label={course.image ? `הגדל תעודה: ${course.name}` : undefined}
-                >
-                  {course.image && (
-                    <div className="cert-image-wrapper">
-                      <img src={course.image} alt={course.name} className="cert-image" loading="lazy" />
-                      <div className="cert-hover-overlay">
-                        <FaSearchPlus className="zoom-icon" />
-                        <span className="hover-text">לחץ להגדלה</span>
+            <div className="fade-mask-wrapper">
+              <div className="cert-gallery courses-list" data-aos="fade-up" data-aos-delay="400">
+                {aboutContent.courses.map((course, index) => (
+                  <div 
+                    key={index} 
+                    className={`cert-card ${course.image ? 'has-image' : 'text-only'}`}
+                    onClick={() => course.image ? setLightboxItem(course) : null}
+                    onKeyDown={(e) => { if (course.image && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); setLightboxItem(course); } }}
+                    role={course.image ? 'button' : 'listitem'}
+                    tabIndex={course.image ? 0 : undefined}
+                    aria-label={course.image ? `הגדל תעודה: ${course.name}` : undefined}
+                  >
+                    {course.image && (
+                      <div className="cert-image-wrapper">
+                        <img src={course.image} alt={course.name} className="cert-image" loading="lazy" />
+                        <div className="cert-hover-overlay">
+                          <FaSearchPlus className="zoom-icon" />
+                          <span className="hover-text">לחץ להגדלה</span>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  <div className="cert-info">
-                    <p className="cert-title course-name">{course.name}</p>
-                    {course.instructor && (
-                      <span className="cert-subtitle course-instructor">{course.instructor}</span>
                     )}
+                    <div className="cert-info">
+                      <p className="cert-title course-name">{course.name}</p>
+                      {course.instructor && (
+                        <span className="cert-subtitle course-instructor">{course.instructor}</span>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </section>

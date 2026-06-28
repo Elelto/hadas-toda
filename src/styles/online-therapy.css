@@ -351,27 +351,10 @@
     bottom: 10% !important;
   }
 
-  .benefits-grid {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    max-width: 100%;
-    padding: 0 1rem 20px;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  .benefits-grid::-webkit-scrollbar {
-    display: none;
-  }
-  .benefits-grid > * {
-    scroll-snap-align: center;
-    flex: 0 0 72%;
-    max-width: 300px;
-  }
-
   .benefit-card {
     padding: 1.5rem 1rem;
-    height: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 }
 

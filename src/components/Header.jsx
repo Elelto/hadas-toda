@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useHistoryUIState } from '../hooks/useHistoryUIState';
 import { loadYamlContent } from '../utils/yamlLoader';
 import logo from '../assets/logo-trimmed.png';
 import '../styles/header.css';
@@ -16,7 +17,8 @@ const getDefaultNavItems = () => [
 
 export default function Header() {
   const location = useLocation();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useHistoryUIState('mobileMenu', false);
   const [scrolled, setScrolled] = useState(false);
   const [headerContent, setHeaderContent] = useState(null);
   const [navItems, setNavItems] = useState([]);
@@ -24,6 +26,26 @@ export default function Header() {
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleMobileNavClick = (e, path) => {
+    e.preventDefault();
+    if (location.pathname === path) {
+      // If we're already on this page, just close the menu naturally
+      setIsMenuOpen(false);
+    } else {
+      // If we're navigating to a new page, we must avoid a race condition 
+      // between closing the menu (navigate(-1)) and going to the new page (navigate(path)).
+      // 1. Remove the menu open state from the current history entry
+      navigate(location.pathname + location.search + location.hash, {
+        replace: true,
+        state: { ...location.state, mobileMenu: undefined }
+      });
+      // 2. Safely push the new page onto the history stack
+      setTimeout(() => {
+        navigate(path);
+      }, 0);
+    }
   };
 
   // Lock body scroll when mobile menu is open
@@ -152,16 +174,16 @@ export default function Header() {
               ))
             ) : (
               navItems.map((item) => (
-                <Link
+                <a
                   key={item.path}
-                  to={item.path}
+                  href={item.path}
                   className={`mobile-nav-link nav-fade-in ${location.pathname === item.path ? 'active' : ''} ${item.isNew ? 'new-feature' : ''}`}
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={(e) => handleMobileNavClick(e, item.path)}
                   aria-current={location.pathname === item.path ? 'page' : undefined}
                 >
                   {item.label || item.name}
                   {item.isNew && <span className="new-badge">חדש!</span>}
-                </Link>
+                </a>
               ))
             )}
           </div>

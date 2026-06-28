@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useHistoryUIState } from '../hooks/useHistoryUIState';
 import AOS from 'aos';
 import { FaQuoteRight } from 'react-icons/fa';
 import SEOHead from '../components/SEOHead';
@@ -27,7 +28,7 @@ const getImgPaths = (imagePath) => {
 export default function Testimonials() {
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [lightboxIndex, setLightboxIndex] = useState(null);
+  const [lightboxIndex, setLightboxIndex] = useHistoryUIState('lightbox', null);
   const [useFallback, setUseFallback] = useState({});
 
   useEffect(() => {

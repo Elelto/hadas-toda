@@ -564,4 +564,52 @@ main {
   }
 }
 
-/* Global Premium Animations */
+/* Global Premium Animations */
+
+/* ==========================================
+   Mobile Horizontal Scroll Gradient Mask
+   ========================================== */
+.fade-mask-wrapper {
+  position: relative;
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .fade-mask-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 60px; /* Width of the fade */
+    background: linear-gradient(to right, var(--bg-color, #ffffff) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 5;
+  }
+}
+
+/* ==========================================
+   Mobile Sticky Stack Cards
+   ========================================== */
+@media (max-width: 768px) {
+  .sticky-stack-container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1.5rem;
+    position: relative;
+  }
+
+  .sticky-stack-card {
+    position: sticky;
+    top: calc(100px + (var(--index, 0) * 12px));
+    z-index: calc(10 + var(--index, 0));
+    /* Reset flex so flex-basis doesn't affect height when in column */
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    /* Override glass/transparency for sticky stack so text underneath doesn't bleed through */
+    background-color: #ffffff !important; 
+    box-shadow: 0 -15px 30px rgba(0, 0, 0, 0.08) !important;
+    border-top: 1px solid rgba(0,0,0,0.03);
+  }
+}

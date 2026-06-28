@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { useHistoryUIState } from '../hooks/useHistoryUIState';
 import HomeSkeleton from '../components/HomeSkeleton';
 import { loadYamlContent } from '../utils/yamlLoader';
 import AOS from 'aos';
@@ -140,7 +141,7 @@ export default function Home() {
   const [homeContent, setHomeContent] = useState(null);
   const [testimonialsContent, setTestimonialsContent] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [lightboxIndex, setLightboxIndex] = useState(null);
+  const [lightboxIndex, setLightboxIndex] = useHistoryUIState('lightbox', null);
   const [useFallback, setUseFallback] = useState({});
   const experienceYearsLabel = getExperienceYearsLabel();
   const patientsCountLabel = getPatientsCountLabel();
@@ -282,6 +283,8 @@ export default function Home() {
             </div>
           </div>
 
+
+
           <div className="wave-bottom">
             <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
               <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" className="shape-fill"></path>
@@ -314,17 +317,18 @@ export default function Home() {
               <p>{homeContent?.services?.subtitle}</p>
             </div>
 
-            <div className="bb-services-grid-specializations">
+            <div className="bb-services-grid-specializations sticky-stack-container">
               {homeContent?.services?.specializations?.map((spec, index) => {
                 const config = specializationConfig[spec.icon] || specializationConfig['voice'];
                 return (
                   <div
                     key={index}
-                    className="bb-specialization-card glass-card"
+                    className="bb-specialization-card glass-card sticky-stack-card"
                     data-aos="fade-up"
                     data-aos-delay={index * 100}
                     style={{
-                      '--hover-color': config.color
+                      '--hover-color': config.color,
+                      '--index': index
                     }}
                   >
                     <div
@@ -427,9 +431,9 @@ export default function Home() {
             <div className="testimonials-carousel-wrapper" data-aos="fade-up">
               <Swiper
                 modules={[Autoplay, Pagination, Navigation]}
-                spaceBetween={24}
-                slidesPerView={1}
-                centeredSlides={true}
+                spaceBetween={16}
+                slidesPerView={1.15}
+                centeredSlides={false}
                 slideToClickedSlide={true}
                 loop={true}
                 loopedSlides={4}
@@ -446,10 +450,12 @@ export default function Home() {
                   640: {
                     slidesPerView: 2,
                     spaceBetween: 20,
+                    centeredSlides: false,
                   },
                   1024: {
                     slidesPerView: 3,
                     spaceBetween: 24,
+                    centeredSlides: true,
                   },
                 }}
                 className="testimonials-swiper"

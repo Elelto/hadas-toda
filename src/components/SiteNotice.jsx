@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useHistoryUIState } from '../hooks/useHistoryUIState';
 import './SiteNotice.css';
 
 const SiteNotice = () => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useHistoryUIState('siteNotice', false);
   const [isClosing, setIsClosing] = useState(false);
   const location = useLocation();
 

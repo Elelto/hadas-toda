@@ -21,30 +21,20 @@ function getBlogRoutes() {
     });
 }
 
-// Plugin שמדמה את Netlify Edge Functions (A/B routing) בסביבת dev
-function landingAbDevPlugin() {
-  const topics = ['gimgum', 'kol', 'higuy', 'peh'];
-  return {
-    name: 'landing-ab-dev',
-    configureServer(server) {
-      server.middlewares.use((req, res, next) => {
-        const url = req.url?.split('?')[0];
-        for (const topic of topics) {
-          if (url === `/landing/${topic}` || url === `/landing/${topic}/`) {
-            // מפנה לvariant-a בסביבת dev (אפשר לשנות ידנית)
-            req.url = `/landing/${topic}/variant-a.html`;
-            break;
-          }
-        }
-        next();
-      });
-    },
-  };
+function getLandingRoutes() {
+  const problems = ['gimgum', 'kol', 'higuy', 'peh'];
+  const variants = ['a', 'b', 'c'];
+  const routes = [];
+  problems.forEach(p => {
+    variants.forEach(v => {
+      routes.push(`/landing/${p}/variant-${v}`);
+    });
+  });
+  return routes;
 }
 
 export default defineConfig({
   plugins: [
-    landingAbDevPlugin(),
     react(),
     nodePolyfills({
       include: ['buffer', 'process', 'util'],
@@ -80,7 +70,8 @@ export default defineConfig({
         '/contact',
         '/blog',
         '/testimonials',
-        ...getBlogRoutes()
+        ...getBlogRoutes(),
+        ...getLandingRoutes()
       ],
     }),
   ],

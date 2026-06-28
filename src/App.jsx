@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -16,14 +16,49 @@ const Contact = lazy(() => import('./pages/Contact'));
 const Blog = lazy(() => import('./pages/Blog'));
 const BlogPost = lazy(() => import('./pages/BlogPost'));
 const Admin = lazy(() => import('./pages/Admin'));
-const AIAssessmentPage = lazy(() => import('./pages/AIAssessment'));
 const BneiBrak = lazy(() => import('./pages/BneiBrak'));
 const OnlineTherapy = lazy(() => import('./pages/OnlineTherapy'));
+const AIAssessmentPage = lazy(() => import('./pages/AIAssessment'));
+import LandingPage from './pages/LandingPage';
 import AccessibilityWidget from './components/AccessibilityWidget';
 import FloatingWhatsApp from './components/FloatingWhatsApp';
 import './styles/global.css';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+
+const AppContent = () => {
+  const location = useLocation();
+  const isLandingPage = location.pathname.startsWith('/landing');
+
+  return (
+    <div className="app-container">
+      {!isLandingPage && <Header />}
+      <main style={isLandingPage ? { paddingTop: 0 } : {}}>
+        <Suspense fallback={<InnerPageSkeleton />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="/testimonials" element={<Testimonials />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/bnei-brak" element={<BneiBrak />} />
+            <Route path="/online-therapy" element={<OnlineTherapy />} />
+            <Route path="/ai-assessment" element={<AIAssessmentPage />} />
+            <Route path="/dashboard" element={<Admin />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/*" element={<Admin />} />
+            <Route path="/landing/:problemSlug" element={<LandingPage />} />
+            <Route path="/landing/:problemSlug/:variant" element={<LandingPage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
+      </main>
+      {!isLandingPage && <Footer />}
+    </div>
+  );
+};
 
 function App() {
   useEffect(() => {
@@ -69,30 +104,7 @@ function App() {
         <SiteNotice />
         <AccessibilityWidget />
         <FloatingWhatsApp />
-        <div className="app-container">
-          <Header />
-          <main>
-            <Suspense fallback={<InnerPageSkeleton />}>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/services" element={<Services />} />
-                <Route path="/blog" element={<Blog />} />
-                <Route path="/blog/:slug" element={<BlogPost />} />
-                <Route path="/testimonials" element={<Testimonials />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/bnei-brak" element={<BneiBrak />} />
-                <Route path="/online-therapy" element={<OnlineTherapy />} />
-                <Route path="/ai-assessment" element={<AIAssessmentPage />} />
-                <Route path="/dashboard" element={<Admin />} />
-                <Route path="/admin" element={<Admin />} />
-                <Route path="/admin/*" element={<Admin />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </Suspense>
-          </main>
-          <Footer />
-        </div>
+        <AppContent />
       </Router>
     </HelmetProvider>
   );
