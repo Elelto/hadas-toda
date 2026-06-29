@@ -244,12 +244,14 @@ export default function About() {
 
           {/* Certificate Images Grid (if any exist) */}
           {aboutContent.qualifications?.items?.filter(q => q.image).length > 0 && (
-            <div className="fade-mask-wrapper" style={{ '--bg-color': '#f8f9fa' }}>
-              <div className="cert-gallery qualifications-list" data-aos="fade-up" data-aos-delay="400">
-                {aboutContent.qualifications.items.filter(q => q.image).map((q, index) => (
-                  <div 
-                    key={index} 
-                    className={`cert-card has-image`}
+            <div className="cert-gallery qualifications-list sticky-stack-container">
+              {aboutContent.qualifications.items.filter(q => q.image).map((q, index) => (
+                <div 
+                  key={index} 
+                  className={`cert-card has-image sticky-stack-card`}
+                  style={{ '--index': index }}
+                  data-aos="fade-up"
+                  data-aos-delay={index * 100}
                     onClick={() => setLightboxItem(q)}
                     onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLightboxItem(q); } }}
                     role="button"
@@ -269,7 +271,6 @@ export default function About() {
                   </div>
                 ))}
               </div>
-            </div>
           )}
         </div>
       </section>
@@ -279,12 +280,14 @@ export default function About() {
         <section className="section-courses">
           <div className="container">
             <h2 className="section-title" data-aos="fade-right">{aboutContent.courses_title || "השתלמויות מקצועיות"}</h2>
-            <div className="cert-gallery courses-list sticky-stack-container" data-aos="fade-up" data-aos-delay="400">
+            <div className="cert-gallery courses-list sticky-stack-container">
               {aboutContent.courses.map((course, index) => (
                 <div 
                   key={index} 
                   className={`cert-card ${course.image ? 'has-image' : 'text-only'} sticky-stack-card`}
                   style={{ '--index': index }}
+                  data-aos="fade-up"
+                  data-aos-delay={index * 100}
                   onClick={() => course.image ? setLightboxItem(course) : null}
                   onKeyDown={(e) => { if (course.image && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); setLightboxItem(course); } }}
                   role={course.image ? 'button' : 'listitem'}
