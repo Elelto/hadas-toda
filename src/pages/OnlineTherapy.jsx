@@ -350,14 +350,13 @@ const OnlineTherapy = () => {
                             <p>היתרונות של טיפול מרחוק</p>
                         </div>
 
-                        <div className="benefits-grid sticky-stack-container">
+                        <div className="benefits-grid">
                             {benefits.map((benefit, index) => (
                                 <div
                                     key={index}
-                                    className="benefit-card sticky-stack-card"
+                                    className="benefit-card"
                                     data-aos="fade-up"
                                     data-aos-delay={index * 100}
-                                    style={{ '--index': index }}
                                 >
                                     <div className="benefit-icon">
                                         {benefit.icon}
