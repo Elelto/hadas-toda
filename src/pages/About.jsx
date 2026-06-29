@@ -279,15 +279,15 @@ export default function About() {
         <section className="section-courses">
           <div className="container">
             <h2 className="section-title" data-aos="fade-right">{aboutContent.courses_title || "השתלמויות מקצועיות"}</h2>
-            <div className="fade-mask-wrapper">
-              <div className="cert-gallery courses-list" data-aos="fade-up" data-aos-delay="400">
-                {aboutContent.courses.map((course, index) => (
-                  <div 
-                    key={index} 
-                    className={`cert-card ${course.image ? 'has-image' : 'text-only'}`}
-                    onClick={() => course.image ? setLightboxItem(course) : null}
-                    onKeyDown={(e) => { if (course.image && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); setLightboxItem(course); } }}
-                    role={course.image ? 'button' : 'listitem'}
+            <div className="cert-gallery courses-list sticky-stack-container" data-aos="fade-up" data-aos-delay="400">
+              {aboutContent.courses.map((course, index) => (
+                <div 
+                  key={index} 
+                  className={`cert-card ${course.image ? 'has-image' : 'text-only'} sticky-stack-card`}
+                  style={{ '--index': index }}
+                  onClick={() => course.image ? setLightboxItem(course) : null}
+                  onKeyDown={(e) => { if (course.image && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); setLightboxItem(course); } }}
+                  role={course.image ? 'button' : 'listitem'}
                     tabIndex={course.image ? 0 : undefined}
                     aria-label={course.image ? `הגדל תעודה: ${course.name}` : undefined}
                   >
@@ -309,7 +309,6 @@ export default function About() {
                   </div>
                 ))}
               </div>
-            </div>
           </div>
         </section>
       )}
