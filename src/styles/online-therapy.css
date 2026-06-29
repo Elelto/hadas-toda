@@ -491,13 +491,15 @@
 /* Floating bubbles closer to image and with asymmetric float */
 .online-therapy-page .stat-box.box-zoom {
     top: 15%;
-    right: 15px;
+    left: -25px;
+    right: auto;
     animation: float 5.5s ease-in-out infinite;
 }
 
 .online-therapy-page .stat-box.box-hybrid {
     bottom: 20%;
-    left: 15px;
+    left: -15px;
+    right: auto;
     animation: float 7.2s ease-in-out infinite;
     animation-delay: 1.5s;
 }
@@ -506,10 +508,12 @@
     .online-therapy-page .stat-box.box-zoom {
         top: 0;
         right: 15px;
+        left: auto;
     }
     .online-therapy-page .stat-box.box-hybrid {
         bottom: 0;
         left: 15px;
+        right: auto;
     }
 }
 
@@ -564,13 +568,15 @@
 /* Floating bubbles closer to image and with asymmetric float */
 .online-therapy-page .stat-box.box-zoom {
     top: 15%;
-    right: 15px;
+    left: -25px;
+    right: auto;
     animation: float 5.5s ease-in-out infinite;
 }
 
 .online-therapy-page .stat-box.box-hybrid {
     bottom: 20%;
-    left: 15px;
+    left: -15px;
+    right: auto;
     animation: float 7.2s ease-in-out infinite;
     animation-delay: 1.5s;
 }
@@ -579,10 +585,12 @@
     .online-therapy-page .stat-box.box-zoom {
         top: 0;
         right: 15px;
+        left: auto;
     }
     .online-therapy-page .stat-box.box-hybrid {
         bottom: 0;
         left: 15px;
+        right: auto;
     }
 }
 
