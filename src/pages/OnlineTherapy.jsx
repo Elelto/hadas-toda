@@ -323,11 +323,11 @@ const OnlineTherapy = () => {
                         <div className="bb-hero-shape" data-aos="fade-left" data-aos-delay="200">
                             <div className="shape-circle online-shape-bg"></div>
                             <div className="shape-content">
-                                <div className="stat-box glass-card" style={{ top: '15%', right: '-10px' }}>
+                                <div className="stat-box box-zoom glass-card">
                                     <span className="stat-number"><FaVideo /></span>
                                     <span className="stat-label">זום / וידאו</span>
                                 </div>
-                                <div className="stat-box glass-card" style={{ bottom: '20%', left: '-10px' }}>
+                                <div className="stat-box box-hybrid glass-card">
                                     <span className="stat-number">100%</span>
                                     <span className="stat-label">היברידי</span>
                                 </div>
