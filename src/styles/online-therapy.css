@@ -490,7 +490,7 @@
 
 /* Floating bubbles closer to image and with asymmetric float */
 .online-therapy-page .stat-box.box-zoom {
-    top: 5%;
+    top: 15%;
     right: -40px;
     left: auto;
     animation: float 5.5s ease-in-out infinite;
@@ -567,7 +567,7 @@
 
 /* Floating bubbles closer to image and with asymmetric float */
 .online-therapy-page .stat-box.box-zoom {
-    top: 5%;
+    top: 15%;
     right: -40px;
     left: auto;
     animation: float 5.5s ease-in-out infinite;
