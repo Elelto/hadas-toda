@@ -25,8 +25,10 @@ import FloatingWhatsApp from './components/FloatingWhatsApp';
 import './styles/global.css';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { useWalletStack } from './hooks/useWalletStack';
 
 const AppContent = () => {
+  useWalletStack();
   const location = useLocation();
   const isLandingPage = location.pathname.startsWith('/landing');
 
