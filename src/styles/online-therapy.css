@@ -504,18 +504,7 @@
     animation-delay: 1.5s;
 }
 
-@media (max-width: 768px) {
-    .online-therapy-page .stat-box.box-zoom {
-        top: 0;
-        right: 15px;
-        left: auto;
-    }
-    .online-therapy-page .stat-box.box-hybrid {
-        bottom: 0;
-        left: 15px;
-        right: auto;
-    }
-}
+
 
 @media (max-width: 480px) {
     .online-therapy-page .bb-hero .bb-actions {
@@ -581,18 +570,7 @@
     animation-delay: 1.5s;
 }
 
-@media (max-width: 768px) {
-    .online-therapy-page .stat-box.box-zoom {
-        top: 0;
-        right: 15px;
-        left: auto;
-    }
-    .online-therapy-page .stat-box.box-hybrid {
-        bottom: 0;
-        left: 15px;
-        right: auto;
-    }
-}
+
 
 @media (max-width: 480px) {
     .online-therapy-page .bb-hero .bb-actions {
