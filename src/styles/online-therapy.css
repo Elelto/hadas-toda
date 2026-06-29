@@ -490,15 +490,15 @@
 
 /* Floating bubbles closer to image and with asymmetric float */
 .online-therapy-page .stat-box.box-zoom {
-    top: 15%;
-    left: -25px;
-    right: auto;
+    top: 5%;
+    right: -40px;
+    left: auto;
     animation: float 5.5s ease-in-out infinite;
 }
 
 .online-therapy-page .stat-box.box-hybrid {
-    bottom: 20%;
-    left: -15px;
+    bottom: 15%;
+    left: -20px;
     right: auto;
     animation: float 7.2s ease-in-out infinite;
     animation-delay: 1.5s;
@@ -567,15 +567,15 @@
 
 /* Floating bubbles closer to image and with asymmetric float */
 .online-therapy-page .stat-box.box-zoom {
-    top: 15%;
-    left: -25px;
-    right: auto;
+    top: 5%;
+    right: -40px;
+    left: auto;
     animation: float 5.5s ease-in-out infinite;
 }
 
 .online-therapy-page .stat-box.box-hybrid {
-    bottom: 20%;
-    left: -15px;
+    bottom: 15%;
+    left: -20px;
     right: auto;
     animation: float 7.2s ease-in-out infinite;
     animation-delay: 1.5s;
