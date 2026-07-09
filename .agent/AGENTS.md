@@ -28,3 +28,18 @@
 
 ## Logo Sizing & Quality
 - **High-Res PNGs:** The main logo is an AI-upscaled and auto-cropped PNG (`logo-trimmed.png`) with no transparent padding. Do NOT use CSS `transform: scale()` to enlarge it, as it causes layout breakout. Instead, use explicit heights (`110px` desktop, `90px` tablet, `80px` mobile) to maintain maximum legible sharpness without hacks.
+
+## Project Architecture & Structure
+- **Tech Stack:** React 19, Vite, React Router DOM, Custom Firebase CMS, Firebase Firestore & Storage.
+- **Styling & Animations:** Vanilla CSS (`src/styles`), Framer Motion, AOS (Animate on Scroll), Swiper (for carousels).
+- **Directory Structure:**
+  - `src/pages`: Home, About, Services, Contact, Blog, BlogPost, BneiBrak (Local Landing), OnlineTherapy (National Landing), AIAssessment, Admin, Testimonials.
+  - `src/components`: UI (Header, Footer), Visuals (AuroraBackground, OrganicShapes, SoundWaves), Widgets (SmartLeadForm, AccessibilityWidget, FloatingWhatsApp), SEO (SEOHead, StructuredData).
+  - `src/content & src/data`: Static data and CMS-driven content.
+  - `scripts/`: Custom Node.js scripts for SEO, sitemap generation, content sync, and build optimization.
+
+## Project Goal, Style, and Character
+- **Goal:** A professional, lead-generating website for "Hadas Toda" (הדס תודה), a certified speech therapist (M.A.). Dual purpose: attracting local patients in Bnei Brak for in-person treatment, and a broader national audience for online therapy.
+- **Target Audience:** Parents of children with speech/language difficulties, and adults needing voice therapy, stuttering treatment, or articulation improvement.
+- **Character & Tone:** Clinical authority mixed with accessibility. Trustworthy, empathetic, professional, and research-based. Copywriting avoids aggressive sales pitches in favor of soft, inviting CTAs ("לשיחת התאמה קצרה"). 
+- **Style & Aesthetics:** "Premium, Dynamic, Medical". Clean layout without playful emojis, using high-quality SVG icons (Lucide). Employs modern micro-animations, subtle background effects (aurora shapes, sound waves), and horizontal carousels to create a dynamic, highly responsive mobile-first experience.
