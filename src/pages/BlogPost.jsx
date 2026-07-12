@@ -5,6 +5,7 @@ import blogPosts from '../data/blogPosts';
 import SEOHead from '../components/SEOHead';
 import StructuredData from '../components/StructuredData';
 import { loadFirebaseCollection } from '../utils/firebaseLoader';
+import OptimizedImage from '../components/OptimizedImage';
 
 export default function BlogPost() {
   const { slug } = useParams();
@@ -95,7 +96,7 @@ export default function BlogPost() {
           
           {/* תמונת כותרת */}
           <div className="blog-post-featured-image">
-            <img src={post.image} alt={post.title} />
+            <OptimizedImage src={post.image} alt={post.title} />
           </div>
           
           {/* תוכן המאמר */}
@@ -107,7 +108,7 @@ export default function BlogPost() {
           {/* מידע על הכותב */}
           <div className="blog-post-author">
             <div className="author-image">
-              <img 
+              <OptimizedImage 
                 src="/images/hadas-profile.jpg" 
                 alt="הדס תודה" 
                 onError={(e) => {
@@ -155,7 +156,7 @@ export default function BlogPost() {
                   <div className="related-post-card" key={relatedPost.id}>
                     <Link to={`/blog/${relatedPost.slug}`}>
                       <div className="related-post-image">
-                        <img src={relatedPost.image} alt={relatedPost.title} />
+                        <OptimizedImage src={relatedPost.image} alt={relatedPost.title} />
                       </div>
                       <h4 className="related-post-title">{relatedPost.title}</h4>
                     </Link>

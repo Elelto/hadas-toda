@@ -5,6 +5,7 @@ import { loadYamlContent } from '../utils/yamlLoader';
 import AOS from 'aos';
 import SEOHead from '../components/SEOHead';
 import InnerPageSkeleton from '../components/InnerPageSkeleton';
+import OptimizedImage from '../components/OptimizedImage';
 import '../styles/about.css';
 
 // Default content fallback
@@ -207,7 +208,7 @@ export default function About() {
           <div className="bio-container">
             <div className="bio-image-wrapper" data-aos="fade-left">
               {/* Fallback to Unsplash placeholder if local image is missing */}
-              <img 
+              <OptimizedImage 
                 src="/images/hadas-profile.png" 
                 alt="הדס תודה - קלינאית תקשורת" 
                 className="bio-profile-image" 
@@ -259,7 +260,7 @@ export default function About() {
                     aria-label={`הגדל תעודה: ${q.item}`}
                   >
                     <div className="cert-image-wrapper">
-                      <img src={q.image} alt={q.item} className="cert-image" loading="lazy" />
+                      <OptimizedImage src={q.image} alt={q.item} className="cert-image" loading="lazy" />
                       <div className="cert-hover-overlay">
                         <FaSearchPlus className="zoom-icon" />
                         <span className="hover-text">לחץ להגדלה</span>
@@ -296,7 +297,7 @@ export default function About() {
                   >
                     {course.image && (
                       <div className="cert-image-wrapper">
-                        <img src={course.image} alt={course.name} className="cert-image" loading="lazy" />
+                        <OptimizedImage src={course.image} alt={course.name} className="cert-image" loading="lazy" />
                         <div className="cert-hover-overlay">
                           <FaSearchPlus className="zoom-icon" />
                           <span className="hover-text">לחץ להגדלה</span>
@@ -333,7 +334,7 @@ export default function About() {
           </button>
           
           <div className="rec-lightbox-content cert-lightbox-content" onClick={(e) => e.stopPropagation()}>
-            <img 
+            <OptimizedImage 
               src={lightboxItem.image} 
               alt={lightboxItem.name || lightboxItem.item} 
               className="rec-lightbox-img" 

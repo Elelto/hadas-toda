@@ -4,6 +4,7 @@ import blogPosts from '../data/blogPosts';
 import AOS from 'aos';
 import SEOHead from '../components/SEOHead';
 import { loadFirebaseCollection } from '../utils/firebaseLoader';
+import OptimizedImage from '../components/OptimizedImage';
 import '../styles/blog.css';
 
 export default function Blog() {
@@ -130,7 +131,7 @@ export default function Blog() {
               filteredPosts.map((post, index) => (
                 <div className="blog-card" key={post.id} data-aos="fade-up" data-aos-delay={400 + (index * 50)}>
                   <div className="blog-card-image">
-                    <img src={post.image} alt={post.title} />
+                    <OptimizedImage src={post.image} alt={post.title} />
                     {post.categories.map(cat => (
                       <span key={cat} className={`blog-category ${cat}`}>
                         {categories.find(c => c.id === cat)?.label}

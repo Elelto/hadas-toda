@@ -18,7 +18,14 @@ function markdownToHtml(markdown = '') {
   const html = markdownRenderer.render(normalizeMarkdown(markdown));
   return html
     .replace(/<table>/g, '<div class="table-container"><table>')
-    .replace(/<\/table>/g, '</table></div>');
+    .replace(/<\/table>/g, '</table></div>')
+    .replace(/<img\s+src="([^"]+)\.(jpg|jpeg|png)"([^>]*)>/gi, (match, path, ext, attrs) => {
+      const isLocal = path.startsWith('/');
+      if (!isLocal) return match;
+      const webpPath = `${path}.webp`;
+      const originalSrc = `${path}.${ext}`;
+      return `<picture><source srcset="${webpPath}" type="image/webp"><img src="${originalSrc}"${attrs}></picture>`;
+    });
 }
 
 function formatDateToHebrew(dateString) {
