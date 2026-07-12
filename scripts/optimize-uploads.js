@@ -9,7 +9,7 @@ const sharp = require('sharp');
 const path = require('path');
 const fs = require('fs');
 
-const UPLOADS_DIR = path.join(__dirname, '..', 'public', 'images', 'uploads');
+const UPLOADS_DIR = path.join(__dirname, '..', 'public', 'images');
 
 const WEBP_QUALITY = 80;
 

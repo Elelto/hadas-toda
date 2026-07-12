@@ -7,35 +7,47 @@ const OptimizedImage = ({
   width,
   height,
   loading = 'lazy',
-  placeholder = '/images/placeholder.jpg',
   ...props
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageError, setImageError] = useState(false);
+  const [webpFailed, setWebpFailed] = useState(false);
+  const [allFailed, setAllFailed] = useState(false);
 
   const handleImageLoad = () => {
     setImageLoaded(true);
   };
 
   const handleImageError = () => {
-    setImageError(true);
+    if (!webpFailed) {
+      setWebpFailed(true);
+    } else {
+      setAllFailed(true);
+    }
   };
 
   if (!src) return null;
 
   const isLocalStaticImage = src.startsWith('/') && !src.startsWith('http');
   const isOptimizableExt = /\.(jpe?g|png)$/i.test(src);
+  
   let webpSrc = null;
-
-  if (isLocalStaticImage && isOptimizableExt) {
+  if (isLocalStaticImage && isOptimizableExt && !webpFailed) {
     webpSrc = src.replace(/\.(jpe?g|png)$/i, '.webp');
   }
 
-  const finalSrc = imageError ? placeholder : src;
+  // If all failed, we can return a placeholder or null. 
+  // Let's just return a broken image or null so it doesn't break the layout completely.
+  if (allFailed) {
+    return (
+      <div className={`optimized-image-container ${className}`} style={{ width: width || '100%', height: height || '100%', backgroundColor: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
+        <span style={{ fontSize: '0.8rem' }}>תמונה חסרה</span>
+      </div>
+    );
+  }
 
   return (
     <div className={`optimized-image-container ${className}`}>
-      {!imageLoaded && !imageError && (
+      {!imageLoaded && (
         <div
           className="image-placeholder"
           style={{
@@ -45,18 +57,19 @@ const OptimizedImage = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#94a3b8'
+            color: '#94a3b8',
+            position: 'absolute',
+            zIndex: 1
           }}
         >
-          {/* Optional loading spinner could go here */}
         </div>
       )}
 
-      {webpSrc && !imageError ? (
-        <picture style={{ display: imageLoaded ? 'block' : 'none', width: '100%', height: '100%' }}>
+      {webpSrc ? (
+        <picture style={{ display: 'block', width: '100%', height: '100%' }}>
           <source srcSet={webpSrc} type="image/webp" />
           <img
-            src={finalSrc}
+            src={src}
             alt={alt}
             width={width}
             height={height}
@@ -64,14 +77,14 @@ const OptimizedImage = ({
             onLoad={handleImageLoad}
             onError={handleImageError}
             className="optimized-img-element"
-            style={{ width: '100%', height: '100%', objectFit: 'inherit' }}
+            style={{ width: '100%', height: '100%', objectFit: 'inherit', position: 'relative', zIndex: 2, opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.3s' }}
             itemProp="image"
             {...props}
           />
         </picture>
       ) : (
         <img
-          src={finalSrc}
+          src={src}
           alt={alt}
           width={width}
           height={height}
@@ -79,12 +92,7 @@ const OptimizedImage = ({
           onLoad={handleImageLoad}
           onError={handleImageError}
           className="optimized-img-element"
-          style={{
-            display: imageLoaded || imageError ? 'block' : 'none',
-            width: '100%',
-            height: '100%',
-            objectFit: 'inherit'
-          }}
+          style={{ width: '100%', height: '100%', objectFit: 'inherit', position: 'relative', zIndex: 2, opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.3s' }}
           itemProp="image"
           {...props}
         />
