@@ -54,11 +54,12 @@ function generateSitemap() {
     let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
 
-    // Add static pages
+    // Add static pages (trailing slash — Netlify 301s /route to /route/)
     staticPages.forEach(page => {
+        const loc = page.url === '/' ? `${DOMAIN}/` : `${DOMAIN}${page.url}/`;
         xml += `
   <url>
-    <loc>${DOMAIN}${page.url}</loc>
+    <loc>${loc}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>${page.changefreq}</changefreq>
     <priority>${page.priority}</priority>
@@ -79,7 +80,7 @@ function generateSitemap() {
 
         xml += `
   <url>
-    <loc>${DOMAIN}/blog/${post.slug}</loc>
+    <loc>${DOMAIN}/blog/${post.slug}/</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

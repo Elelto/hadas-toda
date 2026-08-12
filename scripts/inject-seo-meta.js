@@ -177,6 +177,12 @@ function loadBlogMeta() {
 }
 loadBlogMeta();
 
+// Netlify מגיש כל דף prerendered בכתובת עם לוכסן סופי (301 מ-/route אל /route/),
+// לכן ה-canonical חייב להתאים לכתובת הסופית — אחרת גוגל רואה לולאת הפניות.
+Object.values(PAGE_META).forEach(meta => {
+  if (meta.canonical && !meta.canonical.endsWith('/')) meta.canonical += '/';
+});
+
 function injectMetaToFile(filePath, meta) {
   let html = fs.readFileSync(filePath, 'utf8');
 

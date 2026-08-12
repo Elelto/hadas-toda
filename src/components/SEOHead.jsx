@@ -16,7 +16,10 @@ const SEOHead = ({
   const defaultImage = `${siteUrl}/images/logo.png`;
 
   const fullTitle = title ? `${title} | הדס תודה - קלינאית תקשורת` : 'הדס תודה | קלינאית תקשורת מוסמכת';
-  const fullCanonicalUrl = canonicalUrl ? `${siteUrl}${canonicalUrl}` : siteUrl;
+  // Netlify serves each prerendered page at /route/ (301 from /route),
+  // so the canonical must carry the trailing slash to match the final URL.
+  const canonicalPath = canonicalUrl && !canonicalUrl.endsWith('/') ? `${canonicalUrl}/` : canonicalUrl;
+  const fullCanonicalUrl = canonicalPath ? `${siteUrl}${canonicalPath}` : `${siteUrl}/`;
   const imageUrl = ogImage ? `${siteUrl}${ogImage}` : defaultImage;
 
   return (
