@@ -228,7 +228,7 @@ export default function Home() {
     "name": "הדס תודה - קלינאית תקשורת",
     "description": "קלינאית תקשורת מוסמכת המתמחה בטיפול בגמגום, שפה, דיבור וקול לילדים ומבוגרים",
     "url": "https://hadas-toda.co.il",
-    "telephone": "+972-50-123-4567",
+    "telephone": "+972-50-679-6209",
     "address": {
       "@type": "PostalAddress",
       "addressCountry": "IL",
