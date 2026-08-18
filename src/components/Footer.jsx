@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { loadYamlContent } from '../utils/yamlLoader';
 import { buildWhatsAppUrl, WHATSAPP_PHONE } from '../utils/whatsapp';
-import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaWhatsapp, FaFacebook, FaInstagram, FaArrowLeft } from 'react-icons/fa';
+import { FaWhatsapp, FaFacebook, FaInstagram } from 'react-icons/fa';
 import '../styles/footer.css';
 
-// Default footer content
 const getDefaultFooterContent = () => ({
   contact: {
     title: "דברו איתי",
@@ -13,19 +12,6 @@ const getDefaultFooterContent = () => ({
     phone: "050-6796209",
     email: "hadas.toda.info@gmail.com",
     address: "שיכון ג' בני ברק"
-  },
-  navigation: {
-    items: [
-      { path: '/', label: 'ראשי' },
-      { path: '/services', label: 'תחומי טיפול' },
-      { path: '/about', label: 'קצת עליי' },
-      { path: '/testimonials', label: 'מטופלים מספרים' },
-      { path: '/online-therapy', label: 'טיפול אונליין' },
-      { path: '/contact', label: 'יצירת קשר' }
-    ]
-  },
-  copyright: {
-    text: "הדס תודה - קלינאית תקשורת"
   }
 });
 
@@ -33,96 +19,70 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
   const [footerContent, setFooterContent] = useState(getDefaultFooterContent());
 
-  // Load footer content from YAML
   useEffect(() => {
     const loadContent = async () => {
       try {
         const content = await loadYamlContent('/content/components/footer.yml');
-        if (content) {
-          setFooterContent(content);
-        }
+        if (content) setFooterContent(content);
       } catch (error) {
         console.warn('Could not load footer content, using defaults');
       }
     };
-
     loadContent();
   }, []);
 
   const contact = footerContent.contact || getDefaultFooterContent().contact;
-  const navItems = footerContent.links || footerContent.navigation?.items || getDefaultFooterContent().navigation.items;
-  
-  const defaultCopyright = getDefaultFooterContent().copyright;
-  const copyrightText = typeof footerContent.copyright === 'string' 
-    ? footerContent.copyright 
-    : `© ${currentYear} ${footerContent.copyright?.text || defaultCopyright.text}. כל הזכויות שמורות.`;
 
   return (
-    <footer className="site-footer">
+    <footer className="minimalist-footer">
       <div className="container">
-        <div className="footer-content">
+        
+        {/* Brand */}
+        <div className="minimalist-brand">
+          <h2 className="minimalist-logo">הדס תודה</h2>
+          <span className="minimalist-tagline">קלינאית תקשורת (M.A)</span>
+        </div>
+        
+        {/* Navigation Inline */}
+        <nav className="minimalist-nav" aria-label="Footer Navigation">
+          <Link to="/services">תחומי טיפול</Link>
+          <span className="separator">•</span>
+          <Link to="/about">קצת עליי</Link>
+          <span className="separator">•</span>
+          <Link to="/testimonials">המלצות</Link>
+          <span className="separator">•</span>
+          <Link to="/online-therapy">טיפול אונליין</Link>
+          <span className="separator">•</span>
+          <Link to="/contact">צור קשר</Link>
+        </nav>
 
-          {/* Brand Column */}
-          <div className="footer-col brand-col">
-            <h2 className="footer-logo">הדס תודה</h2>
-            <p className="footer-tagline">
-              קלינאית תקשורת מוסמכת (M.A).
-              <br />
-              טיפול בשפה, דיבור, קול וגמגום.
-            </p>
-            <div className="social-icons">
-              <a href={buildWhatsAppUrl(WHATSAPP_PHONE)} target="_blank" rel="noopener noreferrer" className="social-icon whatsapp" aria-label="שלחו הודעה בוואטסאפ">
-                <FaWhatsapp />
-              </a>
-              <a href="#" className="social-icon facebook" aria-label="בקרו בעמוד הפייסבוק שלנו">
-                <FaFacebook />
-              </a>
-              <a href="#" className="social-icon instagram" aria-label="בקרו בעמוד האינסטגרם שלנו">
-                <FaInstagram />
-              </a>
-            </div>
-          </div>
-
-          {/* Links Column */}
-          <div className="footer-col links-col">
-            <h3 className="footer-heading">קישורים מהירים</h3>
-            <ul className="footer-links-list">
-              {navItems.map((item, index) => (
-                <li key={index}>
-                  <Link to={item.path} className="footer-link">
-                    {item.label || item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Contact Column */}
-          <div className="footer-col contact-col">
-            <h3 className="footer-heading">{contact.title || "יצירת קשר"}</h3>
-            <div className="contact-items">
-              <a href={`tel:${contact.phone?.replace(/-/g, '')}`} className="contact-item">
-                <span className="icon-box"><FaPhone /></span>
-                <span className="text">{contact.phone}</span>
-              </a>
-              <a href={`mailto:${contact.email}`} className="contact-item">
-                <span className="icon-box"><FaEnvelope /></span>
-                <span className="text">{contact.email}</span>
-              </a>
-              <div className="contact-item">
-                <span className="icon-box"><FaMapMarkerAlt /></span>
-                <span className="text">{contact.address}</span>
-              </div>
-            </div>
-          </div>
-
+        {/* Contact Inline */}
+        <div className="minimalist-contact">
+          <a href={`tel:${contact.phone?.replace(/-/g, '')}`}>{contact.phone}</a>
+          <span className="separator">•</span>
+          <a href={`mailto:${contact.email}`}>{contact.email}</a>
+          <span className="separator">•</span>
+          <span>{contact.address}</span>
         </div>
 
-        <div className="footer-bottom">
-          <div className="copyright-text">
-            {copyrightText}
+        {/* Social & Copyright */}
+        <div className="minimalist-bottom">
+          <div className="minimalist-socials">
+            <a href={buildWhatsAppUrl(WHATSAPP_PHONE)} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+              <FaWhatsapp />
+            </a>
+            <a href="#" aria-label="Facebook">
+              <FaFacebook />
+            </a>
+            <a href="#" aria-label="Instagram">
+              <FaInstagram />
+            </a>
+          </div>
+          <div className="minimalist-copyright">
+            © {currentYear} הדס תודה. כל הזכויות שמורות.
           </div>
         </div>
+
       </div>
     </footer>
   );
