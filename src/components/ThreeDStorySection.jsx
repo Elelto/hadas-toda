@@ -10,6 +10,34 @@ export default function ThreeDStorySection() {
     container: scrollContainerRef
   });
 
+  // Magnetic Scroll: Snap page to center when user gets close
+  useEffect(() => {
+    let isSnapping = false;
+
+    const observer = new IntersectionObserver((entries) => {
+      const entry = entries[0];
+      if (entry.isIntersecting && !isSnapping) {
+        const section = document.getElementById('cinematic-story-anchor');
+        if (section) {
+          isSnapping = true;
+          section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          
+          // Prevent rapid re-snapping
+          setTimeout(() => {
+            isSnapping = false;
+          }, 1000);
+        }
+      }
+    }, { threshold: 0.6 });
+
+    const el = document.getElementById('cinematic-story-anchor');
+    if (el) {
+      observer.observe(el);
+    }
+    
+    return () => observer.disconnect();
+  }, []);
+
   // We need to communicate this internal progress to the global CinematicBackground.
   // The cleanest way without Context is a custom DOM event or global window variable.
   // We'll use a custom event.

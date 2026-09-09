@@ -81,22 +81,29 @@ function ParticlesScene() {
         // Boost opacity significantly
         opacityTarget = 0.8;
         // Map the internal snap progress (0 to 1) directly to the heart formation
-        // Start forming at 0.1, fully formed at 0.9
         particleProgress = Math.max(0, Math.min(1, (snapProgressRef.current - 0.1) / 0.8));
       } else {
-        // If we are just scrolling past it externally, maybe keep a partial shape or chaos
-        const rawProgress = (windowHeight - rect.top) / (rect.height + windowHeight);
-        if (rawProgress > 0 && rawProgress < 1) {
-          // Boost opacity slightly as we enter/leave
-          const opacityBoost = Math.sin(rawProgress * Math.PI);
-          opacityTarget = Math.max(opacityTarget, 0.5 * opacityBoost);
-          
-          if (rect.top > 0) {
-            // Approaching from top -> keep chaos (0)
-            particleProgress = 0;
-          } else {
-            // Leaving from bottom -> heart starts to dissolve
-            particleProgress = 1 - Math.min(1, (Math.abs(rect.bottom - windowHeight)) / windowHeight);
+        // If we are scrolling past it externally
+        if (rect.top > windowHeight) {
+          // Approaching from top -> keep chaos (0)
+          particleProgress = 0;
+        } else if (rect.bottom < 0) {
+          // Leaving from bottom -> HEART STAYS FORMED (1)
+          particleProgress = 1;
+          // Keep opacity at 0.3 for the rest of the site so the heart gracefully floats behind everything
+          opacityTarget = 0.3;
+        } else {
+          // We are transitioning in or out
+          const rawProgress = (windowHeight - rect.top) / (rect.height + windowHeight);
+          if (rawProgress > 0 && rawProgress < 1) {
+            const opacityBoost = Math.sin(rawProgress * Math.PI);
+            opacityTarget = Math.max(opacityTarget, 0.5 * opacityBoost);
+            
+            if (rect.top > 0) {
+              particleProgress = 0; // Top transition
+            } else {
+              particleProgress = 1; // Bottom transition, keep it formed!
+            }
           }
         }
       }
