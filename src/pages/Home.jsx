@@ -16,7 +16,7 @@ import { getExperienceYearsLabel, getPatientsCountLabel } from '../utils/experie
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import ThreeDStorySection from '../components/ThreeDStorySection';
-import CinematicServices from '../components/CinematicServices';
+import CinematicBentoServices from '../components/CinematicBentoServices';
 import CinematicBackground from '../components/CinematicBackground';
 import CinematicAbout from '../components/CinematicAbout';
 
@@ -323,8 +323,8 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Cinematic Services Section */}
-        <CinematicServices 
+        {/* Cinematic Services Section - Bento Grid */}
+        <CinematicBentoServices 
           title={homeContent?.services?.title}
           subtitle={homeContent?.services?.subtitle}
           specializations={homeContent?.services?.specializations}
