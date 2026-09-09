@@ -1,0 +1,46 @@
+.cinematic-about-wrapper {
+  position: relative;
+  z-index: 10;
+}
+
+.cinematic-about-glass-panel {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 30px;
+  padding: 4rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.cinematic-about-visual-side {
+  position: relative;
+}
+
+.cinematic-floating-card-1 {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+.cinematic-floating-card-2 {
+  animation: float-slow-reverse 8s ease-in-out infinite;
+  z-index: 5;
+}
+
+@keyframes float-slow {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes float-slow-reverse {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(15px); }
+  100% { transform: translateY(0px); }
+}
+
+@media (max-width: 768px) {
+  .cinematic-about-glass-panel {
+    padding: 2rem 1.5rem;
+    border-radius: 20px;
+  }
+}

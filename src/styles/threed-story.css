@@ -1,7 +1,7 @@
 .story-container {
   height: 300vh; /* Gives us enough scroll length to play the animation */
   position: relative;
-  background-color: var(--bg-primary, #ffffff);
+  background-color: transparent;
   /* Use clip to prevent mobile scroll-trapping issues */
   overflow-x: clip; 
 }
@@ -60,10 +60,13 @@
 }
 
 @media (max-width: 768px) {
+  .story-container {
+    height: 250vh; /* Slightly shorter scroll journey on mobile to prevent fatigue */
+  }
   .story-text-block h3 {
     font-size: 1.5rem;
   }
   .story-text-block p {
-    font-size: 1rem;
+    font-size: 1.1rem; /* Slightly larger paragraph for mobile readability */
   }
 }
