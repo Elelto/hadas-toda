@@ -15,6 +15,7 @@ import { loadFirebaseCollection } from '../utils/firebaseLoader';
 import { getExperienceYearsLabel, getPatientsCountLabel } from '../utils/experience';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
+import ThreeDExperiment from '../components/ThreeDExperiment';
 
 import {
   FaMicrophoneAlt,
@@ -248,6 +249,9 @@ export default function Home() {
           canonicalUrl="/"
           structuredData={structuredData}
         />
+
+        {/* 3D Scroll Experiment */}
+        <ThreeDExperiment />
 
         {/* Hero Section */}
         <section className="bb-hero home-hero-wrapper">
