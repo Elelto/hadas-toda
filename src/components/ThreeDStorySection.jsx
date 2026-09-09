@@ -1,97 +1,87 @@
-import React, { useRef, useEffect } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useRef, useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import '../styles/threed-story.css';
 
 export default function ThreeDStorySection() {
-  const scrollContainerRef = useRef(null);
-  
-  // Track the internal scroll of the snap container
-  const { scrollYProgress } = useScroll({
-    container: scrollContainerRef
-  });
+  const containerRef = useRef(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
 
-  // Magnetic Scroll: Snap page to center when user gets close
   useEffect(() => {
-    let isSnapping = false;
-
-    const observer = new IntersectionObserver((entries) => {
-      const entry = entries[0];
-      if (entry.isIntersecting && !isSnapping) {
-        const section = document.getElementById('cinematic-story-anchor');
-        if (section) {
-          isSnapping = true;
-          section.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          
-          // Prevent rapid re-snapping
-          setTimeout(() => {
-            isSnapping = false;
-          }, 1000);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setIsPlaying(true);
         }
-      }
-    }, { threshold: 0.6 });
+      },
+      { threshold: 0.5 } // Start playing when 50% visible
+    );
 
-    const el = document.getElementById('cinematic-story-anchor');
-    if (el) {
-      observer.observe(el);
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
     }
-    
     return () => observer.disconnect();
   }, []);
 
-  // We need to communicate this internal progress to the global CinematicBackground.
-  // The cleanest way without Context is a custom DOM event or global window variable.
-  // We'll use a custom event.
   useEffect(() => {
-    const unsubscribe = scrollYProgress.on("change", (latest) => {
-      window.dispatchEvent(new CustomEvent('storyScrollProgress', { detail: latest }));
-    });
-    return () => unsubscribe();
-  }, [scrollYProgress]);
+    let interval;
+    if (isPlaying) {
+      interval = setInterval(() => {
+        setCurrentSlide((prev) => {
+          if (prev < 2) return prev + 1;
+          clearInterval(interval);
+          return prev;
+        });
+      }, 3000); // 3 seconds per slide
+    }
+    return () => clearInterval(interval);
+  }, [isPlaying]);
 
-  // We have 3 slides. 
-  // Slide 0: progress 0
-  // Slide 1: progress 0.5
-  // Slide 2: progress 1.0
+  // Communicate progress to the background
+  useEffect(() => {
+    if (!isPlaying) return;
+    
+    let targetProgress = 0;
+    if (currentSlide === 0) targetProgress = 0.1;
+    if (currentSlide === 1) targetProgress = 0.5;
+    if (currentSlide === 2) targetProgress = 1.0;
+    
+    window.dispatchEvent(new CustomEvent('storyScrollProgress', { detail: targetProgress }));
+  }, [currentSlide, isPlaying]);
+
+  const slides = [
+    {
+      title: "קשיי דיבור ותקשורת...",
+      text: ""
+    },
+    {
+      title: "יכולים להרגיש לפעמים כמו רעש מפוזר.",
+      text: "רגעים שבהם המילים מתקשות לצאת, או שהקול בוגד בנו."
+    },
+    {
+      title: "אבל עם הכוונה מקצועית, הכל מתחבר.",
+      text: "נאסוף את השברים, ונבנה מחדש את הביטחון שלכם לדבר."
+    }
+  ];
 
   return (
-    <section id="cinematic-story-anchor" className="story-snap-wrapper">
-      <div className="story-snap-container" ref={scrollContainerRef}>
-        
-        <div className="snap-slide">
-          <motion.div 
-            className="story-text-block"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-          >
-            <h3>קשיי דיבור ותקשורת...</h3>
-          </motion.div>
-        </div>
-
-        <div className="snap-slide">
-          <motion.div 
-            className="story-text-block"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-          >
-            <h3>יכולים להרגיש לפעמים כמו רעש מפוזר.</h3>
-            <p>רגעים שבהם המילים מתקשות לצאת, או שהקול בוגד בנו.</p>
-          </motion.div>
-        </div>
-
-        <div className="snap-slide">
-          <motion.div 
-            className="story-text-block"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-          >
-            <h3>אבל עם הכוונה מקצועית, הכל מתחבר.</h3>
-            <p>נאסוף את השברים, ונבנה מחדש את הביטחון שלכם לדבר.</p>
-          </motion.div>
-        </div>
-
+    <section id="cinematic-story-anchor" className="story-autoplay-wrapper" ref={containerRef}>
+      <div className="story-autoplay-container">
+        <AnimatePresence mode="wait">
+          {isPlaying && (
+            <motion.div
+              key={currentSlide}
+              className="story-text-block"
+              initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, y: -20, filter: 'blur(10px)' }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
+            >
+              <h3>{slides[currentSlide].title}</h3>
+              {slides[currentSlide].text && <p>{slides[currentSlide].text}</p>}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   );

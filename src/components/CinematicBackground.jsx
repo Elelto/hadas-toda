@@ -74,14 +74,15 @@ function ParticlesScene() {
       const rect = storyElement.getBoundingClientRect();
       const windowHeight = window.innerHeight;
       
-      // Is the container fully in view? (user is currently scrolling inside it)
-      const isFocused = rect.top <= 10 && rect.bottom >= windowHeight - 10;
+      // Is the container the primary thing on screen? (More than 50% of the screen height is covered by it)
+      const visibleHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
+      const isFocused = visibleHeight > windowHeight * 0.5;
       
       if (isFocused) {
         // Boost opacity significantly
         opacityTarget = 0.8;
-        // Map the internal snap progress (0 to 1) directly to the heart formation
-        particleProgress = Math.max(0, Math.min(1, (snapProgressRef.current - 0.1) / 0.8));
+        // Map the internal auto-play progress (0 to 1) directly to the heart formation
+        particleProgress = snapProgressRef.current; // The targetProgress emitted from AutoPlay
       } else {
         // If we are scrolling past it externally
         if (rect.top > windowHeight) {
@@ -162,7 +163,8 @@ export default function CinematicBackground() {
         width: '100vw', 
         height: '100vh', 
         zIndex: -1, // Sits behind everything natively
-        pointerEvents: 'none' 
+        pointerEvents: 'none',
+        touchAction: 'none' // FIX: Ensure canvas never blocks mobile scrolling
       }}
     >
       <Canvas camera={{ position: [0, 0, 8], fov: 45 }}>

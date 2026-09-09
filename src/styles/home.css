@@ -11,7 +11,7 @@
 .home-hero-wrapper {
   background: linear-gradient(135deg, #fdfbfd 0%, #f0f4f8 100%);
   position: relative;
-  overflow: hidden;
+  overflow: clip; /* FIX: Prevents implicit scroll-y on mobile while clipping waves */
 }
 
 .hero-sound-waves {

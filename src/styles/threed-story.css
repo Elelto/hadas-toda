@@ -1,61 +1,52 @@
-/* Option 3: Scroll Snap Implementation */
+/* Option 1: Auto-Play Sequence Implementation */
 
-.story-snap-wrapper {
+.story-autoplay-wrapper {
+  /* Exactly one screen height. Zero internal scroll containers! */
   height: 100vh;
   width: 100%;
   position: relative;
   background-color: transparent;
-}
-
-.story-snap-container {
-  height: 100vh;
-  width: 100%;
-  overflow-y: scroll;
-  scroll-snap-type: y mandatory;
-  /* Hide scrollbar for cinematic feel */
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
-}
-
-.story-snap-container::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
-}
-
-.snap-slide {
-  height: 100vh;
-  width: 100%;
-  scroll-snap-align: start;
-  scroll-snap-stop: always; /* Forces stopping at each slide */
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
+}
+
+.story-autoplay-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 1rem;
 }
 
 .story-text-block {
   text-align: center;
-  max-width: 600px;
-  padding: 0 2rem;
-  /* Prevent text from blocking scroll events on mobile if they drag the text */
+  max-width: 700px;
+  /* Prevent text from blocking touch events */
   pointer-events: none; 
 }
 
 .story-text-block h3 {
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   color: var(--primary-dark, #2d3748);
   margin-bottom: 1rem;
   font-weight: 800;
-  text-shadow: 0 4px 20px rgba(255, 255, 255, 0.8);
+  text-shadow: 0 4px 20px rgba(255, 255, 255, 0.9);
+  line-height: 1.2;
 }
 
 .story-text-block p {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: var(--dark-light, #718096);
   line-height: 1.6;
-  text-shadow: 0 2px 10px rgba(255, 255, 255, 0.8);
+  text-shadow: 0 2px 10px rgba(255, 255, 255, 0.9);
 }
 
 @media (max-width: 768px) {
+  .story-autoplay-wrapper {
+    /* Slightly taller on mobile if needed, but 100vh is safe without overflow-y */
+    height: 90vh; 
+  }
   .story-text-block h3 {
     font-size: 1.8rem;
   }
