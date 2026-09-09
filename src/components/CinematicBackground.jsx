@@ -46,6 +46,17 @@ function ParticlesScene() {
 
   const initialPositions = useMemo(() => new Float32Array(chaosPositions), [chaosPositions]);
 
+  // Listen for the custom event from the snap container
+  const snapProgressRef = useRef(0);
+
+  useEffect(() => {
+    const handleProgress = (e) => {
+      snapProgressRef.current = e.detail;
+    };
+    window.addEventListener('storyScrollProgress', handleProgress);
+    return () => window.removeEventListener('storyScrollProgress', handleProgress);
+  }, []);
+
   useFrame((state) => {
     if (!pointsRef.current) return;
     
@@ -63,20 +74,31 @@ function ParticlesScene() {
       const rect = storyElement.getBoundingClientRect();
       const windowHeight = window.innerHeight;
       
-      const totalScrollDistance = rect.height + windowHeight;
-      const currentScroll = windowHeight - rect.top;
+      // Is the container fully in view? (user is currently scrolling inside it)
+      const isFocused = rect.top <= 10 && rect.bottom >= windowHeight - 10;
       
-      let rawProgress = currentScroll / totalScrollDistance;
-      rawProgress = Math.max(0, Math.min(1, rawProgress));
-
-      // We want the heart to form between 30% and 70% of this section
-      particleProgress = Math.max(0, Math.min(1, (rawProgress - 0.3) / 0.4));
-      
-      // If we are approaching or inside the section, boost opacity
-      if (rawProgress > 0.1 && rawProgress < 0.9) {
-        // Boost opacity to 0.8 smoothly
-        const opacityBoost = Math.sin((rawProgress - 0.1) / 0.8 * Math.PI); // bell curve
-        opacityTarget = Math.max(opacityTarget, 0.8 * opacityBoost);
+      if (isFocused) {
+        // Boost opacity significantly
+        opacityTarget = 0.8;
+        // Map the internal snap progress (0 to 1) directly to the heart formation
+        // Start forming at 0.1, fully formed at 0.9
+        particleProgress = Math.max(0, Math.min(1, (snapProgressRef.current - 0.1) / 0.8));
+      } else {
+        // If we are just scrolling past it externally, maybe keep a partial shape or chaos
+        const rawProgress = (windowHeight - rect.top) / (rect.height + windowHeight);
+        if (rawProgress > 0 && rawProgress < 1) {
+          // Boost opacity slightly as we enter/leave
+          const opacityBoost = Math.sin(rawProgress * Math.PI);
+          opacityTarget = Math.max(opacityTarget, 0.5 * opacityBoost);
+          
+          if (rect.top > 0) {
+            // Approaching from top -> keep chaos (0)
+            particleProgress = 0;
+          } else {
+            // Leaving from bottom -> heart starts to dissolve
+            particleProgress = 1 - Math.min(1, (Math.abs(rect.bottom - windowHeight)) / windowHeight);
+          }
+        }
       }
     }
 

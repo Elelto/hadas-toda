@@ -1,42 +1,69 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import '../styles/threed-story.css';
 
 export default function ThreeDStorySection() {
-  const containerRef = useRef(null);
+  const scrollContainerRef = useRef(null);
   
+  // Track the internal scroll of the snap container
   const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
+    container: scrollContainerRef
   });
 
-  const opacity1 = useTransform(scrollYProgress, [0, 0.2, 0.3, 0.4], [0, 1, 1, 0]);
-  const opacity2 = useTransform(scrollYProgress, [0.35, 0.5, 0.6, 0.7], [0, 1, 1, 0]);
-  const opacity3 = useTransform(scrollYProgress, [0.65, 0.8, 1, 1], [0, 1, 1, 1]);
+  // We need to communicate this internal progress to the global CinematicBackground.
+  // The cleanest way without Context is a custom DOM event or global window variable.
+  // We'll use a custom event.
+  useEffect(() => {
+    const unsubscribe = scrollYProgress.on("change", (latest) => {
+      window.dispatchEvent(new CustomEvent('storyScrollProgress', { detail: latest }));
+    });
+    return () => unsubscribe();
+  }, [scrollYProgress]);
 
-  const y1 = useTransform(scrollYProgress, [0, 0.2], [50, 0]);
-  const y2 = useTransform(scrollYProgress, [0.35, 0.5], [50, 0]);
-  const y3 = useTransform(scrollYProgress, [0.65, 0.8], [50, 0]);
+  // We have 3 slides. 
+  // Slide 0: progress 0
+  // Slide 1: progress 0.5
+  // Slide 2: progress 1.0
 
   return (
-    <section ref={containerRef} id="cinematic-story-anchor" className="story-container">
-      <div className="story-sticky">
-        <div className="story-text-wrapper">
-          <motion.div className="story-text-block" style={{ opacity: opacity1, y: y1 }}>
+    <section id="cinematic-story-anchor" className="story-snap-wrapper">
+      <div className="story-snap-container" ref={scrollContainerRef}>
+        
+        <div className="snap-slide">
+          <motion.div 
+            className="story-text-block"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+          >
             <h3>קשיי דיבור ותקשורת...</h3>
-            <p>עלולים ליצור חוויה יומיומית של תסכול, פיזור וניתוק מהסביבה.</p>
-          </motion.div>
-
-          <motion.div className="story-text-block" style={{ opacity: opacity2, y: y2 }}>
-            <h3>באמצעות אבחון מדויק וטיפול מותאם</h3>
-            <p>אנחנו אוספים את החלקים, מחזקים את השרירים ובונים מחדש את הביטחון.</p>
-          </motion.div>
-
-          <motion.div className="story-text-block final-block" style={{ opacity: opacity3, y: y3 }}>
-            <h3>כדי שהקול שלך יישמע.</h3>
-            <p>חזק, ברור ומלא נוכחות.</p>
           </motion.div>
         </div>
+
+        <div className="snap-slide">
+          <motion.div 
+            className="story-text-block"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+          >
+            <h3>יכולים להרגיש לפעמים כמו רעש מפוזר.</h3>
+            <p>רגעים שבהם המילים מתקשות לצאת, או שהקול בוגד בנו.</p>
+          </motion.div>
+        </div>
+
+        <div className="snap-slide">
+          <motion.div 
+            className="story-text-block"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+          >
+            <h3>אבל עם הכוונה מקצועית, הכל מתחבר.</h3>
+            <p>נאסוף את השברים, ונבנה מחדש את הביטחון שלכם לדבר.</p>
+          </motion.div>
+        </div>
+
       </div>
     </section>
   );
