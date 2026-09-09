@@ -1,28 +1,31 @@
-/* Option 1: Auto-Play Sequence Implementation */
+/* Fast-Track Sticky Scrollytelling Implementation */
 
-.story-autoplay-wrapper {
-  /* Exactly one screen height. Zero internal scroll containers! */
-  height: 100vh;
+.story-fasttrack-wrapper {
+  /* Exactly 1.5 screens tall. Short enough to prevent fatigue, long enough to tie to scroll natively */
+  height: 150vh; 
   width: 100%;
   position: relative;
   background-color: transparent;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
-.story-autoplay-container {
+.story-sticky-container {
+  position: sticky;
+  top: 0;
+  height: 100vh;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden; /* Only to contain the sticky visuals, doesn't trap scroll because it's sticky, not scrollable! */
   padding: 0 1rem;
 }
 
-.story-text-block {
+.story-text-block.absolute-center {
+  position: absolute;
   text-align: center;
   max-width: 700px;
-  /* Prevent text from blocking touch events */
+  width: 100%;
+  /* CRITICAL: Prevent text from blocking mobile swipe events that should pass through to the document */
   pointer-events: none; 
 }
 
@@ -43,9 +46,8 @@
 }
 
 @media (max-width: 768px) {
-  .story-autoplay-wrapper {
-    /* Slightly taller on mobile if needed, but 100vh is safe without overflow-y */
-    height: 90vh; 
+  .story-fasttrack-wrapper {
+    height: 180vh; /* Slightly longer on mobile so the text has more time to be read */
   }
   .story-text-block h3 {
     font-size: 1.8rem;
