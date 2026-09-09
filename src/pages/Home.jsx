@@ -15,7 +15,7 @@ import { loadFirebaseCollection } from '../utils/firebaseLoader';
 import { getExperienceYearsLabel, getPatientsCountLabel } from '../utils/experience';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
-import ThreeDExperiment from '../components/ThreeDExperiment';
+import ThreeDStorySection from '../components/ThreeDStorySection';
 
 import {
   FaMicrophoneAlt,
@@ -250,9 +250,6 @@ export default function Home() {
           structuredData={structuredData}
         />
 
-        {/* 3D Scroll Experiment */}
-        <ThreeDExperiment />
-
         {/* Hero Section */}
         <section className="bb-hero home-hero-wrapper">
           <div className="bb-hero-overlay"></div>
@@ -311,6 +308,9 @@ export default function Home() {
             <span className="stat-label">תואר שני קליני</span>
           </div>
         </div>
+
+        {/* 3D Interactive Story Section */}
+        <ThreeDStorySection />
 
         {/* Services Section */}
         <section className="bb-services section-padding">

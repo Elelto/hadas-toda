@@ -1,0 +1,69 @@
+.story-container {
+  height: 300vh; /* Gives us enough scroll length to play the animation */
+  position: relative;
+  background-color: var(--bg-primary, #ffffff);
+  /* Use clip to prevent mobile scroll-trapping issues */
+  overflow-x: clip; 
+}
+
+.story-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.story-canvas-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none; /* Let clicks pass through if needed */
+}
+
+.story-text-wrapper {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 800px;
+  padding: 2rem;
+  pointer-events: none; /* Text shouldn't block scroll */
+}
+
+.story-text-block {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width: 100%;
+  padding: 0 1rem;
+}
+
+.story-text-block h3 {
+  font-size: 2rem;
+  color: var(--primary, #2A3B5C);
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.story-text-block p {
+  font-size: 1.2rem;
+  color: var(--text-muted, #64748B);
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .story-text-block h3 {
+    font-size: 1.5rem;
+  }
+  .story-text-block p {
+    font-size: 1rem;
+  }
+}
