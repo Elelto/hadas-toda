@@ -293,8 +293,21 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Social Proof Bar */}
-        <div className="social-proof-bar" data-aos="fade-up" data-aos-delay="300">
+        {/* 3D Interactive Story Section */}
+        <ThreeDStorySection />
+
+        {/* Quote Section (Resolves the 3D Story) */}
+        <section className="home-quote-modern">
+          <div className="container">
+            <div className="quote-box" data-aos="zoom-in">
+              <div className="quote-mark">❝</div>
+              <p className="quote-text">קול הוא הגשר בין הנשמה לעולם.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Social Proof Bar (Validates the emotion) */}
+        <div className="social-proof-bar" data-aos="fade-up">
           <div className="social-proof-stat">
             <span className="stat-number">{experienceYearsLabel}</span>
             <span className="stat-label">שנות ניסיון</span>
@@ -308,9 +321,6 @@ export default function Home() {
             <span className="stat-label">תואר שני קליני</span>
           </div>
         </div>
-
-        {/* 3D Interactive Story Section */}
-        <ThreeDStorySection />
 
         {/* Services Section */}
         <section className="bb-services section-padding">
@@ -409,16 +419,6 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Quote Section */}
-        <section className="home-quote-modern">
-          <div className="container">
-            <div className="quote-box" data-aos="zoom-in">
-              <div className="quote-mark">❝</div>
-              <p className="quote-text">קול הוא הגשר בין הנשמה לעולם.</p>
             </div>
           </div>
         </section>
