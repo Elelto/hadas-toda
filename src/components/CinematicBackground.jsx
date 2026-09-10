@@ -57,10 +57,12 @@ function ParticlesScene() {
     return () => window.removeEventListener('storyScrollProgress', handleProgress);
   }, []);
 
+  const currentParticleProgressRef = useRef(0);
+
   useFrame((state) => {
     if (!pointsRef.current) return;
     
-    let particleProgress = 0;
+    let targetParticleProgress = 0;
     let opacityTarget = 0; // Start completely invisible at the top
 
     // Read global scroll to fade in particles as we leave the Hero
@@ -82,15 +84,15 @@ function ParticlesScene() {
         // Boost opacity significantly
         opacityTarget = 0.8;
         // Map the internal auto-play progress (0 to 1) directly to the heart formation
-        particleProgress = snapProgressRef.current; // The targetProgress emitted from AutoPlay
+        targetParticleProgress = snapProgressRef.current; // The targetProgress emitted from AutoPlay
       } else {
         // If we are scrolling past it externally
         if (rect.top > windowHeight) {
           // Approaching from top -> keep chaos (0)
-          particleProgress = 0;
+          targetParticleProgress = 0;
         } else if (rect.bottom < 0) {
           // Leaving from bottom -> HEART STAYS FORMED (1)
-          particleProgress = 1;
+          targetParticleProgress = 1;
           // Keep opacity at 0.3 for the rest of the site so the heart gracefully floats behind everything
           opacityTarget = 0.3;
         } else {
@@ -101,9 +103,9 @@ function ParticlesScene() {
             opacityTarget = Math.max(opacityTarget, 0.5 * opacityBoost);
             
             if (rect.top > 0) {
-              particleProgress = 0; // Top transition
+              targetParticleProgress = 0; // Top transition
             } else {
-              particleProgress = 1; // Bottom transition, keep it formed!
+              targetParticleProgress = 1; // Bottom transition, keep it formed!
             }
           }
         }
@@ -119,6 +121,14 @@ function ParticlesScene() {
       opacityTarget, 
       0.05
     );
+
+    // Smoothly interpolate the particle progress so it never jumps/teleports
+    currentParticleProgressRef.current = THREE.MathUtils.lerp(
+      currentParticleProgressRef.current,
+      targetParticleProgress,
+      0.025 // Determines how fast the heart physically assembles (lower is smoother/slower)
+    );
+    const particleProgress = currentParticleProgressRef.current;
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const i3 = i * 3;
