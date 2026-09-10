@@ -1,8 +1,8 @@
 /* Fast-Track Sticky Scrollytelling Implementation */
 
 .story-fasttrack-wrapper {
-  /* Exactly 1.5 screens tall. Short enough to prevent fatigue, long enough to tie to scroll natively */
-  height: 150vh; 
+  /* 2.5 screens tall for 3 discrete steps */
+  height: 250vh; 
   width: 100%;
   position: relative;
   background-color: transparent;
@@ -47,7 +47,7 @@
 
 @media (max-width: 768px) {
   .story-fasttrack-wrapper {
-    height: 180vh; /* Slightly longer on mobile so the text has more time to be read */
+    height: 250vh;
   }
   .story-text-block h3 {
     font-size: 1.8rem;
