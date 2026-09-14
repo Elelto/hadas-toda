@@ -1,5 +1,8 @@
 # Workspace Guidelines
 
+## Mandatory Expert Consultations
+- **CRITICAL:** The user explicitly demands that for every major architectural, UI/UX, or complex debugging problem, you MUST first invoke an expert subagent (e.g., using the `pro` model, simulated as "Elite UX Architect" or "Claude Opus Thinking") to analyze the problem and propose a solution BEFORE you execute the change. "This is the method" according to the user. Do not skip this step.
+
 ## Mobile-First Design
 - **CRITICAL:** Most users arrive via mobile devices. Always prioritize mobile layout, tap targets (padding/margins for fingers), readable font sizes, and optimized performance for mobile screens. Any UI/UX changes or new components must be designed and reviewed for mobile *first* before desktop.
 
