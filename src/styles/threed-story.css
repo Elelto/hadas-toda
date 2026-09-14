@@ -47,7 +47,8 @@
 
 @media (max-width: 768px) {
   .story-fasttrack-wrapper {
-    height: 250vh;
+    /* MASSIVE mobile height to absorb momentum/inertia swiping */
+    height: 450vh;
   }
   .story-text-block h3 {
     font-size: 1.8rem;

@@ -26,6 +26,16 @@
 - **Scroll Trapping:** NEVER use `overflow-x: hidden` on main layout containers (e.g. `body`, `main`, page wrappers). Doing so forces an implicit `overflow-y: auto`, converting the page into an inner scroll container and trapping touch inputs on mobile (the "dead scroll zones" bug). Always use `overflow-x: clip` instead.
 - **Pointer Events:** Always ensure large decorative background elements (blobs, aurora shapes, massive quotes) have `pointer-events: none` so they don't block mobile touch and scroll interactions.
 
+## 3D Cinematic Scrollytelling Architecture
+- **Solution Name:** **State-Based Scroll Stepping** (combined with **Lerp Interpolation** for 3D physics).
+- **Why:** Tying animations directly 1:1 to the user's scroll position (Scroll Scrubbing) or using CSS `scroll-snap-type` causes severe jittering on mobile Safari (due to dynamic address bars), creates "dead zones" where touch inputs get trapped, and results in overlapping "blurs" of text if the user scrolls quickly.
+- **Implementation Rules:**
+  1. Use a standard `250vh` (or similar) scrolling wrapper to provide native scroll distance.
+  2. Inside, use a `position: sticky; height: 100vh; overflow: hidden;` container.
+  3. Map the raw scroll progress (`useScroll`) to discrete **States/Steps** (e.g., Step 0, 1, 2) rather than continuous values.
+  4. Animate text based on the active State using fixed transitions (e.g., `transition={{ duration: 0.8 }}`).
+  5. Emit the discrete state to the Three.js Canvas, and use `THREE.MathUtils.lerp()` in the `useFrame` loop to physically smooth the particle movements (e.g., the Heart assembly) so they never teleport, gracefully bridging the gap between discrete steps.
+
 ## Logo Sizing & Quality
 - **High-Res PNGs:** The main logo is an AI-upscaled and auto-cropped PNG (`logo-trimmed.png`) with no transparent padding. Do NOT use CSS `transform: scale()` to enlarge it, as it causes layout breakout. Instead, use explicit heights (`110px` desktop, `90px` tablet, `80px` mobile) to maintain maximum legible sharpness without hacks.
 
