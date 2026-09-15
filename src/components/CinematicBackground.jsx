@@ -56,8 +56,8 @@ function ParticlesScene() {
       const baseY = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
       
       // Add volume/thickness to the heart so it's not a thin 1D string
-      // Particles will scatter inwards up to 30% from the edge
-      const thickness = 0.3;
+      // Reduced thickness to 10% (0.1) to keep it elegant and not too "fat"
+      const thickness = 0.1;
       const volumeScale = 1.0 - (Math.random() * thickness);
       
       heart[i3] = (baseX * heartScale * volumeScale);
