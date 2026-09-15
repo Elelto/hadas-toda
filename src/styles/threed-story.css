@@ -6,6 +6,10 @@
   width: 100%;
   position: relative;
   background-color: transparent;
+  
+  /* CRITICAL iOS SAFARI FIX: Lock the layout bounding box so Framer Motion useScroll doesn't collapse to 0 during dvh resize */
+  contain: paint layout;
+  transform: translateZ(0);
 }
 
 .story-sticky-container {
