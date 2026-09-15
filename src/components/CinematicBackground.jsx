@@ -35,9 +35,9 @@ function ParticlesScene() {
     const maxSpreadY = 30;
     
     // Heart scaling
-    // Scale up the heart slightly on mobile so it fills the screen more prominently
+    // Make the heart slightly smaller on mobile so it doesn't overflow the edges
     const baseHeartScale = 0.12;
-    const heartScale = isMobile ? baseHeartScale * 1.4 : baseHeartScale;
+    const heartScale = isMobile ? baseHeartScale * 0.9 : baseHeartScale;
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const i3 = i * 3;
@@ -137,10 +137,11 @@ function ParticlesScene() {
     );
 
     // Smoothly interpolate the particle progress so it never jumps/teleports
+    const lerpSpeed = isMobile ? 0.08 : 0.025; // Mobile users need faster visual feedback
     currentParticleProgressRef.current = THREE.MathUtils.lerp(
       currentParticleProgressRef.current,
       targetParticleProgress,
-      0.025 // Determines how fast the heart physically assembles (lower is smoother/slower)
+      lerpSpeed // Determines how fast the heart physically assembles
     );
     const particleProgress = currentParticleProgressRef.current;
 
