@@ -6,7 +6,7 @@ import { loadYamlContent } from '../utils/yamlLoader';
 import AOS from 'aos';
 import '../styles/home.css';
 import '../styles/glass.css';
-import AuroraBackground from '../components/AuroraBackground';
+
 
 import SEOHead from '../components/SEOHead';
 import StructuredData from '../components/StructuredData';
@@ -15,6 +15,10 @@ import { loadFirebaseCollection } from '../utils/firebaseLoader';
 import { getExperienceYearsLabel, getPatientsCountLabel } from '../utils/experience';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
+import ThreeDStorySection from '../components/ThreeDStorySection';
+import CinematicBentoServices from '../components/CinematicBentoServices';
+import CinematicBackground from '../components/CinematicBackground';
+import CinematicAbout from '../components/CinematicAbout';
 
 import {
   FaMicrophoneAlt,
@@ -249,14 +253,12 @@ export default function Home() {
           structuredData={structuredData}
         />
 
+        {/* Global Cinematic Background */}
+        <CinematicBackground />
+
         {/* Hero Section */}
         <section className="bb-hero home-hero-wrapper">
           <div className="bb-hero-overlay"></div>
-
-          {/* New Aurora Background */}
-          <div className="hero-background-shapes">
-            <AuroraBackground />
-          </div>
 
           <div className="container bb-hero-content">
             <div className="bb-hero-text" data-aos="fade-up">
@@ -292,8 +294,21 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Social Proof Bar */}
-        <div className="social-proof-bar" data-aos="fade-up" data-aos-delay="300">
+        {/* 3D Interactive Story Section */}
+        <ThreeDStorySection />
+
+        {/* Quote Section (Resolves the 3D Story) */}
+        <section className="home-quote-modern">
+          <div className="container">
+            <div className="quote-box" data-aos="zoom-in">
+              <div className="quote-mark">❝</div>
+              <p className="quote-text">קול הוא הגשר בין הנשמה לעולם.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Social Proof Bar (Validates the emotion) */}
+        <div className="social-proof-bar" data-aos="fade-up">
           <div className="social-proof-stat">
             <span className="stat-number">{experienceYearsLabel}</span>
             <span className="stat-label">שנות ניסיון</span>
@@ -308,116 +323,19 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Services Section */}
-        <section className="bb-services section-padding">
-          <div className="container">
-            <div className="section-header-center">
-              <h2>{homeContent?.services?.title || 'תחומי המומחיות שלי'}</h2>
-              <div className="header-underline"></div>
-              <p>{homeContent?.services?.subtitle}</p>
-            </div>
+        {/* Cinematic Services Section - Bento Grid */}
+        <CinematicBentoServices 
+          title={homeContent?.services?.title}
+          subtitle={homeContent?.services?.subtitle}
+          specializations={homeContent?.services?.specializations}
+          config={specializationConfig}
+        />
 
-            <div className="bb-services-grid-specializations sticky-stack-container">
-              {homeContent?.services?.specializations?.map((spec, index) => {
-                const config = specializationConfig[spec.icon] || specializationConfig['voice'];
-                return (
-                  <div
-                    key={index}
-                    className="bb-specialization-card glass-card sticky-stack-card"
-                    data-aos="fade-up"
-                    data-aos-delay={index * 100}
-                    style={{
-                      '--hover-color': config.color,
-                      '--index': index
-                    }}
-                  >
-                    <div
-                      className="spec-icon"
-                      style={{
-                        color: config.color,
-                        background: config.bg,
-                        boxShadow: `0 4px 15px ${config.color}30`
-                      }}
-                    >
-                      {config.icon}
-                    </div>
-                    <h3 className="spec-title">{spec.name}</h3>
-                    <p className="spec-description">{spec.description}</p>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="services-cta-wrapper">
-              <Link to="/services" className="link-arrow">
-                לכל הטיפולים והשירותים ←
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* About Section */}
-        <section className="bb-about section-padding bg-light">
-          <div className="container">
-            <div className="bb-about-wrapper reverse-layout-mobile">
-              <div className="bb-about-content" data-aos="fade-left">
-                <h2>{homeContent?.about?.title}</h2>
-                <div className="header-underline align-right"></div>
-                <p className="lead-text">
-                  {homeContent?.about?.paragraph1}
-                </p>
-                <p>{homeContent?.about?.paragraph2}</p>
-                <p>{homeContent?.about?.paragraph3}</p>
-                <Link to="/about" className="bb-btn btn-soft-glow btn-soft-glow-outline mt-4">
-                  קראו עוד על הגישה שלי
-                </Link>
-              </div>
-              <div className="bb-about-image" data-aos="fade-right">
-                <div className="bb-about-visual">
-                  <div className="visual-decoration circle-bg"></div>
-                  <div className="visual-decoration dots"></div>
-
-                  <div className="visual-card main-card glass-card">
-                    <h3><span className="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></span> הגישה הטיפולית</h3>
-                    <ul>
-                      <li>
-                        <span className="check-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-                        יחס אישי, סבלני ורגיש לכל מטופל
-                      </li>
-                      <li>
-                        <span className="check-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-                        התמחות ייחודית בהפרעות קול וצרידות
-                      </li>
-                      <li>
-                        <span className="check-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-                        זמינות גבוהה וגמישות בשעות הטיפול
-                      </li>
-                      <li>
-                        <span className="check-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-                        קליניקה נעימה ומאובזרת בבני ברק
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="visual-card stat-card glass-card">
-                    <span className="number">{experienceYearsLabel}</span>
-                    <span className="text">שנות ניסיון</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Quote Section */}
-        <section className="home-quote-modern">
-          <div className="container">
-            <div className="quote-box" data-aos="zoom-in">
-              <div className="quote-mark">❝</div>
-              <p className="quote-text">קול הוא הגשר בין הנשמה לעולם.</p>
-            </div>
-          </div>
-        </section>
+        {/* Cinematic About Section */}
+        <CinematicAbout 
+          content={homeContent?.about} 
+          experienceYearsLabel={experienceYearsLabel} 
+        />
 
         {/* Recommendation Images Carousel */}
         <section className="bb-testimonials section-padding">

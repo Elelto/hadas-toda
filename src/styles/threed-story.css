@@ -1,0 +1,59 @@
+/* Fast-Track Sticky Scrollytelling Implementation */
+
+.story-fasttrack-wrapper {
+  /* 2.5 screens tall for 3 discrete steps */
+  height: 250dvh; 
+  width: 100%;
+  position: relative;
+  background-color: transparent;
+}
+
+.story-sticky-container {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* Only to contain the sticky visuals, doesn't trap scroll because it's sticky, not scrollable! */
+  padding: 0 1rem;
+}
+
+.story-text-block.absolute-center {
+  position: absolute;
+  text-align: center;
+  max-width: 700px;
+  width: 100%;
+  /* CRITICAL: Prevent text from blocking mobile swipe events that should pass through to the document */
+  pointer-events: none; 
+}
+
+.story-text-block h3 {
+  font-size: 2.8rem;
+  color: var(--primary-dark, #2d3748);
+  margin-bottom: 1rem;
+  font-weight: 800;
+  text-shadow: 0 4px 20px rgba(255, 255, 255, 0.9);
+  line-height: 1.2;
+}
+
+.story-text-block p {
+  font-size: 1.3rem;
+  color: var(--dark-light, #718096);
+  line-height: 1.6;
+  text-shadow: 0 2px 10px rgba(255, 255, 255, 0.9);
+}
+
+@media (max-width: 768px) {
+  .story-fasttrack-wrapper {
+    /* MASSIVE mobile height to absorb momentum/inertia swiping */
+    height: 450dvh;
+  }
+  .story-text-block h3 {
+    font-size: 1.8rem;
+  }
+  .story-text-block p {
+    font-size: 1.1rem;
+  }
+}
