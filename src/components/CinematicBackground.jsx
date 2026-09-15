@@ -26,9 +26,18 @@ function ParticlesScene() {
   const isMobile = viewport.aspect < 1;
   const aspectMultiplier = Math.min(1, viewport.aspect);
 
-  const { chaosPositions, heartPositions } = useMemo(() => {
+  const { chaosPositions, heartPositions, colorsArray } = useMemo(() => {
     const chaos = new Float32Array(PARTICLE_COUNT * 3);
     const heart = new Float32Array(PARTICLE_COUNT * 3);
+    const colors = new Float32Array(PARTICLE_COUNT * 3);
+
+    // Premium Color Palette for the Mosaic effect
+    const colorPalette = [
+      new THREE.Color('#8a3b58'), // Brand Burgundy (Deep)
+      new THREE.Color('#a55c7a'), // Lighter Rose
+      new THREE.Color('#e0b0c0'), // Soft Pink / Rose Gold
+      new THREE.Color('#61243a')  // Darker Wine
+    ];
 
     // Chaos distribution
     const maxSpreadX = 30;
@@ -42,6 +51,12 @@ function ParticlesScene() {
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const i3 = i * 3;
       
+      // Assign a random color from the premium palette to this particle
+      const randomColor = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+      colors[i3] = randomColor.r;
+      colors[i3 + 1] = randomColor.g;
+      colors[i3 + 2] = randomColor.b;
+
       // Compress the X spread on narrow mobile screens so particles don't hide off-screen
       chaos[i3] = (Math.random() - 0.5) * maxSpreadX * aspectMultiplier * 1.5; 
       chaos[i3 + 1] = (Math.random() - 0.5) * maxSpreadY;
@@ -63,10 +78,11 @@ function ParticlesScene() {
       heart[i3 + 1] = (baseY * heartScale * volumeScale);
       heart[i3 + 2] = (Math.random() - 0.5) * 0.4; // Very subtle Z-depth so it doesn't look blurry/fat
     }
-    return { chaosPositions: chaos, heartPositions: heart };
+    return { chaosPositions: chaos, heartPositions: heart, colorsArray: colors };
   }, [viewport.aspect, isMobile, aspectMultiplier]);
 
   const initialPositions = useMemo(() => new Float32Array(chaosPositions), [chaosPositions]);
+  const particleColors = useMemo(() => new Float32Array(colorsArray), [colorsArray]);
 
   // Listen for the custom event from the snap container
   const snapProgressRef = useRef(0);
@@ -180,8 +196,9 @@ function ParticlesScene() {
     <points ref={pointsRef}>
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" count={PARTICLE_COUNT} array={initialPositions} itemSize={3} />
+        <bufferAttribute attach="attributes-color" count={PARTICLE_COUNT} array={particleColors} itemSize={3} />
       </bufferGeometry>
-      <PointMaterial transparent color="#FF6B6B" size={0.06} sizeAttenuation={true} depthWrite={false} opacity={0.3} />
+      <PointMaterial transparent vertexColors size={0.06} sizeAttenuation={true} depthWrite={false} opacity={0.3} />
     </points>
   );
 }
