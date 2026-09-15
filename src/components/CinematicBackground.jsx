@@ -47,13 +47,22 @@ function ParticlesScene() {
       chaos[i3 + 1] = (Math.random() - 0.5) * maxSpreadY;
       chaos[i3 + 2] = (Math.random() - 0.5) * 30;
 
-      const t = Math.PI * 2 * Math.random();
+      // Fix for "bald spots": Use deterministic distribution so every angle is covered
+      let t = (i / PARTICLE_COUNT) * Math.PI * 2;
+      // Add a tiny bit of noise so it looks organic, not strictly mechanical
+      t += (Math.random() - 0.5) * 0.02;
+
       const baseX = 16 * Math.pow(Math.sin(t), 3);
       const baseY = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
       
-      heart[i3] = (baseX * heartScale) + (Math.random() - 0.5) * 0.3;
-      heart[i3 + 1] = (baseY * heartScale) + (Math.random() - 0.5) * 0.3;
-      heart[i3 + 2] = (Math.random() - 0.5) * 1.5; 
+      // Add volume/thickness to the heart so it's not a thin 1D string
+      // Particles will scatter inwards up to 30% from the edge
+      const thickness = 0.3;
+      const volumeScale = 1.0 - (Math.random() * thickness);
+      
+      heart[i3] = (baseX * heartScale * volumeScale);
+      heart[i3 + 1] = (baseY * heartScale * volumeScale);
+      heart[i3 + 2] = (Math.random() - 0.5) * 2.0; // Thicker 3D depth
     }
     return { chaosPositions: chaos, heartPositions: heart };
   }, [viewport.aspect, isMobile, aspectMultiplier]);
