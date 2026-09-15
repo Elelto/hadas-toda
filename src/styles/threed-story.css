@@ -2,7 +2,7 @@
 
 .story-fasttrack-wrapper {
   /* 2.5 screens tall for 3 discrete steps */
-  height: 250vh; 
+  height: 250dvh; 
   width: 100%;
   position: relative;
   background-color: transparent;
@@ -11,7 +11,7 @@
 .story-sticky-container {
   position: sticky;
   top: 0;
-  height: 100vh;
+  height: 100dvh;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -48,7 +48,7 @@
 @media (max-width: 768px) {
   .story-fasttrack-wrapper {
     /* MASSIVE mobile height to absorb momentum/inertia swiping */
-    height: 450vh;
+    height: 450dvh;
   }
   .story-text-block h3 {
     font-size: 1.8rem;
