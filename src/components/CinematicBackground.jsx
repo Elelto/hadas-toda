@@ -35,9 +35,9 @@ function ParticlesScene() {
     const maxSpreadY = 30;
     
     // Heart scaling
-    // Make the heart slightly smaller on mobile so it doesn't overflow the edges
+    // Make the heart smaller on mobile so it fits perfectly and elegantly inside the frame
     const baseHeartScale = 0.12;
-    const heartScale = isMobile ? baseHeartScale * 0.9 : baseHeartScale;
+    const heartScale = isMobile ? baseHeartScale * 0.75 : baseHeartScale;
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const i3 = i * 3;
@@ -55,14 +55,13 @@ function ParticlesScene() {
       const baseX = 16 * Math.pow(Math.sin(t), 3);
       const baseY = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
       
-      // Add volume/thickness to the heart so it's not a thin 1D string
-      // Reduced thickness to 10% (0.1) to keep it elegant and not too "fat"
-      const thickness = 0.1;
+      // Keep it crisp and elegant: very minimal thickness and Z-depth
+      const thickness = 0.03; // Only 3% thickness for a sharp, high-tech look
       const volumeScale = 1.0 - (Math.random() * thickness);
       
       heart[i3] = (baseX * heartScale * volumeScale);
       heart[i3 + 1] = (baseY * heartScale * volumeScale);
-      heart[i3 + 2] = (Math.random() - 0.5) * 2.0; // Thicker 3D depth
+      heart[i3 + 2] = (Math.random() - 0.5) * 0.4; // Very subtle Z-depth so it doesn't look blurry/fat
     }
     return { chaosPositions: chaos, heartPositions: heart };
   }, [viewport.aspect, isMobile, aspectMultiplier]);
