@@ -61,7 +61,7 @@ export default function ThreeDStorySection() {
           transition={{ duration: 0.8, ease: "easeInOut" }}
         >
           <h3>אבל עם הכוונה מקצועית, הכל מתחבר.</h3>
-          <p>נאסוף את השברים, ונבנה מחדש את הביטחון שלכם לדבר.</p>
+          <p>נעניק לכם כלים מדויקים לתקשורת ברורה, שוטפת ומלאת ביטחון.</p>
         </motion.div>
 
       </div>
