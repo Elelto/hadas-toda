@@ -181,6 +181,7 @@ function ParticlesScene() {
 export default function CinematicBackground() {
   return (
     <div 
+      className="cinematic-canvas-wrapper"
       style={{ 
         position: 'fixed', 
         top: 0, 
@@ -188,11 +189,10 @@ export default function CinematicBackground() {
         width: '100vw', 
         height: '100vh', 
         zIndex: -1, // Sits behind everything natively
-        pointerEvents: 'none',
-        touchAction: 'none' // FIX: Ensure canvas never blocks mobile scrolling
+        pointerEvents: 'none'
       }}
     >
-      <Canvas camera={{ position: [0, 0, 8], fov: 45 }}>
+      <Canvas style={{ pointerEvents: 'none' }} camera={{ position: [0, 0, 8], fov: 45 }}>
         <fog attach="fog" args={['#ffffff', 5, 20]} />
         <ParticlesScene />
       </Canvas>
