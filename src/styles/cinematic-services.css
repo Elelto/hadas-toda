@@ -1,0 +1,126 @@
+.cinematic-services-wrapper {
+  /* Give enough height for the user to scroll through the horizontal track */
+  height: 300vh;
+  background-color: transparent;
+  position: relative;
+}
+
+.cinematic-services-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  padding: 2rem 0;
+}
+
+.cinematic-services-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+}
+
+.cinematic-services-header h2 {
+  font-size: 2.5rem;
+  color: var(--primary-dark, #2d3748);
+  margin-bottom: 0.5rem;
+  font-weight: 800;
+}
+
+.cinematic-services-viewport {
+  width: 100%;
+  overflow: hidden;
+  padding: 2rem 0;
+  /* Add subtle mask so cards fade at edges */
+  mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+}
+
+.cinematic-services-track {
+  display: flex;
+  gap: 2rem;
+  padding: 0 5vw; /* Start with a bit of offset */
+  width: max-content;
+}
+
+.cinematic-service-card {
+  width: 350px;
+  height: 400px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 3rem 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  transition: all 0.4s ease;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.cinematic-service-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+.cinematic-services-footer {
+  margin-top: 2rem;
+  z-index: 10;
+}
+
+@media (max-width: 768px) {
+  .cinematic-services-wrapper {
+    height: auto; /* Remove the 300vh scroll height on mobile */
+  }
+
+  .cinematic-services-sticky {
+    position: relative; /* Remove sticky */
+    height: auto;
+    padding: 4rem 0;
+  }
+
+  .cinematic-services-viewport {
+    mask-image: none;
+    -webkit-mask-image: none;
+    /* Native horizontal scrolling on mobile */
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 0 5vw;
+    padding: 1rem 0 3rem 0;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Hide scrollbar for a cleaner look */
+  .cinematic-services-viewport::-webkit-scrollbar {
+    display: none;
+  }
+  .cinematic-services-viewport {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .cinematic-services-track {
+    /* Reset Framer Motion transform for mobile via CSS */
+    transform: none !important;
+    width: max-content;
+    padding: 0 5vw;
+    gap: 1rem;
+  }
+
+  .cinematic-service-card {
+    width: 280px;
+    height: 320px;
+    padding: 2rem 1.5rem;
+    scroll-snap-align: center;
+  }
+  
+  .cinematic-services-header h2 {
+    font-size: 2rem;
+  }
+}
