@@ -44,7 +44,6 @@ const staticPages = [
     { url: '/about', priority: '0.8', changefreq: 'monthly' },
     { url: '/contact', priority: '0.8', changefreq: 'monthly' },
     { url: '/testimonials', priority: '0.7', changefreq: 'monthly' },
-    { url: '/ai-assessment', priority: '0.6', changefreq: 'monthly' },
 ];
 
 function generateSitemap() {

@@ -16,6 +16,5 @@ Allow: /services
 Allow: /contact
 Allow: /blog
 Allow: /testimonials
-Allow: /ai-assessment
 Allow: /online-therapy
 Allow: /bnei-brak

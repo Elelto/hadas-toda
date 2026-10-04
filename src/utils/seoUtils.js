@@ -10,7 +10,6 @@ export const generateDynamicSitemap = (blogPosts) => {
     { url: '/contact', priority: '0.8', changefreq: 'monthly' },
     { url: '/testimonials', priority: '0.7', changefreq: 'monthly' },
     { url: '/blog', priority: '0.8', changefreq: 'weekly' },
-    { url: '/ai-assessment', priority: '0.6', changefreq: 'monthly' }
   ];
 
   const blogUrls = blogPosts.map(post => ({
