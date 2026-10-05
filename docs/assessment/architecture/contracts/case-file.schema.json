@@ -1,0 +1,1221 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hadas-toda.co.il/schemas/intake/v1/case-file.schema.json",
+  "title": "Case file (session state)",
+  "description": "The single source of truth for one conversation. Contains health data AND possibly identifiers in free text (SEC-07; Israeli ID, phone and email numbers are masked before storage). Owned only by engine code; encrypted in Netlify Blobs, CAS writes. Content is deleted (D-01): at 'סיום' and at restart (DELETE /api/intake/session); IN THE SAME REQUEST as a successful form submission (round 4, SEC-01/L-04: the record becomes a content-free tombstone with purge_at, then is deleted); at a routing stop (end of that turn); when a raised red flag blocks the form (content-free stub that only re-renders S6, purge_at = 24h); otherwise 24 hours after the last activity (absolute cap 72 hours). Only content-free metrics and consent records survive. The schema rejects a submitted or form-blocked case that still carries content.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "session_id",
+    "channel",
+    "created_at",
+    "updated_at",
+    "expires_at",
+    "seq",
+    "phase",
+    "status",
+    "content_versions",
+    "consent",
+    "slots",
+    "goals",
+    "current_goal_id",
+    "last_assistant",
+    "turns",
+    "red_flags",
+    "pending_confirmation",
+    "notes",
+    "outcome",
+    "summary",
+    "handoff",
+    "transcript",
+    "processed_messages",
+    "counters",
+    "decision_lock",
+    "routing_stop",
+    "pending_extraction"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "session_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{16,64}$",
+      "description": "Random 128-bit+ id (base64url). Never derived from a phone number."
+    },
+    "channel": {
+      "$ref": "common.schema.json#/$defs/channel"
+    },
+    "delivery_mode": {
+      "enum": [
+        "live",
+        "shadow"
+      ],
+      "default": "live"
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/isoDateTime"
+    },
+    "updated_at": {
+      "$ref": "common.schema.json#/$defs/isoDateTime"
+    },
+    "expires_at": {
+      "$ref": "common.schema.json#/$defs/isoDateTime",
+      "description": "Resume deadline = last activity + 24h. A read after it treats the session as gone and deletes it on the spot; the purge job (hourly) deletes anything past it. Physical deletion is therefore between 24h and 25h after the last activity; a purge failure raises heartbeat purge_failed."
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of processed inbound user messages. Client must send the seq it last saw; mismatch -> 409."
+    },
+    "phase": {
+      "$ref": "common.schema.json#/$defs/phase"
+    },
+    "status": {
+      "enum": [
+        "active",
+        "closed",
+        "expired",
+        "silenced",
+        "degraded",
+        "stopped"
+      ],
+      "description": "silenced = a human (Hadas) took over (WhatsApp) - the engine never answers again. degraded = model-free mode (LLM circuit breaker open, daily cost cap reached, or the address's daily budget used): fixed texts, button screens and the form only."
+    },
+    "content_versions": {
+      "$ref": "common.schema.json#/$defs/contentVersions"
+    },
+    "wa": {
+      "description": "WhatsApp only. Encrypted with the rest of the record.",
+      "type": "object",
+      "required": [
+        "wa_id"
+      ],
+      "properties": {
+        "wa_id": {
+          "type": "string",
+          "pattern": "^[0-9]{6,20}$"
+        },
+        "pre_consent_buffer": {
+          "description": "Messages received before consent. Not sent to any LLM until consent; replayed as the first intake turn after consent; deleted if consent is declined.",
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "type": "string",
+            "maxLength": 2000
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "consent": {
+      "type": "object",
+      "required": [
+        "intake"
+      ],
+      "properties": {
+        "intake": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/consentRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "handoff": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/consentRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "slots": {
+      "type": "object",
+      "description": "Keyed by slot id. Slots never touched are absent (= missing).",
+      "propertyNames": {
+        "$ref": "common.schema.json#/$defs/slotId"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/slotState"
+      }
+    },
+    "goals": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "common.schema.json#/$defs/entityId"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "status",
+          "turns_used"
+        ],
+        "properties": {
+          "status": {
+            "enum": [
+              "pending",
+              "active",
+              "satisfied",
+              "exhausted",
+              "not_applicable"
+            ]
+          },
+          "turns_used": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "first_asked_seq": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "current_goal_id": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/entityId"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "last_assistant": {
+      "description": "What the assistant did last turn. asked_slot_ids gates answers_last_question updates.",
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "seq",
+            "move",
+            "goal_id",
+            "asked_slot_ids",
+            "origin"
+          ],
+          "properties": {
+            "seq": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "move": {
+              "anyOf": [
+                {
+                  "$ref": "common.schema.json#/$defs/llmMove"
+                },
+                {
+                  "enum": [
+                    "fixed_only",
+                    "red_flag_confirm"
+                  ]
+                }
+              ]
+            },
+            "goal_id": {
+              "anyOf": [
+                {
+                  "$ref": "common.schema.json#/$defs/entityId"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "asked_slot_ids": {
+              "type": "array",
+              "items": {
+                "$ref": "common.schema.json#/$defs/slotId"
+              }
+            },
+            "origin": {
+              "$ref": "common.schema.json#/$defs/textOrigin"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "turns": {
+      "type": "object",
+      "required": [
+        "intake",
+        "total",
+        "consecutive_no_progress"
+      ],
+      "properties": {
+        "intake": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "User turns in intake counted from the FIRST free-text message. Opening taps before it (core_relation, and self_age_band if D-13 passes) are not counted, so the clinical 2-3 question target and max_intake_turns (6) start after the first message."
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "consecutive_no_progress": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Turns with no accepted update and no answered question. At 3 in a row (or at max_intake_turns) the policy first asks every applicable safety_screen goal not yet asked, then goes to wrap_up (critic F2). FAQ-only turns count as progress up to limits.max_faq_only_turns (4), then as no-progress."
+        },
+        "faq_only": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "red_flags": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "flag_id",
+          "tier",
+          "source",
+          "raised_seq",
+          "form_after_message"
+        ],
+        "properties": {
+          "flag_id": {
+            "$ref": "common.schema.json#/$defs/entityId"
+          },
+          "source": {
+            "enum": [
+              "immediate_pattern",
+              "extractor_signal",
+              "condition",
+              "unknown_after_confirm",
+              "doubt_condition"
+            ]
+          },
+          "pattern_id": {
+            "$ref": "common.schema.json#/$defs/entityId"
+          },
+          "evidence": {
+            "$ref": "common.schema.json#/$defs/evidence"
+          },
+          "raised_seq": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "tier": {
+            "enum": [
+              "emergency",
+              "urgent",
+              "hotline"
+            ]
+          },
+          "doubt": {
+            "type": "boolean"
+          },
+          "form_after_message": {
+            "enum": [
+              "none",
+              "secondary"
+            ],
+            "description": "Effective form policy of this flag, copied from red-flags.json at raise time (doubt raise included). Any 'none' here blocks the form for the whole conversation (handoff.status = blocked)."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "pending_confirmation": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "flag_id",
+            "slot",
+            "asked_seq"
+          ],
+          "properties": {
+            "flag_id": {
+              "$ref": "common.schema.json#/$defs/entityId"
+            },
+            "slot": {
+              "$ref": "common.schema.json#/$defs/slotId"
+            },
+            "asked_seq": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "notes": {
+      "type": "array",
+      "maxItems": 30,
+      "items": {
+        "type": "object",
+        "required": [
+          "seq",
+          "quote"
+        ],
+        "properties": {
+          "seq": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "quote": {
+            "type": "string",
+            "maxLength": 600
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "faq_answered": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/entityId"
+      }
+    },
+    "outcome": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "outcome",
+            "reason_code",
+            "rule_id",
+            "guards",
+            "decided_seq",
+            "decision_table_version",
+            "would_be_outcome_3"
+          ],
+          "properties": {
+            "outcome": {
+              "$ref": "common.schema.json#/$defs/outcomeId"
+            },
+            "rule_id": {
+              "anyOf": [
+                {
+                  "$ref": "common.schema.json#/$defs/entityId"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "null when produced by a red flag or the default."
+            },
+            "reason_code": {
+              "$ref": "common.schema.json#/$defs/entityId"
+            },
+            "referral_id": {
+              "$ref": "common.schema.json#/$defs/entityId"
+            },
+            "downgraded_from": {
+              "enum": [
+                3,
+                4
+              ]
+            },
+            "guards": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "guard",
+                  "result"
+                ],
+                "properties": {
+                  "guard": {
+                    "enum": [
+                      "outcome3_enabled",
+                      "outcome3_exclusion",
+                      "critical_slots_filled",
+                      "no_conflicts",
+                      "no_red_flags",
+                      "referral_exists",
+                      "all_messages_extracted",
+                      "domain_confirmed",
+                      "outcome4_requirements"
+                    ]
+                  },
+                  "result": {
+                    "enum": [
+                      "pass",
+                      "fail"
+                    ]
+                  },
+                  "detail": {
+                    "type": "string",
+                    "maxLength": 200
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "decided_seq": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "decision_table_version": {
+              "$ref": "common.schema.json#/$defs/semver"
+            },
+            "shown": {
+              "type": "boolean"
+            },
+            "addenda_ids": {
+              "type": "array",
+              "items": {
+                "$ref": "common.schema.json#/$defs/entityId"
+              }
+            },
+            "early_handoff": {
+              "type": "boolean"
+            },
+            "derived_true": {
+              "type": "array",
+              "items": {
+                "$ref": "common.schema.json#/$defs/entityId"
+              },
+              "description": "Derived conditions (e.g. wtc_*) that were TRUE at decision time: the 'why' for Hadas."
+            },
+            "referral_ids": {
+              "type": "array",
+              "maxItems": 3,
+              "items": {
+                "$ref": "common.schema.json#/$defs/entityId"
+              },
+              "description": "Rule referral first, then addenda referrals."
+            },
+            "would_be_outcome_3": {
+              "enum": [
+                "true",
+                "false",
+                "undetermined"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "summary": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "text",
+            "origin"
+          ],
+          "properties": {
+            "text": {
+              "type": "string",
+              "maxLength": 1500
+            },
+            "origin": {
+              "enum": [
+                "generated",
+                "template_fallback"
+              ]
+            },
+            "points": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "text",
+                  "slot_ids"
+                ],
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "maxLength": 300
+                  },
+                  "slot_ids": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "common.schema.json#/$defs/slotId"
+                    }
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "handoff": {
+      "type": "object",
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "not_offered",
+            "offered",
+            "submitted",
+            "declined",
+            "blocked"
+          ],
+          "description": "blocked = a raised red flag with form_after_message none, or a routing stop, cancelled any form for the rest of the conversation (never offered again; intake-handoff refuses). submitted = the lead was written; the case is a tombstone until purged."
+        },
+        "lead_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{16,64}$"
+        },
+        "submitted_at": {
+          "$ref": "common.schema.json#/$defs/isoDateTime"
+        },
+        "early": {
+          "type": "boolean"
+        },
+        "blocked_reason": {
+          "enum": [
+            "red_flag_no_form",
+            "routing_stop"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "const": "blocked"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "required": [
+              "blocked_reason"
+            ],
+            "properties": {
+              "blocked_reason": true
+            }
+          }
+        }
+      ]
+    },
+    "transcript": {
+      "description": "What was displayed, for resume and for the generator's short context window. Max 80 entries.",
+      "type": "array",
+      "maxItems": 80,
+      "items": {
+        "type": "object",
+        "required": [
+          "seq",
+          "role",
+          "at"
+        ],
+        "properties": {
+          "seq": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "role": {
+            "enum": [
+              "user",
+              "assistant"
+            ]
+          },
+          "at": {
+            "$ref": "common.schema.json#/$defs/isoDateTime"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 3000
+          },
+          "choice": {
+            "type": "object",
+            "required": [
+              "choice_set_id",
+              "option_id"
+            ],
+            "properties": {
+              "choice_set_id": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "option_id": {
+                "type": "string",
+                "maxLength": 64
+              }
+            },
+            "additionalProperties": false
+          },
+          "origin": {
+            "$ref": "common.schema.json#/$defs/textOrigin"
+          },
+          "text_refs": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/textRef"
+            }
+          },
+          "item_type": {
+            "enum": [
+              "text",
+              "choices",
+              "outcome",
+              "form_request",
+              "notice",
+              "end"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "processed_messages": {
+      "description": "Idempotency window: last 20 inbound message ids with the seq they produced. A repeated id returns the stored response instead of re-running the turn.",
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "required": [
+          "message_id",
+          "seq"
+        ],
+        "properties": {
+          "message_id": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "seq": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "counters": {
+      "type": "object",
+      "required": [
+        "llm_calls",
+        "input_tokens",
+        "output_tokens",
+        "est_cost_usd",
+        "fallbacks",
+        "retries",
+        "llm_failures_consecutive"
+      ],
+      "properties": {
+        "llm_calls": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "input_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "output_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "est_cost_usd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "fallbacks": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "retries": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "llm_failures_consecutive": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "entry_point": {
+      "type": "string",
+      "maxLength": 64,
+      "description": "Non-content: where the chat was opened (landing page slug). Shown to Hadas; never used as evidence for any slot."
+    },
+    "display_stage": {
+      "enum": [
+        1,
+        2,
+        3
+      ]
+    },
+    "reopen_count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2,
+      "description": "'שכחתי לספר' re-entries from outcome/handoff back to intake (before submission). Max 2."
+    },
+    "asked_confirmations": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/entityId"
+      },
+      "description": "Red-flag ids whose confirm question was already asked (once per flag)."
+    },
+    "outcome_history": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "required": [
+          "outcome",
+          "decided_seq"
+        ],
+        "properties": {
+          "outcome": {
+            "$ref": "common.schema.json#/$defs/outcomeId"
+          },
+          "reason_code": {
+            "$ref": "common.schema.json#/$defs/entityId"
+          },
+          "decided_seq": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "absolute_expires_at": {
+      "$ref": "common.schema.json#/$defs/isoDateTime"
+    },
+    "masked_identifiers": {
+      "type": "boolean",
+      "description": "true if normalization masked an ID/phone/email in any user message (SEC-07)."
+    },
+    "pending_extraction": {
+      "type": "array",
+      "maxItems": 3,
+      "description": "Critic F1: user messages whose extraction failed. Re-extracted together with the next message, and always before wrap_up/outcome.",
+      "items": {
+        "type": "object",
+        "required": [
+          "seq",
+          "text",
+          "attempts"
+        ],
+        "properties": {
+          "seq": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "attempts": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "extraction_gap": {
+      "type": "boolean",
+      "description": "A message stayed unextracted after all retries: outcome 3 impossible, extraction-gap notice (with 101) on the outcome card."
+    },
+    "decision_lock": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "outcome",
+            "seq"
+          ],
+          "properties": {
+            "outcome": {
+              "enum": [
+                1,
+                4
+              ]
+            },
+            "seq": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "routing_stop": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "seq"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "common.schema.json#/$defs/entityId"
+            },
+            "seq": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "purge_at": {
+      "$ref": "common.schema.json#/$defs/isoDateTime",
+      "description": "Set when the record became content-free (tombstone after submission; S6 stub after a form-blocking flag). The explicit delete runs in the same request; the purge job deletes anything still present at or after this time."
+    },
+    "degraded_reason": {
+      "enum": [
+        "llm_failures",
+        "cost_cap",
+        "ip_budget"
+      ],
+      "description": "status=degraded = model-free mode: regex, button screens and conditions only; then outcome with extraction_gap, 101 and the form (D-09, F2)."
+    },
+    "ui_events": {
+      "$ref": "metrics-record.schema.json#/$defs/uiEvents"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "consentRef": {
+      "type": "object",
+      "required": [
+        "record_id",
+        "accepted",
+        "at",
+        "texts"
+      ],
+      "properties": {
+        "record_id": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "accepted": {
+          "type": "boolean"
+        },
+        "at": {
+          "$ref": "common.schema.json#/$defs/isoDateTime"
+        },
+        "texts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "common.schema.json#/$defs/textRef"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "slotState": {
+      "type": "object",
+      "required": [
+        "status",
+        "value",
+        "evidence",
+        "updated_seq"
+      ],
+      "properties": {
+        "status": {
+          "$ref": "common.schema.json#/$defs/slotStatus"
+        },
+        "value": {
+          "$ref": "common.schema.json#/$defs/slotValue"
+        },
+        "status_reason": {
+          "enum": [
+            "user_stated",
+            "user_dont_know",
+            "user_declined",
+            "budget_exhausted",
+            "conflict_unresolved",
+            "contradiction",
+            "correction",
+            "ui_choice"
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "$ref": "common.schema.json#/$defs/evidence"
+          }
+        },
+        "candidates": {
+          "description": "Competing values while status=conflicting (kept after budget exhaustion for Hadas to see).",
+          "type": "array",
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "required": [
+              "value",
+              "evidence"
+            ],
+            "properties": {
+              "value": {
+                "$ref": "common.schema.json#/$defs/slotValue"
+              },
+              "evidence": {
+                "$ref": "common.schema.json#/$defs/evidence"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "updated_seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "confirmed_in_recap": {
+          "type": "boolean"
+        },
+        "history": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "type": "object",
+            "required": [
+              "seq",
+              "status",
+              "value"
+            ],
+            "properties": {
+              "seq": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "status": {
+                "$ref": "common.schema.json#/$defs/slotStatus"
+              },
+              "value": {
+                "$ref": "common.schema.json#/$defs/slotValue"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "contentFree": {
+      "description": "What a case may still hold after its content was deleted: ids, phase, enums, versions, red-flag ids/tiers. No user text anywhere.",
+      "type": "object",
+      "properties": {
+        "slots": {
+          "type": "object",
+          "maxProperties": 0
+        },
+        "transcript": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "notes": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "pending_extraction": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "summary": {
+          "type": "null"
+        },
+        "red_flags": {
+          "type": "array",
+          "items": {
+            "not": {
+              "type": "object",
+              "required": [
+                "evidence"
+              ],
+              "properties": {
+                "evidence": true
+              }
+            }
+          }
+        },
+        "wa": {
+          "type": "object",
+          "properties": {
+            "pre_consent_buffer": {
+              "type": "array",
+              "maxItems": 0
+            }
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "description": "Blocker 1 (SEC-01/L-04): sending the form deletes the conversation content in the same request.",
+      "if": {
+        "type": "object",
+        "properties": {
+          "handoff": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "const": "submitted"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          }
+        },
+        "required": [
+          "handoff"
+        ]
+      },
+      "then": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/contentFree"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "phase": {
+                "const": "closed"
+              },
+              "status": {
+                "const": "closed"
+              },
+              "purge_at": true
+            },
+            "required": [
+              "purge_at"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "Blocker 2 (SEC-11): one raised flag that allows no form blocks the form for the whole conversation; the content is deleted at the end of that turn.",
+      "if": {
+        "type": "object",
+        "properties": {
+          "red_flags": {
+            "type": "array",
+            "contains": {
+              "type": "object",
+              "properties": {
+                "form_after_message": {
+                  "const": "none"
+                }
+              },
+              "required": [
+                "form_after_message"
+              ]
+            }
+          }
+        },
+        "required": [
+          "red_flags"
+        ]
+      },
+      "then": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/contentFree"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "handoff": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "const": "blocked"
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              },
+              "phase": {
+                "enum": [
+                  "outcome",
+                  "closed"
+                ]
+              },
+              "purge_at": true
+            },
+            "required": [
+              "purge_at"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "A routing stop blocks any form (D-02).",
+      "if": {
+        "type": "object",
+        "properties": {
+          "routing_stop": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "routing_stop"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "handoff": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "const": "blocked"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

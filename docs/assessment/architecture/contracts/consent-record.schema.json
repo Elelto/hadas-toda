@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hadas-toda.co.il/schemas/intake/v1/consent-record.schema.json",
+  "title": "Consent record",
+  "description": "Append-only proof of what the user was shown and agreed to, written at acceptance (server clock) before any LLM processing. No conversation content, no contact details. The integrity HMAC was cut (critic F12: it proves nothing to a third party); the texts themselves are versioned in git.",
+  "type": "object",
+  "required": [
+    "consent_version",
+    "record_id",
+    "session_id",
+    "channel",
+    "scope",
+    "accepted",
+    "at",
+    "texts_shown",
+    "method"
+  ],
+  "properties": {
+    "consent_version": {
+      "const": "1.0"
+    },
+    "record_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{16,64}$"
+    },
+    "session_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{16,64}$"
+    },
+    "channel": {
+      "$ref": "common.schema.json#/$defs/channel"
+    },
+    "scope": {
+      "enum": [
+        "intake",
+        "intake_health_data",
+        "handoff"
+      ],
+      "description": "intake = disclaimer + processing (required to start). intake_health_data = only if the lawyer requires a separate box. handoff = sending summary + contact to Hadas. No improvement_use in v1 (D-07, SEC-15)."
+    },
+    "accepted": {
+      "type": "boolean"
+    },
+    "at": {
+      "$ref": "common.schema.json#/$defs/isoDateTime"
+    },
+    "texts_shown": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "version",
+          "sha256"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/textId"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sha256": {
+            "$ref": "common.schema.json#/$defs/sha256",
+            "description": "Hash of the exact rendered string (variant for the channel, placeholders filled)."
+          }
+        },
+        "additionalProperties": false
+      },
+      "description": "Every text of the screen the user accepted on, as rendered (L-09/L-14). Web intake scope = the full S1 set returned by GET /bootstrap: intro.greeting, page.tool.not_this, page.tool.steps, consent.title, consent.disclaimer, consent.emergency, consent.checkbox (and the active consent.checkbox.* alternative if the lawyer requires two boxes). The server rejects (409) a consent whose set differs from the bootstrap set."
+    },
+    "method": {
+      "enum": [
+        "web_button",
+        "web_checkbox",
+        "wa_button",
+        "wa_text_reply"
+      ]
+    },
+    "ui_version": {
+      "type": "string",
+      "maxLength": 32
+    }
+  },
+  "additionalProperties": false
+}

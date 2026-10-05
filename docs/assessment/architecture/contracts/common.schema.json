@@ -1,0 +1,588 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hadas-toda.co.il/schemas/intake/v1/common.schema.json",
+  "title": "Intake engine - shared definitions",
+  "description": "Shared $defs referenced by every other intake contract. Owner: Chief Architect (role 6). Only role 6 changes contracts. Contract version 1.0.0.",
+  "$defs": {
+    "slotId": {
+      "description": "Slot identifier. snake_case, ASCII, stable forever once used in production (rename = new slot).",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]{1,47}$"
+    },
+    "entityId": {
+      "description": "Identifier for goals, red flags, FAQ entries, referrals, decision rules, exclusions, forbidden-term rules, option values.",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]{1,63}$"
+    },
+    "textId": {
+      "description": "Fixed-text identifier: dotted namespace, 2-6 segments, e.g. 'consent.body', 'goal.subject.ask', 'outcome.3.body', 'redflag.sudden_speech_loss'.",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*(\\.[a-z0-9_]+){1,5}$"
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+    },
+    "isoDateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "isoDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "channel": {
+      "enum": [
+        "web",
+        "whatsapp",
+        "test"
+      ]
+    },
+    "phase": {
+      "description": "FSM phase. FAQ is an intent handled inside a phase, not a phase. A red flag jumps to 'outcome' with outcome 5.",
+      "enum": [
+        "consent",
+        "intake",
+        "wrap_up",
+        "outcome",
+        "handoff",
+        "closed"
+      ]
+    },
+    "outcomeId": {
+      "description": "1 in scope - recommend contacting; 2 in scope - worth a consultation call; 3 no signs requiring contact now (conservative, disclaimed); 4 not in Hadas's scope - referral; 5 red flag - fixed pre-written message.",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "slotStatus": {
+      "enum": [
+        "missing",
+        "filled",
+        "unknown",
+        "declined",
+        "conflicting"
+      ]
+    },
+    "llmMove": {
+      "description": "Moves the generator (LLM) may phrase. The policy (code) picks exactly one per turn; the generator must echo it.",
+      "enum": [
+        "ask",
+        "acknowledge_and_ask",
+        "clarify",
+        "clarify_conflict",
+        "rephrase",
+        "bridge_and_ask",
+        "confirm_recap",
+        "wrap_up_ask",
+        "summary"
+      ]
+    },
+    "textOrigin": {
+      "description": "Where an outbound text came from. 'fixed' and 'faq' are verbatim approved texts; 'generated' passed the output check; 'template_fallback' is the goal's fixed template used after generation failed.",
+      "enum": [
+        "fixed",
+        "faq",
+        "generated",
+        "template_fallback"
+      ]
+    },
+    "approver": {
+      "enum": [
+        "hadas",
+        "lawyer",
+        "insurance",
+        "eliya",
+        "conversation_designer",
+        "clinical_drafter",
+        "legal_risk_reviewer",
+        "architect"
+      ]
+    },
+    "approval": {
+      "type": "object",
+      "required": [
+        "by",
+        "at"
+      ],
+      "properties": {
+        "by": {
+          "$ref": "#/$defs/approver"
+        },
+        "at": {
+          "$ref": "#/$defs/isoDate"
+        },
+        "ref": {
+          "type": "string",
+          "maxLength": 300,
+          "description": "Pointer to the evidence: review doc + section, PR, email date."
+        },
+        "scope": {
+          "type": "string",
+          "maxLength": 300
+        }
+      },
+      "additionalProperties": false
+    },
+    "contentHeader": {
+      "description": "Header every human-authored content file carries. 'version' is the content version (semver: MAJOR = incompatible structure/ids removed, MINOR = additions/meaning changes, PATCH = wording only). 'contract_version' is the version of this schema set the file conforms to.",
+      "type": "object",
+      "required": [
+        "contract",
+        "contract_version",
+        "version",
+        "status",
+        "updated_at",
+        "approvals"
+      ],
+      "properties": {
+        "contract": {
+          "enum": [
+            "slot-catalog",
+            "red-flags",
+            "decision-table",
+            "faq",
+            "referrals",
+            "fixed-texts",
+            "output-rules"
+          ]
+        },
+        "contract_version": {
+          "$ref": "#/$defs/semver"
+        },
+        "version": {
+          "$ref": "#/$defs/semver"
+        },
+        "status": {
+          "enum": [
+            "draft",
+            "in_review",
+            "approved",
+            "retired"
+          ]
+        },
+        "updated_at": {
+          "$ref": "#/$defs/isoDateTime"
+        },
+        "approvals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/approval"
+          }
+        },
+        "changelog": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "version",
+              "date",
+              "summary"
+            ],
+            "properties": {
+              "version": {
+                "$ref": "#/$defs/semver"
+              },
+              "date": {
+                "$ref": "#/$defs/isoDate"
+              },
+              "summary": {
+                "type": "string",
+                "maxLength": 500
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "textRef": {
+      "type": "object",
+      "required": [
+        "id",
+        "version"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/textId"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "slotValue": {
+      "description": "Typed slot value after code parsing. enum -> option value string; multi_enum -> array of option values; integer/number -> number; boolean -> boolean; quote -> verbatim user text.",
+      "anyOf": [
+        {
+          "type": "string",
+          "maxLength": 600
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "uniqueItems": true,
+          "maxItems": 20
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "evidence": {
+      "description": "Proof that a value came from the user. source=user_text: 'quote' is produced BY CODE by slicing words [span[0], span[1]) of the normalized, identifier-masked message 'seq' (critic F7, SEC-07). source=ui_choice: 'quote' is the option id the user tapped. Lives only in the case file, which is deleted at 'סיום' or after the 24-hour resume window (D-01).",
+      "type": "object",
+      "required": [
+        "seq",
+        "source",
+        "quote"
+      ],
+      "properties": {
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "source": {
+          "enum": [
+            "user_text",
+            "ui_choice",
+            "system"
+          ]
+        },
+        "quote": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 600
+        },
+        "span": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "[from, to) WORD indices in the normalized, masked message."
+        },
+        "answers_last_question": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "contentVersions": {
+      "description": "Exact versions of every input that shaped a decision. Recorded on the case file (at session start) and on every trace record.",
+      "type": "object",
+      "required": [
+        "slot_catalog",
+        "red_flags",
+        "decision_table",
+        "faq",
+        "referrals",
+        "fixed_texts",
+        "output_rules",
+        "prompts",
+        "engine"
+      ],
+      "properties": {
+        "slot_catalog": {
+          "$ref": "#/$defs/semver"
+        },
+        "red_flags": {
+          "$ref": "#/$defs/semver"
+        },
+        "decision_table": {
+          "$ref": "#/$defs/semver"
+        },
+        "faq": {
+          "$ref": "#/$defs/semver"
+        },
+        "referrals": {
+          "$ref": "#/$defs/semver"
+        },
+        "fixed_texts": {
+          "$ref": "#/$defs/semver"
+        },
+        "output_rules": {
+          "$ref": "#/$defs/semver"
+        },
+        "prompts": {
+          "type": "object",
+          "required": [
+            "extract",
+            "generate"
+          ],
+          "properties": {
+            "extract": {
+              "type": "string",
+              "maxLength": 40
+            },
+            "generate": {
+              "type": "string",
+              "maxLength": 40
+            }
+          },
+          "additionalProperties": false
+        },
+        "engine": {
+          "type": "string",
+          "maxLength": 40,
+          "description": "Git commit SHA of the deployed engine."
+        }
+      },
+      "additionalProperties": false
+    },
+    "regexRule": {
+      "type": "object",
+      "required": [
+        "id",
+        "regex"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/entityId"
+        },
+        "regex": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "description": "ECMAScript regex source, matched against NORMALIZED text (NFC, niqqud removed, quote/geresh unified, whitespace collapsed). Flags are always 'u' (+ 'i' for Latin)."
+        },
+        "note_he": {
+          "type": "string",
+          "maxLength": 300
+        }
+      },
+      "additionalProperties": false
+    },
+    "condition": {
+      "description": "Declarative condition over the case file, evaluated by code with three-valued (Kleene) logic: a slot predicate on a slot that is not 'filled' evaluates to UNKNOWN. all: FALSE if any FALSE, else UNKNOWN if any UNKNOWN, else TRUE. any: TRUE if any TRUE, else UNKNOWN if any UNKNOWN, else FALSE. not: swaps TRUE/FALSE, keeps UNKNOWN. status_in and red_flag are always TRUE/FALSE. Rules and goals fire only on TRUE. {\"ref\": id} evaluates a named derived condition from slot-catalog 'derived' (e.g. wtc_voice_persisting) with the same three-valued result; the content validator rejects unknown ids and cycles.",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "all"
+          ],
+          "properties": {
+            "all": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/condition"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "any"
+          ],
+          "properties": {
+            "any": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/condition"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "not"
+          ],
+          "properties": {
+            "not": {
+              "$ref": "#/$defs/condition"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "description": "Value predicate. eq/neq: scalar equality. in/not_in: value is an array of allowed scalars. lt/lte/gt/gte: numeric. contains: multi_enum includes value. contains_any: multi_enum intersects array value.",
+          "type": "object",
+          "required": [
+            "slot",
+            "op",
+            "value"
+          ],
+          "properties": {
+            "slot": {
+              "$ref": "#/$defs/slotId"
+            },
+            "op": {
+              "enum": [
+                "eq",
+                "neq",
+                "in",
+                "not_in",
+                "lt",
+                "lte",
+                "gt",
+                "gte",
+                "contains",
+                "contains_any"
+              ]
+            },
+            "value": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 64
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 64
+                      },
+                      {
+                        "type": "number"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "description": "Status predicate, never UNKNOWN. Use it to author branches for unknown/declined answers.",
+          "type": "object",
+          "required": [
+            "slot",
+            "status_in"
+          ],
+          "properties": {
+            "slot": {
+              "$ref": "#/$defs/slotId"
+            },
+            "status_in": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/slotStatus"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "description": "TRUE if the given red flag (or any red flag) has been raised in this session.",
+          "type": "object",
+          "required": [
+            "red_flag"
+          ],
+          "properties": {
+            "red_flag": {
+              "$ref": "#/$defs/entityId"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "description": "Reference to a named derived condition (slot-catalog 'derived').",
+          "type": "object",
+          "required": [
+            "ref"
+          ],
+          "properties": {
+            "ref": {
+              "$ref": "#/$defs/entityId"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "description": "TRUE if the conversation is on this channel (for channel-specific goals/texts).",
+          "type": "object",
+          "required": [
+            "channel"
+          ],
+          "properties": {
+            "channel": {
+              "$ref": "#/$defs/channel"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "always"
+          ],
+          "properties": {
+            "always": {
+              "const": true
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "goalPurpose": {
+      "description": "Clinical round 4 (DRAFT_NOTES section 9). routing: no outcome without it. safety_screen: never skipped, exempt from every turn cap. decision: can turn 2 into 1 (or allow 3); skipped once outcome 1 is locked or outcome 4 is determined. summary_only: for Hadas's file only; at most limits.max_summary_only_goals per conversation and only while under max_intake_turns.",
+      "enum": [
+        "routing",
+        "safety_screen",
+        "decision",
+        "summary_only"
+      ]
+    },
+    "wordSpan": {
+      "description": "Evidence pointer returned by the extractor (critic F7): the engine shows every user message as numbered words; the extractor returns [from, to) word indices of message 'seq'. The engine slices the quote itself, so evidence is verbatim by construction (no typo/spelling mismatch).",
+      "type": "object",
+      "required": [
+        "seq",
+        "from",
+        "to"
+      ],
+      "properties": {
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "from": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "to": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

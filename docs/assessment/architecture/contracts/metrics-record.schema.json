@@ -1,0 +1,367 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hadas-toda.co.il/schemas/intake/v1/metrics-record.schema.json",
+  "title": "Session metrics record (content-free)",
+  "description": "D-01: the ONLY thing that survives a session's deletion. No text, no quotes, no slot values, no domain, no contact, no session id: a separate random metrics_id that appears nowhere else (SEC-27). Kept 24 months. Feeds the success metrics that do not depend on Hadas (critic F8), the availability counter and the cost record (D-09: estimated cost, no content). Browser-only funnel events arrive by beacon as counts from a closed list (ui_events, UX 6.2, SEC conditions: enum names only, joined to the session only through the cookie, no GA ids). Before consent only anonymous daily sums exist ($defs/dailyCounters: no IP, no user agent).",
+  "type": "object",
+  "required": [
+    "metrics_version",
+    "metrics_id",
+    "month",
+    "channel",
+    "duration_bucket",
+    "phase_reached",
+    "user_turns",
+    "outcome",
+    "would_be_outcome_3",
+    "red_flag",
+    "handed_off",
+    "end_reason",
+    "content_versions"
+  ],
+  "properties": {
+    "metrics_version": {
+      "const": "1.0"
+    },
+    "metrics_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{16,64}$"
+    },
+    "month": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}$"
+    },
+    "channel": {
+      "$ref": "common.schema.json#/$defs/channel"
+    },
+    "entry_point": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "duration_bucket": {
+      "enum": [
+        "lt_2m",
+        "2_5m",
+        "5_10m",
+        "gt_10m"
+      ]
+    },
+    "phase_reached": {
+      "$ref": "common.schema.json#/$defs/phase"
+    },
+    "display_stage_reached": {
+      "enum": [
+        1,
+        2,
+        3
+      ]
+    },
+    "user_turns": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "faq_only_turns": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "outcome": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/outcomeId"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "would_be_outcome_3": {
+      "anyOf": [
+        {
+          "enum": [
+            "true",
+            "false",
+            "undetermined"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "red_flag": {
+      "type": "object",
+      "required": [
+        "raised"
+      ],
+      "properties": {
+        "raised": {
+          "type": "boolean"
+        },
+        "ids": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/entityId"
+          }
+        },
+        "tiers": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "emergency",
+              "urgent",
+              "hotline"
+            ]
+          },
+          "description": "Effective tiers of every raised flag (several are possible in one message)."
+        },
+        "form_blocked": {
+          "type": "boolean",
+          "description": "A raised flag with form_after_message none blocked the form (SEC-11)."
+        }
+      },
+      "additionalProperties": false
+    },
+    "routing_stop": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/entityId"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "handed_off": {
+      "type": "boolean"
+    },
+    "early_handoff": {
+      "type": "boolean"
+    },
+    "reopened": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2
+    },
+    "template_turns": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "llm_calls": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "extraction_failures": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "extraction_gap": {
+      "type": "boolean"
+    },
+    "end_reason": {
+      "enum": [
+        "completed",
+        "red_flag",
+        "user_exit",
+        "consent_declined",
+        "caps_reached",
+        "degraded",
+        "expired",
+        "finished",
+        "minor_self",
+        "non_parent_reporter",
+        "other_stop",
+        "abandoned"
+      ]
+    },
+    "content_versions": {
+      "$ref": "common.schema.json#/$defs/contentVersions"
+    },
+    "reason_code": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/entityId"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "L-14 evidentiary record without content: the decision rule/guard code. With outcome + content_versions this reconstructs exactly which fixed texts were shown (texts are versioned in git)."
+    },
+    "est_cost_usd": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 5,
+      "description": "D-09: estimated LLM cost of the session from token usage, rounded to 0.001. No content."
+    },
+    "model_free": {
+      "enum": [
+        "none",
+        "llm_down",
+        "cost_cap",
+        "ip_budget"
+      ],
+      "description": "D-09 / F2: the session continued without the model (button screens and conditions only)."
+    },
+    "would_be_3_detail": {
+      "type": "object",
+      "required": [
+        "worry",
+        "reassurance"
+      ],
+      "properties": {
+        "worry": {
+          "type": "boolean",
+          "description": "core_impact contains worry."
+        },
+        "reassurance": {
+          "type": "boolean",
+          "description": "meta.reassurance_request or meta.diagnosis_request was asked."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Clinical 9.4 item 8 (REVIEW 4.5 dispute): recorded ONLY when would_be_outcome_3 = 'true'. Enums only."
+    },
+    "ui_events": {
+      "$ref": "#/$defs/uiEvents"
+    },
+    "long_input_turns": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Turns over the soft cap (SEC-06): regex only, no model, nothing stored."
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "uiEvents": {
+      "description": "Counts of browser-only events (UX 6.2) sent by beacon to POST /api/intake/event. Closed list; no free fields.",
+      "type": "object",
+      "properties": {
+        "slow_shown": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "retry": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "form_view": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "preview_open": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "preview_fix": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "form_error": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "exit_dialog": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "exit_to_contact": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "input_too_large": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "resume_continue": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "resume_restart": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "resume_delete": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        }
+      },
+      "additionalProperties": false
+    },
+    "dailyCounters": {
+      "description": "Anonymous daily sums before any session exists (UX 6.1). Store intake-metrics, key d/<YYYY-MM-DD>. No IP, no user agent, no ids.",
+      "type": "object",
+      "required": [
+        "day",
+        "counts"
+      ],
+      "properties": {
+        "day": {
+          "$ref": "common.schema.json#/$defs/isoDate"
+        },
+        "counts": {
+          "type": "object",
+          "properties": {
+            "intro_view": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "consent_error": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "consent_declined": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "entry_unavailable": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "input_too_large_pre": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "type": "object",
+        "required": [
+          "would_be_3_detail"
+        ],
+        "properties": {
+          "would_be_3_detail": true
+        }
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "would_be_outcome_3": {
+            "const": "true"
+          }
+        },
+        "required": [
+          "would_be_outcome_3"
+        ]
+      }
+    }
+  ]
+}

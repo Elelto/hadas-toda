@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hadas-toda.co.il/schemas/intake/v1/faq.schema.json",
+  "title": "FAQ fact sheet",
+  "description": "Human-authored facts (Hadas approves every fact; conversation designer writes the answer wording in fixed-texts). The extractor may only classify a user question to one of these ids; the answer shown is the approved fixed text, verbatim - never model knowledge. Meta questions about the assistant itself (who are you, how long, what happens to my data) are FAQ entries too (categories about_bot / process / privacy). Entries past valid_until are treated as missing and answered with fallback.unknown_text_id. File: intake/content/faq.json. 'facts' holds the approved values that fixed-text placeholders resolve from (e.g. hadas_phone, response_time, followup_time, privacy_url): one place to change a fact, with its approval date.",
+  "type": "object",
+  "required": [
+    "header",
+    "entries",
+    "fallback",
+    "facts"
+  ],
+  "properties": {
+    "header": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/contentHeader"
+        },
+        {
+          "properties": {
+            "contract": {
+              "const": "faq"
+            }
+          },
+          "type": "object"
+        }
+      ]
+    },
+    "entries": {
+      "type": "array",
+      "maxItems": 80,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "category",
+          "extractor_hint_he",
+          "example_questions_he",
+          "answer_text_id",
+          "facts_approved_at"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/entityId"
+          },
+          "category": {
+            "enum": [
+              "price",
+              "location",
+              "insurance",
+              "online",
+              "hours",
+              "languages",
+              "process",
+              "about_bot",
+              "privacy",
+              "other_practical"
+            ]
+          },
+          "extractor_hint_he": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 400
+          },
+          "example_questions_he": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 15,
+            "items": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 200
+            }
+          },
+          "answer_text_id": {
+            "$ref": "common.schema.json#/$defs/textId"
+          },
+          "facts_approved_at": {
+            "$ref": "common.schema.json#/$defs/isoDate"
+          },
+          "valid_until": {
+            "$ref": "common.schema.json#/$defs/isoDate"
+          },
+          "channels": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "$ref": "common.schema.json#/$defs/channel"
+            }
+          },
+          "source_note": {
+            "type": "string",
+            "maxLength": 300,
+            "description": "Where the fact came from (e.g. 'Hadas, review round 1')."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "fallback": {
+      "type": "object",
+      "required": [
+        "unknown_text_id",
+        "clinical_question_text_id",
+        "off_topic_text_id"
+      ],
+      "properties": {
+        "unknown_text_id": {
+          "$ref": "common.schema.json#/$defs/textId",
+          "description": "Practical question with no approved fact: 'Hadas will be happy to answer that'."
+        },
+        "clinical_question_text_id": {
+          "$ref": "common.schema.json#/$defs/textId",
+          "description": "Any clinical/diagnostic/advice question: polite decline + 'worth asking Hadas'."
+        },
+        "off_topic_text_id": {
+          "$ref": "common.schema.json#/$defs/textId"
+        }
+      },
+      "additionalProperties": false
+    },
+    "facts": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_]{1,31}$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "value",
+          "approved_at",
+          "approved_by"
+        ],
+        "properties": {
+          "value": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "approved_at": {
+            "$ref": "common.schema.json#/$defs/isoDate"
+          },
+          "approved_by": {
+            "$ref": "common.schema.json#/$defs/approver"
+          },
+          "valid_until": {
+            "$ref": "common.schema.json#/$defs/isoDate"
+          },
+          "source_note": {
+            "type": "string",
+            "maxLength": 300
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

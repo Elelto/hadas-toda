@@ -1,0 +1,721 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hadas-toda.co.il/schemas/intake/v1/slot-catalog.schema.json",
+  "title": "Slot catalog (case-file schema per domain + goals)",
+  "description": "Human-authored (clinical drafter drafts, Hadas approves). Defines every fact the intake may record (slots) and the priority-ordered, branching groups the policy pursues (goals). Branching is expressed with 'applies_when' conditions, never with code. File: intake/content/slot-catalog.json. Cross-file integrity (every slot referenced exists, every text id exists, every critical inferred slot is confirm_in_wrap_up) is checked by the content validator at build time. 'bindings' tells the engine which content slots carry engine-level meaning (text variant selection, {{subject_ref}}, age band and domains for Hadas's summary and return signs). Goal ids should equal the clinical drafter's information-goal ids once published (DRAFT_NOTES section 7). 'derived' are named conditions over slots (e.g. the clinical wtc_* 'when to contact' signs): defined once, referenced with {\"ref\": id} from goals, red flags, decision rules, addenda and return-sign display. Slots that no goal references are opportunistic (recorded only if mentioned, never asked) and therefore must not be critical (validator error), so they can never block outcome 3. Round 4: every goal has a 'purpose' (clinical section 9); 'choice_sets' map one tap (or a multi-select) to several (slot, value) pairs - e.g. the 'בן' button sets core_relation=child and core_relation_detail=son; a screening list sets screen_*_any=yes/no/unknown; signs_screen fills many slots at once. 'quick_replies' was replaced by choice_sets. Round 5: goal texts may vary by condition (texts.by_condition, e.g. screen_voice.ask vs ask_3w, screen_neuro after a known event). Slots referenced by routing_stops are 'routing gates': derived by intake:check from decision-table.json (no extra field), listed in the build report and required in the gold set like flags; they stay non-critical (critical = blocks outcome 3 only).",
+  "type": "object",
+  "required": [
+    "header",
+    "slots",
+    "goals",
+    "limits",
+    "bindings"
+  ],
+  "properties": {
+    "header": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/contentHeader"
+        },
+        {
+          "properties": {
+            "contract": {
+              "const": "slot-catalog"
+            }
+          },
+          "type": "object"
+        }
+      ]
+    },
+    "slots": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 120,
+      "items": {
+        "$ref": "#/$defs/slotDef"
+      }
+    },
+    "goals": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 40,
+      "items": {
+        "$ref": "#/$defs/goalDef"
+      }
+    },
+    "limits": {
+      "type": "object",
+      "required": [
+        "max_intake_turns",
+        "max_session_turns",
+        "max_notes",
+        "bare_answer_lexicon_he",
+        "max_faq_only_turns",
+        "max_summary_only_goals"
+      ],
+      "properties": {
+        "max_intake_turns": {
+          "type": "integer",
+          "minimum": 3,
+          "maximum": 40,
+          "description": "User turns in 'intake', counted from the first free-text message (opening taps such as core_relation and self_age_band are not counted), before the policy stops asking routing/decision/summary goals (clinical section 9: 6). safety_screen goals that apply and were not asked are ALWAYS asked before wrap_up, even past this cap or the no-progress cap (critic F2)."
+        },
+        "max_session_turns": {
+          "type": "integer",
+          "minimum": 5,
+          "maximum": 60,
+          "description": "Hard cap on user turns for the whole session (cost + loop guard)."
+        },
+        "max_notes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 30
+        },
+        "bare_answer_lexicon_he": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 60,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 30
+          },
+          "description": "Words that carry no fact by themselves ('כן', 'לא', 'לא יודע', 'אולי', 'נכון'). Evidence made only of these may fill only slots the last move asked about (replaces the word-count rule, critic F7). Owner: conversation designer."
+        },
+        "max_faq_only_turns": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10,
+          "description": "FAQ-only turns count as progress up to this number; beyond it they count as no-progress (critic F2). Never consume goal budget."
+        },
+        "max_summary_only_goals": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2
+        }
+      },
+      "additionalProperties": false
+    },
+    "bindings": {
+      "type": "object",
+      "required": [
+        "subject_type",
+        "age",
+        "domains"
+      ],
+      "properties": {
+        "subject_type": {
+          "type": "object",
+          "required": [
+            "slot",
+            "variant_by_value"
+          ],
+          "properties": {
+            "slot": {
+              "$ref": "common.schema.json#/$defs/slotId"
+            },
+            "variant_by_value": {
+              "type": "object",
+              "additionalProperties": {
+                "enum": [
+                  "self",
+                  "child",
+                  "other"
+                ]
+              }
+            }
+          },
+          "additionalProperties": false,
+          "description": "Maps the relation slot's VALUES (content: self / child / other_adult) to text-variant keys (self / child / other), e.g. {\"other_adult\": \"other\"}."
+        },
+        "subject_gender": {
+          "type": "object",
+          "required": [
+            "slot",
+            "suffix_by_value"
+          ],
+          "properties": {
+            "slot": {
+              "$ref": "common.schema.json#/$defs/slotId"
+            },
+            "suffix_by_value": {
+              "type": "object",
+              "additionalProperties": {
+                "enum": [
+                  "m",
+                  "f",
+                  "n"
+                ]
+              }
+            }
+          },
+          "additionalProperties": false,
+          "description": "Only for child_m/child_f variants; unknown -> child_n."
+        },
+        "subject_ref": {
+          "type": "object",
+          "required": [
+            "slot",
+            "text_id_prefix",
+            "default_text_id"
+          ],
+          "properties": {
+            "slot": {
+              "$ref": "common.schema.json#/$defs/slotId"
+            },
+            "text_id_prefix": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]*(\\.[a-z0-9_]+){0,4}$",
+              "description": "Prefix of the fixed-text ids, e.g. 'subject_ref' -> 'subject_ref.grandson'."
+            },
+            "default_text_id": {
+              "$ref": "common.schema.json#/$defs/textId"
+            }
+          },
+          "additionalProperties": false,
+          "description": "{{subject_ref}} = fixed text '<prefix>.<slot value>' (e.g. subject_ref.grandson = 'הנכד שלך'), else default. Never a name."
+        },
+        "reporter_role": {
+          "type": "object",
+          "required": [
+            "slot"
+          ],
+          "properties": {
+            "slot": {
+              "$ref": "common.schema.json#/$defs/slotId"
+            }
+          },
+          "additionalProperties": false
+        },
+        "age": {
+          "type": "object",
+          "required": [
+            "slot",
+            "unit"
+          ],
+          "properties": {
+            "slot": {
+              "$ref": "common.schema.json#/$defs/slotId"
+            },
+            "unit": {
+              "enum": [
+                "years",
+                "months"
+              ]
+            },
+            "bands": {
+              "type": "array",
+              "maxItems": 12,
+              "items": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "max_exclusive"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "maxLength": 32
+                  },
+                  "max_exclusive": {
+                    "type": "number"
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "domains": {
+          "type": "object",
+          "required": [
+            "slot"
+          ],
+          "properties": {
+            "slot": {
+              "$ref": "common.schema.json#/$defs/slotId"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "derived": {
+      "type": "array",
+      "maxItems": 120,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "label_he",
+          "when"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/entityId"
+          },
+          "label_he": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Shown to Hadas when TRUE ('signs present')."
+          },
+          "when": {
+            "$ref": "common.schema.json#/$defs/condition"
+          },
+          "group": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{1,31}$",
+            "description": "Grouping for display (e.g. voice, speech, stuttering, oral, lang)."
+          },
+          "note_he": {
+            "type": "string",
+            "maxLength": 300
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "choice_sets": {
+      "type": "array",
+      "maxItems": 60,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "multi",
+          "options"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/entityId"
+          },
+          "multi": {
+            "type": "boolean"
+          },
+          "options": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 12,
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "label_text_id",
+                "sets"
+              ],
+              "properties": {
+                "id": {
+                  "$ref": "common.schema.json#/$defs/entityId"
+                },
+                "label_text_id": {
+                  "$ref": "common.schema.json#/$defs/textId"
+                },
+                "show_when": {
+                  "$ref": "common.schema.json#/$defs/condition"
+                },
+                "exclusive": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Clears other selections (e.g. 'אף אחד מאלה', 'לא ידוע לי')."
+                },
+                "sets": {
+                  "type": "array",
+                  "maxItems": 6,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "slot",
+                      "value"
+                    ],
+                    "properties": {
+                      "slot": {
+                        "$ref": "common.schema.json#/$defs/slotId"
+                      },
+                      "value": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 64
+                          },
+                          {
+                            "type": "number"
+                          },
+                          {
+                            "type": "boolean"
+                          }
+                        ]
+                      },
+                      "when_unselected": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 64
+                          },
+                          {
+                            "type": "number"
+                          },
+                          {
+                            "type": "boolean"
+                          }
+                        ],
+                        "description": "multi only: value written when the set is submitted and this option was NOT selected (and the slot is still missing). Implements 'unselected = no'."
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                },
+                "sets_unknown": {
+                  "type": "array",
+                  "maxItems": 12,
+                  "items": {
+                    "$ref": "common.schema.json#/$defs/slotId"
+                  },
+                  "description": "Slots set to status 'unknown' by this option (e.g. 'לא בטוח/ה')."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "option": {
+      "type": "object",
+      "required": [
+        "value",
+        "label_he"
+      ],
+      "properties": {
+        "value": {
+          "$ref": "common.schema.json#/$defs/entityId"
+        },
+        "label_he": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "description": "Shown to Hadas in the summary and (if quick replies) to the user."
+        },
+        "extractor_hint_he": {
+          "type": "string",
+          "maxLength": 400,
+          "description": "Plain-language description of when this option applies, given to the extractor."
+        },
+        "recap_label_he": {
+          "type": "string",
+          "maxLength": 120,
+          "description": "Plain-language label used in the wrap-up recap (e.g. domain values)."
+        }
+      },
+      "additionalProperties": false
+    },
+    "slotDef": {
+      "type": "object",
+      "required": [
+        "id",
+        "label_he",
+        "type",
+        "critical",
+        "inferred",
+        "extractor_hint_he",
+        "show_to_hadas"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "common.schema.json#/$defs/slotId"
+        },
+        "label_he": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "type": {
+          "description": "quote = the value IS the verbatim user text (never an LLM paraphrase).",
+          "enum": [
+            "enum",
+            "multi_enum",
+            "integer",
+            "number",
+            "boolean",
+            "quote"
+          ]
+        },
+        "options": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 40,
+          "items": {
+            "$ref": "#/$defs/option"
+          }
+        },
+        "range": {
+          "type": "object",
+          "required": [
+            "min",
+            "max"
+          ],
+          "properties": {
+            "min": {
+              "type": "number"
+            },
+            "max": {
+              "type": "number"
+            }
+          },
+          "additionalProperties": false
+        },
+        "unit": {
+          "enum": [
+            "years",
+            "months",
+            "weeks",
+            "days",
+            "times_per_week",
+            "none"
+          ]
+        },
+        "critical": {
+          "type": "boolean",
+          "description": "Critical for the outcome decision. Outcome 3 requires every critical slot that applies to be 'filled' (not unknown/declined/conflicting)."
+        },
+        "inferred": {
+          "type": "boolean",
+          "description": "true if the extractor maps the user's description to a value (e.g. domain) rather than copying an explicit statement (e.g. age). Critical inferred slots must set confirm_in_wrap_up."
+        },
+        "applies_when": {
+          "$ref": "common.schema.json#/$defs/condition"
+        },
+        "extractor_hint_he": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 600
+        },
+        "confirm_in_wrap_up": {
+          "type": "boolean",
+          "default": false,
+          "description": "Included in the wrap-up recap the user is asked to confirm."
+        },
+        "conflict_tolerance": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Numeric slots: values within this distance are not a conflict (e.g. age 3 vs 3.5 with tolerance 1)."
+        },
+        "show_to_hadas": {
+          "type": "boolean"
+        },
+        "may_contain_identifiers": {
+          "type": "boolean",
+          "default": false,
+          "description": "Quote slots that may contain names/places. Used for data minimisation in emails and de-identification."
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "enum",
+                  "multi_enum"
+                ]
+              }
+            },
+            "type": "object"
+          },
+          "then": {
+            "required": [
+              "options"
+            ],
+            "type": "object",
+            "properties": {
+              "options": true
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "integer",
+                  "number"
+                ]
+              }
+            },
+            "type": "object"
+          },
+          "then": {
+            "required": [
+              "range",
+              "unit"
+            ],
+            "type": "object",
+            "properties": {
+              "range": true,
+              "unit": true
+            }
+          }
+        }
+      ]
+    },
+    "goalDef": {
+      "type": "object",
+      "required": [
+        "id",
+        "label_he",
+        "priority",
+        "purpose",
+        "slots",
+        "turn_budget",
+        "texts"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "common.schema.json#/$defs/entityId"
+        },
+        "label_he": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000,
+          "description": "Higher is pursued first among goals whose applies_when is TRUE."
+        },
+        "phase": {
+          "enum": [
+            "intake",
+            "wrap_up"
+          ],
+          "default": "intake"
+        },
+        "slots": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "common.schema.json#/$defs/slotId"
+          }
+        },
+        "completion": {
+          "enum": [
+            "all",
+            "any"
+          ],
+          "default": "all",
+          "description": "Goal is satisfied when all (or any) of its applicable slots are filled/unknown/declined."
+        },
+        "applies_when": {
+          "$ref": "common.schema.json#/$defs/condition"
+        },
+        "turn_budget": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3,
+          "description": "Assistant turns this goal may consume (ask + clarify/rephrase). On exhaustion its remaining slots become 'unknown' (reason budget_exhausted) and the policy moves on. Recommended: 1 for decision/summary_only goals (critic F3), 2 for routing, 1-2 for safety_screen."
+        },
+        "ask_hint_he": {
+          "type": "string",
+          "maxLength": 400,
+          "description": "What the question is trying to learn, in plain words, for the generator. The generator never chooses the topic."
+        },
+        "texts": {
+          "description": "Fixed template texts (fixed-texts file). Used verbatim when generation fails twice; also the generator's reference wording.",
+          "type": "object",
+          "required": [
+            "ask",
+            "clarify",
+            "rephrase"
+          ],
+          "properties": {
+            "ask": {
+              "$ref": "common.schema.json#/$defs/textId"
+            },
+            "clarify": {
+              "$ref": "common.schema.json#/$defs/textId"
+            },
+            "rephrase": {
+              "$ref": "common.schema.json#/$defs/textId"
+            },
+            "ask_alt1": {
+              "$ref": "common.schema.json#/$defs/textId"
+            },
+            "ask_alt2": {
+              "$ref": "common.schema.json#/$defs/textId"
+            },
+            "by_condition": {
+              "type": "array",
+              "maxItems": 4,
+              "description": "Condition-selected wording. The first entry whose 'when' is TRUE replaces ask (and clarify/rephrase if given); UNKNOWN never selects. Otherwise ask, or ask_alt1/ask_alt2 chosen deterministically by seq. Use the same condition as the matching choice set or option show_when (intake:check warns if a by_condition text is paired with no reachable option set).",
+              "items": {
+                "type": "object",
+                "required": [
+                  "when",
+                  "ask"
+                ],
+                "properties": {
+                  "when": {
+                    "$ref": "common.schema.json#/$defs/condition"
+                  },
+                  "ask": {
+                    "$ref": "common.schema.json#/$defs/textId"
+                  },
+                  "clarify": {
+                    "$ref": "common.schema.json#/$defs/textId"
+                  },
+                  "rephrase": {
+                    "$ref": "common.schema.json#/$defs/textId"
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "display_stage": {
+          "enum": [
+            1,
+            2
+          ],
+          "default": 2,
+          "description": "UX display stage while this goal is active (1 = היכרות, 2 = השלמת פרטים; wrap_up/outcome/handoff are 3)."
+        },
+        "purpose": {
+          "$ref": "common.schema.json#/$defs/goalPurpose"
+        },
+        "choice_sets": {
+          "type": "array",
+          "maxItems": 4,
+          "description": "Buttons offered with this goal's question. First entry whose 'when' is TRUE (or has no 'when') is used, e.g. screen_neuro adult vs child list.",
+          "items": {
+            "type": "object",
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "common.schema.json#/$defs/entityId"
+              },
+              "when": {
+                "$ref": "common.schema.json#/$defs/condition"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

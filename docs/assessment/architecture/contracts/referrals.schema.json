@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hadas-toda.co.il/schemas/intake/v1/referrals.schema.json",
+  "title": "Referral list",
+  "description": "Human-authored (Hadas approves; clinical drafter provides the template, never invents organisations or phone numbers). Referenced by decision-table rules with outcome 4. Phone numbers and URLs listed here are automatically added to the output-check allowlist. File: intake/content/referrals.json. L-16: default to referral by type and to public bodies; a named private provider only by Hadas's decision and the lawyer's approval, never for consideration.",
+  "type": "object",
+  "required": [
+    "header",
+    "referrals"
+  ],
+  "properties": {
+    "header": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/contentHeader"
+        },
+        {
+          "properties": {
+            "contract": {
+              "const": "referrals"
+            }
+          },
+          "type": "object"
+        }
+      ]
+    },
+    "referrals": {
+      "type": "array",
+      "maxItems": 60,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "label_he",
+          "kind",
+          "text_id",
+          "verified_at",
+          "verified_by"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/entityId"
+          },
+          "label_he": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "kind": {
+            "enum": [
+              "profession",
+              "organization",
+              "health_fund_path",
+              "medical",
+              "other"
+            ]
+          },
+          "text_id": {
+            "$ref": "common.schema.json#/$defs/textId",
+            "description": "Fixed text shown to the user for this referral."
+          },
+          "contacts": {
+            "type": "array",
+            "maxItems": 4,
+            "items": {
+              "type": "object",
+              "required": [
+                "type",
+                "value",
+                "label_he"
+              ],
+              "properties": {
+                "type": {
+                  "enum": [
+                    "phone",
+                    "url"
+                  ]
+                },
+                "value": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 300
+                },
+                "label_he": {
+                  "type": "string",
+                  "maxLength": 120
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "applies_when": {
+            "$ref": "common.schema.json#/$defs/condition",
+            "description": "Optional refinement when one rule may point to different referrals (e.g. by age)."
+          },
+          "verified_at": {
+            "$ref": "common.schema.json#/$defs/isoDate",
+            "description": "Last date Hadas confirmed the details are current."
+          },
+          "note_for_hadas_he": {
+            "type": "string",
+            "maxLength": 300
+          },
+          "verified_by": {
+            "$ref": "common.schema.json#/$defs/approver",
+            "description": "L-16: who verified the details (Hadas for professional content, Eliya for the technical check). Re-verified quarterly; emergency/helpline numbers by a test call before launch."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

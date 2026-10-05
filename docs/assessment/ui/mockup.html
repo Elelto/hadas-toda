@@ -1,0 +1,1534 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>מוקאפ שיחת היכרות</title>
+<meta name="description" content="מוקאפ אינטראקטיבי של שיחת ההיכרות עם העוזר הדיגיטלי של הדס תודה: כל המסכים והמצבים, מובייל ודסקטופ.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   1. CHROME (the mockup's own UI) — tokens on :root, supports dark mode
+   ===================================================================== */
+:root{
+  --c-bg:#f6f4f8; --c-surface:#ffffff; --c-surface-2:#f1eef4; --c-text:#1d1a21;
+  --c-muted:#5b5563; --c-border:#ddd6e3; --c-accent:#a73764; --c-on-accent:#ffffff;
+  --c-bezel:#1d1b20; --c-focus:#a73764; --c-shadow:0 10px 30px rgba(40,30,50,.10);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --c-bg:#161419; --c-surface:#221f26; --c-surface-2:#2c2831; --c-text:#f2eef5;
+    --c-muted:#b9b1c1; --c-border:#3a3540; --c-accent:#e4becb; --c-on-accent:#1a1a1a;
+    --c-bezel:#0b0a0d; --c-focus:#e4becb; --c-shadow:0 10px 30px rgba(0,0,0,.45);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --c-bg:#161419; --c-surface:#221f26; --c-surface-2:#2c2831; --c-text:#f2eef5;
+  --c-muted:#b9b1c1; --c-border:#3a3540; --c-accent:#e4becb; --c-on-accent:#1a1a1a;
+  --c-bezel:#0b0a0d; --c-focus:#e4becb; --c-shadow:0 10px 30px rgba(0,0,0,.45);
+  color-scheme:dark;
+}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--c-bg);color:var(--c-text);font-family:Rubik,Heebo,system-ui,sans-serif;font-size:15px;line-height:1.5;overflow-x:clip;max-width:100vw}
+:focus-visible{outline:3px solid var(--c-focus);outline-offset:2px}
+.sr{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.ch-head{padding:16px 16px 12px;border-bottom:1px solid var(--c-border);background:var(--c-surface)}
+.ch-head-in{max-width:1500px;margin:0 auto;display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between}
+.ch-title h1{margin:0;font-size:22px;font-weight:600;line-height:1.25}
+.ch-title p{margin:4px 0 0;color:var(--c-muted);font-size:14px;max-width:62ch}
+.ch-controls{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--c-border);border-radius:10px;overflow:hidden;background:var(--c-surface-2)}
+.seg button{border:0;background:transparent;color:var(--c-text);font:inherit;font-size:14px;padding:8px 12px;min-height:40px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--c-accent);color:var(--c-on-accent);font-weight:600}
+.seg-label{font-size:13px;color:var(--c-muted);margin-inline-end:6px}
+.tog{display:inline-flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;min-height:40px}
+.tog input{width:18px;height:18px;accent-color:var(--c-accent)}
+.ch-sel{font:inherit;font-size:14px;color:var(--c-text);background:var(--c-surface-2);border:1px solid var(--c-border);border-radius:10px;padding:8px 10px;min-height:40px;max-width:100%}
+.ch-main{max-width:1500px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:16px;padding:16px}
+@media (min-width:1000px){.ch-main{grid-template-columns:290px minmax(0,1fr)}}
+.ch-nav{display:none;background:var(--c-surface);border:1px solid var(--c-border);border-radius:14px;padding:10px;align-self:start;position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto}
+@media (min-width:1000px){.ch-nav{display:block}}
+.ch-nav h2{font-size:13px;color:var(--c-muted);font-weight:500;margin:6px 8px 8px}
+.nav-grp{margin-bottom:6px}
+.nav-scr{display:block;width:100%;text-align:start;border:0;background:transparent;color:var(--c-text);font:inherit;font-weight:600;font-size:14px;padding:8px;border-radius:8px;cursor:pointer}
+.nav-scr .code{display:inline-block;min-width:34px;color:var(--c-accent);font-variant-numeric:tabular-nums}
+.nav-states{list-style:none;margin:0 0 4px;padding:0 0 0 0;padding-inline-start:34px;display:flex;flex-wrap:wrap;gap:4px}
+.nav-states button{border:1px solid var(--c-border);background:var(--c-surface-2);color:var(--c-text);font:inherit;font-size:12.5px;padding:3px 8px;border-radius:999px;cursor:pointer;min-height:28px}
+.nav-states button[aria-current="true"]{background:var(--c-accent);color:var(--c-on-accent);border-color:var(--c-accent);font-weight:600}
+.ch-mnav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+@media (min-width:1000px){.ch-mnav .ch-sel{display:none}}
+.ch-btn{font:inherit;font-size:14px;border:1px solid var(--c-border);background:var(--c-surface);color:var(--c-text);border-radius:10px;padding:8px 12px;min-height:40px;cursor:pointer}
+.ch-crumb{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline;margin:6px 0 10px}
+.ch-crumb b{font-size:18px}
+.ch-crumb span{color:var(--c-muted);font-size:14px}
+.ch-view{display:grid;grid-template-columns:1fr;gap:16px;align-items:start}
+@media (min-width:900px){.ch-view.is-m{grid-template-columns:minmax(0,440px) minmax(0,1fr)}}
+.fit{position:relative;width:100%;overflow:hidden}
+.fit > .device{position:absolute;top:0;left:0;transform-origin:top left}
+.ch-notes{background:var(--c-surface);border:1px solid var(--c-border);border-radius:14px;padding:14px 16px;font-size:14px}
+.ch-notes h3{margin:0 0 6px;font-size:15px}
+.ch-notes p{margin:0 0 10px}
+.ch-notes .lbl{display:block;font-size:12.5px;color:var(--c-muted);font-weight:600;margin-bottom:2px}
+.ids{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0 10px;padding:0;list-style:none}
+.ids li{font-family:ui-monospace,Consolas,monospace;font-size:12px;direction:ltr;padding:2px 6px;border-radius:6px;background:var(--c-surface-2);border:1px solid var(--c-border)}
+.ids li.m{border-style:dashed;border-color:#b38600;color:var(--c-text)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:13px;color:var(--c-muted);margin-top:10px}
+.legend .miss,.legend .var{font-size:12px}
+.device.m{width:414px;padding:12px;border-radius:48px;background:var(--c-bezel);box-shadow:var(--c-shadow)}
+.device.d{width:1280px;border-radius:12px;background:var(--c-bezel);padding:30px 0 0;box-shadow:var(--c-shadow)}
+.device.d::before{content:"";position:absolute;top:11px;right:16px;width:46px;height:9px;background:radial-gradient(circle,#ff6159 3.5px,transparent 4px) 0 0/16px 9px repeat-x;opacity:.9}
+.device.d .url{position:absolute;top:6px;left:50%;transform:translateX(-50%);width:420px;height:20px;border-radius:6px;background:#2f2c33;color:#c9c2d0;font:12px/20px Rubik,sans-serif;text-align:center;direction:ltr}
+
+/* =====================================================================
+   2. IN-FRAME: the site's own light design (does NOT follow dark mode)
+   ===================================================================== */
+.screen{
+  /* site tokens — src/styles/global.css */
+  --mischka:#e9e6ec; --bouquet:#b97ba0; --hoki:#658ba4; --night-shadz:#a73764; --lavender-gray:#cbb9d6;
+  --cadillac:#ac4c74; --chatelle:#bab3c6; --bali-hai:#87a0b7; --melanie:#e4becb; --blush:#b44470;
+  --primary:var(--bouquet); --primary-dark:var(--night-shadz); --primary-light:var(--melanie);
+  --secondary:var(--hoki); --secondary-dark:#282a2b; --accent:var(--cadillac); --light:var(--mischka);
+  --light-hover:#f4f2f7; --dark:#1a1a1a; --dark-light:#4a4a4a; --border:var(--lavender-gray); --error:#e63946;
+  /* derived values (prefix it- = intake tool). Every one is listed in COMPONENTS.md §1.2 */
+  --it-user-bg:#f3e2e8; --it-badge-bg:#f7eff4; --it-field-bg:#fbf9fc; --it-field-border:#8d8896;
+  --it-bot-bg:rgba(255,255,255,.88); --it-bot-border:rgba(203,185,214,.55);
+  --it-faq-bg:#f0f3f6; --it-hoki-ink:#4c687b; --it-o3-ink:#6c6873; --it-bali-ink:#586877; --it-o4-bg:#f1f4f6;
+  --it-error-ink:#b82e38; --it-plum-deep:#862c50; --it-placeholder:#6b6570; --it-hair:#e3dee8;
+  --it-btn-grad:linear-gradient(135deg,var(--cadillac),var(--night-shadz));
+  --it-ring:0 0 0 4px rgba(167,55,100,.16);
+  --it-aurora:linear-gradient(135deg,#fffbfd 0%,#fcf7fa 100%);
+  --it-glass-shadow:0 8px 32px rgba(31,38,135,.10);
+  --wa-green:#25d366; --wa-dark:#128c7e;
+  /* type scale — multiplied by --u so the site's "text size" setting scales the tool as a whole */
+  --u:1px;
+  --t12:calc(var(--u)*12.5); --t13:calc(var(--u)*13); --t14:calc(var(--u)*14); --t15:calc(var(--u)*15); --t16:calc(var(--u)*16);
+  --t17:calc(var(--u)*17); --t19:calc(var(--u)*19); --t22:calc(var(--u)*22); --t26:calc(var(--u)*26); --t28:calc(var(--u)*28); --t34:calc(var(--u)*34);
+  --tb:var(--t16);
+  position:relative;overflow:hidden;color:var(--dark);font-family:Rubik,Heebo,sans-serif;font-size:var(--t16);line-height:1.6;
+  background:#fff;color-scheme:light;direction:rtl;letter-spacing:.2px;-webkit-font-smoothing:antialiased;
+}
+.screen.sim-tl{--u:1.1px}
+.screen.sim-txl{--u:1.25px}
+.screen.sim-rf, .screen.sim-rf *{font-family:Arial,Helvetica,sans-serif!important}
+.screen.sim-links a{text-decoration:underline!important;background-color:yellow!important;color:#000!important}
+.dev-mobile.screen{width:390px;height:800px;border-radius:36px}
+.dev-desktop.screen{width:1280px;height:800px;border-radius:0 0 12px 12px;--tb:var(--t17)}
+.screen *{box-sizing:border-box}
+.screen p{margin:0}
+.screen h1,.screen h2,.screen h3{font-family:Rubik,sans-serif;margin:0;letter-spacing:-.02em}
+.screen button{font-family:inherit}
+.screen :focus-visible{outline:3px solid var(--night-shadz);outline-offset:2px}
+.screen a{color:var(--cadillac);font-weight:500;text-decoration:none}
+.screen a:hover{color:var(--night-shadz);text-decoration:underline}
+.screen a[dir="ltr"]{unicode-bidi:isolate;white-space:nowrap} /* a phone number inside a line of text never breaks across lines */
+.screen .ic{flex:none;display:inline-block;vertical-align:middle}
+.screen .var{font-family:ui-monospace,Consolas,monospace;font-size:.86em;background:#eef0ff;color:#2f3a8f;border:1px solid #c7ccf5;border-radius:4px;padding:0 3px;direction:ltr;unicode-bidi:isolate;overflow-wrap:anywhere}
+.miss{background:#fff4d6;color:#6b4e00;border:1px dashed #b38600;border-radius:4px;padding:0 4px;overflow-wrap:anywhere;font-weight:500;font-size:.86em;line-height:1.35}
+.miss.work{background:transparent;color:inherit;border:0;border-bottom:2px dashed #b38600;border-radius:0;padding:0;font-weight:inherit}
+.show-ids .tx[data-tid]{outline:1px dashed #6d4fd8;outline-offset:1px}
+.show-ids .tx[data-tid]::after{content:attr(data-tid);display:inline-block;font:600 10px/1.3 ui-monospace,Consolas,monospace;background:#3b2a6b;color:#fff;padding:1px 4px;border-radius:4px;margin-inline-start:4px;vertical-align:middle;direction:ltr;letter-spacing:0;white-space:nowrap}
+
+/* ---------- device scaffolding ---------- */
+.m-status{height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font:600 13px/1 Rubik,sans-serif;color:#1a1a1a;background:#fff;position:relative;z-index:3}
+.m-status .dots{display:flex;gap:4px;align-items:center}
+.m-status .dots i{display:block;width:16px;height:9px;border:1.5px solid #1a1a1a;border-radius:3px}
+.m-focus{position:absolute;top:28px;bottom:0;left:0;right:0;display:flex;flex-direction:column;background:var(--it-aurora)}
+.m-header{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 12px 0 8px;background:#fff;border-bottom:1px solid rgba(101,139,164,.15);position:relative;z-index:2}
+.m-page{position:absolute;top:92px;bottom:0;left:0;right:0;overflow:hidden}
+.page-scroll{position:absolute;inset:0;overflow:auto}
+.aur{position:absolute;inset:0;background:var(--it-aurora);overflow:hidden;pointer-events:none}
+.aur::before,.aur::after{content:"";position:absolute;border-radius:60% 40% 30% 70%/60% 30% 70% 40%;filter:blur(40px)}
+.aur::before{top:-12%;left:-20%;width:80%;aspect-ratio:1;background:radial-gradient(circle,rgba(233,230,236,.95),transparent 70%)}
+.aur::after{bottom:-18%;right:-22%;width:75%;aspect-ratio:1;background:radial-gradient(circle,rgba(215,198,225,.6),transparent 70%)}
+.ham{width:44px;height:44px;border:0;background:transparent;color:var(--bouquet);display:grid;place-items:center;border-radius:10px}
+.logo{display:inline-flex;align-items:center;gap:6px;direction:rtl}
+.logo-t{display:flex;flex-direction:column;line-height:1.1}
+.logo-t b{font-weight:600;color:var(--hoki);font-size:calc(var(--h)*.42)}
+.logo-t small{color:#7a7a85;font-size:calc(var(--h)*.24)}
+.fab-wa{position:absolute;bottom:20px;right:20px;width:60px;height:60px;border-radius:50%;background:var(--wa-green);color:#fff;display:grid;place-items:center;box-shadow:0 4px 12px rgba(0,0,0,.15);z-index:5;border:0}
+.fab-a11y{position:absolute;bottom:20px;left:20px;width:50px;height:50px;border-radius:50%;background:var(--bouquet);color:#fff;display:grid;place-items:center;box-shadow:0 4px 10px rgba(0,0,0,.2);z-index:6;border:0;cursor:pointer}
+.d-site{position:absolute;inset:0;background:#fff}
+.d-header{height:88px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;background:#fff;border-bottom:1px solid rgba(101,139,164,.15);position:relative;z-index:2}
+.d-nav{display:flex;gap:30px;font-size:15px;color:#1a1a1a}
+.d-nav span{padding:6px 0}
+.d-main{position:absolute;top:88px;bottom:0;left:0;right:0;overflow:hidden}
+.d-main.scroll{overflow:auto}
+.tool-panel{position:relative;width:720px;margin:20px auto 0;height:672px;border-radius:24px;overflow:hidden;background:rgba(255,255,255,.72);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.85);box-shadow:var(--it-glass-shadow);display:flex;flex-direction:column}
+.d-page{position:relative;width:720px;margin:0 auto;padding:40px 0 120px}
+
+/* ---------- tool shell ---------- */
+.tool{position:relative;display:flex;flex-direction:column;height:100%;min-height:0}
+.tb{display:flex;align-items:center;gap:2px;height:56px;padding:0 6px;background:rgba(255,255,255,.94);border-bottom:1px solid rgba(203,185,214,.5);flex:none}
+.ibtn{width:44px;height:44px;flex:none;border:1px solid transparent;background:transparent;color:var(--dark-light);border-radius:12px;display:grid;place-items:center;cursor:pointer}
+.ibtn:hover{background:var(--light-hover)}
+.a11y-dot{width:36px;height:36px;border-radius:50%;background:var(--bouquet);color:#fff;display:grid;place-items:center}
+.dev-desktop .tb .a11y-ibtn{display:none}
+.tb-title{flex:1;display:flex;align-items:center;gap:8px;min-width:0;padding:0 4px}
+.tb-names{display:flex;flex-direction:column;align-items:flex-start;gap:1px;min-width:0}
+.tb-name{font-size:var(--t15);font-weight:600;line-height:1.25;color:var(--dark)}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:var(--t13);font-weight:500;line-height:1.35;color:var(--night-shadz);background:var(--it-badge-bg);border:1px solid rgba(167,55,100,.2);border-radius:999px;padding:0 8px}
+.mark{--s:28px;width:var(--s);height:var(--s);flex:none;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#f7eff4,#e9e6ec);border:1px solid rgba(185,123,160,.4);color:var(--night-shadz)}
+.mark svg{fill:currentColor}
+.stages{display:flex;gap:6px;list-style:none;margin:0;padding:6px 14px 7px;background:rgba(255,255,255,.94);flex:none}
+.stages li{flex:1;display:flex;flex-direction:column;gap:3px;font-size:var(--t13);line-height:1.3;color:var(--dark-light)}
+.stages li::before{content:"";display:block;height:0;border-top:2px dashed var(--it-field-border);border-radius:2px;margin-top:2px}
+.stages li.done::before{border-top:4px solid var(--bouquet);margin-top:1px}
+.stages li.cur{color:var(--night-shadz);font-weight:600}
+.stages li.cur::before{border-top:6px solid var(--night-shadz);margin-top:0}
+.disc{display:flex;align-items:center;gap:8px;padding:5px 14px;background:var(--light-hover);border-bottom:1px solid var(--mischka);font-size:var(--t14);line-height:1.4;color:var(--dark-light);flex:none}
+.disc .ic{color:var(--dark-light)}
+.disc-txt{flex:1}
+.dev-mobile .disc-full{display:none}
+.dev-desktop .disc-short{display:none}
+.disc-more{border:0;background:transparent;color:var(--cadillac);font-weight:600;font-size:var(--t14);padding:4px 6px;min-height:32px;cursor:pointer;flex:none;border-radius:6px}
+.offline{display:flex;gap:8px;align-items:flex-start;padding:8px 14px;background:var(--dark-light);color:#fff;font-size:var(--t14);line-height:1.45;flex:none}
+.log{flex:1;min-height:0;overflow:auto;padding:14px 14px 10px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}
+.log:focus{outline:none}
+.log > *{flex-shrink:0}
+.main-area{flex:1;min-height:0;overflow:auto;padding:18px 16px 24px}
+.row{display:flex;gap:8px;align-items:flex-start}
+.row.user{justify-content:flex-end}
+.mark-col{width:28px;flex:none}
+.bubble{max-width:86%;padding:9px 14px;border-radius:20px;font-size:var(--tb);line-height:1.6;border:1px solid transparent;animation:it-in .22s cubic-bezier(.4,0,.2,1) both}
+.bubble.bot{background:var(--it-bot-bg);border-color:var(--it-bot-border);border-start-start-radius:6px;box-shadow:0 4px 14px rgba(185,123,160,.07)}
+.row.bot .bubble{max-width:calc(100% - 44px)}
+.bubble.user{background:var(--it-user-bg);border-start-end-radius:6px;max-width:82%}
+.bubble.user.unsent{border:1.5px dashed var(--it-error-ink)}
+.bubble p + p{margin-top:6px}
+.unsent-row{display:flex;justify-content:flex-end;align-items:center;gap:8px;font-size:var(--t14);color:var(--it-error-ink);font-weight:500;margin-top:-4px}
+.sum-label{display:flex;align-items:center;gap:6px;font-size:var(--t13);font-weight:600;color:var(--dark-light);margin-bottom:2px}
+.typing{display:inline-flex;align-items:center;gap:10px;padding:10px 14px}
+.bars{display:inline-flex;align-items:center;gap:3px;height:18px;color:var(--bouquet)}
+.bars i{display:block;width:0;height:16px;border-inline-start:3px solid currentColor;border-radius:2px;transform-origin:center;animation:it-bar 1.1s ease-in-out infinite}
+.bars i:nth-child(2){animation-delay:-.9s;color:var(--cadillac)}
+.bars i:nth-child(3){animation-delay:-.7s;color:var(--night-shadz)}
+.bars i:nth-child(4){animation-delay:-.5s;color:var(--cadillac)}
+.bars i:nth-child(5){animation-delay:-.3s}
+.typing-t{font-size:var(--t14);color:var(--dark-light)}
+.slow-t{display:block;font-size:var(--t14);color:var(--dark-light);margin:-4px 44px 0 0}
+.sys{align-self:stretch;display:flex;gap:10px;align-items:flex-start;background:var(--light-hover);border:1px solid var(--it-hair);border-radius:12px;padding:12px 14px;font-size:var(--t15);line-height:1.55;animation:it-in .22s ease both}
+.sys .ic{color:var(--dark-light);margin-top:2px}
+.sys-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.newpill{position:absolute;left:0;right:0;margin-inline:auto;width:fit-content;bottom:84px;z-index:4;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid transparent;background:var(--night-shadz);color:#fff;font-size:var(--t14);font-weight:500;box-shadow:0 8px 20px rgba(167,55,100,.3);cursor:pointer}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:8px 14px 6px;flex:none}
+.chips.grid2{display:grid;grid-template-columns:1fr 1fr}
+.chips.grid2 .chip.wide{grid-column:1/-1}
+.chip{min-height:44px;padding:8px 16px;border-radius:22px;border:1.5px solid var(--bouquet);background:#fff;color:var(--night-shadz);font-size:var(--t15);font-weight:500;line-height:1.3;display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;text-align:center;animation:it-in .22s ease both}
+.chip:hover{background:var(--it-badge-bg)}
+.chip.alt{border-color:var(--it-field-border);color:var(--dark)}
+.chip.solid{background:var(--it-btn-grad);color:#fff;border-color:transparent}
+.composer-wrap{flex:none;background:rgba(255,255,255,.95);border-top:1px solid rgba(203,185,214,.5)}
+.c-hint{display:flex;gap:6px;align-items:center;padding:6px 16px 0;font-size:var(--t13);color:var(--dark-light)}
+.c-hint.err{color:var(--it-error-ink);font-weight:500}
+.composer{display:flex;align-items:flex-end;gap:8px;padding:8px 10px 10px}
+.composer textarea{flex:1;min-height:48px;max-height:120px;resize:none;border-radius:24px;background:var(--it-field-bg);border:1.5px solid var(--it-field-border);padding:11px 16px;font:inherit;font-size:var(--t16);line-height:1.5;color:var(--dark);overflow:auto}
+.composer textarea::placeholder{color:var(--it-placeholder)}
+.composer textarea:focus{outline:none;border-color:var(--night-shadz);box-shadow:var(--it-ring)}
+.composer textarea.over{border-color:var(--it-error-ink)}
+.send{width:48px;height:48px;flex:none;border-radius:50%;border:2px solid transparent;background:var(--it-btn-grad);color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 15px rgba(167,55,100,.22)}
+.send[aria-disabled="true"]{background:var(--mischka);color:var(--dark-light);box-shadow:none;cursor:not-allowed}
+.counter{font-size:var(--t13);color:var(--dark-light);padding:0 18px 8px;margin-top:-4px;font-variant-numeric:tabular-nums}
+.counter.lim{color:var(--it-error-ink);font-weight:600}
+/* message over 32KB: not sent, shown beside the field (not a bubble); the text stays in the field and Send stays enabled */
+.c-block{display:flex;gap:10px;align-items:flex-start;margin:8px 10px 0;padding:10px 12px;border:1.5px solid var(--it-error-ink);border-radius:12px;background:#fff;font-size:var(--t14);line-height:1.55;color:var(--dark)}
+.c-block .ic{color:var(--it-error-ink);margin-top:2px}
+.composer textarea.over{border-width:2px}
+
+/* ---------- buttons ---------- */
+.btn-p,.btn-s,.btn-dark,.btn-dark-o{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:12px 22px;border-radius:14px;font-size:var(--t17);font-weight:600;line-height:1.25;cursor:pointer;text-decoration:none;text-align:center;border:2px solid transparent;width:100%}
+.btn-p{background:var(--it-btn-grad);color:#fff;box-shadow:0 8px 22px rgba(167,55,100,.22);transition:transform .3s ease,box-shadow .3s ease}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(167,55,100,.32);color:#fff;text-decoration:none}
+.btn-s{background:#fff;color:var(--night-shadz);border-color:var(--bouquet)}
+.btn-s:hover{background:var(--it-badge-bg);color:var(--night-shadz);text-decoration:none}
+.btn-dark{min-height:64px;background:var(--secondary-dark);border-color:var(--secondary-dark);color:#fff;font-size:var(--t22);border-radius:16px}
+.btn-dark:hover{color:#fff;text-decoration:none}
+.btn-dark-o{background:#fff;border-color:var(--secondary-dark);color:var(--dark)}
+.btn-dark-o:hover{color:var(--dark);text-decoration:none;background:var(--light-hover)}
+/* buttons rendered as <a> must beat the generic ".screen a" link colour */
+.screen a.btn-p,.screen a.btn-p:hover,.screen a.btn-dark,.screen a.btn-dark:hover,.screen a.site-cta,.screen a.site-cta:hover,.screen a.mail-btn.solid{color:#fff;text-decoration:none}
+.screen a.btn-s,.screen a.btn-s:hover,.screen a.btn-sm,.screen a.mail-btn{color:var(--night-shadz);text-decoration:none}
+.screen a.btn-dark-o,.screen a.btn-dark-o:hover,.screen a.way,.screen a.way:hover{color:var(--dark);text-decoration:none}
+.dev-desktop .btn-p,.dev-desktop .btn-s{width:auto;min-width:220px}
+.dev-desktop .btn-dark,.dev-desktop .btn-dark-o{max-width:420px}
+.lnk{border:0;background:transparent;color:var(--cadillac);font-size:var(--t16);font-weight:500;padding:10px 8px;min-height:44px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;text-align:start}
+.lnk:hover{text-decoration:underline;color:var(--night-shadz)}
+.lnk.danger{color:var(--it-error-ink)}
+.btn-sm{min-height:44px;padding:8px 14px;border-radius:12px;border:1.5px solid var(--bouquet);background:#fff;color:var(--night-shadz);font-size:var(--t15);font-weight:600;display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.is-loading .bars{color:#fff}
+.is-loading .bars i{height:14px}
+
+/* ---------- FAQ card (S4) ---------- */
+.faq{align-self:stretch;background:var(--it-faq-bg);border:1.5px solid var(--it-hoki-ink);border-radius:12px;padding:12px 14px;animation:it-in .22s ease both}
+.faq-head{display:flex;gap:10px;align-items:center;margin-bottom:6px}
+.faq-ic{width:34px;height:34px;flex:none;border-radius:9px;background:#fff;border:1px solid rgba(76,104,123,.35);color:var(--it-hoki-ink);display:grid;place-items:center}
+.faq-topic{font-size:var(--t16);font-weight:600;color:var(--dark);line-height:1.3}
+.faq-src{font-size:var(--t13);color:var(--it-hoki-ink);font-weight:500}
+.faq-body{font-size:var(--tb);line-height:1.6}
+
+/* ---------- outcome card (S5) ---------- */
+.oc{--o-ink:var(--night-shadz);--o-tint:var(--it-user-bg);--o-title:var(--night-shadz);align-self:stretch;background:#fff;border:2px solid var(--o-ink);border-top-width:8px;border-radius:16px;overflow:hidden;box-shadow:0 12px 30px rgba(40,42,43,.08);animation:it-in .3s .12s cubic-bezier(.4,0,.2,1) both;position:relative}
+.oc:focus{outline:none}
+.oc:focus-visible{outline:3px solid var(--night-shadz);outline-offset:3px}
+.oc.o2{--o-ink:var(--it-hoki-ink);--o-tint:var(--it-faq-bg);--o-title:var(--it-hoki-ink)}
+.oc.o3{--o-ink:var(--it-o3-ink);--o-tint:var(--light-hover);--o-title:var(--dark)}
+.oc.o4{--o-ink:var(--it-bali-ink);--o-tint:var(--it-o4-bg);--o-title:var(--it-bali-ink)}
+.oc.stale{border-style:dashed;border-top-width:2px;box-shadow:none}
+.stale-tag{display:inline-flex;margin:12px 16px 0;font-size:var(--t13);font-weight:600;color:var(--dark-light);background:var(--light-hover);border:1px solid var(--it-field-border);border-radius:999px;padding:1px 10px}
+.oc-head{display:flex;gap:12px;align-items:center;padding:16px 16px 4px}
+.oc-icon{width:44px;height:44px;flex:none;border-radius:12px;background:var(--o-tint);border:1px solid transparent;color:var(--o-ink);display:grid;place-items:center}
+.oc-eyebrow{font-size:var(--t13);font-weight:600;letter-spacing:.02em;color:var(--o-ink);line-height:1.3}
+.oc-title{font-size:var(--t22);font-weight:500;line-height:1.3;color:var(--o-title);margin-top:2px}
+.oc-body{padding:8px 16px 0;font-size:var(--t16);line-height:1.65}
+.oc-important{display:flex;gap:10px;margin:12px 16px 0;background:var(--light-hover);border:1px solid transparent;border-inline-start:4px solid var(--it-o3-ink);border-radius:8px;padding:12px 14px;font-size:var(--t15);line-height:1.6}
+.oc-important .ic{color:var(--it-o3-ink);margin-top:3px}
+.when{margin:16px 16px 0}
+.when h3,.refs h3{font-size:var(--t17);font-weight:600;color:var(--dark);margin-bottom:6px}
+.when ul,.refs ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.when li{display:flex;gap:10px;font-size:var(--t15);line-height:1.6}
+.when li::before{content:"";flex:none;width:9px;height:9px;border:2px solid var(--it-o3-ink);border-radius:50%;margin-top:.5em}
+.refs{margin:14px 16px 0}
+.ref{border:1px solid #d5dbe1;border-radius:12px;padding:12px 14px;background:#fff;display:flex;flex-direction:column;gap:2px;font-size:var(--t15)}
+.ref strong{font-size:var(--t16);font-weight:600}
+.ref span{color:var(--dark-light)}
+.ref a{display:inline-flex;align-items:center;gap:6px;min-height:32px}
+.oc-actions{display:flex;flex-direction:column;gap:10px;padding:16px}
+.oc-actions:empty{display:none}
+.oc-door{font-size:var(--t15);line-height:1.6}
+.oc-phone{font-size:var(--t15);text-align:center}
+.oc-small{font-size:var(--t14);color:var(--dark-light);line-height:1.55}
+.oc-noref{margin:14px 16px 0;padding:12px 14px;border:1px solid #d5dbe1;border-radius:12px;font-size:var(--t15)}
+.oc-foot{display:flex;gap:8px;align-items:flex-start;padding:12px 16px;background:var(--light-hover);border-top:1px solid var(--it-hair);font-size:var(--t14);line-height:1.5;color:var(--dark-light)}
+.oc-foot .ic{margin-top:2px}
+.oc-foot-full{font-size:var(--t15);font-weight:500;color:var(--dark)}
+.oc-after{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 16px;padding:2px 0 8px}
+.dev-desktop .oc-actions{flex-direction:row;flex-wrap:wrap;align-items:center}
+.dev-desktop .oc-actions .oc-phone{text-align:start}
+
+/* ---------- red flag (S6) ---------- */
+.rf{position:absolute;inset:0;background:#fbf9fc;overflow:auto;display:flex;flex-direction:column}
+.rf-top{display:flex;align-items:center;gap:8px;height:56px;flex:none;padding:0 14px 0 6px;background:#fff;border-bottom:1px solid #ebe7ef;font-size:var(--t14);color:var(--dark-light)}
+.rf-top .grow{flex:1}
+.dev-desktop .rf-top .a11y-ibtn{display:none}
+.rf-body{padding:24px 18px 28px;width:100%;max-width:560px;margin:0 auto}
+.rf-icon{width:56px;height:56px;border-radius:50%;border:2px solid var(--secondary-dark);color:var(--secondary-dark);display:grid;place-items:center;margin-bottom:14px}
+.rf h1{font-size:var(--t28);font-weight:600;line-height:1.25;color:var(--dark);margin-bottom:16px}
+.rf-action{background:#fff;border:2px solid var(--secondary-dark);border-inline-start-width:8px;border-radius:16px;padding:16px;font-size:var(--t19);line-height:1.5;font-weight:500;color:var(--dark);margin-bottom:16px}
+.rf-action p + p{margin-top:6px}
+.screen .rf-action a{color:var(--dark);text-decoration:underline;text-underline-offset:3px;font-weight:600}
+.rf-btns{display:flex;flex-direction:column;gap:12px;margin-bottom:18px}
+.rf-text{font-size:var(--t16);line-height:1.65;color:var(--dark-light)}
+.rf-text p + p{margin-top:8px}
+.rf-opt{font-size:var(--t14);color:var(--dark-light);margin:-6px 0 16px;display:flex;flex-direction:column;gap:6px}
+.rf-sep{border:0;border-top:1px solid #e6e1ea;margin:20px 0}
+.rf-passive{font-size:var(--t15);color:var(--dark-light)}
+.rf-foot{margin-top:18px}
+.rf-footer{font-size:var(--t13);color:var(--dark-light);margin-top:18px;line-height:1.5}
+.rf-panel{background:#fbf9fc}
+.rf-pending{padding:16px;border:2px dashed var(--it-field-border);border-radius:16px;font-size:var(--t15);color:var(--dark-light);background:#fff}
+/* S6 combined (UX_SPEC draft 4): the extra hotline-tier blocks. Told apart from the main block by more than colour:
+   h2 not h1, smaller type, a thinner frame with a 4px (not 8px) start bar, an outlined (not solid) button, and a hairline above. */
+.rf-secline{font-size:var(--t15);line-height:1.55;color:var(--dark-light);margin:-6px 0 16px}
+.rf-sec{margin-top:28px;padding-top:22px;border-top:1px solid #e6e1ea}
+.rf-sec h2{font-size:var(--t22);font-weight:600;line-height:1.3;color:var(--dark);margin-bottom:12px}
+.rf-sec h2:focus{outline:none}
+.rf-action.sec{border-width:1.5px;border-inline-start-width:4px;border-radius:14px;padding:14px;font-size:var(--t17);margin-bottom:14px}
+.rf-sec .rf-btns{margin-bottom:0}
+.rf-main-end{margin-bottom:0}
+
+/* ---------- forms (S1, S7) ---------- */
+.hform{display:flex;flex-direction:column;gap:16px;max-width:560px;margin:0 auto}
+.hform h2{font-size:var(--t22);font-weight:500;color:var(--night-shadz)}
+.hform h2:focus{outline:none}
+.lead{font-size:var(--t16);color:var(--dark-light)}
+.note{display:flex;gap:8px;align-items:flex-start;background:var(--light-hover);border:1px solid var(--it-hair);border-radius:12px;padding:10px 12px;font-size:var(--t15)}
+.errsum{border:2px solid var(--it-error-ink);border-radius:12px;padding:12px 14px;background:#fff;font-size:var(--t15)}
+.errsum b{display:flex;gap:8px;align-items:center;color:var(--it-error-ink)}
+.errsum ul{margin:6px 0 0;padding-inline-start:20px}
+.preview{border:1px solid var(--it-hair);border-radius:14px;background:#fff;overflow:hidden}
+.preview summary{list-style:none;display:flex;align-items:center;gap:10px;min-height:52px;padding:8px 14px;font-weight:600;font-size:var(--t16);cursor:pointer;color:var(--dark)}
+.preview summary::-webkit-details-marker{display:none}
+.preview summary .grow{flex:1}
+.preview[open] summary .chev{transform:rotate(180deg)}
+.preview summary .chev{transition:transform .2s ease}
+.pv{padding:2px 14px 12px;border-top:1px solid var(--it-hair)}
+.pv dl{margin:8px 0;display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:var(--t15)}
+.pv dt{color:var(--dark-light)}
+.pv dd{margin:0}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label,.flabel{font-size:var(--t15);font-weight:600;color:var(--dark)}
+.field input{min-height:52px;width:100%;border-radius:14px;background:var(--it-field-bg);border:1.5px solid var(--it-field-border);padding:12px 16px;font:inherit;font-size:var(--t16);color:var(--dark)}
+.field input:focus{outline:none;border-color:var(--night-shadz);box-shadow:var(--it-ring);background:#fff}
+.field input[dir="ltr"]{text-align:right}
+.field input::placeholder{color:var(--it-placeholder)}
+.field.err input{border:2px solid var(--it-error-ink)}
+.err-msg{display:flex;gap:6px;align-items:center;font-size:var(--t14);font-weight:500;color:var(--it-error-ink)}
+.fhint{font-size:var(--t14);color:var(--dark-light)}
+.optgrp{border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.optgrp legend{padding:0;margin-bottom:8px}
+.segopts{display:flex;flex-wrap:wrap;gap:8px}
+.segopt{min-height:44px;padding:8px 14px;border-radius:12px;border:1.5px solid var(--it-field-border);background:#fff;font-size:var(--t15);color:var(--dark);display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+.segopt .dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--it-o3-ink);flex:none}
+.segopt[aria-checked="true"]{border:2px solid var(--night-shadz);background:var(--it-badge-bg);color:var(--night-shadz);font-weight:600}
+.segopt[aria-checked="true"] .dot{border:4px solid var(--night-shadz)}
+.pending-tag{display:inline-block;font-size:var(--t12);font-weight:600;color:#6b4e00;background:#fff4d6;border:1px dashed #b38600;border-radius:999px;padding:0 8px;margin-inline-start:6px}
+.cbx{display:flex;gap:12px;align-items:flex-start;cursor:pointer;font-size:var(--t15);line-height:1.55}
+.cbx input{position:absolute;opacity:0;width:1px;height:1px}
+.cbx .box{width:24px;height:24px;flex:none;border-radius:6px;border:2px solid var(--it-o3-ink);background:#fff;display:grid;place-items:center;color:transparent;margin-top:1px}
+.cbx input:checked + .box{background:var(--night-shadz);border-color:var(--night-shadz);color:#fff}
+.cbx input:focus-visible + .box{outline:3px solid var(--night-shadz);outline-offset:2px}
+.cbx.err .box{border-color:var(--it-error-ink);border-width:2.5px}
+.privacy{font-size:var(--t14);color:var(--dark-light)}
+.errbox{display:flex;gap:10px;align-items:flex-start;border:2px solid var(--it-error-ink);border-radius:12px;padding:12px 14px;background:#fff;font-size:var(--t15)}
+.errbox .ic{color:var(--it-error-ink);margin-top:2px}
+.alt-ways{display:flex;flex-direction:column;gap:8px}
+.way{display:flex;align-items:center;gap:12px;min-height:56px;padding:10px 14px;border:1px solid var(--it-hair);border-radius:14px;background:#fff;color:var(--dark);font-size:var(--t16);font-weight:500;text-decoration:none}
+.way:hover{text-decoration:none;color:var(--dark);border-color:var(--bouquet)}
+.way .wic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--light-hover);color:var(--dark-light);flex:none}
+.way .wic.wa{color:var(--wa-dark)}
+.way .grow{flex:1}
+
+/* ---------- S1 / S2 / S0 page content ---------- */
+.intro{position:relative;padding:22px 16px 120px}
+.dev-desktop .intro{padding:8px 0 40px}
+.intro h1{font-size:var(--t34);font-weight:500;line-height:1.2;color:var(--night-shadz)}
+.dev-desktop .intro h1{font-size:calc(var(--u)*44)}
+.intro .sub{font-size:var(--t17);color:var(--dark-light);margin-top:10px}
+.greet{display:flex;gap:12px;align-items:flex-start;margin:20px 0 6px}
+.greet .mark{--s:44px}
+.greet-t{font-size:var(--t16);line-height:1.65}
+.greet-t span:first-child{font-weight:600}
+.not-this{display:flex;gap:8px;align-items:flex-start;font-size:var(--t14);color:var(--dark-light);margin:14px 0 0}
+.steps{list-style:none;margin:20px 0;padding:0;display:flex;flex-direction:column;gap:12px}
+.steps li{display:flex;gap:12px;align-items:flex-start;font-size:var(--t16);line-height:1.55}
+.num{width:34px;height:34px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--it-badge-bg);color:var(--night-shadz);font-weight:600;border:1px solid rgba(167,55,100,.22)}
+.ccard{background:rgba(255,255,255,.82);border:1px solid rgba(203,185,214,.65);border-radius:20px;padding:20px 18px;box-shadow:0 10px 35px rgba(185,123,160,.08);margin-top:6px}
+.ccard h2{font-size:var(--t22);font-weight:500;color:var(--night-shadz);margin-bottom:10px}
+.dlist{list-style:none;margin:0 0 16px;padding:0;display:flex;flex-direction:column;gap:9px}
+.dlist li{display:flex;gap:10px;font-size:var(--t15);line-height:1.6}
+.dlist li::before{content:"";flex:none;width:6px;height:6px;border-radius:50%;background:var(--it-o3-ink);margin-top:.65em}
+.dlist li.em{font-weight:500}
+.dlist li.em::before{display:none}
+.dlist li.em .ic{color:var(--secondary-dark);margin-top:2px}
+.c-acts{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.dev-desktop .c-acts{flex-direction:row;align-items:center}
+.c-acts-equal,.dev-desktop .c-acts-equal{flex-direction:column;align-items:stretch}
+.dev-desktop .c-acts-equal .btn-s{width:100%}
+.direct{margin-top:22px;font-size:var(--t15);color:var(--dark-light)}
+.direct-ways{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.notice{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--it-hair);border-inline-start:4px solid var(--it-hoki-ink);border-radius:12px;padding:12px 14px;font-size:var(--t15);margin-bottom:16px}
+.notice .ic{color:var(--it-hoki-ink);margin-top:2px}
+.rcard{background:rgba(255,255,255,.88);border:1px solid rgba(203,185,214,.65);border-radius:20px;padding:20px 18px;box-shadow:0 10px 35px rgba(185,123,160,.08);margin-top:22px}
+.rcard-h{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+.rcard-h .rci{width:44px;height:44px;border-radius:12px;background:var(--it-badge-bg);color:var(--night-shadz);display:grid;place-items:center;flex:none}
+.rcard p{font-size:var(--t16)}
+.toast{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:8;background:var(--dark-light);color:#fff;border-radius:12px;padding:10px 16px;font-size:var(--t14);box-shadow:0 8px 20px rgba(0,0,0,.18);max-width:90%}
+/* entry points */
+.pill-tag{display:inline-flex;align-items:center;gap:6px;font-size:var(--t13);font-weight:500;color:var(--night-shadz);background:var(--it-badge-bg);border:1px solid rgba(167,55,100,.15);border-radius:999px;padding:3px 12px}
+.hero{padding:26px 18px 30px;position:relative}
+.hero h1{font-size:var(--t34);font-weight:500;color:var(--night-shadz);margin:12px 0 4px}
+.hero .hsub{font-size:var(--t19);color:var(--dark-light)}
+.hero .hbody{font-size:var(--t15);color:var(--dark-light);margin-top:10px}
+.site-cta{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:12px 26px;border-radius:999px;background:linear-gradient(135deg,var(--bouquet),var(--night-shadz));color:#fff;font-weight:600;font-size:var(--t16);margin-top:18px;box-shadow:0 8px 22px rgba(185,123,160,.3)}
+.entry-link{display:flex;align-items:center;gap:10px;margin-top:14px;padding:6px 0;min-height:44px}
+.entry-link .el-t{display:flex;flex-direction:column;line-height:1.35}
+.entry-link .el-t b{font-weight:600;color:var(--night-shadz);font-size:var(--t16);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+.entry-link .el-t small{font-size:var(--t14);color:var(--dark-light)}
+.bento{display:grid;grid-template-columns:1fr;gap:16px;padding:0 14px 120px}
+.dev-desktop .bento{grid-template-columns:repeat(4,1fr);gap:24px;padding:0 0 40px;width:1100px;margin:0 auto}
+.bcard{background:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.6);border-radius:32px;padding:22px;box-shadow:0 10px 40px -10px rgba(0,0,0,.08),0 0 0 1px rgba(255,255,255,.5) inset;display:flex;flex-direction:column;gap:10px}
+.bcard h3{font-size:var(--t19);font-weight:600;color:var(--night-shadz)}
+.bcard .bmeta{font-size:var(--t15);color:var(--dark-light)}
+.bcard.tool{border:1.5px solid rgba(185,123,160,.45)}
+.dev-desktop .bcard.form{grid-column:span 2;grid-row:span 2}
+.dev-desktop .bcard.tool{grid-column:span 2}
+.bico{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:var(--it-badge-bg);color:var(--night-shadz)}
+.bico.wa{background:#e9f8ef;color:var(--wa-dark)}
+.stub{height:48px;border-radius:14px;background:var(--it-field-bg);border:1px solid rgba(0,0,0,.06)}
+.ptitle{padding:24px 18px 18px}
+.ptitle h1{font-size:var(--t34);font-weight:700;color:var(--night-shadz)}
+.ptitle p{font-size:var(--t17);color:#666;margin-top:6px}
+.inline-entry{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:14px;background:rgba(var(--topic-rgb),.08);border:1px solid rgba(var(--topic-rgb),.2);font-size:var(--t15);margin:0 14px 14px}
+.inline-entry a{color:var(--topic-dark);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.lform{background:#fff;border-radius:18px;border:1px solid rgba(0,0,0,.05);box-shadow:0 10px 35px rgba(185,123,160,.05);padding:22px 18px;margin:0 14px 120px}
+.lform h3{font-size:var(--t19);color:var(--night-shadz);font-weight:600}
+.optcard{background:#fbf9fc;border:2px solid rgba(0,0,0,.04);border-radius:18px;padding:18px 12px;text-align:center;font-weight:600;font-size:var(--t15);margin-top:12px;color:var(--dark)}
+.strip{margin:0 14px 120px;padding:22px 18px;border-radius:24px;background:rgba(255,255,255,.8);border:1px solid rgba(203,185,214,.6);box-shadow:var(--it-glass-shadow);display:flex;flex-direction:column;gap:12px}
+.dev-desktop .strip{flex-direction:row;align-items:center;width:1000px;margin:0 auto 40px;gap:24px}
+.dev-desktop .strip .btn-s{flex:none}
+.strip p{font-size:var(--t16)}
+
+/* ---------- S8 / S10 ---------- */
+.confirm,.fallback{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+.cf-icon{width:56px;height:56px;border-radius:50%;background:var(--it-badge-bg);color:var(--night-shadz);display:grid;place-items:center;border:1px solid rgba(167,55,100,.2)}
+.fallback .cf-icon{background:var(--light-hover);color:var(--dark-light);border-color:var(--it-hair)}
+.confirm h2,.fallback h2{font-size:var(--t26);font-weight:500;color:var(--night-shadz);line-height:1.25}
+.fallback h2{color:var(--dark)}
+.confirm h2:focus,.fallback h2:focus{outline:none}
+.confirm p,.fallback p{font-size:var(--t16);line-height:1.65}
+.cf-line{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;background:#fff;border:1px solid var(--it-hair);border-radius:12px;font-size:var(--t15)!important}
+.cf-line .ic{color:var(--dark-light);margin-top:2px}
+.cf-small{font-size:var(--t14)!important;color:var(--dark-light)}
+.cf-rf{background:#fff;border:2px solid var(--secondary-dark);border-inline-start-width:8px;border-radius:14px;padding:12px 14px;font-size:var(--t16);font-weight:500}
+/* S13a, stopped from the age tap (minor.self.before_text): the help-line lines grouped in one calm block */
+.helplines{background:var(--light-hover);border:1px solid var(--it-hair);border-inline-start:4px solid var(--it-hoki-ink);border-radius:12px;padding:12px 14px;margin:14px 0 0;font-size:var(--t16);line-height:1.6}
+.helplines ul{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.helplines li{display:flex;gap:10px;align-items:flex-start}
+.helplines li .ic{color:var(--it-hoki-ink);margin-top:4px}
+.sec-emerg{margin-top:12px;font-weight:500}
+
+/* ---------- overlays: dialog, menu, sheet, a11y ---------- */
+.dlg-bd{position:absolute;inset:0;z-index:20;background:rgba(26,26,26,.45);display:flex;align-items:flex-end;justify-content:center;animation:it-fade .15s ease both}
+.dev-desktop .dlg-bd{align-items:center}
+.dlg{background:#fff;width:100%;max-width:460px;border-radius:20px 20px 0 0;padding:22px 18px 18px;box-shadow:0 -10px 30px rgba(0,0,0,.15)}
+.dev-desktop .dlg{border-radius:20px}
+.dlg h2{font-size:var(--t22);font-weight:500;color:var(--dark);margin-bottom:8px}
+.dlg p{font-size:var(--t16);color:var(--dark-light);line-height:1.6}
+.dlg-acts{display:flex;flex-direction:column;gap:8px;margin-top:18px}
+.menu{position:absolute;z-index:20;top:62px;left:8px;min-width:250px;background:#fff;border:1px solid var(--it-hair);border-radius:14px;box-shadow:0 14px 34px rgba(40,30,50,.16);padding:6px;animation:it-fade .15s ease both}
+.menu button,.menu a{display:flex;width:100%;align-items:center;gap:12px;min-height:48px;padding:8px 12px;border:0;background:transparent;border-radius:10px;font-size:var(--t16);color:var(--dark);text-align:start;cursor:pointer;font-weight:400}
+.menu button:hover{background:var(--light-hover)}
+.menu .ic{color:var(--dark-light)}
+.menu hr{border:0;border-top:1px solid var(--it-hair);margin:4px 6px}
+.menu .danger{color:var(--it-error-ink)}
+.menu .danger .ic{color:var(--it-error-ink)}
+.sheet-bd{position:absolute;inset:0;z-index:20;background:rgba(26,26,26,.45);display:flex;align-items:flex-end;animation:it-fade .15s ease both}
+.dev-desktop .sheet-bd{align-items:stretch;justify-content:flex-start}
+.sheet{background:#fff;width:100%;max-height:88%;overflow:auto;border-radius:20px 20px 0 0;padding:8px 18px 22px}
+.dev-desktop .sheet{width:440px;max-height:none;border-radius:0}
+.sheet-grab{width:40px;height:4px;border-radius:2px;background:var(--it-field-border);margin:4px auto 10px}
+.dev-desktop .sheet-grab{display:none}
+.sheet-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.sheet h2{font-size:var(--t22);font-weight:500;color:var(--night-shadz)}
+.sheet h3{font-size:var(--t17);font-weight:600;margin:16px 0 6px}
+.sheet p{font-size:var(--t15);line-height:1.6}
+.a11y-panel{position:absolute;z-index:30;width:280px;background:#fff;border:1px solid #ddd;border-radius:8px;box-shadow:0 5px 20px rgba(0,0,0,.15);padding:15px;font-family:Arial,sans-serif;direction:rtl;display:flex;flex-direction:column;gap:10px;color:#333}
+.a11y-panel.top{top:88px;left:8px}
+.a11y-panel.bottom{bottom:80px;left:20px}
+.a11y-h{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee;padding-bottom:10px}
+.a11y-h h3{font-size:16px;margin:0;color:#333;font-family:Arial,sans-serif;letter-spacing:0}
+.a11y-x{background:none;border:0;font-size:20px;cursor:pointer;color:#666;min-width:32px;min-height:32px}
+.a11y-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.a11y-c{background:#f5f5f5;border:1px solid #ddd;border-radius:6px;padding:8px 5px;cursor:pointer;font-size:14px;display:flex;flex-direction:column;align-items:center;gap:5px;color:#333;font-family:Arial,sans-serif}
+.a11y-c.on{background:var(--bouquet);color:#fff;border-color:var(--bouquet)}
+.a11y-reset{width:100%;padding:8px;background:#fff;border:1px solid #dcdcdc;border-radius:4px;cursor:pointer;font-size:14px;color:#d32f2f}
+.overlay-note{position:absolute;z-index:31;font:600 11px/1.3 Rubik,sans-serif;background:#3b2a6b;color:#fff;padding:3px 8px;border-radius:6px}
+
+/* ---------- Hadas side ---------- */
+.mail{position:absolute;inset:0;background:#fff;overflow:auto;font-family:Heebo,Rubik,Arial,sans-serif}
+.dev-desktop .mail{background:#f3f1f5}
+.mail-top{display:flex;align-items:center;gap:8px;height:52px;padding:0 12px;border-bottom:1px solid #eee;color:#1a73e8;font-size:var(--t15)}
+.mail-in{padding:14px 16px 40px}
+.dev-desktop .mail-in{width:680px;margin:24px auto;background:#fff;border-radius:12px;box-shadow:0 4px 18px rgba(0,0,0,.06);padding:24px 28px}
+.mail-subj{font-size:var(--t19);font-weight:600;line-height:1.35;margin-bottom:4px}
+.mail-from{font-size:var(--t13);color:var(--dark-light);margin-bottom:14px}
+.mail-disc{background:var(--light-hover);border:1px solid var(--it-hair);border-radius:8px;padding:10px 12px;font-weight:600;font-size:var(--t15);margin-bottom:14px}
+.mail-contact{font-size:var(--t17);font-weight:600}
+.mail-btns{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.mail-btn{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:8px 16px;border-radius:999px;border:1.5px solid var(--bouquet);background:#fff;color:var(--night-shadz);font-weight:600;font-size:var(--t15)}
+.mail-btn.solid{background:var(--night-shadz);border-color:var(--night-shadz);color:#fff}
+.mail-meta{font-size:var(--t14);color:var(--dark-light)}
+.mail hr{border:0;border-top:1px solid #e6e1ea;margin:14px 0}
+.mail-dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:var(--t15);margin:0}
+.mail-dl dt{color:var(--dark-light)}
+.mail-dl dd{margin:0}
+.dev-mobile .mail-dl{grid-template-columns:1fr;gap:0}
+.dev-mobile .mail-dl dt{font-size:var(--t13);margin-top:8px}
+.mail h4{font-size:var(--t15);font-weight:600;margin:14px 0 6px;color:var(--dark)}
+.mail ul{margin:0;padding-inline-start:20px;font-size:var(--t15);line-height:1.6}
+.mail-fb{background:#fbf9fc;border:1px solid var(--it-hair);border-radius:12px;padding:12px 14px;margin-top:10px}
+.mail-fb p{font-size:var(--t15);font-weight:600;margin-bottom:6px}
+.mail-foot{font-size:var(--t13);color:var(--dark-light);margin-top:14px}
+.hpage{position:absolute;inset:0;background:var(--it-aurora);overflow:auto;display:flex;justify-content:center;padding:28px 16px}
+.hcard{width:100%;max-width:440px;background:#fff;border-radius:20px;border:1px solid var(--it-hair);box-shadow:0 10px 35px rgba(185,123,160,.08);padding:22px 18px;display:flex;flex-direction:column;gap:14px;align-self:flex-start}
+.hcard h1{font-size:var(--t22);font-weight:500;color:var(--night-shadz)}
+.hcard .done{display:flex;gap:8px;align-items:center;font-weight:600;color:var(--dark)}
+
+/* ---------- motion ---------- */
+@keyframes it-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes it-fade{from{opacity:0}to{opacity:1}}
+@keyframes it-bar{0%,100%{transform:scaleY(.4)}50%{transform:scaleY(1)}}
+.screen.sim-noanim *,.screen.sim-noanim *::before,.screen.sim-noanim *::after{animation:none!important;transition:none!important}
+.screen.sim-noanim .bars i:nth-child(1){height:7px}.screen.sim-noanim .bars i:nth-child(2){height:12px}.screen.sim-noanim .bars i:nth-child(3){height:16px}.screen.sim-noanim .bars i:nth-child(4){height:11px}.screen.sim-noanim .bars i:nth-child(5){height:6px}
+@media (prefers-reduced-motion: reduce){
+  .screen *,.screen *::before,.screen *::after{animation:none!important;transition:none!important}
+  .screen .bars i:nth-child(1){height:7px}.screen .bars i:nth-child(2){height:12px}.screen .bars i:nth-child(3){height:16px}.screen .bars i:nth-child(4){height:11px}.screen .bars i:nth-child(5){height:6px}
+  .log{scroll-behavior:auto}
+}
+
+/* ---------- simulation of AccessibilityWidget "high contrast" (mirrors src/styles/accessibility.css) ---------- */
+/* the a11y panel is always a direct child of .screen and is excluded, like .accessibility-widget on the site */
+.screen.sim-hc,.screen.sim-hc > :not(.a11y-panel),.screen.sim-hc > :not(.a11y-panel) *{background-color:#fff!important;color:#000!important;border-color:#000!important;box-shadow:none!important;text-shadow:none!important;background-image:none!important}
+.screen.sim-hc > :not(.a11y-panel) a{text-decoration:underline!important;color:#0000EE!important}
+.screen.sim-hc > :not(.a11y-panel) button,.screen.sim-hc input,.screen.sim-hc textarea{border:2px solid #000!important;background:#fff!important;color:#000!important}
+.screen.sim-hc .oc{border-width:2px!important;border-top-width:8px!important}
+.screen.sim-hc .oc.stale{border-top-width:2px!important}
+.screen.sim-hc .btn-dark{border-width:3px!important}
+.screen.sim-hc .miss{border-style:dashed!important}
+</style>
+</head>
+<body>
+<header class="ch-head">
+  <div class="ch-head-in">
+    <div class="ch-title">
+      <h1>מוקאפ שיחת היכרות</h1>
+      <p>העוזר הדיגיטלי של הדס תודה · תפקיד 2 (UI) · עדכון רשימה סגורה · 2026-10-05 · מבוסס על UX_SPEC.md (טיוטה 4) ועל content/texts.he.json (v0.4.0). כל הכפתורים בתוך המסגרת לחיצים ומובילים למצב הבא.</p>
+    </div>
+    <div class="ch-controls" role="group" aria-label="הגדרות תצוגה">
+      <span><span class="seg-label" id="lbl-dev">מכשיר</span><span class="seg" role="group" aria-labelledby="lbl-dev"><button type="button" data-dev="m" aria-pressed="true">מובייל 390</button><button type="button" data-dev="d" aria-pressed="false">דסקטופ 1280</button></span></span>
+      <span><span class="seg-label" id="lbl-theme">רקע המוקאפ</span><span class="seg" role="group" aria-labelledby="lbl-theme"><button type="button" data-theme-btn="auto" aria-pressed="true">אוטומטי</button><button type="button" data-theme-btn="light" aria-pressed="false">בהיר</button><button type="button" data-theme-btn="dark" aria-pressed="false">כהה</button></span></span>
+      <label class="tog"><input type="checkbox" id="opt-work"> נוסחי עבודה במקום טקסטים חסרים</label>
+      <label class="tog"><input type="checkbox" id="opt-ids"> הצגת מזהי טקסט</label>
+      <label class="tog"><input type="checkbox" id="opt-hc"> ניגודיות גבוהה</label>
+      <label class="tog"><input type="checkbox" id="opt-anim"> עצירת אנימציות</label>
+      <label class="tog">גודל טקסט <select class="ch-sel" id="opt-size"><option value="0">רגיל</option><option value="1">גדול</option><option value="2">ענק</option></select></label>
+    </div>
+  </div>
+</header>
+<div class="ch-main">
+  <nav class="ch-nav" id="nav" aria-label="מסכים ומצבים"></nav>
+  <main class="ch-stage">
+    <div class="ch-mnav">
+      <label class="sr" for="sel-screen">מסך</label><select class="ch-sel" id="sel-screen"></select>
+      <label class="sr" for="sel-state">מצב</label><select class="ch-sel" id="sel-state"></select>
+      <button class="ch-btn" type="button" id="prev">הקודם</button>
+      <button class="ch-btn" type="button" id="next">הבא</button>
+    </div>
+    <div class="ch-crumb" aria-live="polite"><b id="crumb-t"></b><span id="crumb-s"></span></div>
+    <div class="ch-view" id="view">
+      <div class="fit" id="fit"></div>
+      <aside class="ch-notes" id="notes" aria-label="הערות למצב הנוכחי"></aside>
+    </div>
+  </main>
+</div>
+
+<script>
+/* =====================================================================
+   TEXTS — current ids/content from docs/assessment/content/texts.he.json (v0.4.0; the second closed-list pass added the ids for S6 combined, the 32KB block, model-free, the D-13 age tap and the S8 privacy variants, and refreshed the ones on those screens).
+   The deep clinical goal-tree (goal.*.ask beyond the opening question, q.age/q.onset/
+   q.situations/q.impact/q.prev_treatment/q.anything_else and their chip options) is left
+   as demo flavor from the previous draft — out of scope for this UI closed-list update.
+   ===================================================================== */
+const PHONE = '050-679-6209'; // from texts.he.json "variables": shown today on the site; in production read from the facts sheet
+const T = {
+ 'entry.button':`שיחה קצרה עם העוזר הדיגיטלי`,
+ 'entry.button.short':`לשיחה עם העוזר הדיגיטלי`,
+ 'entry.home.sub':`עוזר דיגיטלי · כ-5 דקות`,
+ 'entry.teaser':`מתלבטים אם לפנות? אפשר לספר לעוזר הדיגיטלי של הדס, בכמה שאלות קצרות, מה מעסיק. הדס תקבל סיכום מסודר, ובסוף יוצג כיוון להמשך.`,
+ 'entry.landing.inline':`מעדיפים לספר במילים שלכם? שיחה קצרה עם העוזר הדיגיטלי`,
+ 'entry.unavailable':`העוזר לא זמין כרגע · ליצירת קשר · חירום: 101`,
+ 'page.tool.h1':`שיחת היכרות עם העוזר הדיגיטלי`,
+ 'page.tool.sub':`לפני שפונים להדס תודה, קלינאית תקשורת: כמה שאלות קצרות, וסיכום מסודר שמגיע אליה.`,
+ 'page.tool.steps':[`עוזר דיגיטלי שואל שאלה אחת בכל פעם. זה לוקח בערך 5 דקות.`,`הדס מקבלת סיכום רק אם בוחרים לשלוח אותו.`,`אפשר לעצור ולמחוק את השיחה בכל רגע. מה שכבר נשלח להדס נשאר אצלה.`],
+ 'page.tool.not_this':`העוזר הוא תוכנה אוטומטית. הוא אינו הדס, אינו מאבחן ואינו נותן ייעוץ מקצועי או רפואי. במצב חירום יש להתקשר למד"א 101.`,
+ 'page.tool.direct':`מעדיפים לדבר ישירות? אפשר להתקשר להדס: {{hadas_phone}}, או לכתוב לה בוואטסאפ.`,
+ 'intro.greeting':[`שלום, כאן העוזר הדיגיטלי של הדס תודה, קלינאית תקשורת.`,`אני תוכנה אוטומטית, לא הדס עצמה. בכמה שאלות קצרות אפשר לספר מה מעסיק, והדס תקבל סיכום מסודר לפני שהיא חוזרת.`,`זה לוקח בדרך כלל כמה דקות.`],
+ 'consent.title':`לפני שמתחילים`,
+ 'consent.disclaimer':[`העוזר הוא תוכנה (בינה מלאכותית), לא הדס. הוא לא מאבחן, והכיוון בסוף עלול לטעות.`,`מה שנכתב, כולל מידע על בריאות, מעובד אצל ספק בינה מלאכותית.`,`מה שנכתב בשיחה נמחק בתוך 24 שעות, גם מהשרת. להדס נשלח סיכום רק אם יושארו פרטים.`,`מסירת המידע אינה חובה. האחראית עליו: הדס תודה. זכויות: [מדיניות הפרטיות]({{privacy_url}})`,`מיועד לגיל 18 ומעלה, ועל ילד — להורה או לאפוטרופוס.`],
+ 'consent.emergency':`במצב חירום, או בקושי פתאומי בדיבור, בהבנה או בבליעה: מד"א 101 — לא השיחה הזו.`,
+ 'consent.checkbox':`ידוע לי שזו תוכנה אוטומטית ולא אבחון, ושגילי 18 ומעלה. הסכמה לעיבוד מה שייכתב כאן, כולל מידע על בריאות, כמתואר למעלה וב[מדיניות הפרטיות]({{privacy_url}}).`,
+ 'consent.checkbox.error':`כדי להתחיל, יש לסמן את תיבת ההסכמה.`,
+ 'consent.button.accept':`הסכמה והתחלה`,
+ 'consent.start_loading':`מתחילים…`,
+ 'consent.button.decline':`לא עכשיו`,
+ 'consent.declined':`בסדר גמור. אפשר לפנות להדס ישירות: בטלפון {{hadas_phone}}, בוואטסאפ, או בטופס יצירת הקשר באתר.`,
+ 'consent.reconsent_note':`עדכנו את הנוסח — נשמח לאישור מחדש.`,
+ 'consent.privacy_link':`מדיניות הפרטיות`,
+ 'chat.disclaimer_line':`עוזר דיגיטלי, לא הדס · לא אבחון · חירום: 101`,
+ 'chat.disclaimer_line.short':`מענה אוטומטי · לא אבחון · חירום: 101`,
+ 'chat.disclaimer_more':`עוד`,
+ 'chat.header.title':`העוזר הדיגיטלי של הדס תודה`,
+ 'chat.header.subtitle':`מענה אוטומטי`,
+ 'chat.stage.1':`היכרות`, 'chat.stage.2':`השלמת פרטים`, 'chat.stage.3':`סיכום`,
+ 'chat.input.placeholder':`כתיבת הודעה…`,
+ 'chat.send.label':`שליחה`,
+ 'chat.send.wait':`התשובה בדרך. אפשר לשלוח אחרי שתגיע.`,
+ 'chat.input.too_long_hint':`הודעה ארוכה. כדאי לקצר, ולפתוח במה שהשתנה לאחרונה.`,
+ 'chat.input.too_long_block':`ההודעה ארוכה מדי ולא נשלחה. הטקסט נשאר בשדה, ואפשר לקצר אותו או לחלק אותו לכמה הודעות. אם משהו השתנה לאחרונה או הופיע פתאום, כדאי לכתוב את זה קודם, בכמה מילים. במצב חירום: מד"א 101.`,
+ 'chat.typing':`ההודעה בדרך…`,
+ 'chat.slow':`התשובה בדרך, עוד רגע.`,
+ 'chat.not_sent':`לא נשלחה`,
+ 'chat.new_message':`הודעה חדשה`,
+ 'chat.quick.dont_know':`לא ידוע לי`,
+ 'chat.quick.have_question':`יש לי שאלה`,
+ 'chat.end.title':`לצאת מהשיחה?`,
+ 'chat.end.confirm':`מה שסיפרת לא יישלח להדס. אחרי "לצאת": השיחה נשמרת 24 שעות ואז נמחקת מעצמה. "לצאת ולמחוק" מוחק אותה עכשיו, גם מהשרת.`,
+ 'chat.end.stay':`להמשיך בשיחה`,
+ 'chat.end.leave':`לצאת`,
+ 'chat.end.leave_delete':`לצאת ולמחוק`,
+ 'chat.ended':`השיחה הסתיימה. אפשר לפנות להדס בכל זמן: {{hadas_phone}}. במצב חירום: מד"א 101.`,
+ 'chat.delete.title':`מחיקת השיחה`,
+ 'chat.delete.confirm':`למחוק את השיחה? היא תימחק עכשיו גם מהשרת, ואי אפשר יהיה לבטל, לחזור אליה או לשלוח את הפרטים להדס. בשרת נשאר רק רישום טכני, בלי תוכן.`,
+ 'chat.delete.yes':`מחיקה`,
+ 'chat.delete.no':`ביטול`,
+ 'chat.delete.done':`השיחה נמחקה, גם מהשרת. בשרת נשאר רק רישום טכני, בלי תוכן השיחה.`,
+ 'chat.sr.bot_label':`העוזר הדיגיטלי:`,
+ 'chat.sr.user_label':`ההודעה שלך:`,
+ 'menu.talk_to_hadas':`לדבר עם הדס`, 'menu.about':`על הכלי`, 'menu.restart':`התחלה מחדש`, 'menu.delete':`מחיקת השיחה`, 'menu.accessibility':`נגישות`,
+ 'about.title':`על העוזר הדיגיטלי`,
+ 'about.body':`העוזר הדיגיטלי הוא תוכנה אוטומטית שעוזרת לפונים חדשים לספר בקצרה מה מעסיק אותם, ומכינה להדס תודה סיכום מסודר לפני שהיא חוזרת. הוא אינו הדס ואינו אדם. הוא לא מאבחן, לא נותן טיפים או תרגילים, ולא קובע אם צריך טיפול. את זה עושה רק איש מקצוע.`,
+ 'about.data':[`מה שנכתב בשיחה, כולל מידע על בריאות, עובר לעיבוד אצל ספק שירות הבינה המלאכותית שמפעיל את העוזר. השיחה נמחקת בתוך 24 שעות, גם מהשרת. בשרת נשאר רק רישום טכני, בלי תוכן.`,`להדס נשלח סיכום רק אם בוחרים להשאיר פרטים. אחרי שהסיכום הגיע אליה, הוא נמחק מהמערכת ונשאר אצלה.`,`כדאי לא לכתוב בשיחה פרטים מזהים מיותרים, כמו שם מלא או מספר תעודת זהות.`],
+ 'a11y.log_label':`שיחה עם העוזר הדיגיטלי`,
+ 'a11y.quick_replies':`אפשרויות תשובה`,
+ 'a11y.message_sent':`נשלח`,
+ 'a11y.stage':`שלב {{stage_number}} מתוך 3: {{stage_name}}`,
+ 'a11y.outcome_region':`תוצאת השיחה`,
+ 'a11y.new_message_pill':`הודעה חדשה, מעבר אליה`,
+ 'a11y.restored_log':`השיחה נפתחה מחדש מאותה נקודה. ההודעות הקודמות מופיעות למעלה.`,
+ 'a11y.exit':`יציאה מהשיחה`, 'a11y.menu':`תפריט`,
+ 'meta.identity':`לא, כאן העוזר הדיגיטלי של הדס, תוכנה אוטומטית. הדס עצמה תקרא את הסיכום אם יושארו פרטים, ותחזור בעצמה.`,
+ 'meta.diagnosis_request':`על זה רק הדס יכולה לענות, אחרי שיחה מסודרת. העוזר הדיגיטלי לא מאבחן ולא קובע מה מצב הדיבור. רשמתי את השאלה, ואם בסוף יושארו פרטים, היא תופיע בסיכום להדס.`,
+ 'meta.want_human':`בוודאי. אפשר לעבור עכשיו לטופס, עם מה שסופר עד כה, והדס תחזור. אפשר גם להתקשר אליה ישירות: {{hadas_phone}}.`,
+ 'meta.want_human.to_form':`מעבר לטופס`,
+ 'meta.want_human.stay':`להמשיך בשיחה`,
+ 'language.unsupported':[`בשלב זה העוזר הדיגיטלי עונה רק בעברית. אפשר לפנות להדס ישירות: {{hadas_phone}}. במצב חירום: מד"א 101.`,`This assistant works in Hebrew only. To reach Hadas: {{hadas_phone}}. In an emergency in Israel, call 101.`],
+ 'meta.too_long':`ההודעה ארוכה מדי. אם משהו השתנה לאחרונה או הופיע פתאום, כדאי לכתוב את זה קודם, בכמה מילים. את השאר אפשר לחלק לכמה הודעות קצרות. במצב חירום: מד"א 101.`,
+ 'goal.core_relation.ask':`כאן העוזר הדיגיטלי של הדס. על מי השיחה? אפשר לבחור כאן, או פשוט לכתוב במילים שלך מה מעסיק.`,
+ 'q.relation.opt.self':`על עצמי`, 'q.relation.opt.son':`על הבן שלי`, 'q.relation.opt.daughter':`על הבת שלי`, 'q.relation.opt.other':`על מישהו אחר`,
+ 'goal.self_age_band.ask':`שאלה אחת לפני שממשיכים: מה טווח הגיל שלך — מתחת ל-18, או 18 ומעלה?`,
+ 'goal.core_onset_pattern.ask':`איך זה התחיל: זה כך כבר הרבה זמן, זה התפתח בהדרגה, או שזה הופיע פתאום או בשבועות האחרונים?`,
+ 'q.self_age_band.opt.under_18':`מתחת ל-18`,
+ 'q.self_age_band.opt.adult':`18 ומעלה`,
+ 'q.relation.opt.child_not_parent':`על ילד או ילדה, ואני לא ההורה`,
+ 'q.relation.other_followup':`מה הקשר אליך? למשל הורה, בן או בת זוג, סבא או סבתא.`,
+ 'q.age.self':`מה הגיל, בערך?`, 'q.age.child.m':`בן כמה {{subject_ref}}?`, 'q.age.child.f':`בת כמה {{subject_ref}}?`,
+ 'q.onset.child.n':`מתי שמת לב לזה לראשונה, בערך? למשל באיזה גיל.`,
+ 'q.situations.child.n':`איפה זה בולט יותר אצל {{subject_ref}}? למשל בבית, בגן או בבית הספר, או עם אנשים חדשים.`,
+ 'q.impact.child.n':`האם זה מפריע ביום-יום — למשל בגן, בבית או עם חברים?`,
+ 'q.prev_treatment':`האם כבר היה בירור או טיפול בנושא הזה, למשל אצל קלינאית תקשורת או רופא?`,
+ 'q.anything_else':`יש עוד משהו שחשוב שהדס תדע?`,
+ 'q.dont_know.ack':`בסדר, אפשר להמשיך גם בלי זה.`,
+ 'transition.to_outcome':`תודה על השיתוף. הנה סיכום קצר, ומה אפשר לעשות מכאן.`,
+ 'outcome.card.label':`הכיוון להמשך`,
+ 'outcome.disclaimer':`נוצר אוטומטית, רק ממה שנכתב בשיחה. זה לא אבחון ולא ייעוץ רפואי, ולא מחליף איש מקצוע. חירום: 101.`,
+ 'outcome.summary.label':`מה שעלה בשיחה`,
+ 'outcome.summary.fallback':`תודה על הזמן ועל השיתוף.`,
+ 'outcome.cta.form':`השארת פרטים להדס`,
+ 'outcome.cta.phone':`או להתקשר: {{hadas_phone}}`,
+ 'outcome.add_more':`שכחתי לספר משהו`,
+ 'outcome.finish':`סיום ומחיקה`,
+ 'outcome.stale_label':`הכיוון הקודם, לפני העדכון`,
+ 'closed.keep_note':`הפרטים מוצגים עכשיו בלבד, ולא יישמרו אחרי סגירת הדף. כדאי לרשום אותם.`,
+ 'outcome.1.title':`כדאי לפנות להדס`,
+ 'outcome.1.body':`לפי מה שנכתב בשיחה, הנושא שתואר הוא מהתחומים שהדס תודה עוסקת בהם, ועלו בשיחה דברים שהדס הגדירה מראש כסיבה לפנות. אפשר לפנות אליה לשיחה ראשונה, כדי להבין את התמונה המלאה ולשמוע מה האפשרויות.`,
+ 'outcome.2.title':`שווה לשוחח עם הדס`,
+ 'outcome.2.body':`לפי מה שעלה בשיחה, כדאי לשוחח עם הדס תודה בשיחת התייעצות. שיחה קצרה איתה תעזור להבין את התמונה טוב יותר, ולברר אם ואיך אפשר לעזור.`,
+ 'outcome.3.title':`סיכום השיחה`,
+ 'outcome.3.body':[`בשיחה הקצרה הזו לא עלה אף אחד מהסימנים שברשימה שנקבעה מראש.`,`זה דיווח על מה שנכתב כאן בלבד: זה לא אומר שהכול בסדר, ושיחה אוטומטית יכולה להחמיץ דברים חשובים. אם יש דאגה, זו סיבה מספיקה לפנות.`],
+ 'outcome.3.disclaimer':`הסיכום נוצר אוטומטית, רק מתוך התשובות כאן. שיחה קצרה ואוטומטית לא רואה את כל התמונה ועלולה לטעות. היא אינה אבחון, הערכה מקצועית או ייעוץ רפואי, אינה מחליפה פגישה עם קלינאית תקשורת או רופא, ואינה מסמך שמתאים להצגה לגורם אחר. חירום: 101.`,
+ 'outcome.3.when_to_contact.title':`מתי כן לפנות להדס`,
+ 'outcome.3.when_to_contact.intro':`כדאי לפנות, למשל, אם אחד מאלה קורה עכשיו או בהמשך. הרשימה אינה מלאה:`,
+ 'outcome.3.when_to_contact.always':[`יש דאגה, או תחושה שמשהו לא מסתדר. זו סיבה מספיקה לפנות.`,`משהו משתנה, מחמיר, או לא משתפר עם הזמן.`,`קושי בדיבור, בהבנה או בבליעה מופיע פתאום. במקרה כזה לא לחכות: מד"א 101 או חדר מיון.`],
+ 'outcome.3.door_open':`אפשר לפנות להדס בכל זמן, גם עכשיו. אם משהו חשוב לא עלה בשיחה, כדאי לספר לה ישירות.`,
+ 'outcome.4.title':`לאן כדאי לפנות`,
+ 'outcome.4.body':`תודה על השיתוף. לפי מה שעלה בשיחה, הנושא הזה אינו מהתחומים שהדס תודה עוסקת בהם. כדי שהפנייה תגיע למי שעוסק בזה, אלה מקומות שאפשר לפנות אליהם:`,
+ 'outcome.4.referral_item':`{{referral_name}} — {{referral_description}} {{referral_contact}}`,
+ 'outcome.4.external_hint':`נפתח בלשונית חדשה`,
+ 'outcome.4.referral_disclaimer':`הרשימה נועדה לעזור למצוא כתובת מתאימה. היא אינה המלצה על גורם מסוים ואינה התחייבות לזמינותו, והפרטים עשויים להשתנות. כדאי לבדוק את ההתאמה ישירות מולם.`,
+ 'outcome.4.no_referral':`לנושא הזה אין כרגע הפניה מוכנה. רופא המשפחה או רופא הילדים יוכלו לכוון למקום המתאים.`,
+ 'outcome.4.misunderstood':`נראה שמשהו לא הובן נכון בשיחה? אפשר לפנות להדס ישירות: {{hadas_phone}}.`,
+ 'redflag.title.emergency':`חשוב לפנות עכשיו לעזרה רפואית`,
+ 'redflag.title.urgent':`קודם כול, בדיקה רפואית`,
+ 'redflag.title.hotline':`אפשר לדבר עם מישהו עכשיו`,
+ 'redflag.footer':`הודעה קבועה שמוצגת אוטומטית לפי מה שנכתב בשיחה. היא אינה אבחון.`,
+ 'redflag.type.sudden_onset':[`יש להתקשר עכשיו למד"א 101, או לפנות היום לחדר מיון. שינוי חדש כזה צריך בדיקה רפואית מהירה, גם אם עברו כמה ימים.`,`אם כבר היה בירור רפואי מאז שזה התחיל, ומשהו השתנה או החמיר — גם אז לפנות לבדיקה היום.`,`אם אין לך אפשרות להיות שם עכשיו, אפשר להתקשר ל-101 ולמסור את הכתובת.`,`העוזר הדיגיטלי לא יכול להעריך את המצב, ולכן השיחה כאן נעצרת.`],
+ 'redflag.cta.call':`חיוג ל-101`,
+ 'redflag.cta.call.a11y':`חיוג למד"א 101`,
+ 'redflag.secondary.emergency':`אפשר גם להגיע ישירות לחדר המיון הקרוב.`,
+ 'redflag.after.emergency':`אחרי בדיקה רפואית אפשר לפנות להדס: {{hadas_phone}}.`,
+ 'redflag.after':`אחרי הבדיקה הרפואית אפשר לחזור להדס, עם מה שנאמר בה. אפשר גם להשאיר פרטים כבר עכשיו, אבל לא לחכות לתשובה ממנה לפני הבדיקה.`,
+ 'redflag.cta.form':`השארת פרטים להדס`,
+ 'redflag.type.swallowing':[`כדאי לקבוע בימים הקרובים בדיקה אצל רופא המשפחה או אצל רופא אף-אוזן-גרון. קשיים בבליעה ובאכילה צריכים קודם בירור רפואי.`,`אם יש חנק או קושי לנשום: מד"א 101, מיד.`],
+ 'redflag.type.child_regression':[`כדאי לפנות לרופא הילדים בימים הקרובים. כשמילים או יכולות שכבר היו מפסיקות להופיע, חשוב לבדוק את זה קודם אצל רופא.`,`אם זה קרה בתוך שעות, או יחד עם ישנוניות, בלבול, חולשה או פרכוס: מד"א 101, מיד.`],
+ 'redflag.type.distress':[`תודה שכתבת את זה. כשמישהו קרוב אומר דברים כאלה, אפשר להתייעץ עכשיו עם ער"ן בטלפון 1201, בכל שעה — גם עבורך וגם עבור {{subject_ref}}.`,`סה"ר — תמיכה בצ'אט, בכתב: {{sahar_url}}`,`במצב של סכנה מיידית: מד"א 101 או משטרה 100.`,`חשוב לדעת: מה שנכתב כאן לא מגיע לאף אחד בזמן אמת.`],
+ 'redflag.cta.call_1201':`חיוג לער"ן 1201`,
+ 'redflag.type.child_safety':[`תודה שכתבת את זה. כשיש חשש שילד נפגע או מוזנח, אפשר לפנות למוקד 118 של משרד הרווחה ולהתייעץ.`,`אם ילד בסכנה עכשיו: משטרה 100.`,`חשוב לדעת: מה שנכתב כאן לא מגיע לאף אחד בזמן אמת.`],
+ 'nav.back_to_site':`חזרה לאתר`,
+ 'minor.self':`תודה שכתבת. השיחה כאן מיועדת לגיל 18 ומעלה, אבל אפשר לפנות להדס גם עכשיו, יחד עם הורה או עם מבוגר אחר שסומכים עליו: {{hadas_phone}}. במצב חירום: מד"א 101.`,
+ 'minor.self.before_text':[`תודה. השיחה כאן מיועדת לגיל 18 ומעלה, אבל אפשר לפנות להדס גם עכשיו, יחד עם הורה או עם מבוגר אחר שסומכים עליו: {{hadas_phone}}.`,`אם קשה עכשיו, אפשר לדבר עם מישהו שמקשיב:`,`ער"ן — בטלפון 1201, בכל שעה.`,`סה"ר — תמיכה בצ'אט, בכתב: {{sahar_url}}`,`במצב חירום: מד"א 101.`],
+ 'reporter.not_parent':`תודה שכתבת. פנייה על ילד או ילדה נעשית כאן על ידי ההורים או האפוטרופוס, כי הם אלה שמחליטים עליה. אפשר להעביר להם את פרטי הקשר של הדס, כדי שיפנו בעצמם: {{hadas_phone}}. במצב חירום: מד"א 101.`,
+ 'interim.deleted_note':`מה שנכתב כאן נמחק, ולא נשלח להדס.`,
+ 'reporter.copy_contact':`העתקת הפרטים של הדס`,
+ 'reporter.copied':`הפרטים הועתקו`,
+ 'error.generic':`משהו השתבש, וההודעה לא נשלחה. אפשר לנסות שוב.`,
+ 'error.retry.button':`לנסות שוב`,
+ 'error.timeout':`התשובה מתעכבת. אפשר לחכות עוד רגע, או לנסות שוב.`,
+ 'error.network':`נראה שהחיבור לאינטרנט נקטע. כשהחיבור יחזור, אפשר לנסות שוב.`,
+ 'error.rate_limit':`נשלחו הרבה הודעות בזמן קצר. אפשר להמשיך בעוד דקה. במצב חירום: מד"א 101.`,
+ 'error.session_expired':`השיחה נסגרה ונמחקה אחרי זמן ללא פעילות, ואי אפשר להמשיך אותה. אפשר להתחיל שיחה חדשה.`,
+ 'error.delete_failed':`המחיקה לא הצליחה כרגע. אפשר לנסות שוב. גם בלי זה, השיחה תימחק מעצמה תוך כ-24 שעות מההודעה האחרונה.`,
+ 'error.form_send':`הפרטים לא נשלחו בגלל תקלה. אפשר לנסות שוב, או להתקשר להדס: {{hadas_phone}}.`,
+ 'error.form_send_repeat':`גם הפעם הפרטים לא נשלחו. אפשר לפנות להדס ישירות, בוואטסאפ או בטלפון {{hadas_phone}}. במצב חירום: מד"א 101.`,
+ 'system.unavailable':`העוזר הדיגיטלי לא זמין כרגע. אפשר לפנות להדס ישירות: בטלפון {{hadas_phone}}, בוואטסאפ, או בטופס יצירת הקשר באתר. במצב חירום: מד"א 101.`,
+ 'system.model_free':`כרגע העוזר הדיגיטלי לא יכול לעבד הודעות כתובות, ואפשר להמשיך רק בבחירה מהאפשרויות שמוצגות. במצב חירום: מד"א 101.`,
+ 'fallback.title':`העוזר הדיגיטלי לא זמין כרגע`,
+ 'fallback.saved':`מה שסופר עד עכשיו שמור. {{expiry_clause}}`,
+ 'fallback.whatsapp':`וואטסאפ להדס`, 'fallback.phone':`שיחת טלפון`, 'fallback.contact':`טופס יצירת קשר`,
+ 'resume.prompt':`יש שיחה שהתחילה {{relative_time}} ולא הסתיימה. אפשר להמשיך מאותה נקודה, להתחיל מחדש או למחוק אותה.`,
+ 'resume.continue':`המשך`, 'resume.restart':`התחלה מחדש`, 'resume.delete':`מחיקת השיחה`,
+ 'resume.restart_confirm.title':`התחלה מחדש`,
+ 'resume.restart_confirm':`להתחיל מחדש? השיחה הקודמת תימחק עכשיו, גם מהשרת.`,
+ 'resume.restart_confirm.yes':`התחלה מחדש`, 'resume.restart_confirm.no':`ביטול`,
+ 'resume.submitted.title':`כבר נשלחה פנייה להדס`,
+ 'resume.submitted.body':`מהמכשיר הזה נשלחה פנייה להדס ב-{{submitted_date}}. אם עוד לא חזרו אליך, אפשר להתקשר: {{hadas_phone}}. אפשר גם להתחיל פנייה חדשה.`,
+ 'resume.submitted.new':`פנייה חדשה`,
+ 'resume.marker_remove':`הסרת הסימון`,
+ 'faq.topic.prompt':`על מה השאלה?`,
+ 'faq.topic.price':`מחיר`, 'faq.topic.location':`מיקום`, 'faq.topic.kupot':`קופות והחזרים`, 'faq.topic.online':`טיפול אונליין`, 'faq.topic.hours':`ימים ושעות`, 'faq.topic.other':`שאלה אחרת`,
+ 'faq.topic.other_prompt':`אפשר לכתוב את השאלה כאן.`,
+ 'faq.answer_frame':`{{fact}}`,
+ 'faq.source_note':`מידע מהדס`,
+ 'faq.return':`ואם אפשר, בחזרה לשאלה הקודמת:`,
+ 'faq.missing':`את המידע הזה אין לי, אבל הדס תוכל לענות. רשמתי את השאלה, והיא תופיע בסיכום שיגיע להדס אם יושארו פרטים.`,
+ 'form.title':`השארת פרטים להדס`,
+ 'form.intro':`הדס תקרא את הסיכום ותחזור בטלפון.`,
+ 'form.partial_note':`הפנייה תישלח עם מה שסופר עד עכשיו. חלק מהפרטים עוד לא נאספו, והדס תשאל עליהם בשיחה.`,
+ 'form.preview.title':`מה יישלח להדס`,
+ 'form.preview.fix':`משהו לא מדויק? חזרה לשיחה`,
+ 'form.preview.row.who':`מי פונה`, 'form.preview.row.about':`על מי השיחה`, 'form.preview.row.age':`גיל`, 'form.preview.row.topic':`הנושא`, 'form.preview.row.facts':`עיקרי הדברים, במילים שלך`,
+ 'form.name.label':`השם שלך (אפשר שם פרטי בלבד)`,
+ 'form.phone.label':`טלפון`,
+ 'form.phone.hint':`כדי שהדס תחזור אליך`,
+ 'form.best_time.label':`מתי נוח שהדס תתקשר? (לא חובה)`,
+ 'form.best_time.morning':`בוקר`, 'form.best_time.noon':`צהריים`, 'form.best_time.evening':`ערב`,
+ 'form.channel_pref.label':`איך נוח שהדס תחזור? (לא חובה)`,
+ 'form.channel_pref.call':`שיחת טלפון`, 'form.channel_pref.whatsapp':`וואטסאפ`,
+ 'form.consent.checkbox':`הסכמה לשליחת סיכום השיחה ופרטי הקשר להדס תודה, כדי שתחזור לגבי הפנייה. אחרי השליחה תוכן השיחה נמחק, והפנייה נשמרת אצל הדס.`,
+ 'form.privacy_note':`הפרטים ישמשו כדי שהדס תחזור לגבי הפנייה, וכדי לבדוק ולשפר את הדיוק של העוזר הדיגיטלי. במערכת הם נשמרים רק עד שהפנייה מגיעה להדס, ולכל היותר 7 ימים. [מדיניות הפרטיות]({{privacy_url}})`,
+ 'form.submit':`שליחה להדס`,
+ 'form.sending':`בשליחה…`,
+ 'form.validation.name_missing':`נא לכתוב שם`,
+ 'form.validation.phone_missing':`נא לכתוב מספר טלפון`,
+ 'form.validation.phone_format':`מספר הטלפון לא נקלט. אפשר לבדוק שיש בו 9 או 10 ספרות.`,
+ 'form.validation.consent_missing':`כדי לשלוח, יש לסמן את תיבת ההסכמה.`,
+ 'form.errors_summary':`שדות לתיקון: {{error_count}}`,
+ 'form.confirmation.title':`הפרטים נשלחו להדס`,
+ 'form.confirmation.redflag_reminder':`לפני הכול: הבדיקה הרפואית שהוזכרה עדיין חשובה. לא לחכות לשיחה עם הדס כדי לקבוע אותה.`,
+ 'form.confirmation.what_now':`הדס תקרא את הסיכום ותחזור אליך בעצמה. מכאן ממשיכים עם הדס, לא עם העוזר הדיגיטלי.`,
+ 'form.confirmation.when':`הדס חוזרת בדרך כלל {{response_time}}.`,
+ 'form.confirmation.from_number':`השיחה תגיע מהמספר {{callback_number}}. כדאי לשמור אותו, כדי לזהות את השיחה.`,
+ 'form.confirmation.who':`הדס תחזור אליך, למספר שנמסר כאן, ולא ישירות אל {{subject_ref}}.`,
+ 'form.confirmation.disclaimer':`הסיכום שנשלח נוצר אוטומטית, ואינו הערכה מקצועית. אם בינתיים מופיע קושי פתאומי בדיבור, בהבנה או בבליעה — לא לחכות: מד"א 101.`,
+ 'form.confirmation.fallback':`אם לא חזרו אליך עד {{followup_time}}, ייתכן שהפנייה לא הגיעה. אפשר לכתוב להדס בוואטסאפ: {{hadas_whatsapp_link}}, או להתקשר: {{hadas_phone}}.`,
+ 'form.confirmation.add_later':`נזכרת במשהו? אפשר לכתוב להדס ישירות, בוואטסאפ או בטלפון {{hadas_phone}}.`,
+ 'form.confirmation.privacy':`תוכן השיחה נמחק, מהמכשיר ומהשרת. הסיכום ופרטי הקשר נשלחו להדס, ונשמרים אצלה.`,
+ 'form.confirmation.privacy.pending':`תוכן השיחה נמחק, מהמכשיר ומהשרת. הסיכום ופרטי הקשר נשלחים להדס. עד שיגיעו אליה, הם נשמרים במערכת לכל היותר 7 ימים.`,
+ 'form.confirmation.privacy.delete_pending':`תוכן השיחה יימחק מהשרת תוך כשעה. הסיכום ופרטי הקשר נשלחו להדס, ונשמרים אצלה.`,
+ 'hadas_summary.header':`סיכום אוטומטי של דברי הפונה, לא הערכה מקצועית.`,
+ 'hadas_summary.outcome_label':`הכיוון שהוצג לפונה: {{outcome_label}} (נוסח {{outcome_text_version}})`,
+ 'hadas_summary.consent_record':`אישור תנאים: {{consent_time}} · נוסח הסתייגות {{disclaimer_version}}`,
+ 'hadas_summary.redflag_banner':`לתשומת לב: בשיחה עלה דגל אדום ({{redflag_type}}). לפונה הוצגה הודעה {{redflag_text_id}}.`,
+ 'hadas_summary.not_mentioned':`לא עלה בשיחה`,
+ 'hadas_summary.unknown':`סומן כלא ידוע לפונה`,
+ 'hadas_summary.faq_missing_label':`שאלות שהעוזר לא ידע לענות עליהן:`,
+ 'hadas.email.subject':`[שיחת היכרות] פנייה חדשה · תוצאה {{outcome_number}} · {{received_at}}`,
+ 'hadas.email.subject_redflag':`[שיחת היכרות] [דגל אדום] פנייה חדשה · {{received_at}}`,
+ 'hadas.email.btn.call':`חיוג`, 'hadas.email.btn.wa':`וואטסאפ`,
+ 'hadas.email.section.received':`התקבל: {{received_at}} · נקודת כניסה: {{entry_point}}`,
+ 'hadas.email.section.contact':`פרטי קשר`,
+ 'hadas.email.section.who':`מי פונה ועל מי`, 'hadas.email.section.age':`גיל המושא`, 'hadas.email.section.topic':`תחום (כפי שעלה מדברי הפונה)`, 'hadas.email.section.outcome':`תוצאת המערכת`, 'hadas.email.section.reason':`למה`, 'hadas.email.section.tags':`תגיות`,
+ 'hadas.email.section.facts':`עובדות מרכזיות (במילים של הפונה)`, 'hadas.email.section.more':`עוד דברים שסופרו`, 'hadas.email.section.warm_summary':`הסיכום החם כפי שהוצג לפונה (ניסוח אוטומטי)`, 'hadas.email.section.unknown':`לא ידוע או לא נאמר`, 'hadas.email.section.conflicts':`לבדיקה`, 'hadas.email.section.faq':`שאלות בדרך`,
+ 'hadas.email.feedback.question':`סימון מהיר (לא חובה):`,
+ 'hadas.email.feedback.relevant_accurate':`רלוונטית · הסיכום מדויק`,
+ 'hadas.email.feedback.relevant_inaccurate':`רלוונטית · הסיכום לא מדויק`,
+ 'hadas.email.feedback.not_relevant':`לא רלוונטית`,
+ 'hadas.email.judgment.question':`אחרי השיחה הראשונה — מה ההערכה שלך?`,
+ 'hadas.email.judgment.o1':`מתאים לטיפול או הערכה אצלי`, 'hadas.email.judgment.o2':`התייעצות הייתה במקום`, 'hadas.email.judgment.o3':`לא נדרש כרגע`, 'hadas.email.judgment.o4':`לא בתחומי, הפניתי`, 'hadas.email.judgment.o5':`נדרשה הפניה דחופה`, 'hadas.email.judgment.none':`לא התקיימה שיחה`,
+ 'hadas.monthly.subject':`שיחת היכרות · סיכום חודשי · {{month_label}}`,
+ 'hadas.monthly.counts':`שיחות: {{conversations_count}} · פניות: {{leads_count}} · הפניות למקום אחר: {{referrals_count}} · דגלים אדומים: {{redflags_count}} · מסלולי ביניים: {{interim_count}}`,
+ 'hadas.monthly.list_intro':`פניות החודש שעוד לא סומנו. כל שורה פותחת עמוד קצר לסימון ההערכה אחרי השיחה הראשונה:`,
+ 'hadas.monthly.row':`{{lead_ref}} · {{received_at}} · {{outcome_label}}`,
+ 'hadas.monthly.empty':`אין החודש פניות שממתינות לסימון.`,
+ 'hadas.page.confirm':`אישור`, 'hadas.page.done':`נרשם`, 'hadas.page.change':`שינוי`, 'hadas.page.expired':`הקישור הזה כבר לא בתוקף. אפשר לסמן מהמייל העדכני.`
+};
+/* All ids above are current (texts.he.json v0.4.0). Genuinely open items (no canonical
+   text yet, or explicitly inactive pending legal/clinical sign-off) stay out of T and are
+   called out in the per-screen notes instead of invented here. */
+const W = {};
+
+/* =====================================================================
+   STATE
+   ===================================================================== */
+const OPT = {dev:'m', working:false, ids:false, hc:false, noanim:false, size:0, a11yOpen:false, links:false, font:false};
+let CUR = {s:0, st:0};
+const FOCUS_MARK = '__focus__';
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function vchip(v){return `<span class="var" title="משתנה">{{${v}}}</span>`;}
+function fill(s, ctx={}){
+  s = esc(s);
+  s = s.replace(/\[([^\]]+)\]\(\{\{privacy_url\}\}\)/g,'<a href="#" data-noop>$1</a>');
+  s = s.replace(/\{\{hadas_phone\}\}/g,`<a href="#" data-noop dir="ltr">${PHONE}</a>`);
+  s = s.replace(/\{\{(\w+)\}\}/g,(m,v)=> ctx[v]!=null ? ctx[v] : vchip(v));
+  s = s.replace(/מד&quot;א 101/g,'<a href="#" data-noop class="tel101">מד&quot;א 101</a>');
+  return s;
+}
+function isMissing(id){return T[id]===undefined;}
+function t(id, ctx={}){
+  if (!isMissing(id)){
+    const v = T[id];
+    const out = Array.isArray(v) ? v.map(x=>fill(x,ctx)).join('<br>') : fill(v,ctx);
+    return `<span class="tx" data-tid="${id}">${out}</span>`;
+  }
+  const w = W[id];
+  if (OPT.working && w){
+    let s = fill(w[0],ctx);
+    return `<span class="tx miss work" data-tid="${id}" title="נוסח עבודה (${w[1]}) — חסר בקובץ הנוסחים">${s}</span>`;
+  }
+  return `<span class="tx miss" data-tid="${id}">[טקסט חסר: ${id}]</span>`;
+}
+function tl(id, ctx={}){ // array lines, each wrapped
+  const v = T[id];
+  if (!Array.isArray(v)) return [t(id,ctx)];
+  return v.map((x,i)=>`<span class="tx" data-tid="${id}${v.length>1?'#'+(i+1):''}">${fill(x,ctx)}</span>`);
+}
+function tv(id, ctx={}){ // plain text for aria-label / placeholder
+  if (!isMissing(id)) { const v=T[id]; return (Array.isArray(v)?v.join(' '):v).replace(/\{\{hadas_phone\}\}/g,PHONE); }
+  if (OPT.working && W[id]) return W[id][0];
+  return `[טקסט חסר: ${id}]`;
+}
+function model(text, src='VOICE 3.9'){ return `<span class="tx" data-tid="דוגמת מודל · ${src}">${esc(text)}</span>`; }
+
+/* =====================================================================
+   ICONS (inline SVG, stroke = currentColor)
+   ===================================================================== */
+const P = {
+ close:'<path d="M6 6l12 12M18 6L6 18"/>',
+ dots:'<circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none"/>',
+ a11y:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>',
+ send:'<path d="M20 12H6"/><path d="M11.5 6.5L6 12l5.5 5.5"/>',
+ info:'<circle cx="12" cy="12" r="9.5"/><path d="M12 11v5.5"/><path d="M12 7.7v.01" stroke-width="2.6"/>',
+ alert:'<circle cx="12" cy="12" r="9.5"/><path d="M12 7.5v5.5"/><path d="M12 16.4v.01" stroke-width="2.6"/>',
+ phone:'<path d="M5.2 3.5h3l1.8 4.6-2.3 1.4a11.5 11.5 0 0 0 6.8 6.8l1.4-2.3 4.6 1.8v3a2 2 0 0 1-2.1 2A16.5 16.5 0 0 1 3.2 5.6a2 2 0 0 1 2-2.1z"/>',
+ wa:'<path d="M4.3 19.7l1.2-3.6A8.2 8.2 0 1 1 8.6 19z"/><path d="M9.2 8.6c-.4 2.9 3 6.6 6 6.3l.9-1.4-1.8-1-1 .8a4 4 0 0 1-2.1-2.1l.8-1-1-1.8z" fill="currentColor" stroke="none"/>',
+ route:'<circle cx="18" cy="5.5" r="2.4"/><circle cx="6" cy="18.5" r="2.4"/><path d="M15.6 5.5H9.5a3.2 3.2 0 0 0 0 6.4h5a3.2 3.2 0 0 1 0 6.4H8.4"/>',
+ talk:'<path d="M3.5 5h10a2 2 0 0 1 2 2v5.5a2 2 0 0 1-2 2H8.5L5 17.5v-3H3.5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><path d="M18 9h2.5a2 2 0 0 1 2 2v5.5a2 2 0 0 1-2 2H19v3l-3.5-3h-4a2 2 0 0 1-2-2"/>',
+ notes:'<rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4.5"/>',
+ sign:'<path d="M12 3v18"/><path d="M12 5h6.5l2.2 2.6L18.5 10H12"/><path d="M12 12.5H5.5l-2.2 2.6 2.2 2.4H12"/>',
+ mail:'<rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="M4 7l8 6 8-6"/>',
+ pause:'<path d="M9.5 8v8M14.5 8v8"/>',
+ cloudoff:'<path d="M3 3l18 18"/><path d="M8.3 8.5A5 5 0 0 0 6.5 18h10.2"/><path d="M10.8 6.3A6 6 0 0 1 18.3 11a4 4 0 0 1 2.4 6.2"/>',
+ ext:'<path d="M14 4h6v6"/><path d="M20 4l-8.5 8.5"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
+ chev:'<path d="M6 9l6 6 6-6"/>',
+ chevl:'<path d="M15 6l-6 6 6 6"/>',
+ wifioff:'<path d="M3 3l18 18"/><path d="M8.7 16.3a4.6 4.6 0 0 1 6.6 0"/><path d="M5.2 12.9a9.7 9.7 0 0 1 4.6-2.6"/><path d="M14.4 10.3a9.7 9.7 0 0 1 4.4 2.6"/><path d="M12 19.8v.01" stroke-width="2.8"/>',
+ retry:'<path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20 4v5h-5"/>',
+ trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+ help:'<circle cx="12" cy="12" r="9.5"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.5 2.4c-.7.3-1.1.9-1.1 1.7v.4"/><path d="M12 16.9v.01" stroke-width="2.6"/>',
+ check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+ down:'<path d="M12 5v14M6 13l6 6 6-6"/>',
+ menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',
+ clock:'<circle cx="12" cy="12" r="9.5"/><path d="M12 7v5l3.2 2"/>',
+ tab:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18M8 5v4"/>',
+ page:'<path d="M6 3.5h8l4 4V20a.5.5 0 0 1-.5.5h-11A.5.5 0 0 1 6 20z"/><path d="M14 3.5v4h4"/>',
+ txt:'<path d="M4 7V4h16v3M9 20h6M12 4v16"/>',
+ contrast:'<circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20z" fill="currentColor"/>',
+ link:'<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>',
+ play:'<circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>',
+ back:'<path d="M9 6l6 6-6 6"/>',
+ copy:'<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/>'
+};
+function I(n, s=20, sw=1.8){return `<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${P[n]||''}</svg>`;}
+function mark(s=28){return `<span class="mark" style="--s:${s}px" aria-hidden="true"><svg viewBox="0 0 24 24" width="${Math.round(s*.6)}" height="${Math.round(s*.6)}"><rect x="2.6" y="9" width="2.8" height="6" rx="1.4"/><rect x="7.1" y="5.5" width="2.8" height="13" rx="1.4"/><rect x="11.6" y="2.8" width="2.8" height="18.4" rx="1.4"/><rect x="16.1" y="6.8" width="2.8" height="10.4" rx="1.4"/><rect x="20.4" y="10" width="2.4" height="4" rx="1.2"/></svg></span>`;}
+function logo(h=40){return `<span class="logo" style="--h:${h}px" aria-label="הדס תודה, קלינאית תקשורת"><span class="logo-t"><b>הדס תודה</b><small>קלינאית תקשורת M.A.</small></span><svg viewBox="0 0 66 48" height="${h}" width="${Math.round(h*1.37)}" aria-hidden="true"><path d="M21 4C10 6 4 14.5 4 24s6 18 17 20" fill="none" stroke="#a73764" stroke-width="2.6" stroke-linecap="round"/><path d="M22.5 11.5c-6 1.5-9.5 6.2-9.5 12.5s3.5 11 9.5 12.5" fill="none" stroke="#a73764" stroke-width="2.4" stroke-linecap="round"/><path d="M23.5 18.5c-2.6.8-4.2 3-4.2 5.5s1.6 4.7 4.2 5.5" fill="none" stroke="#a73764" stroke-width="2.2" stroke-linecap="round"/><polyline points="26,26 30,26 32.5,15 35.5,40 38.5,9 41.5,35 44.5,19 47.5,30 50.5,22 53.5,28 56.5,25 63,25" fill="none" stroke="#b97ba0" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg></span>`;}
+const BARS = '<span class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>';
+
+/* =====================================================================
+   COMPONENTS
+   ===================================================================== */
+function bot(html,{first=true,anchor=false,cls=''}={}){return `<div class="row bot"${anchor?' id="anchor"':''}><span class="mark-col">${first?mark(28):''}</span><div class="bubble bot ${cls}"><span class="sr">${tv('chat.sr.bot_label')} </span>${html}</div></div>`;}
+function user(text,{unsent=false}={}){return `<div class="row user"><div class="bubble user${unsent?' unsent':''}"><span class="sr">${tv('chat.sr.user_label')} </span>${esc(text)}</div></div>` + (unsent?`<div class="unsent-row">${I('alert',16)} ${t('chat.not_sent')} <button class="btn-sm" data-go="S3/waiting">${I('retry',16)} ${t('error.retry.button')}</button></div>`:'');}
+function typing({slow=false}={}){return `<div class="row bot"><span class="mark-col">${mark(28)}</span><div class="bubble bot typing" role="status">${BARS}<span class="typing-t">${t('chat.typing')}</span></div></div>${slow?`<span class="slow-t" role="status">${t('chat.slow')}</span>`:''}`;}
+function sys(html, acts=''){return `<div class="sys" role="status">${I('info',20)}<div>${html}${acts?`<div class="sys-acts">${acts}</div>`:''}</div></div>`;}
+function chips(list,{grid=false,label=true}={}){return `<div class="chips${grid?' grid2':''}" role="group" aria-label="${esc(tv('a11y.quick_replies'))}">${list.join('')}</div>`;}
+function chip(html,{alt=false,wide=false,solid=false,go='',demo='',icon=''}={}){return `<button type="button" class="chip${alt?' alt':''}${wide?' wide':''}${solid?' solid':''}"${go?` data-go="${go}"`:''}${demo?` data-demo="${demo}"`:''}>${icon?I(icon,18):''}${html}</button>`;}
+function composer({value='',state='idle'}={}){
+  const wait = state==='wait', over = state==='toolong', block = state==='block';
+  // Over 800 chars: a soft, non-blocking hint only. Sending is never blocked (SEC-06, UX S3) —
+  // the flags-only check and meta.too_long bubble happen after send, not here.
+  const hint = wait ? `<div class="c-hint" role="status">${I('clock',15)} ${t('chat.send.wait')}</div>` : over ? `<div class="c-hint" role="status">${I('info',15)} ${t('chat.input.too_long_hint')}</div>` : '';
+  const counter = over ? `<div class="counter" aria-live="polite">812 / 800</div>` : '';
+  // Over 32KB (checked in the browser, before sending): nothing was sent, so no flags check ran on it. The message sits
+  // beside the field, not in the transcript; it replaces the soft hint and counter; the text stays; Send stays enabled.
+  const blockMsg = block ? `<div class="c-block" id="cmp-block" role="status">${I('alert',20)}<p>${t('chat.input.too_long_block')}</p></div>` : '';
+  const dis = (wait||(!value && state!=='idle-active' && !block)) ? 'true':'false';
+  return `<div class="composer-wrap">${hint}${blockMsg}<div class="composer"><label class="sr" for="cmp">${tv('chat.input.placeholder')}</label><textarea id="cmp" rows="1"${block?' class="over" aria-invalid="true" aria-describedby="cmp-block"':''} placeholder="${esc(tv('chat.input.placeholder'))}" data-composer>${esc(value)}</textarea><button type="button" class="send" aria-label="${esc(tv('chat.send.label'))}" aria-disabled="${dis}" data-send>${I('send',22,2.2)}</button></div>${counter}</div>`;
+}
+function topbar(){return `<header class="tb"><button type="button" class="ibtn" aria-label="${esc(tv('a11y.exit'))}" data-go="S11/exit">${I('close',22)}</button><div class="tb-title">${mark(32)}<div class="tb-names"><span class="tb-name">${t('chat.header.title')}</span><span class="badge">${t('chat.header.subtitle')}</span></div></div><button type="button" class="ibtn a11y-ibtn" aria-label="תפריט נגישות" aria-expanded="${OPT.a11yOpen}" data-act="a11y"><span class="a11y-dot">${I('a11y',20,2)}</span></button><button type="button" class="ibtn" aria-label="${esc(tv('a11y.menu'))}" aria-haspopup="menu" data-go="S12/menu">${I('dots',22)}</button></header>`;}
+function stages(n){return `<ol class="stages" aria-label="שלבי השיחה">${[1,2,3].map(i=>`<li class="${i<n?'done':i===n?'cur':''}"${i===n?' aria-current="step"':''}><span class="sr">${fill(T['a11y.stage'],{stage_number:i,stage_name:tv('chat.stage.'+i)})} </span>${t('chat.stage.'+i)}</li>`).join('')}</ol>`;}
+function disc(){return `<div class="disc">${I('info',16)}<span class="disc-txt"><span class="disc-short">${t('chat.disclaimer_line.short')}</span><span class="disc-full">${t('chat.disclaimer_line')}</span></span><button type="button" class="disc-more" data-go="S12/about">${t('chat.disclaimer_more')}</button></div>`;}
+function shell(o){
+  const center = o.main!=null ? `<div class="main-area" tabindex="-1">${o.main}</div>` : `<div class="log" role="log" aria-live="polite" aria-label="${esc(tv('a11y.log_label'))}" tabindex="0" data-scroll="${o.scroll||'bottom'}">${o.log||''}</div>`;
+  return `<div class="tool">${topbar()}${o.banner||''}${stages(o.stage||1)}${disc()}${center}${o.pill?`<button type="button" class="newpill" aria-label="${esc(tv('a11y.new_message_pill'))}" data-act="tobottom">${I('down',16,2)} ${t('chat.new_message')}</button>`:''}${o.quick||''}${o.composer===false?'':composer(o.composer||{})}${o.overlay||''}</div>`;
+}
+function btnP(html,go='',extra=''){return `<button type="button" class="btn-p"${go?` data-go="${go}"`:''} ${extra}>${html}</button>`;}
+function btnS(html,go='',extra=''){return `<button type="button" class="btn-s"${go?` data-go="${go}"`:''} ${extra}>${html}</button>`;}
+function lnk(html,go='',cls=''){return `<button type="button" class="lnk ${cls}"${go?` data-go="${go}"`:''}>${html}</button>`;}
+
+/* ---- sample conversation (VOICE_AND_TONE §3.9 — role 3's own example; model lines are samples) ---- */
+const SU = {u1:`הבן שלי יוסי, בן 4. הוא נתקע במילים כבר כמה חודשים, והגננת אמרה שאולי כדאי לבדוק שמיעה`, u2:`למה זה חשוב?`, u3:`בעיקר כשהוא נלהב לספר משהו. זה גמגום?`, u4:`לא יודעת`, u5:`לא, עוד לא`};
+const SB = {b2:`תודה, רשמתי גם את מה שהגננת אמרה על השמיעה. באילו מצבים זה בולט יותר אצל יוסי — בבית, בגן, או כשהוא מתרגש?`, b3:`זה עוזר להדס להבין את התמונה עוד לפני שהיא מדברת אתכם. אם קשה לומר, אפשר להמשיך גם כך.`, sum:`תודה ששיתפת. סיפרת שיוסי בן 4, ושמאז החורף הוא נתקע לפעמים בתחילת מילים, בעיקר כשהוא מתרגש.`};
+const LOG = {};
+LOG.A = bot(t('goal.core_relation.ask')) + user(SU.u1) + bot(model(SB.b2));
+LOG.B = LOG.A + user(SU.u2) + bot(model(SB.b3));
+LOG.C = LOG.B + user(SU.u3) + bot(t('meta.diagnosis_request'));
+LOG.D = LOG.C + user(SU.u4) + bot(t('q.dont_know.ack')+' '+t('q.prev_treatment'));
+function rebuildLogs(){
+  LOG.A = bot(t('goal.core_relation.ask')) + user(SU.u1) + bot(model(SB.b2));
+  LOG.B = LOG.A + user(SU.u2) + bot(model(SB.b3));
+  LOG.C = LOG.B + user(SU.u3) + bot(t('meta.diagnosis_request'));
+  LOG.D = LOG.C + user(SU.u4) + bot(t('q.dont_know.ack')+' '+t('q.prev_treatment'));
+}
+function relChips(){return chips([chip(t('q.relation.opt.self'),{demo:'self'}),chip(t('q.relation.opt.son'),{demo:'son'}),chip(t('q.relation.opt.daughter'),{demo:'daughter'}),chip(t('q.relation.opt.other'),{demo:'other'}),chip(t('chat.quick.have_question'),{alt:true,wide:true,icon:'help',go:'S4/topics'})],{grid:true});}
+
+/* ---- FAQ ---- */
+function faqCard(topicId, factKey){
+  const fact = `<span class="tx miss" data-tid="facts.${factKey}">[טקסט חסר: עובדה מדף העובדות של הדס · ${factKey}]</span>`;
+  return `<article class="faq" aria-label="${esc(tv(topicId))} ${esc(tv('faq.source_note'))}"><div class="faq-head"><span class="faq-ic">${I('info',20)}</span><div><div class="faq-topic">${t(topicId)}</div><div class="faq-src">${t('faq.source_note')}</div></div></div><div class="faq-body">${t('faq.answer_frame',{fact})}</div></article>`;
+}
+
+/* ---- outcome ---- */
+function ctaForm(){return btnP(t('outcome.cta.form'),'S7/default');}
+function ctaPhone(){return `<p class="oc-phone">${t('outcome.cta.phone')}</p>`;}
+function whenList(){
+  const always = tl('outcome.3.when_to_contact.always');
+  return `<div class="when"><h3>${t('outcome.3.when_to_contact.title')}</h3><p>${t('outcome.3.when_to_contact.intro')}</p><ul><li><span class="oc-small">(פריטים לפי תחום, מטבלת ההחלטה של הדס — when_to_contact.wtc_*)</span></li>${always.map(a=>`<li><span>${a}</span></li>`).join('')}</ul></div>`;
+}
+function refList(){
+  // outcome.4.body already introduces the list ("אלה מקומות שאפשר לפנות אליהם:") — no separate heading (UX §7.0: outcome.4.referrals.title מיותר).
+  const one = (n)=>`<li class="ref"><strong>${vchip('referral_name')} <span class="oc-small">#${n}</span></strong><span>${vchip('referral_description')}</span><a href="#" data-noop>${vchip('referral_contact')} ${I('ext',16)}<span class="sr"> ${tv('outcome.4.external_hint')}</span></a></li>`;
+  return `<div class="refs"><ul>${one(1)}${one(2)}</ul><p class="oc-small" style="margin-top:6px">${t('outcome.4.referral_item')} <span>(תבנית הפריט — רשימת ההפניות של הדס)</span></p></div>`;
+}
+function oc(n,{stale=false,noref=false}={}){
+  const icon={1:'route',2:'talk',3:'notes',4:'sign'}[n];
+  let body='', extra='', acts='';
+  if (n===1||n===2){ body=`<p>${t(`outcome.${n}.body`)}</p>`; acts=ctaForm()+ctaPhone(); }
+  if (n===3){ const b=tl('outcome.3.body'); body=`<p>${b[0]}</p>`; extra=`<div class="oc-important">${I('info',18)}<p>${b[1]}</p></div>`+whenList(); acts=`<p class="oc-door">${t('outcome.3.door_open')}</p>`+ctaForm()+ctaPhone(); }
+  if (n===4){ body=`<p>${t('outcome.4.body')}</p>`; extra = noref?`<p class="oc-noref">${t('outcome.4.no_referral')}</p>`:refList(); acts=`${noref?'':`<p class="oc-small">${t('outcome.4.referral_disclaimer')}</p>`}<p class="oc-small">${t('outcome.4.misunderstood')}</p>`; }
+  const disc = n===3 ? `<div class="oc-foot oc-foot-full">${I('info',16)}<p>${t('outcome.3.disclaimer')}</p></div>` : `<div class="oc-foot">${I('info',16)}<p>${t('outcome.disclaimer')}</p></div>`;
+  return `<section class="oc o${n}${stale?' stale':''}" aria-labelledby="oc-t" tabindex="-1" data-focus>${stale?`<span class="stale-tag">${t('outcome.stale_label')}</span>`:''}<div class="oc-head"><span class="oc-icon">${I(icon,24)}</span><div><div class="oc-eyebrow">${t('outcome.card.label')}</div><h2 class="oc-title" id="oc-t">${t(`outcome.${n}.title`)}</h2></div></div><div class="oc-body">${body}</div>${extra}<div class="oc-actions">${stale?'':acts}</div>${disc}</section>`;
+}
+function summaryBubble(){return bot(`<div class="sum-label">${t('outcome.summary.label')}</div><p>${model(SB.sum,'VOICE 3.8')}</p>`,{cls:'summary'});}
+function outcomeLog(n,o={}){
+  const sum = o.fallback ? bot(t('outcome.summary.fallback')) : summaryBubble();
+  // "סיום ומחיקה" always opens the delete dialog first (S11); the dialog's own confirm is the DELETE (D-01).
+  return LOG.D + user(SU.u5) + bot(t('transition.to_outcome'),{anchor:true}) + sum + oc(n,o) + (o.stale?'':`<div class="oc-after">${lnk(t('outcome.add_more'),'S5/reopened')}${lnk(t('outcome.finish'),'S11/delete')}</div>`);
+}
+
+/* ---- red flag ---- */
+function rfTop(){return `<div class="rf-top">${mark(28)}<span class="grow">${t('chat.header.title')}</span><button type="button" class="ibtn a11y-ibtn" aria-label="תפריט נגישות" data-act="a11y"><span class="a11y-dot">${I('a11y',20,2)}</span></button></div>`;}
+function rf(variant){
+  // Tiers: emergency / urgent / hotline (D-04). A secondary form only ever appears for urgent ALONE: any other flag in the
+  // same conversation cancels it (UX_SPEC S6, draft 4). No ER button anywhere: in an emergency, one 101 button plus one text line.
+  const tier = (variant==='emergency'||variant==='combined3') ? 'emergency' : (variant==='urgent'||variant==='combined') ? 'urgent' : 'hotline';
+  let action='', btns='', secline='', after='', secs='';
+  const call101 = `<a href="#" data-noop class="btn-dark" aria-label="${esc(tv('redflag.cta.call.a11y'))}" data-track-ignore="true">${I('phone',26,2)}${t('redflag.cta.call')}</a>`;
+  const call1201o = `<a href="#" data-noop class="btn-dark-o" data-track-ignore="true">${I('phone',22,2)}${t('redflag.cta.call_1201')}</a>`;
+  const childPend = `<p class="oc-small" style="margin-top:8px"><span class="pending-tag">טיוטה — ממתין לאישור עו"ד על חובת דיווח</span></p>`;
+  // A secondary block is complete in itself: its own h2 (the tier title), its own text, its own action.
+  const sec = (n, inner, b='')=>`<section class="rf-sec" aria-labelledby="rf-sec-${n}"><h2 id="rf-sec-${n}">${t('redflag.title.hotline')}</h2><div class="rf-action sec">${inner}</div>${b?`<div class="rf-btns">${b}</div>`:''}</section>`;
+  if (variant==='emergency'){
+    action = `<div class="rf-action" role="alert"><p>${t('redflag.type.sudden_onset')}</p></div>`;
+    btns = call101;
+    secline = `<p class="rf-secline">${t('redflag.secondary.emergency')}</p>`;
+    after = `<hr class="rf-sep"><p class="rf-passive">${t('redflag.after.emergency')}</p>`;
+  } else if (variant==='urgent'){
+    action = `<div class="rf-action" role="alert"><p>${t('redflag.type.swallowing')}</p></div>`;
+    after = `<hr class="rf-sep"><p class="rf-passive">${t('redflag.after')}</p><div style="margin-top:12px">${btnS(t('redflag.cta.form'),'S7/default')}</div><p class="oc-small" style="margin-top:6px"><span class="pending-tag">רק באישור הדס (D-04)</span></p>`;
+  } else if (variant==='hotline-distress'){
+    action = `<div class="rf-action" role="alert"><p>${t('redflag.type.distress',{subject_ref:'יוסי'})}</p></div>`;
+    btns = `<a href="#" data-noop class="btn-dark" data-track-ignore="true">${I('phone',26,2)}${t('redflag.cta.call_1201')}</a><a href="#" data-noop class="btn-dark-o" aria-label="${esc(tv('redflag.cta.call.a11y'))}" data-track-ignore="true">${I('phone',22,2)}${t('redflag.cta.call')}</a>`;
+  } else if (variant==='hotline-child'){ // no dedicated CTA id yet (texts.he.json has no redflag.cta.* for 118/100) — message only, no form (D-04), pending legal sign-off on the message itself.
+    action = `<div class="rf-action" role="alert"><p>${t('redflag.type.child_safety')}</p>${childPend}</div>`;
+  } else if (variant==='combined'){ // developmental regression (urgent) + child safety (hotline): the UX_SPEC S6 example. No form, no redflag.after.
+    action = `<div class="rf-action" role="alert"><p>${t('redflag.type.child_regression')}</p></div>`;
+    secs = sec(1, `<p>${t('redflag.type.child_safety')}</p>${childPend}`);
+  } else { // combined3: emergency + distress + child safety = the 3-block maximum
+    action = `<div class="rf-action" role="alert"><p>${t('redflag.type.sudden_onset')}</p></div>`;
+    btns = call101;
+    secline = `<p class="rf-secline">${t('redflag.secondary.emergency')}</p>`;
+    after = `<p class="rf-passive rf-main-end">${t('redflag.after.emergency')}</p>`;
+    secs = sec(1, `<p>${t('redflag.type.distress',{subject_ref:'יוסי'})}</p>`, call1201o) + sec(2, `<p>${t('redflag.type.child_safety')}</p>${childPend}`);
+  }
+  const footer = `<p class="rf-footer">${t('redflag.footer')}</p>`;
+  return `<div class="rf">${rfTop()}<div class="rf-body"><span class="rf-icon">${I('pause',26,2.4)}</span><h1 tabindex="-1" data-focus>${t('redflag.title.'+tier)}</h1>${action}${btns?`<div class="rf-btns">${btns}</div>`:''}${secline}${after}${secs}${footer}<div class="rf-foot">${lnk(I('back',18)+t('nav.back_to_site'),'S0/contact')}</div></div></div>`;
+}
+
+/* ---- handoff form ---- */
+function form(st){
+  const errs = st==='errors', sending = st==='sending', failed = st==='failed'||st==='failed2';
+  const pv = `<details class="preview"${st==='preview'?' open':''}><summary>${I('mail',20)}<span class="grow">${t('form.preview.title')}</span><span class="chev">${I('chev',20)}</span></summary><div class="pv"><dl><dt>${t('form.preview.row.who')}</dt><dd>הורה</dd><dt>${t('form.preview.row.about')}</dt><dd>הבן, יוסי</dd><dt>${t('form.preview.row.age')}</dt><dd>4</dd><dt>${t('form.preview.row.topic')}</dt><dd>"נתקע במילים"</dd><dt>${t('form.preview.row.facts')}</dt><dd>"כבר כמה חודשים" · "בעיקר כשהוא נלהב לספר משהו" · "הגננת אמרה שאולי כדאי לבדוק שמיעה"</dd></dl><span class="oc-small">דוגמת חילוץ — הערכים מגיעים מהתיק</span><div>${lnk(t('form.preview.fix'),'S3/typing')}</div></div></details>`;
+  const fName = `<div class="field${errs?' err':''}"><label for="f-name">${t('form.name.label')}</label><input id="f-name" autocomplete="given-name" ${errs?'aria-invalid="true" aria-describedby="e-name"':''} value="${errs?'':'מיכל'}">${errs?`<span class="err-msg" id="e-name">${I('alert',16)} ${t('form.validation.name_missing')}</span>`:''}</div>`;
+  const fPhone = `<div class="field${errs?' err':''}"><label for="f-phone">${t('form.phone.label')}</label><input id="f-phone" type="tel" dir="ltr" inputmode="tel" autocomplete="tel" ${errs?'aria-invalid="true" aria-describedby="e-phone"':'aria-describedby="h-phone"'} value="${errs?'050-12':'050-1234567'}"><span class="fhint" id="h-phone">${t('form.phone.hint')}</span>${errs?`<span class="err-msg" id="e-phone">${I('alert',16)} ${t('form.validation.phone_format')}</span>`:''}</div>`;
+  const seg = (ids,sel)=>`<div class="segopts" role="radiogroup">${ids.map((id,i)=>`<button type="button" class="segopt" role="radio" aria-checked="${i===sel}"><span class="dot"></span>${t(id)}</button>`).join('')}</div>`;
+  const fTime = `<fieldset class="optgrp"><legend class="flabel">${t('form.best_time.label')} <span class="pending-tag">ממתין לאישור אליה והדס</span></legend>${seg(['form.best_time.morning','form.best_time.noon','form.best_time.evening'],2)}</fieldset>`;
+  const fChan = `<fieldset class="optgrp"><legend class="flabel">${t('form.channel_pref.label')} <span class="pending-tag">ממתין לאישור</span></legend>${seg(['form.channel_pref.call','form.channel_pref.whatsapp'],-1)}</fieldset>`;
+  const fCons = `<div><label class="cbx${errs?' err':''}"><input type="checkbox" ${errs?'aria-invalid="true" aria-describedby="e-cons"':'checked'}><span class="box">${I('check',16,3)}</span><span>${t('form.consent.checkbox')}</span></label>${errs?`<span class="err-msg" id="e-cons" style="margin-top:6px">${I('alert',16)} ${t('form.validation.consent_missing')}</span>`:''}</div>`;
+  const sum = errs ? `<div class="errsum" role="alert" tabindex="-1"><b>${I('alert',18)} ${t('form.errors_summary',{error_count:'3'})}</b><ul><li><a href="#f-name" data-noop>${tv('form.validation.name_missing')}</a></li><li><a href="#f-phone" data-noop>${tv('form.validation.phone_format')}</a></li><li><a href="#" data-noop>${tv('form.validation.consent_missing')}</a></li></ul></div>`:'';
+  const fail = failed ? `<div class="errbox" role="alert">${I('alert',20)}<div><p>${t('error.form_send')}</p><div class="sys-acts"><button class="btn-sm" data-go="S7/sending">${I('retry',16)} ${t('error.retry.button')}</button></div></div></div>`:'';
+  const fail2 = st==='failed2' ? `<p class="lead">${t('error.form_send_repeat')}</p><div class="alt-ways"><a href="#" data-noop class="way"><span class="wic wa">${I('wa',22)}</span><span class="grow">${t('fallback.whatsapp')}</span>${I('chevl',18)}</a><a href="#" data-noop class="way"><span class="wic">${I('phone',20)}</span><span class="grow">${t('fallback.phone')} · <span dir="ltr">${PHONE}</span></span>${I('chevl',18)}</a></div>`:'';
+  const submit = sending ? `<button type="button" class="btn-p is-loading" aria-disabled="true">${BARS}${t('form.sending')}</button>` : btnP(t('form.submit'), errs?'':'S7/sending');
+  return `<form class="hform" novalidate onsubmit="return false"><h2 tabindex="-1" data-focus>${t('form.title')}</h2><p class="lead">${t('form.intro')}</p>${st==='partial'?`<p class="note">${I('info',18)} <span>${t('form.partial_note')}</span></p>`:''}${sum}${pv}${fName}${fPhone}${fTime}${fChan}${fCons}<p class="privacy">${t('form.privacy_note')}</p>${fail}${fail2}${submit}</form>`;
+}
+
+/* ---- confirm, fallback ---- */
+function confirmScr(v){
+  // D-01 / legal: the conversation content is deleted from the device AND the server — form.confirmation.privacy
+  // says so explicitly. form.confirmation.redflag_reminder only appears after a form sent from the urgent red-flag screen.
+  return `<div class="confirm"><span class="cf-icon">${I('mail',28)}</span><h2 tabindex="-1" data-focus>${t('form.confirmation.title')}</h2>${v==='privacy_pending'?`<p class="cf-small"><span class="pending-tag">הכותרת אומרת "נשלחו" ובמצב הזה עוד לא · כותרת חלופית חסרה</span></p>`:''}${v==='afterflag'?`<div class="cf-rf">${t('form.confirmation.redflag_reminder')}</div>`:''}<p>${t('form.confirmation.what_now')}</p>${v==='other'?`<p class="cf-line">${I('info',18)}<span>${t('form.confirmation.who',{subject_ref:'יוסי'})}</span></p>`:''}<p class="cf-line">${I('phone',18)}<span>${t('form.confirmation.from_number',{callback_number:PHONE})}</span></p><p>${t('form.confirmation.when',{response_time:'עד סוף יום העבודה הבא'})}</p><p class="cf-line">${I('info',18)}<span>${t('form.confirmation.fallback',{followup_time:'מחר בצהריים'})}</span></p><p class="cf-line">${I('alert',18)}<span>${t('form.confirmation.disclaimer')}</span></p><p class="cf-small">${t('form.confirmation.add_later')}</p><p class="cf-small">${t(v==='privacy_pending'?'form.confirmation.privacy.pending':v==='privacy_delete'?'form.confirmation.privacy.delete_pending':'form.confirmation.privacy')}</p><div style="margin-top:6px">${btnS(t('nav.back_to_site'),'S0/contact')}</div></div>`;
+}
+function fallbackScr(v){
+  const body = v==='ratelimit' ? t('error.rate_limit') : t('system.unavailable');
+  return `<div class="fallback"><span class="cf-icon">${I(v==='ratelimit'?'clock':'cloudoff',28)}</span><h2 tabindex="-1" data-focus>${t('fallback.title')}</h2><p>${body}</p>${v==='midchat'?`<p class="cf-line">${I('info',18)}<span>${t('fallback.saved',{expiry_clause:'השיחה תימחק אוטומטית תוך 24 שעות.'})}</span></p>`:''}<div class="alt-ways"><a href="#" data-noop class="way"><span class="wic wa">${I('wa',22)}</span><span class="grow">${t('fallback.whatsapp')}</span>${I('chevl',18)}</a><a href="#" data-noop class="way"><span class="wic">${I('phone',20)}</span><span class="grow">${t('fallback.phone')} · <span dir="ltr">${PHONE}</span></span>${I('chevl',18)}</a><a href="#" data-noop class="way"><span class="wic">${I('page',20)}</span><span class="grow">${t('fallback.contact')}</span>${I('chevl',18)}</a></div>${v==='ratelimit'?`<div>${btnS(t('error.retry.button'),'S3/typing')}</div>`:''}<p class="cf-small">קישור הוואטסאפ נושא רק טקסט כללי (fallback.whatsapp_prefill) — בלי תוכן מהשיחה.</p></div>`;
+}
+
+/* ---- intro page (S1) ---- */
+function intro(st){
+  const steps = tl('page.tool.steps');
+  const dl = tl('consent.disclaimer');
+  const greet = tl('intro.greeting');
+  const missing = st==='missing', loading = st==='loading';
+  // consent.disclaimer and consent.emergency are separate text ids (texts.he.json v0.3.0), but the UI still
+  // merges them into one visually-highlighted box, right after the first bullet, so 101 shows on the first screen.
+  const discItems = [`<li><span>${dl[0]}</span></li>`, `<li class="em">${I('phone',18,2)}<span>${t('consent.emergency')}</span></li>`, ...dl.slice(1).map(x=>`<li><span>${x}</span></li>`)];
+  const discList = `<ul class="dlist">${discItems.join('')}</ul>`;
+  const cbx = `<label class="cbx${missing?' err':''}"><input type="checkbox" id="consent-cb" ${missing?'aria-invalid="true" aria-describedby="e-consent"':''} ${loading?'checked':''}><span class="box">${I('check',16,3)}</span><span>${t('consent.checkbox')}</span></label>${missing?`<span class="err-msg" id="e-consent" style="margin-top:8px">${I('alert',16)} ${t('consent.checkbox.error')}</span>`:''}`;
+  const acts = st==='declined' ? '' : `<div class="c-acts">${loading?`<button type="button" class="btn-p is-loading" aria-disabled="true">${BARS}${t('consent.start_loading')}</button>`:btnP(t('consent.button.accept'),'','data-act="consent"')}${btnS(t('consent.button.decline'),'S1/declined')}</div>`;
+  const declined = `<div class="notice" role="status" tabindex="-1" data-focus>${I('info',20)}<div><p>${t('consent.declined')}</p><div class="direct-ways" style="margin-top:10px"><a href="#" data-noop class="btn-sm">${I('phone',16)} <span dir="ltr">${PHONE}</span></a><a href="#" data-noop class="btn-sm">${I('wa',16)} וואטסאפ</a><a href="#" data-noop class="btn-sm">${I('page',16)} דברו איתי</a></div></div></div>`;
+  return `<div class="intro">
+    ${st==='reconsent'?`<div class="notice">${I('info',20)}<p>${t('consent.reconsent_note')}</p></div>`:''}
+    ${st==='expired'?`<div class="notice" role="status">${I('clock',20)}<p>${t('error.session_expired')}</p></div>`:''}
+    <span class="pill-tag">${mark(18)} ${t('chat.header.subtitle')}</span>
+    <h1 style="margin-top:10px">${t('page.tool.h1')}</h1>
+    <p class="sub">${t('page.tool.sub')}</p>
+    <div class="greet">${mark(44)}<p class="greet-t">${greet.join('<br>')}</p></div>
+    <ol class="steps">${steps.map((s,i)=>`<li><span class="num" aria-hidden="true">${i+1}</span><span>${s}</span></li>`).join('')}</ol>
+    <section class="ccard" aria-labelledby="cc-t"><h2 id="cc-t">${t('consent.title')}</h2>${discList}${st==='declined'?declined:cbx}${acts}</section>
+    <p class="not-this">${I('info',16)}<span>${t('page.tool.not_this')}</span></p>
+    <div class="direct"><p>${t('page.tool.direct')}</p><div class="direct-ways"><a href="#" data-noop class="btn-sm">${I('phone',16)} <span dir="ltr">${PHONE}</span></a><a href="#" data-noop class="btn-sm">${I('wa',16)} וואטסאפ</a></div></div>
+  </div>`;
+}
+function resumeCard(st){
+  if (st==='open') return `<div class="intro"><span class="pill-tag">${mark(18)} ${t('chat.header.subtitle')}</span><h1 style="margin-top:10px">${t('page.tool.h1')}</h1><div class="rcard"><div class="rcard-h"><span class="rci">${I('clock',24)}</span><h2 style="font-size:var(--t19);font-weight:500;color:var(--dark)" tabindex="-1" data-focus>${t('resume.prompt',{relative_time:'מהבוקר'})}</h2></div><div class="c-acts c-acts-equal">${btnS(t('resume.continue'),'S3/quick')}${btnS(t('resume.restart'),'S11/restart')}${btnS(t('resume.delete'),'S11/delete','style="color:var(--it-error-ink);border-color:var(--it-error-ink)"')}</div></div></div>`;
+  if (st==='submitted') return `<div class="intro"><span class="pill-tag">${mark(18)} ${t('chat.header.subtitle')}</span><h1 style="margin-top:10px">${t('page.tool.h1')}</h1><div class="rcard"><div class="rcard-h"><span class="rci">${I('mail',24)}</span><h2 style="font-size:var(--t19);font-weight:500;color:var(--dark)" tabindex="-1" data-focus>${t('resume.submitted.title')}</h2></div><p>${t('resume.submitted.body',{submitted_date:'14.10'})}</p><div class="c-acts">${btnP(t('resume.submitted.new'),'S1/default')}${btnS(t('nav.back_to_site'),'S0/contact')}</div><p style="margin-top:10px">${lnk(t('resume.marker_remove'))}</p></div></div>`;
+  return intro('expired');
+}
+
+/* ---- entry points (S0) ---- */
+function entryContact(unavail=false){
+  const toolCard = unavail
+   ? `<div class="bcard tool" style="border-style:dashed"><span class="bico" style="background:var(--light-hover);color:var(--dark-light)">${I('cloudoff',26)}</span><p class="bmeta">${t('entry.unavailable')}</p><a href="#" data-noop class="btn-s" style="width:auto;align-self:flex-start">דברו איתי</a></div>`
+   : `<div class="bcard tool"><span class="bico">${mark(36)}</span><p style="font-size:var(--t16)">${t('entry.teaser')}</p><a href="#" class="btn-s" data-go="S1/default" style="align-self:stretch">${t('entry.button')} ${I('chevl',18)}</a></div>`;
+  return `<div class="ptitle"><h1>יצירת קשר</h1><p>להתייעצות, שאלות או קביעת פגישה – אשמח לשוחח!</p></div><div class="bento"><div class="bcard form"><h3>שלח/י הודעה</h3><div class="stub"></div><div class="stub"></div><div class="stub" style="height:90px"></div></div><div class="bcard"><span class="bico">${I('phone',24)}</span><h3>טלפון</h3><p class="bmeta" dir="ltr" style="text-align:right">${PHONE}</p></div><div class="bcard"><span class="bico wa">${I('wa',26)}</span><h3>וואטסאפ</h3><p class="bmeta">מענה מהיר בהודעה</p></div>${toolCard}</div>`;
+}
+function entryHome(){return `<div class="hero"><span class="pill-tag">קלינאית תקשורת מוסמכת</span><h1>הדס תודה</h1><p class="hsub">קליניקה לטיפול בתחומי השפה והדיבור</p><p class="hbody">נעים להכיר:) שמי הדס, ואני קלינאית תקשורת המטפלת בילדים ובמבוגרים בתחומי השפה והדיבור באופן פרונטלי או מקוון…</p><a href="#" data-noop class="site-cta">קביעת פגישת ייעוץ</a><a href="#" class="entry-link" data-go="S1/default">${mark(36)}<span class="el-t"><b>${t('entry.button')}</b><small>${t('entry.home.sub')}</small></span></a></div>`;}
+function entryLanding(){return `<div style="--topic-rgb:159,134,192;--topic-dark:#5e5075"><div class="ptitle" style="text-align:center"><h1 style="font-size:var(--t28)">השאירו פרטים לשיחת ייעוץ</h1><p style="font-size:var(--t15)">מלאו את הפרטים הבאים ונחזור אליכם תוך 24 שעות עם מידע מותאם אישית.</p></div><div class="inline-entry">${mark(28)}<p>${t('entry.landing.inline')} · <a href="#" data-go="S1/default">${t('entry.button')}</a></p></div><div class="lform"><h3>עבור מי הטיפול בגמגום?</h3><p style="font-size:var(--t15)">בחירת מסלול מותאם אישית</p><div class="optcard">מבוגרים</div><div class="optcard">ילדים ונוער</div></div></div>`;}
+function entryServices(){return `<div class="ptitle"><h1 style="font-size:var(--t28)">תחומי טיפול</h1><p style="font-size:var(--t15)">… תחנות התחומים …</p></div><div class="strip">${mark(48)}<p>${t('entry.teaser')}</p><a href="#" class="btn-s" data-go="S1/default">${t('entry.button')} ${I('chevl',18)}</a></div>`;}
+
+/* ---- dialogs, menu, sheet ---- */
+function dlg(kind){
+  // Exit: 3 equal-standing actions (chat.end.stay/.leave/.leave_delete). Delete (here and everywhere else
+  // that opens it — "סיום ומחיקה", S2 "מחיקת השיחה", the menu) has exactly 2: chat.delete.yes/.no.
+  if (kind==='exit') return `<div class="dlg-bd"><div class="dlg" role="dialog" aria-modal="true" aria-labelledby="dlg-t"><h2 id="dlg-t">${t('chat.end.title')}</h2><p>${t('chat.end.confirm')}</p><div class="dlg-acts">${btnP(t('chat.end.stay'),'S3/typing','autofocus data-focus')}${btnS(t('chat.end.leave'),'S0/contact')}${lnk(I('trash',18)+t('chat.end.leave_delete'),'S9/default','danger')}</div></div></div>`;
+  if (kind==='restart') return `<div class="dlg-bd"><div class="dlg" role="dialog" aria-modal="true" aria-labelledby="dlg-t"><h2 id="dlg-t">${t('resume.restart_confirm.title')}</h2><p>${t('resume.restart_confirm')}</p><div class="dlg-acts">${btnP(t('resume.restart_confirm.yes'),'S1/default')}${btnS(t('resume.restart_confirm.no'),'S3/typing','data-focus')}</div></div></div>`;
+  return `<div class="dlg-bd"><div class="dlg" role="dialog" aria-modal="true" aria-labelledby="dlg-t"><h2 id="dlg-t">${t('chat.delete.title')}</h2><p>${t('chat.delete.confirm')}</p><div class="dlg-acts"><button type="button" class="btn-dark-o" data-go="S9/default" style="color:var(--it-error-ink);border-color:var(--it-error-ink)">${I('trash',20)} ${t('chat.delete.yes')}</button>${btnS(t('chat.delete.no'),'S3/typing','data-focus')}</div></div></div>`;
+}
+function menuPop(){return `<div class="menu" role="menu" aria-label="${esc(tv('a11y.menu'))}"><button role="menuitem" data-go="S10/unavailable">${I('phone',20)}${t('menu.talk_to_hadas')}</button><button role="menuitem" data-go="S12/about">${I('info',20)}${t('menu.about')}</button><button role="menuitem" data-act="a11y">${I('a11y',20)}${t('menu.accessibility')} <span class="pending-tag">אם הוחלט</span></button><hr><button role="menuitem" data-go="S11/restart">${I('retry',20)}${t('menu.restart')}</button><button role="menuitem" class="danger" data-go="S11/delete">${I('trash',20)}${t('menu.delete')}</button></div>`;}
+function aboutSheet(){
+  const dl=tl('consent.disclaimer');
+  const discItems = [`<li><span>${dl[0]}</span></li>`, `<li class="em">${I('phone',18,2)}<span>${t('consent.emergency')}</span></li>`, ...dl.slice(1).map(x=>`<li><span>${x}</span></li>`)];
+  return `<div class="sheet-bd"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="ab-t"><div class="sheet-grab"></div><div class="sheet-h"><h2 id="ab-t" tabindex="-1" data-focus>${t('about.title')}</h2><button type="button" class="ibtn" aria-label="סגירה" data-go="S3/typing">${I('close',22)}</button></div><p>${t('about.body')}</p><h3>${t('consent.title')}</h3><ul class="dlist">${discItems.join('')}</ul><h3>מה נשמר</h3><p>${t('about.data')}</p><p style="margin-top:12px"><a href="#" data-noop>${t('consent.privacy_link')}</a></p></div></div>`;
+}
+
+/* ---- S9: the conversation is deleted (D-01) ---- */
+function s9Scr(v){
+  const failed = v==='failed';
+  const headline = failed ? t('error.delete_failed') : t('chat.delete.done');
+  const retry = failed ? `<div class="sys-acts" style="margin-top:2px">${btnS(t('error.retry.button'),'S9/default')}</div>` : '';
+  // Outcome 4's referral card stays on screen in page memory only — it is never re-fetched after the delete.
+  const kept = v==='outcome4' ? `<div class="oc o4" style="margin:6px 0 0;border-radius:16px"><div class="oc-head"><span class="oc-icon">${I('sign',24)}</span><div><div class="oc-eyebrow">${t('outcome.card.label')}</div><h2 class="oc-title" style="font-size:var(--t19)">${t('outcome.4.title')}</h2></div></div><div class="oc-body"><p>${t('outcome.4.body')}</p></div>${refList()}</div><p class="cf-small" style="margin-top:8px">${t('closed.keep_note')}</p>` : '';
+  return `<div class="confirm"><span class="cf-icon">${I(failed?'alert':'trash',28)}</span><h2 tabindex="-1" data-focus>${headline}</h2>${retry}${kept}<p>${t('chat.ended')}</p><div style="margin-top:6px">${btnS(t('nav.back_to_site'),'S0/contact')}</div></div>`;
+}
+
+/* ---- S13: minor on self, and a reporter who isn't the parent (D-02) ---- */
+function s13Scr(v){
+  if (v==='minor_pre'){
+    // D-13 branch A, stopped from the age tap, BEFORE any free text: the same card, plus 101 and the distress help lines
+    // (the distress red flag has nothing to scan yet, so a minor stopped here would meet no other screen).
+    const L = tl('minor.self.before_text');
+    return `<div class="rcard"><div class="rcard-h"><span class="rci">${I('info',24)}</span><h2 style="font-size:var(--t19);font-weight:500;color:var(--dark)" tabindex="-1" data-focus>השיחה הזו מיועדת לגיל 18 ומעלה</h2></div><p>${L[0]}</p><div class="helplines"><p>${L[1]}</p><ul><li>${I('phone',18)}<span>${L[2]}</span></li><li>${I('talk',18)}<span>${L[3]}</span></li></ul></div><p class="sec-emerg">${L[4]}</p><div class="c-acts c-acts-equal" style="margin-top:14px"><a href="#" data-noop class="btn-s"><span dir="ltr">${I('phone',18)} ${PHONE}</span></a><a href="#" data-noop class="btn-s" data-track-ignore="true">${I('phone',18)} ${t('redflag.cta.call_1201')}</a></div><p class="cf-small" style="margin-top:14px">${t('interim.deleted_note')}</p><div style="margin-top:10px">${btnS(t('nav.back_to_site'),'S0/contact')}</div></div>`;
+  }
+  const isMinor = v==='minor';
+  const body = isMinor ? t('minor.self',{hadas_phone:PHONE}) : t('reporter.not_parent',{hadas_phone:PHONE});
+  const action = isMinor
+    ? `<a href="#" data-noop class="btn-s" style="align-self:flex-start"><span dir="ltr">${I('phone',18)} ${PHONE}</span></a>`
+    : `<div><button type="button" class="btn-s" data-act="copy-contact">${I('copy',18)}${t('reporter.copy_contact')}</button><span class="copied-note" role="status" hidden>${I('check',16)} ${t('reporter.copied')}</span></div>`;
+  return `<div class="rcard"><div class="rcard-h"><span class="rci">${I('info',24)}</span><h2 style="font-size:var(--t19);font-weight:500;color:var(--dark)" tabindex="-1" data-focus>${isMinor?'השיחה הזו מיועדת לגיל 18 ומעלה':'פנייה על ילד או ילדה'}</h2></div><p>${body}</p>${action}<p class="cf-small" style="margin-top:14px">${t('interim.deleted_note')}</p><div style="margin-top:10px">${btnS(t('nav.back_to_site'),'S0/contact')}</div></div>`;
+}
+
+/* ---- a11y widget mock (texts are the site's own, from AccessibilityWidget.jsx) ---- */
+function a11yPanel(pos){const sz=['רגיל','גדול','ענק'][OPT.size];return `<div class="a11y-panel ${pos}" role="dialog" aria-label="כלי נגישות"><div class="a11y-h"><h3>כלי נגישות</h3><button class="a11y-x" type="button" data-act="a11y" aria-label="סגירה">×</button></div><div class="a11y-grid"><button type="button" class="a11y-c${OPT.size?' on':''}" data-act="sim-size">${I('txt',24,2)}<span>גודל טקסט (${sz})</span></button><button type="button" class="a11y-c${OPT.hc?' on':''}" data-act="sim-hc">${I('contrast',24,2)}<span>ניגודיות</span></button><button type="button" class="a11y-c${OPT.links?' on':''}" data-act="sim-links">${I('link',24,2)}<span>הדגשת קישורים</span></button><button type="button" class="a11y-c${OPT.font?' on':''}" data-act="sim-font">${I('txt',24,2)}<span>גופן קריא</span></button><button type="button" class="a11y-c${OPT.noanim?' on':''}" data-act="sim-anim">${I('play',24,2)}<span>עצירת אנימציות</span></button></div><button type="button" class="a11y-reset" data-act="sim-reset">איפוס הגדרות</button></div>`;}
+
+/* ---- Hadas side: one optional tap per lead (moment א, in the lead email) + one monthly list
+   (moment ב, judged once a month from the digest). No reminders, no weekly digest, no 3-level rating. ---- */
+function mailScr(){
+  return `<div class="mail"><div class="mail-top">${I('back',20)} דואר נכנס</div><div class="mail-in">
+   <div class="mail-subj">${t('hadas.email.subject',{outcome_number:'1',received_at:'14.10 21:40'})}</div>
+   <div class="mail-from">אל: הדס · 21:40</div>
+   <div class="mail-disc">${t('hadas_summary.header')}</div>
+   <h4>${t('hadas.email.section.contact')}</h4>
+   <div class="mail-contact">מיכל · <span dir="ltr">050-1234567</span></div>
+   <div class="mail-btns"><a href="#" data-noop class="mail-btn solid">${I('phone',16)} ${t('hadas.email.btn.call')}</a><a href="#" data-noop class="mail-btn">${I('wa',16)} ${t('hadas.email.btn.wa')}</a></div>
+   <p class="mail-meta">${t('hadas.email.section.received',{received_at:'יום ג׳ 14.10 · 21:40',entry_point:'דף נחיתה "היגוי"'})}</p><hr>
+   <dl class="mail-dl"><dt>${t('hadas.email.section.who')}</dt><dd>הורה, על הילד/ה</dd><dt>${t('hadas.email.section.age')}</dt><dd>4</dd><dt>${t('hadas.email.section.topic')}</dt><dd>"נתקע במילים"</dd><dt>${t('hadas.email.section.outcome')}</dt><dd>${t('hadas_summary.outcome_label',{outcome_label:'1 · כדאי לפנות',outcome_text_version:'1.0'})}</dd><dt>${t('hadas.email.section.reason')}</dt><dd>${vchip('outcome_reason')}</dd><dt>${t('hadas.email.section.tags')}</dt><dd>—</dd></dl><hr>
+   <h4>${t('hadas.email.section.facts')}</h4><ul><li>משך: "כבר כמה חודשים"</li><li>מצבים: "בעיקר כשהוא נלהב לספר משהו"</li></ul>
+   <h4>${t('hadas.email.section.more')}</h4><ul><li>"הגננת אמרה שאולי כדאי לבדוק שמיעה"</li></ul>
+   <h4>${t('hadas.email.section.warm_summary')}</h4><p class="mail-meta">"${esc(SB.sum)}"</p>
+   <h4>${t('hadas.email.section.unknown')}</h4><ul><li>הופעה ראשונה — ${t('hadas_summary.unknown')}</li><li>בירור קודם — ${t('hadas_summary.not_mentioned')}</li></ul>
+   <h4>${t('hadas.email.section.faq')}</h4><ul><li>מחיר</li></ul>
+   <p class="mail-meta" style="margin-top:6px">${t('hadas_summary.faq_missing_label')} "אפשר להגיע ביום שישי?"</p><hr>
+   <div class="mail-fb"><p>${t('hadas.email.feedback.question')}</p><div class="mail-btns">${['hadas.email.feedback.relevant_accurate','hadas.email.feedback.relevant_inaccurate','hadas.email.feedback.not_relevant'].map((id,i)=>`<a href="#" data-go="H/feedback_page" class="mail-btn${i===0?' solid':''}">${t(id)}</a>`).join('')}</div></div>
+   <p class="mail-foot">מזהה פנייה K7Q-2M · נוסחים 1.3 · טבלה 0.9 · 6 דק׳ · 9 תורות<br>${t('hadas_summary.consent_record',{consent_time:'14.10 21:33',disclaimer_version:'0.3.0'})}</p>
+  </div></div>`;
+}
+function monthlyScr(){
+  const rows = [{ref:'K7Q-2M',date:'3.10',label:'1 · כדאי לפנות'},{ref:'B91-XZ',date:'9.10',label:'4 · לא בתחום'},{ref:'R4F-7Q',date:'21.10',label:'2 · שווה התייעצות'}];
+  return `<div class="mail"><div class="mail-top">${I('back',20)} דואר נכנס</div><div class="mail-in">
+   <div class="mail-subj">${t('hadas.monthly.subject',{month_label:'אוקטובר 2026'})}</div>
+   <div class="mail-from">אל: הדס · 1.11, 08:00</div>
+   <p class="mail-meta" style="margin-top:10px">${t('hadas.monthly.counts',{conversations_count:'41',leads_count:'9',referrals_count:'2',redflags_count:'1',interim_count:'3'})}</p><hr>
+   <p>${t('hadas.monthly.list_intro')}</p>
+   <ul class="mail-dl" style="display:flex;flex-direction:column;gap:6px">${rows.map(r=>`<li><a href="#" data-go="H/judgment_page" data-noop>${t('hadas.monthly.row',{lead_ref:r.ref,received_at:r.date,outcome_label:r.label})}</a></li>`).join('')}</ul>
+   <p class="mail-foot" style="margin-top:14px">${t('hadas.monthly.empty')} <span class="oc-small">(כשלא נותר מה לסמן)</span></p>
+  </div></div>`;
+}
+function hpage(st){
+  const opts = (ids,sel)=>`<div class="segopts" role="radiogroup">${ids.map((id,i)=>`<button type="button" class="segopt" role="radio" aria-checked="${i===sel}"><span class="dot"></span>${t(id)}</button>`).join('')}</div>`;
+  if (st==='feedback') return `<div class="hpage"><div class="hcard"><span class="oc-small">K7Q-2M · מיכל · 14.10</span><h1 tabindex="-1" data-focus>${t('hadas.email.feedback.question')}</h1>${opts(['hadas.email.feedback.relevant_accurate','hadas.email.feedback.relevant_inaccurate','hadas.email.feedback.not_relevant'],0)}${btnP(t('hadas.page.confirm'),'H/done')}<p class="oc-small">הקישור לא רושם לבד (סורקי דואר פותחים קישורים). רק "אישור" רושם.</p></div></div>`;
+  if (st==='judgment') return `<div class="hpage"><div class="hcard"><span class="oc-small">K7Q-2M · מיכל · 3.10</span><h1 tabindex="-1" data-focus>${t('hadas.email.judgment.question')}</h1>${opts(['hadas.email.judgment.o1','hadas.email.judgment.o2','hadas.email.judgment.o3','hadas.email.judgment.o4','hadas.email.judgment.o5','hadas.email.judgment.none'],-1)}${btnP(t('hadas.page.confirm'),'H/done')}<p class="oc-small">הקישור לא רושם לבד. רק "אישור" רושם.</p></div></div>`;
+  if (st==='done') return `<div class="hpage"><div class="hcard" style="align-items:center;text-align:center"><span class="rci">${I('check',26)}</span><h1 tabindex="-1" data-focus style="font-size:var(--t19)">${t('hadas.page.done')}</h1><p>${lnk(t('hadas.page.change'),'H/feedback_page')}</p></div></div>`;
+  return `<div class="hpage"><div class="hcard"><h1 tabindex="-1" data-focus>${I('clock',22)}</h1><p>${t('hadas.page.expired')}</p></div></div>`;
+}
+
+/* =====================================================================
+   SCREENS & STATES
+   mode: focus (tool fills the phone) · page (site page: header + floating buttons) · rf · mail · hpage
+   ===================================================================== */
+/* a wall of pasted text over 32KB in UTF-8 (about 16,000 Hebrew characters) — only for S3/toolong_block */
+const LONGPASTE = (()=>{ const u='סיכום כל הבדיקות והביקורים מהשנים האחרונות, כפי שהודבק ממסמך אחר. '; let s=''; while(new TextEncoder().encode(s).length<33000) s+=u; return s; })();
+const SCREENS = [
+ {id:'S0', name:'נקודות כניסה', states:[
+  {id:'contact', name:'כרטיס ב"דברו איתי"', mode:'page', html:()=>entryContact(), d:'כרטיס נוסף בגריד ה-bento, באותה שפה של כרטיסי הטלפון והוואטסאפ (זכוכית, רדיוס 32). סמל העוזר (פסי קול) ולא תמונה. הכפתור משני (מתאר), כי הטופס הוא הפעולה הראשית בעמוד.', f:'כרטיס = קישור אחד (לא כרטיס לחיץ כולו), כדי שקורא מסך ישמע את שם הפעולה.'},
+  {id:'home', name:'דף הבית — קישור משני', mode:'page', html:()=>entryHome(), d:'"קביעת פגישת ייעוץ" נשאר הכפתור הראשי בלי שינוי. מתחתיו קישור טקסט עם סמל העוזר ושורת משנה שמגלה שזה עוזר דיגיטלי. לא כפתור שני באותו משקל.', f:'קישור רגיל בסדר הטאב אחרי הכפתור הראשי.'},
+  {id:'landing', name:'דף נחיתה — שורה מעל הטופס', mode:'page', html:()=>entryLanding(), d:'שורה מעל SmartLeadForm בצבע התחום של הדף (--accent-topic, כאן גמגום). הכפתור הראשי בכותרת הדף לא נוגע (מבחני A/B). צבע התחום חי רק בדף הנחיתה — בתוך הכלי אין ערכת צבע לפי תחום.', f:'—'},
+  {id:'services', name:'תחומי טיפול — רצועה', mode:'page', html:()=>entryServices(), d:'רצועת זכוכית בין תחנות התחומים ל"איך מתנהל הטיפול".', f:'—'},
+  {id:'unavailable', name:'הכלי לא זמין', mode:'page', html:()=>entryContact(true), d:'כשהמנוע מושבת או תקרת העלות נוצלה: הכרטיס מתחלף בהודעה ובקישור ל"דברו איתי" (מסגרת מקווקוות, בלי סמל העוזר). בדף הבית ובדפי הנחיתה הקישור פשוט מוסתר.', f:'—'}
+ ]},
+ {id:'S1', name:'פתיחה והסכמה', states:[
+  {id:'default', name:'רגיל', mode:'page', html:()=>intro('default'), d:'עמוד רגיל של האתר (כותרת, כפתורי וואטסאפ ונגישות צפים). H1 ראשון (סמנטיקה ו-SEO), ומיד אחריו הצגת העוזר כטקסט — לא כבועה. ההסתייגות גלויה במלואה בכרטיס מידע רגוע, לא אזהרה. שורת החירום (סעיף 4) מודגשת בסמל טלפון במקום תבליט. הכפתור לא מושבת מראש.', f:'מיקוד טבעי בראש הדף. אין live region.'},
+  {id:'missing', name:'חסרה הסכמה', mode:'page', html:()=>intro('missing'), d:'לחיצה על "הסכמה והתחלה" בלי סימון: מסגרת התיבה מתעבה (2.5px) בצבע שגיאה, והודעה עם סמל צמודה לתיבה. לא רק צבע: סמל, עובי וטקסט.', f:'המיקוד עובר לתיבה. aria-invalid ו-aria-describedby על ההודעה, כך שהיא מוקראת עם התיבה.'},
+  {id:'loading', name:'מתחיל', mode:'page', html:()=>intro('loading'), d:'הכפתור במצב טעינה: פסי הקול זזים בלבן בתוך הכפתור, ולחיצה כפולה חסומה (aria-disabled).', f:'"מתחילים…" מוקרא פעם אחת (role=status). אחר כך מעבר ל-S3 והמיקוד לשדה הקלט.'},
+  {id:'declined', name:'"לא עכשיו"', mode:'page', html:()=>intro('declined'), d:'הכרטיס מחליף את התיבה והכפתורים בהודעה רגועה ובשלוש דרכים ישירות. לא נשמר דבר.', f:'המיקוד להודעה.'},
+  {id:'reconsent', name:'הסכמה מחדש', mode:'page', html:()=>intro('reconsent'), d:'נוסח ההסתייגות התעדכן ויש שיחה פתוחה: שורת מידע (פס כחול-אפור בצד ההתחלה) מעל אותו מסך.', f:'כמו "רגיל".'}
+ ]},
+ {id:'S2', name:'חזרה', states:[
+  {id:'open', name:'שיחה פתוחה', mode:'page', html:()=>resumeCard('open'), d:'כרטיס במקום תוכן S1: שלוש פעולות באותו משקל חזותי — "המשך" · "התחלה מחדש" (עם אישור) · "מחיקת השיחה" (עם אישור ← S9). שום תוכן מהשיחה לא מוצג לפני "המשך" (SEC-19, מכשיר משותף). ברענון לא מציגים את זה — חוזרים ישר לשיחה.', f:'המיקוד לכותרת הכרטיס. שלושת הכפתורים נגישים שווה ב-Tab.'},
+  {id:'expired', name:'פג תוקף', mode:'page', html:()=>resumeCard('expired'), d:'שורת מידע קצרה מעל S1 הרגיל.', f:'השורה role=status, מוקראת פעם אחת.'},
+  {id:'submitted', name:'כבר נשלחה פנייה', mode:'page', html:()=>resumeCard('submitted'), d:'סימון מקומי "נשלח" ותאריך בלבד, בלי תוכן, בלי לרמוז על מי הייתה הפנייה (2.1.6). קישור "הסרת הסימון" מוחק רק את הסימון המקומי.', f:'המיקוד לכותרת הכרטיס.'}
+ ]},
+ {id:'S3', name:'שיחה', states:[
+  {id:'opening', name:'פתיחה', mode:'focus', html:()=>shell({stage:1,log:bot(t('goal.core_relation.ask')),quick:relChips()}), d:'מצב מיקוד: כותרת האתר, הפוטר והוואטסאפ מוסתרים. **מאושר שחל מתחת ל-1024px, כלומר גם בטאבלט** — לא רק במובייל — בגלל התנגשות כפתור הנגישות הצף עם כפתור השליחה. כפתור הנגישות עבר לפס העליון (עיגול ורוד, אותו סמל כמו באתר). 4 כפתורי קשר ב-2×2 ו"יש לי שאלה" ברוחב מלא. נסו ללחוץ על כפתור או להקליד — זו הדגמה חיה.', f:'המיקוד בשדה הקלט. ההודעה הראשונה מוקראת דרך ה-log. קבוצת הכפתורים מוכרזת (a11y.quick_replies).'},
+  {id:'age_band', name:'שאלת גיל אחרי "על עצמי" — ממתין לאליה (D-13)', mode:'focus', html:()=>shell({stage:1,log:bot(t('goal.core_relation.ask'))+user(tv('q.relation.opt.self'))+bot(t('goal.self_age_band.ask')),quick:chips([chip(t('q.self_age_band.opt.under_18'),{go:'S13/minor_pre'}),chip(t('q.self_age_band.opt.adult'),{demo:'age_adult'})],{grid:true})}), d:'ענף א של D-13, ממתין לאליה. מיד אחרי ההקשה "על עצמי", לפני ההודעה החופשית הראשונה, העוזר שואל שאלה אחת ובה שני כפתורים **באותו משקל**: אותו גודל, אותו מתאר ואותו צבע, בלי "מעדיף/ה לא לומר", בלי "לא ידוע לי" ובלי "יש לי שאלה". אפשר גם להקליד. "מתחת ל-18" מוביל ל-S13 באותו תור (קטין שנעצר). "18 ומעלה" מוביל לשאלה הבאה (בהדגמה: שאלה לדוגמה בלבד). בענף ב (המצב הקיים) השורה הזו לא קיימת, והפתיחה עוברת ישר לשאלה הבאה.', f:'הקבוצה מוכרזת (a11y.quick_replies), "מתחת ל-18" ראשון בסדר הקריאה. אחרי בחירה הכפתורים נעלמים והבחירה מופיעה כבועת פונה. אחרי "מתחת ל-18" המיקוד לכותרת הכרטיס.'},
+  {id:'typing', name:'הקלדה', mode:'focus', html:()=>shell({stage:2,log:LOG.B,composer:{value:SU.u3,state:'idle-active'}}), d:'כפתור השליחה פעיל (מעבר צבע). השדה גדל עד 4 שורות. דסקטופ: Enter שולח, Shift+Enter שורה. מובייל: Enter שורה, שולחים בכפתור.', f:'—'},
+  {id:'waiting', name:'ממתין', mode:'focus', html:()=>shell({stage:2,log:LOG.B+user(SU.u3)+typing(),composer:{value:'ועוד משהו',state:'wait'}}), d:'חיווי ההקלדה הוא פסי קול של האתר (לא שלוש נקודות), עם הטקסט "ההודעה בדרך…" גלוי לכולם. מוצג לפחות 600ms. אפשר להקליד, אי אפשר לשלוח — הכפתור אפור והשורה מסבירה.', f:'"ההודעה בדרך…" מוקרא פעם אחת באזור סטטוס נפרד, לא בלולאה. aria-disabled על השליחה (לא disabled) — נשאר בסדר הטאב ומסביר.'},
+  {id:'slow', name:'איטי', mode:'focus', html:()=>shell({stage:2,log:LOG.B+user(SU.u3)+typing({slow:true}),composer:{state:'wait'}}), d:'אחרי 8 שניות: שורה רכה מתחת לחיווי. בלי ספינר נוסף.', f:'"עוד רגע" מוקרא פעם אחת.'},
+  {id:'newmsg', name:'תשובה חדשה + גלילה', mode:'focus', html:()=>shell({stage:2,log:LOG.D,scroll:'top',pill:true}), d:'הפונה גלל למעלה לקרוא — לא חוטפים אותו. תווית "הודעה חדשה" צפה מעל הקלט. כשהפונה למטה: גלילה לראש ההודעה החדשה, לא לסופה.', f:'ההודעה מוקראת ב-log (polite) עם תווית דובר מוסתרת. המיקוד לא זז. התווית היא כפתור.'},
+  {id:'quick', name:'כפתורי בחירה', mode:'focus', html:()=>shell({stage:2,log:LOG.D,quick:chips([chip(t('q.prev_treatment.opt.yes')),chip(t('q.prev_treatment.opt.no')),chip(t('chat.quick.dont_know'),{alt:true})])}), d:'שאלה סגורה: כפתורים מעל הקלט, נשברים לשורות (אין גלילה אופקית). "לא ידוע לי" בסגנון ניטרלי — תשובה לגיטימית, לא "כישלון". תמיד אפשר להקליד.', f:'Tab מגיע לכפתורים לפני השדה. אחרי בחירה הם נעלמים והבחירה מופיעה כבועת פונה; המיקוד חוזר לשדה.'},
+  {id:'toolong', name:'הודעה ארוכה (רמז, לא חסימה)', mode:'focus', html:()=>shell({stage:2,log:LOG.A,composer:{value:'כדי שתביני את כל התמונה אני רוצה לספר מההתחלה. כשיוסי היה בן שנתיים וחצי הוא התחיל לדבר במשפטים, ובהתחלה הכול נשמע רגיל. בערך בחנוכה שמנו לב שהוא חוזר על ההברה הראשונה של מילים, בעיקר כשהוא מתרגש או כשהוא רוצה לספר משהו מהר. בגן אמרו לנו שזה קורה גם לילדים אחרים בגיל הזה, ושכדאי לחכות קצת. אחר כך היו כמה שבועות שזה כמעט נעלם, ואז זה חזר, ועכשיו יש גם פעמים שהוא נתקע בכלל ולא מצליח להוציא את המילה, ואז הוא מתעצבן ומוותר. אבא שלו גם גמגם קצת כשהיה ילד…',state:'toolong'}}), d:'מונה תווים מ-800. מעל זה: שורת רמז רגועה (chat.input.too_long_hint) ליד השדה. השליחה לא נחסמת (SEC-06) — הכפתור נשאר פעיל, אפשר לשלוח כמו שהוא.', f:'המונה מוכרז (aria-live polite). בלי מסגרת שגיאה אדומה — זה רמז, לא שגיאה.'},
+  {id:'toolong_sent', name:'הודעה ארוכה — אחרי שליחה', mode:'focus', html:()=>shell({stage:2,log:LOG.A+user('כדי שתביני את כל התמונה אני רוצה לספר מההתחלה… (הודעה של מעל 800 תווים)')+bot(t('meta.too_long')),composer:{value:'כדי שתביני את כל התמונה אני רוצה לספר מההתחלה… (הודעה של מעל 800 תווים)',state:'idle-active'}}), d:'בשליחה: בדיקת דגלים בלבד על כל הטקסט (בלי מודל, בלי שמירה) — אם עלה דגל, S6; אחרת בועת meta.too_long (עם 101) מחליפה את הבועה הרגילה, **והטקסט חוזר לשדה הקלט בשלמותו**, כדי שלא יאבד.', f:'הבועה מוכרזת כרגיל דרך ה-log.'},
+  {id:'toolong_block', name:'הודעה מעל 32KB — לא נשלחה', mode:'focus', html:()=>shell({stage:2,log:LOG.A,composer:{value:LONGPASTE,state:'block'}}), d:'הודעה שחורגת מ-32KB (כ-16,000 תווים בעברית, נבדק בדפדפן לפני שליחה) לא נשלחה, ולכן גם לא עברה בדיקת דגלים. chat.input.too_long_block מוצגת **ליד שדה הקלט**, בתיבה צמודה מעליו ולא כבועה בתמליל. היא אומרת במפורש שההודעה לא נשלחה, מה לעשות, ומוסיפה 101. הטקסט **נשאר בשדה** כמו שהודבק, השדה במסגרת 2px בצבע שגיאה, וכפתור השליחה **נשאר פעיל** (לא מושבת). התיבה באה במקום רמז ה-800 והמונה. אין maxlength ואין חיתוך.', f:'התיבה role=status, מוכרזת פעם אחת. השדה aria-invalid עם aria-describedby על התיבה. המיקוד נשאר בשדה. סמל, טקסט ומסגרת, לא צבע בלבד.'},
+  {id:'timeout', name:'תם הזמן', mode:'focus', html:()=>shell({stage:2,log:LOG.B+user(SU.u3)+sys(t('error.timeout'),`<button class="btn-sm" data-go="S3/waiting">${I('retry',16)} ${t('error.retry.button')}</button>`)}), d:'אחרי 25 שניות: הודעה מערכתית (מלבן אפור-בהיר עם סמל מידע, לא בועה של העוזר ולא אדום). הודעת הפונה נשמרת.', f:'המיקוד ל"לנסות שוב".'},
+  {id:'offline', name:'אין חיבור', mode:'focus', html:()=>shell({stage:2,banner:`<div class="offline" role="status">${I('wifioff',18)}<span>${t('error.network')}</span></div>`,log:LOG.B+user(SU.u3,{unsent:true})}), d:'פס אפור-כהה מתחת לפס העליון (רגוע, לא אדום). הבועה האחרונה במסגרת מקווקוות + "לא נשלחה" + "לנסות שוב". ניסיון אוטומטי אחד כשהחיבור חוזר.', f:'הפס מוקרא פעם אחת (role=status).'},
+  {id:'early', name:'יציאה מוקדמת', mode:'focus', html:()=>shell({stage:2,log:LOG.A+user('אני רוצה לדבר עם הדס')+bot(t('meta.want_human',{hadas_phone:PHONE})),quick:chips([chip(t('meta.want_human.to_form'),{solid:true,go:'S7/partial'}),chip(t('meta.want_human.stay'),{alt:true})])}), d:'שני כפתורים, בלי שכנוע להישאר. "מעבר לטופס" מוביל לטופס במצב "תיק חלקי".', f:'כמו כפתורי בחירה.'},
+  {id:'clinical', name:'שאלה קלינית', mode:'focus', html:()=>shell({stage:2,log:LOG.C}), d:'נוסח קבוע (meta.diagnosis_request) באותה בועה רגילה של העוזר — בלי עיצוב "אזהרה". בתור הבא — המטרה הבאה.', f:'—'},
+  {id:'language', name:'שפה לא נתמכת', mode:'focus', html:()=>shell({stage:1,log:bot(t('goal.core_relation.ask'))+user('Hi, my son stutters. Can you help?')+bot(`<p>${tl('language.unsupported')[0]}</p><p lang="en" dir="ltr" style="text-align:left">${tl('language.unsupported')[1]}</p>`)}), d:'השורה באנגלית מסומנת lang="en" dir="ltr" בתוך הבועה, כדי שקורא מסך יחליף שפה.', f:'—'},
+  {id:'expired', name:'פג תוקף באמצע', mode:'focus', html:()=>shell({stage:2,log:LOG.B+sys(t('error.session_expired'),`<button class="btn-sm" data-go="S1/default">${t('resume.restart')}</button>`),composer:false}), d:'רק אחרי התוקף המלא. שדה הקלט מוסר.', f:'המיקוד לכפתור.'},
+  {id:'server', name:'תקלת שרת', mode:'focus', html:()=>shell({stage:2,log:LOG.B+user(SU.u3)+sys(t('error.generic'),`<button class="btn-sm" data-go="S10/midchat">${I('retry',16)} ${t('error.retry.button')}</button>`)}), d:'אחרי ניסיון חוזר אוטומטי אחד. כישלון שני → S10.', f:'המיקוד ל"לנסות שוב".'},
+  {id:'a11y', name:'נגישות במצב מיקוד', mode:'focus', a11y:true, html:()=>shell({stage:1,log:bot(t('goal.core_relation.ask')),quick:relChips()}), d:'החלטה לנקודה 1 מה-UX: במצב מיקוד הכפתור הצף של AccessibilityWidget מוסתר (הוא היה יושב בדיוק על כפתור השליחה), ובפס העליון מופיע כפתור זהה במראה שפותח את אותו תפריט — כלפי מטה, מתחת לפס. נסו את הכפתורים בתפריט: הם מפעילים את הסימולציה על המסגרת.', f:'aria-expanded על הכפתור. Esc סוגר ומחזיר מיקוד לכפתור. המיקום: אחרי ה-✕ והכותרת, לפני ⋮.'}
+ ]},
+ {id:'S4', name:'שאלה נפוצה', states:[
+  {id:'topics', name:'כפתורי נושא', mode:'focus', html:()=>shell({stage:1,log:bot(t('goal.core_relation.ask'))+user(tv('chat.quick.have_question'))+bot(t('faq.topic.prompt')),quick:chips(['faq.topic.price','faq.topic.location','faq.topic.kupot','faq.topic.online','faq.topic.hours'].map(id=>chip(t(id),{go:'S4/answer'})).concat([chip(t('faq.topic.other'),{alt:true})]))}), d:'"יש לי שאלה" פותח שורה קצרה של העוזר (faq.topic.prompt), שנותנת הקשר לקורא מסך ושומרת על תמליל קריא, ואז כפתורי נושא (מקומי, בלי שרת). "שאלה אחרת" מבקש להקליד.', f:'השורה מוקראת כהודעה רגילה. הקבוצה מוכרזת; המיקוד לכפתור הראשון.'},
+  {id:'answer', name:'יש מידע', mode:'focus', html:()=>shell({stage:2,log:LOG.A+user('כמה זה עולה?')+faqCard('faq.topic.price','price')+bot(t('faq.return')+' '+t('q.situations.child.n',{subject_ref:'יוסי'}))}), d:'כרטיס מידע = "הדף של הדס": מלבן ברוחב מלא (לא מיושר כבועה), מסגרת 1.5px כחול-אפור, סמל i בריבוע ושורת מקור. אחריו העוזר חוזר בעדינות לשאלה שחיכתה.', f:'הכרטיס הוא article עם תווית; נכנס ל-log ומוקרא.'},
+  {id:'unknown', name:'אין מידע', mode:'focus', html:()=>shell({stage:2,log:LOG.A+user('אפשר להגיע ביום שישי?')+bot(t('faq.missing'))+bot(t('faq.return')+' '+t('q.situations.child.n',{subject_ref:'יוסי'}),{first:false})}), d:'אין מידע בדף העובדות: בועה רגילה של העוזר (לא כרטיס — זה לא מידע מהדס).', f:'—'},
+  {id:'multiple', name:'כמה שאלות ברצף', mode:'focus', html:()=>shell({stage:2,log:LOG.A+user('כמה זה עולה, ואיפה הקליניקה?')+faqCard('faq.topic.price','price')+faqCard('faq.topic.location','location')+bot(t('faq.return')+' '+t('q.situations.child.n',{subject_ref:'יוסי'}))}), d:'כרטיס לכל שאלה, ואז חזרה אחת.', f:'—'}
+ ]},
+ {id:'S5', name:'תוצאות 1–4', states:[
+  {id:'o1', name:'1 · כדאי לפנות', mode:'focus', html:()=>shell({stage:3,log:outcomeLog(1),scroll:'anchor',composer:false}), d:'בועת הסיכום (מודל) היא בועה רגילה עם תווית "מה שעלה בשיחה". כרטיס התוצאה (נוסח קבוע) שונה בצורה ולא רק בצבע: מלבן ברוחב מלא, מסגרת 2px עם פס עליון 8px, סמל בריבוע, שורת תווית, כותרת גדולה, וההסתייגות בתחתית הכרטיס. שדה הקלט מוסר.', f:'המיקוד לכרטיס (region עם aria-labelledby על הכותרת). המחוון עובר ל"סיכום".'},
+  {id:'o2', name:'2 · שווה התייעצות', mode:'focus', html:()=>shell({stage:3,log:outcomeLog(2),scroll:'anchor',composer:false}), d:'אותו מבנה, טון כחול-אפור (hoki) וסמל שיחה: דלת פתוחה, בלי דחיפות. אותו כפתור.', f:'כמו 1.'},
+  {id:'o3', name:'3 · לא עלו סימנים כעת — כבוי בהשקה (D-03)', mode:'focus', html:()=>shell({stage:3,log:outcomeLog(3),scroll:'anchor',composer:false}), d:'כבוי בהשקה (D-03): המקרים האלה מקבלים תוצאה 2 בפועל, ונרשם would_be_outcome_3. המסך כאן נשאר מתוכנן, להפעלה עתידית. אין וי, אין ירוק, אין צבע הצלחה. טון ניטרלי (chatelle כהה), סמל "דף עם שורות", כותרת בשחור. "חשוב לדעת" בבלוק עם פס בצד ההתחלה, רשימת "מתי כן לפנות" עם עיגולים חלולים (לא וי), ו-101 כקישור. הכפתור באותה בולטות כמו ב-1–2, אחרי ההסתייגות המלאה והרשימה.', f:'כמו 1. הרשימה היא ul אמיתית.'},
+  {id:'o4', name:'4 · לא בתחום', mode:'focus', html:()=>shell({stage:3,log:outcomeLog(4),scroll:'anchor',composer:false}), d:'טון bali-hai וסמל שלט הכוונה. כל הפניה בכרטיס משנה עם קישור חיצוני מסומן. אין טופס; "נראה שמשהו לא הובן נכון?" צנוע עם טלפון.', f:'קישורים חיצוניים: target=_blank + טקסט מוסתר "נפתח בלשונית חדשה".'},
+  {id:'fallback', name:'הסיכום החם נכשל', mode:'focus', html:()=>shell({stage:3,log:outcomeLog(1,{fallback:true}),scroll:'anchor',composer:false}), d:'נוסח קבוע קצר במקום בועת הסיכום. הכרטיס לא תלוי במודל ותמיד מוצג.', f:'כמו 1.'},
+  {id:'noref', name:'4 · אין הפניה מתאימה', mode:'focus', html:()=>shell({stage:3,log:outcomeLog(4,{noref:true}),scroll:'anchor',composer:false}), d:'outcome.4.no_referral במקום הרשימה.', f:'כמו 1.'},
+  {id:'reopened', name:'חזרה לשיחה ("שכחתי לספר")', mode:'focus', html:()=>shell({stage:3,log:LOG.D+user(SU.u5)+summaryBubble()+oc(2,{stale:true})+user(tv('outcome.add_more'))}), d:'המחוון נשאר ב"סיכום" ולא חוזר ל"השלמת פרטים" — זו שאלה אחת (wrap_up_ask), וחזרה אחורה הייתה נחווית כמו "מתחילים מחדש". הכרטיס הקודם נשאר בתמליל: מסגרת מקווקוות, בלי פס עליון ובלי כפתורים, ותגית "הכיוון הקודם, לפני העדכון". שדה הקלט חוזר. תוצאה חדשה תופיע ככרטיס חדש.', f:'המיקוד לשדה הקלט.'}
+ ]},
+ {id:'S6', name:'דגל אדום — דרגות ומסך משולב', states:[
+  {id:'emergency', name:'emergency · חירום', mode:'rf', html:()=>rf('emergency'), d:'מחליף את כל המסך (אין תמליל, אין קלט, אין תפריט). בדסקטופ מחליף רק את לוח הכלי — כותרת האתר נשארת, בלי פוטר או קריאות לפעולה לצידו. רקע נייר בהיר, טקסט שחור, בלי אדום ובלי תנועה. סמל "השהיה" בעיגול — לא משולש אזהרה. הפעולה ראשונה בבלוק עם פס 8px. כפתור 101 בגובה 64, פחם (#282a2b) על רקע בהיר, 14.4:1 — הכי בולט במסך בלי להיות אזעקה. redflag.footer אחרי הפעולות, בגופן משני. אין טופס (D-04: emergency בלי טופס). מתחת לכפתור 101 שורת טקסט משנית (redflag.secondary.emergency) ולא כפתור: **אין כפתור חדר מיון בשום מקום** (הוחלט, ARCHITECTURE §20), כך שנשארת פעולה אחת בולטת.', f:'המיקוד לכותרת. הבלוק מוכרז פעם אחת (role=alert / assertive). קישור 101 עם data-track-ignore (UX §6.4).'},
+  {id:'urgent', name:'urgent · בירור רפואי בהקדם', mode:'rf', html:()=>rf('urgent'), d:'אותו מבנה בלי כפתור 101 ראשי; 101 כקישור בתוך הנוסח. **היחידה עם טופס משני** (D-04: form_after_message=secondary), מוצג רק באישור הדס, ורק כשזה הדגל היחיד: דגל נוסף שאוסר טופס מבטל אותו (ראו "משולב"). redflag.footer אחרי הפעולות.', f:'כמו emergency.'},
+  {id:'hotline-distress', name:'hotline · מצוקה', mode:'rf', html:()=>rf('hotline-distress'), d:'דרגת hotline: ער"ן 1201 ככפתור הראשי, 101 משני. בלי טופס (D-04). redflag.footer אחרי הפעולות.', f:'כמו emergency.'},
+  {id:'hotline-child', name:'hotline · בטיחות ילד — טיוטה', mode:'rf', html:()=>rf('hotline-child'), d:'גם זו דרגת hotline (D-04: בלי טופס), עם נוסח משלה (118/משרד הרווחה, 100 למשטרה). הנוסח עצמו עדיין טיוטה — ממתין לאישור עורך הדין על חובת דיווח, ולכן מסומן ככזה במסך. redflag.footer אחרי הפעולות בכל זאת, כי הוא קבוע ולא תלוי בניסוח.', f:'כמו emergency.'},
+  {id:'combined', name:'משולב · בירור רפואי + בטיחות ילד', mode:'rf', html:()=>rf('combined'), d:'מסך אחד כשעלו שני דגלים (UX_SPEC S6, טיוטה 4), בין אם באותה הודעה ובין אם בתורות שונות. **בלוק ראשי** לדרגה הגבוהה (urgent: redflag.title.urgent והנוסח, 101 בתוך הנוסח), ומתחתיו **בלוק משני שלם** לדגל קו הסיוע הנוסף (בטיחות ילד): h2 משלו, הנוסח שלו והפעולה שלו. הבלוק המשני נבדל מהראשי בעוד מעבר לצבע: כותרת h2 קטנה (22 מול 28), מסגרת 1.5px עם פס 4px (מול 2px ו-8px), טקסט 17 מול 19, כפתור במתאר (52 מול 64 מלא) וקו דק מעליו. **אין טופס**: דגל בטיחות הילד אוסר אותו, ולכן אין redflag.after ואין redflag.cta.form, גם אם urgent לבדו היה מציע אותו. redflag.footer פעם אחת בסוף, אחרי כל הבלוקים. אין חזרה לשיחה.', f:'המיקוד לכותרת הראשית. רק הבלוק הראשי הוא role=alert (הכרזה אחת, assertive), והמשני נקרא ברצף אחריו. כל בלוק הוא section עם aria-labelledby על ה-h2 שלו, לניווט בכותרות.'},
+  {id:'combined3', name:'משולב · חירום + מצוקה + בטיחות ילד (3 בלוקים)', mode:'rf', html:()=>rf('combined3'), d:'המקסימום: בלוק ראשי (חירום: כפתור 101 ושורת טקסט משנית) ושני בלוקים משניים, אחד לכל דגל קו סיוע נוסף (מצוקה עם ער"ן 1201 בכפתור במתאר, ובטיחות ילד). urgent לא מתווסף מתחת לחירום. הסתייגות אחת בסוף. **פתוח:** (1) אין כותרת לפי סוג דגל, ולכן שני הבלוקים המשניים נושאים אותה כותרת (redflag.title.hotline) ← תפקיד 3. (2) השורה הפסיבית של חירום (redflag.after.emergency, הטלפון של הדס כטקסט) נשארת בבלוק הראשי; אם דגל קו סיוע אמור להוריד אותה ← UX.', f:'כמו "משולב".'}
+ ]},
+ {id:'S7', name:'טופס מסירה', states:[
+  {id:'default', name:'רגיל', mode:'focus', html:()=>shell({stage:3,main:form('default'),composer:false}), d:'המשך טבעי של השיחה, באותו פס עליון. שם, טלפון (dir=ltr, מיושר לימין), שני שדות רשות כפתורים (ממתינים לאישור), הסכמה נפרדת. אין שדה הערות. "מה יישלח להדס" סגור כברירת מחדל.', f:'המיקוד לכותרת הטופס.'},
+  {id:'preview', name:'תצוגה מקדימה פתוחה', mode:'focus', html:()=>shell({stage:3,main:form('preview'),composer:false}), d:'details/summary אמיתי. העובדות במילים של הפונה, וקישור "משהו לא מדויק? חזרה לשיחה".', f:'summary הוא כפתור מקלדת טבעי; aria-expanded מגיע מהדפדפן.'},
+  {id:'partial', name:'תיק חלקי', mode:'focus', html:()=>shell({stage:2,main:form('partial'),composer:false}), d:'יציאה מוקדמת: שורת מידע מעל התצוגה המקדימה.', f:'—'},
+  {id:'errors', name:'שגיאות שדה', mode:'focus', html:()=>shell({stage:3,main:form('errors'),composer:false}), d:'תקציר בראש הטופס עם קישורים לשדות, ושגיאה צמודה לכל שדה: סמל + טקסט + מסגרת 2px. לא רק צבע.', f:'המיקוד לשדה השגוי הראשון; התקציר role=alert.'},
+  {id:'sending', name:'שולח', mode:'focus', html:()=>shell({stage:3,main:form('sending'),composer:false}), d:'פסי הקול בלבן בתוך הכפתור. לחיצה כפולה חסומה.', f:'"בשליחה…" מוכרז.'},
+  {id:'failed', name:'כשל', mode:'focus', html:()=>shell({stage:3,main:form('failed'),composer:false}), d:'הפרטים לא נמחקים. תיבת שגיאה עם "לנסות שוב".', f:'המיקוד לתיבת השגיאה.'},
+  {id:'failed2', name:'כשל חוזר', mode:'focus', html:()=>shell({stage:3,main:form('failed2'),composer:false}), d:'בנוסף: וואטסאפ (טקסט כללי בלבד) וטלפון כשורות גדולות.', f:'—'}
+ ]},
+ {id:'S8', name:'אישור', states:[
+  {id:'default', name:'רגיל', mode:'focus', html:()=>shell({stage:3,main:confirmScr('default'),composer:false}), d:'שקט ומדויק: מעטפה בעיגול ורוד-בהיר, בלי וי ירוק ובלי קונפטי. מה קורה עכשיו, מתי (משתנה מדף העובדות), מאיזה מספר, ושורת 101. **תוכן השיחה נמחק עם אישור המסירה — מהמכשיר ומהשרת (D-01, form.confirmation.privacy v2).** הפנייה עצמה (סיכום ופרטי קשר) נשארת אצל הדס. שורת הפרטיות נבחרת לפי תשובת השליחה: כאן delivered (form.confirmation.privacy v2), ושני האחרים בנפרד. שורת הגיבוי כוללת עכשיו קישור וואטסאפ (משתנה מדף העובדות).', f:'המיקוד לכותרת. ה-✕ כאן חוזר לאתר בלי דיאלוג (אין מה לאבד).'},
+  {id:'other', name:'מבוגר אחר', mode:'focus', html:()=>shell({stage:3,main:confirmScr('other'),composer:false}), d:'שורה נוספת: הדס חוזרת לפונה, לא למושא.', f:'—'},
+  {id:'afterflag', name:'אחרי דגל אדום', mode:'focus', html:()=>shell({stage:3,main:confirmScr('afterflag'),composer:false}), d:'וריאציית "בירור רפואי" בלבד: שורת הפעולה הרפואית חוזרת בבלוק הפחם לפני "מה קורה עכשיו".', f:'—'},
+  {id:'privacy_pending', name:'מסירה ממתינה (delivery: pending)', mode:'focus', html:()=>shell({stage:3,main:confirmScr('privacy_pending'),composer:false}), d:'שורת הפרטיות היא form.confirmation.privacy.pending: הפרטים **נשלחים** (לא "נשלחו"), ועד שיגיעו להדס הם נשמרים במערכת לכל היותר 7 ימים. תוכן השיחה כבר נמחק. **פתוח ← UX ותפקיד 3:** הכותרת form.confirmation.title אומרת "הפרטים נשלחו להדס", וזה לא מדויק כשהמסירה ממתינה. אין בקובץ כותרת חלופית, ולכן היא מסומנת במסך. גם אין נוסח משולב כש-pending וגם delete_pending.', f:'כמו "רגיל".'},
+  {id:'privacy_delete', name:'מחיקה ממתינה (content_deleted: false)', mode:'focus', html:()=>shell({stage:3,main:confirmScr('privacy_delete'),composer:false}), d:'שורת הפרטיות היא form.confirmation.privacy.delete_pending: תוכן השיחה **יימחק** מהשרת תוך כשעה (לא "נמחק"). המסירה הצליחה, ולכן הכותרת נכונה והמסך זהה לרגיל חוץ מהשורה הזו.', f:'כמו "רגיל".'}
+ ]},
+ {id:'S9', name:'השיחה נמחקה', states:[
+  {id:'default', name:'רגיל', mode:'focus', html:()=>shell({stage:3,main:s9Scr('default'),composer:false}), d:'אחרי "סיום ומחיקה" בתוצאה, "לצאת ולמחוק" בדיאלוג היציאה, "מחיקת השיחה" ב-S2, או "מחיקה" מהתפריט — כולם אותו DELETE מיידי בשרת (D-01). "למחוק עכשיו" כפעולה נפרדת בוטל: יש פעולה אחת. נשארת רק רשומת מדדים בלי תוכן.', f:'המיקוד לכותרת (chat.delete.done).'},
+  {id:'outcome4', name:'אחרי תוצאה 4 (הכרטיס נשאר)', mode:'focus', html:()=>shell({stage:3,main:s9Scr('outcome4'),composer:false}), d:'כש"סיום ומחיקה" מגיע מתוצאה 4: כרטיס ההפניה (שם ודרכי קשר) נשאר על המסך — **בזיכרון הדף בלבד**, לא נשלף מהשרת שוב — עד שהפונה עוזב. שורת closed.keep_note מתחתיו מסבירה שזה חד-פעמי. בלי זה, המחיקה המיידית הייתה מוחקת לפונה בדיוק את ההפניה שבשבילה הגיע.', f:'כנ"ל. רענון מציג S1 רגיל — הכרטיס לא חוזר, וזו בדיוק המטרה.'},
+  {id:'failed', name:'המחיקה נכשלה', mode:'focus', html:()=>shell({stage:3,main:s9Scr('failed'),composer:false}), d:'error.delete_failed: לא הצלחנו למחוק עכשיו — השיחה תימחק אוטומטית תוך 24 שעות בכל מקרה, ו"לנסות שוב".', f:'המיקוד לשגיאה.'}
+ ]},
+ {id:'S10', name:'תקלה ולא זמין', states:[
+  {id:'unavailable', name:'לא זמין בפתיחה', mode:'page', html:()=>`<div class="intro">${fallbackScr('unavailable')}</div>`, d:'אחראי ולא מאשים: ענן חצוי בעיגול אפור, כותרת בשחור, שלוש דרכים כשורות גדולות (56px).', f:'המיקוד לכותרת.'},
+  {id:'midchat', name:'תקלה באמצע', mode:'focus', html:()=>shell({stage:2,main:fallbackScr('midchat'),composer:false}), d:'כמו למעלה + "מה שסיפרת שמור" (רק אם נכון טכנית).', f:'המיקוד לכותרת.'},
+  {id:'ratelimit', name:'הגבלת קצב', mode:'focus', html:()=>shell({stage:2,main:fallbackScr('ratelimit'),composer:false}), d:'error.rate_limit + "לנסות שוב".', f:'—'},
+  {id:'model_free', name:'בלי מודל (וריאציה ב)', mode:'focus', html:()=>shell({stage:2,log:LOG.B+user(SU.u3)+bot(t('system.model_free'))+bot(t('q.prev_treatment'),{first:false}),quick:chips([chip(t('q.prev_treatment.opt.yes')),chip(t('q.prev_treatment.opt.no')),chip(t('chat.quick.dont_know'),{alt:true})])}), d:'שיחה פתוחה שנשארה בלי מודל (3 כשלי מודל רצופים, השבתה, תקרת עלות 100% או תקציב כתובת). **זה לא מסך חדש אלא S3 עצמו, בלי באנר:** בלי הודעת מעבר, והפס העליון והמחוון לא משתנים. טקסט חופשי מקבל בועה רגילה של העוזר עם system.model_free (101), ואחריה המסך הבא בכפתורים, באותו מראה של שאלות סגורות. השדה נשאר. כשנגמרים המסכים: כרטיס תוצאה עם outcome.extraction_gap, בלי תוצאה 3, ואז הטופס כרגיל. המסך הבא כאן הוא דוגמה: אותה שאלה סגורה כמו ב"כפתורי בחירה" (אפשרויות התשובה שלה עדיין חסרות בקובץ).', f:'system.model_free מוכרזת כבועה רגילה (log, polite). קבוצת הכפתורים מוכרזת (a11y.quick_replies). אין הכרזה נפרדת על המעבר.'}
+ ]},
+ {id:'S11', name:'דיאלוגים', states:[
+  {id:'exit', name:'יציאה (✕)', mode:'focus', html:()=>shell({stage:2,log:LOG.B,overlay:dlg('exit')}), d:'גיליון תחתון במובייל, חלון במרכז בדסקטופ. **3 פעולות:** "להמשיך בשיחה" (ראשי, מקבל מיקוד) · "לצאת" (נשמר 24 שעות ואז נמחק מעצמו) · "לצאת ולמחוק" (ישר ל-DELETE ול-S9 — הבחירה בדיאלוג היא האישור, בלי דיאלוג נוסף).', f:'מלכודת מיקוד, Esc = "להמשיך בשיחה", המיקוד חוזר ל-✕.'},
+  {id:'restart', name:'התחלה מחדש', mode:'focus', html:()=>shell({stage:2,log:LOG.B,overlay:dlg('restart')}), d:'"ביטול" מקבל את המיקוד (פעולה הרסנית). אישור מוחק את השיחה הקודמת עכשיו, גם מהשרת.', f:'כמו יציאה.'},
+  {id:'delete', name:'מחיקה (2 פעולות)', mode:'focus', html:()=>shell({stage:2,log:LOG.B,overlay:dlg('delete')}), d:'משמש לכל נתיב שמוביל למחיקה: "סיום ומחיקה" בתוצאה, "מחיקת השיחה" ב-S2, או "מחיקה" מהתפריט. **2 פעולות בלבד:** מחיקה (← S9) · ביטול (מקבל מיקוד). כפתור המחיקה מתאר בצבע שגיאה עם סמל פח — לא רקע אדום מלא.', f:'"ביטול" מקבל את המיקוד.'}
+ ]},
+ {id:'S12', name:'תפריט ו"על הכלי"', states:[
+  {id:'menu', name:'תפריט ⋮', mode:'focus', html:()=>shell({stage:2,log:LOG.B,overlay:menuPop()}), d:'לדבר עם הדס · על הכלי · נגישות (כפילות מכוונת לכפתור בפס) · התחלה מחדש · מחיקה (בצבע שגיאה, אחרי קו מפריד). פריטים בגובה 48.', f:'role=menu, חיצים בין פריטים, Esc סוגר ומחזיר ל-⋮.'},
+  {id:'about', name:'"על הכלי"', mode:'focus', html:()=>shell({stage:2,log:LOG.B,overlay:aboutSheet()}), d:'גיליון תחתון במובייל (88% גובה), חלונית צד בדסקטופ. מה זה, מה זה לא, ההסתייגות המלאה, מה נשמר, מדיניות פרטיות.', f:'דיאלוג מודאלי; המיקוד לכותרת.'}
+ ]},
+ {id:'S13', name:'מסלולי ביניים (D-02)', states:[
+  {id:'minor', name:'קטין על עצמו — אחרי טקסט (minor.self)', mode:'focus', html:()=>shell({stage:1,main:s13Scr('minor'),composer:false}), d:'טריגר: "על עצמי" וגיל מתחת ל-18 (שנאמר, נענה, או אמירה מפורשת כמו "אני בכיתה ח\'"). כרטיס קבוע — לא בועה ולא כרטיס תוצאה. אין טופס, אין איסוף טלפון, אין סיכום מודל, אין "שכחתי לספר". רק קישור טלפון של הדס (בשביל ההורים) ו"חזרה לאתר". **התיק נמחק עם הצגת המסך** (SEC-02). דגלים אדומים פעילים וקודמים לזה בכל מקרה — אם עלה דגל, מוצג S6 ולא המסך הזה.', f:'המיקוד לכותרת הכרטיס. הכרזה אחת.'},
+  {id:'minor_pre', name:'קטין שנעצר מהקשת הגיל — ממתין לאליה (D-13)', mode:'focus', html:()=>shell({stage:1,main:s13Scr('minor_pre'),composer:false}), d:'ענף א של D-13, ממתין לאליה. אותו כרטיס קבוע של "קטין על עצמו", בנוסח minor.self.before_text ⚖️, כשהעצירה באה מההקשה "מתחת ל-18", **לפני** כל טקסט חופשי. בנוסף ל-101 יש קווי סיוע למצוקה (ער"ן 1201 וסה"ר בצ\'אט), כי דגל המצוקה לא קיבל טקסט לסרוק, וקטין שנעצר כאן לא ייתקל באף מסך אחר. שורות קווי הסיוע מקובצות בבלוק רגוע אחד (לא אדום, לא מסך דגל), עם כפתור חיוג לער"ן לצד הטלפון של הדס. אין טופס, אין איסוף טלפון, אין סיכום ואין "שכחתי לספר". התיק נמחק עם הצגת המסך. קישור סה"ר הוא המשתנה {{sahar_url}}; אין עדיין תווית טקסט לקישור.', f:'המיקוד לכותרת הכרטיס. הכרזה אחת. הנוסח ממתין לאישור משפטי.'},
+  {id:'not_parent', name:'מי שאינו הורה, על ילד', mode:'focus', html:()=>shell({stage:1,main:s13Scr('not_parent'),composer:false}), d:'טריגר: המושא ילד, והפונה אינו הורה/אפוטרופוס (גננת, מורה, סבתא). כרטיס קבוע, בלי טופס ובלי טלפון. פעולה: "העתקת הפרטים של הדס" מעתיקה ללוח רק טלפון+כתובת אתר (reporter.copy_payload) — בלי שום פרט מהשיחה — ומציגה אישור "הפרטים הועתקו". **התיק נמחק עם הצגת המסך.**', f:'המיקוד לכותרת הכרטיס. אחרי ההעתקה מוכרז role=status.'}
+ ]},
+ {id:'H', name:'הצד של הדס', states:[
+  {id:'email', name:'מייל פנייה', mode:'mail', html:()=>mailScr(), d:'השורה הראשונה היא ההסתייגות (זה גם מה שמופיע בתצוגה המקדימה של ההתראה). חיוג ווואטסאפ ככפתורים, ואז פרטי קשר, מי/גיל/תחום/תוצאה ולמה, עובדות בציטוט, הסיכום החם כפי שהוצג לפונה, ו**סימון מהיר אחד** (לא חובה, בלי שאלות המשך): רלוונטית·מדויק / רלוונטית·לא מדויק / לא רלוונטית. בלי תזכורות, בלי "הפסקת תזכורות" — הן לא קיימות. מבנה מבוסס טבלאות בפועל (תאימות לתוכנות דואר) — כאן רק המראה.', f:'כל כפתור הוא קישור עם אסימון; פותח עמוד קל.'},
+  {id:'monthly', name:'מייל חודשי (רגע ב\')', mode:'mail', html:()=>monthlyScr(), d:'פעם בחודש, במקום תזכורות וסיכום שבועי: מספרי החודש בלי תוכן, ואחריהם רשימת הפניות שעוד לא סומנו. כל שורה פותחת עמוד קל עם ההערכה אחרי השיחה הראשונה (רגע ב\'), שממופה 1:1 לתוצאות + "לא התקיימה שיחה".', f:'—'},
+  {id:'feedback_page', name:'עמוד קל — סימון מהיר (רגע א\')', mode:'hpage', html:()=>hpage('feedback'), d:'הבחירה מסומנת מראש מהקישור (לא נרשמת לבד — סורקי דואר פותחים קישורים אוטומטית), ו"אישור" אחד רושם.', f:'המיקוד לכותרת.'},
+  {id:'judgment_page', name:'עמוד קל — הערכה חודשית (רגע ב\')', mode:'hpage', html:()=>hpage('judgment'), d:'נפתח משורה במייל החודשי. 5 אפשרויות שממופות 1:1 לתוצאות + "לא התקיימה שיחה". "אישור" אחד רושם.', f:'המיקוד לכותרת.'},
+  {id:'done', name:'עמוד קל — נרשם', mode:'hpage', html:()=>hpage('done'), d:'"נרשם" + קישור "שינוי". אין שאלת המשך משני הרגעים — הסימון הוא חד-פעמי ואופציונלי.', f:'"נרשם" role=status.'},
+  {id:'expired', name:'עמוד קל — פג', mode:'hpage', html:()=>hpage('expired'), d:'קישור שפג.', f:'—'}
+ ]}
+];
+
+/* =====================================================================
+   FRAME BUILDERS
+   ===================================================================== */
+function statusbar(){return `<div class="m-status" aria-hidden="true"><span>21:40</span><span class="dots"><i></i></span></div>`;}
+function mHeader(){return `<div class="m-header">${logo(40)}<button type="button" class="ham" aria-label="תפריט האתר">${I('menu',26,2)}</button></div>`;}
+function dHeader(){return `<div class="d-header">${logo(52)}<nav class="d-nav" aria-label="ניווט האתר"><span>ראשי</span><span>קצת עליי</span><span>תחומי טיפול</span><span>מטופלים מספרים</span><span>בלוג מקצועי</span><span>טיפול אונליין</span><span>דברו איתי</span></nav></div>`;}
+function fabs(wa=true){return `${wa?`<a href="#" data-noop class="fab-wa" aria-label="שלחו הודעה בוואטסאפ">${I('wa',32,1.6)}</a>`:''}<button type="button" class="fab-a11y" aria-label="תפריט נגישות" data-act="a11y">${I('a11y',28,2)}</button>`;}
+function simCls(){return [OPT.hc?'sim-hc':'',OPT.noanim?'sim-noanim':'',OPT.size===1?'sim-tl':'',OPT.size===2?'sim-txl':'',OPT.links?'sim-links':'',OPT.font?'sim-rf':'',OPT.ids?'show-ids':''].join(' ');}
+function build(state){
+  const html = state.html();
+  const m = state.mode;
+  if (OPT.dev==='m'){
+    let body='';
+    if (m==='page') body = `${mHeader()}<div class="m-page"><div class="aur"></div><div class="page-scroll">${html}</div></div>${fabs(true)}${OPT.a11yOpen?a11yPanel('bottom'):''}`;
+    else body = `<div class="m-focus">${html}</div>${OPT.a11yOpen?a11yPanel('top'):''}`;
+    return `<div class="device m"><div class="screen dev-mobile ${simCls()}">${statusbar()}${body}</div></div>`;
+  }
+  let body='';
+  if (m==='page') body = `<div class="d-site">${dHeader()}<div class="d-main scroll"><div class="aur" style="position:fixed"></div><div class="d-page">${html}</div></div>${fabs(false)}</div>`;
+  else if (m==='focus') body = `<div class="d-site">${dHeader()}<div class="d-main"><div class="aur"></div><div class="tool-panel">${html}</div></div>${fabs(false)}</div>`;
+  else if (m==='rf') body = `<div class="d-site">${dHeader()}<div class="d-main"><div class="aur"></div><div class="tool-panel rf-panel">${html}</div></div>${fabs(false)}</div>`;
+  else if (m==='mail') body = html;
+  else body = html;
+  if (OPT.a11yOpen && (m==='page'||m==='focus'||m==='rf')) body += a11yPanel('bottom');
+  const url = m==='mail' ? 'mail.example · דואר נכנס' : m==='hpage' ? 'hadas-toda.co.il/…/feedback' : 'hadas-toda.co.il/שיחת-היכרות';
+  return `<div class="device d"><div class="url">${url}</div><div class="screen dev-desktop ${simCls()}">${body}</div></div>`;
+}
+
+/* =====================================================================
+   RENDER + NAV
+   ===================================================================== */
+const fitEl = document.getElementById('fit');
+function stateAt(){return SCREENS[CUR.s].states[CUR.st];}
+function render(pushHash=true){
+  rebuildLogs();
+  const sc = SCREENS[CUR.s], st = stateAt();
+  if (st.a11y) OPT.a11yOpen = true;
+  fitEl.innerHTML = build(st);
+  // a field that opens with text in it (long message, 32KB paste) is grown like the live one: up to 4 lines
+  fitEl.querySelectorAll('[data-composer]').forEach(ta=>{ if (ta.value){ ta.style.height='auto'; ta.style.height=Math.min(ta.scrollHeight,120)+'px'; } });
+  document.getElementById('view').classList.toggle('is-m', OPT.dev==='m');
+  document.getElementById('crumb-t').textContent = `${sc.id} · ${sc.name}`;
+  document.getElementById('crumb-s').textContent = `${st.name} · ${OPT.dev==='m'?'מובייל':'דסקטופ'}`;
+  // scroll positions inside frame
+  fitEl.querySelectorAll('.log').forEach(l=>{
+    const how = l.dataset.scroll;
+    if (how==='top') l.scrollTop = 0;
+    else if (how==='anchor'){ const a=l.querySelector('#anchor'); l.scrollTop = a ? a.offsetTop - l.offsetTop - 8 : l.scrollHeight; }
+    else l.scrollTop = l.scrollHeight;
+  });
+  notes(sc, st);
+  navSync();
+  fit();
+  if (pushHash) history.replaceState(null,'',`#${sc.id}/${st.id}/${OPT.dev}`);
+}
+function notes(sc, st){
+  const ids = [...new Set([...fitEl.querySelectorAll('[data-tid]')].map(e=>e.dataset.tid))];
+  const known = ids.filter(i=>!i.startsWith('דוגמת') && !i.startsWith('facts.'));
+  const missingIds = known.filter(i=>{const base=i.split('#')[0]; return isMissing(base);});
+  const okIds = known.filter(i=>!missingIds.includes(i));
+  const models = ids.filter(i=>i.startsWith('דוגמת'));
+  document.getElementById('notes').innerHTML = `
+   <h3>${esc(sc.id)} · ${esc(st.name)}</h3>
+   <p><span class="lbl">מה רואים ולמה</span>${esc(st.d)}</p>
+   <p><span class="lbl">מיקוד והקראה</span>${esc(st.f)}</p>
+   <span class="lbl">מזהי טקסט במסך (${okIds.length} קיימים · ${missingIds.length} חסרים)</span>
+   <ul class="ids">${okIds.map(i=>`<li>${esc(i)}</li>`).join('')}${missingIds.map(i=>`<li class="m" title="חסר בקובץ הנוסחים">${esc(i)}</li>`).join('')}</ul>
+   ${models.length?`<p><span class="lbl">טקסט מודל לדוגמה</span>${models.map(esc).join(' · ')} — דוגמאות של תפקיד 3, לא נוסח קבוע.</p>`:''}
+   <div class="legend"><span><span class="miss">[טקסט חסר: id]</span> חסר בקובץ הנוסחים</span><span><span class="screen" style="all:unset"><span class="var" style="font-family:ui-monospace,monospace;background:#eef0ff;color:#2f3a8f;border:1px solid #c7ccf5;border-radius:4px;padding:0 3px">{{var}}</span></span> משתנה</span><span>מסגרת מקווקוות במזהים = חסר</span></div>`;
+}
+function fit(){
+  const dev = fitEl.querySelector('.device'); if(!dev) return;
+  const W = dev.offsetWidth, H = dev.offsetHeight;
+  const avail = fitEl.clientWidth;
+  const s = Math.min(1, avail / W);
+  dev.style.transform = `scale(${s})`;
+  dev.style.left = Math.max(0,(avail - W*s)/2) + 'px';
+  fitEl.style.height = Math.ceil(H*s) + 'px';
+}
+function go(screenId, stateId){
+  const si = SCREENS.findIndex(x=>x.id===screenId); if (si<0) return;
+  const sti = Math.max(0, SCREENS[si].states.findIndex(x=>x.id===stateId));
+  CUR = {s:si, st:sti}; OPT.a11yOpen = false; render();
+}
+function step(d){
+  const flat = []; SCREENS.forEach((s,i)=>s.states.forEach((x,j)=>flat.push([i,j])));
+  let k = flat.findIndex(([i,j])=>i===CUR.s&&j===CUR.st); k = (k+d+flat.length)%flat.length;
+  CUR = {s:flat[k][0], st:flat[k][1]}; OPT.a11yOpen=false; render();
+}
+function buildNav(){
+  const nav = document.getElementById('nav');
+  nav.innerHTML = `<h2>מלאי המסכים (UX_SPEC §3)</h2>` + SCREENS.map((s,i)=>`<div class="nav-grp"><button type="button" class="nav-scr" data-nav="${i}:0"><span class="code">${s.id}</span>${esc(s.name)}</button><ul class="nav-states">${s.states.map((x,j)=>`<li><button type="button" data-nav="${i}:${j}">${esc(x.name)}</button></li>`).join('')}</ul></div>`).join('');
+  const sel = document.getElementById('sel-screen');
+  sel.innerHTML = SCREENS.map((s,i)=>`<option value="${i}">${s.id} · ${esc(s.name)}</option>`).join('');
+}
+function navSync(){
+  document.querySelectorAll('.nav-states button').forEach(b=>{const [i,j]=b.dataset.nav.split(':').map(Number); b.setAttribute('aria-current', String(i===CUR.s&&j===CUR.st));});
+  document.getElementById('sel-screen').value = CUR.s;
+  const ss = document.getElementById('sel-state');
+  ss.innerHTML = SCREENS[CUR.s].states.map((x,j)=>`<option value="${j}">${esc(x.name)}</option>`).join('');
+  ss.value = CUR.st;
+  document.querySelectorAll('[data-dev]').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.dev===OPT.dev)));
+  document.getElementById('opt-hc').checked = OPT.hc; document.getElementById('opt-anim').checked = OPT.noanim; document.getElementById('opt-size').value = OPT.size;
+}
+
+/* ---- live demo inside S3/opening ---- */
+const DEMO_REPLIES = ['q.onset.child.n','q.impact.child.n','q.prev_treatment','q.anything_else'];
+let demoK = 0;
+function demoReply(log, html, then){
+  const reduce = OPT.noanim || matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const tw = document.createElement('div'); tw.innerHTML = typing(); const node = tw.firstElementChild; log.appendChild(node); log.scrollTop = log.scrollHeight;
+  const send = fitEl.querySelector('[data-send]'); if (send) send.setAttribute('aria-disabled','true');
+  setTimeout(()=>{ node.remove(); const w=document.createElement('div'); w.innerHTML = bot(html); log.appendChild(w.firstElementChild); log.scrollTop = log.scrollHeight; then && then(); const ta=fitEl.querySelector('[data-composer]'); if (send) send.setAttribute('aria-disabled', ta && ta.value.trim()?'false':'true'); }, reduce?600:1300);
+}
+function demoChip(btn){
+  const log = fitEl.querySelector('.log'); if(!log) return;
+  const rel = btn.dataset.demo; const label = btn.textContent.trim();
+  const qc = fitEl.querySelector('.chips'); if (qc) qc.remove();
+  const u = document.createElement('div'); u.innerHTML = user(label); log.appendChild(u.firstElementChild);
+  const q = rel==='age_adult'?t('goal.core_onset_pattern.ask'):rel==='son'?t('q.age.child.m',{subject_ref:'הבן שלך'}):rel==='daughter'?t('q.age.child.f',{subject_ref:'הבת שלך'}):rel==='self'?t('q.age.self'):t('q.relation.other_followup');
+  demoReply(log, q, ()=>{ const tool = fitEl.querySelector('.tool'); const cw = tool.querySelector('.composer-wrap'); const c = document.createElement('div'); c.innerHTML = chips([chip(t('chat.quick.dont_know'),{alt:true,demo:'dk'})]); tool.insertBefore(c.firstElementChild, cw); });
+}
+function demoSend(){
+  const ta = fitEl.querySelector('[data-composer]'); const log = fitEl.querySelector('.log'); const send = fitEl.querySelector('[data-send]');
+  if (!ta || !log || !send) return;
+  if (send.getAttribute('aria-disabled')==='true'){ if(!fitEl.querySelector('.c-hint')){ const h=document.createElement('div'); h.className='c-hint'; h.setAttribute('role','status'); h.innerHTML=`${I('clock',15)} ${t('chat.send.wait')}`; ta.closest('.composer-wrap').prepend(h); setTimeout(()=>h.remove(),2500);} return; }
+  const v = ta.value.trim(); if (!v) return;
+  const qc = fitEl.querySelector('.chips'); if (qc) qc.remove();
+  const u = document.createElement('div'); u.innerHTML = user(v); log.appendChild(u.firstElementChild);
+  ta.value=''; ta.style.height=''; log.scrollTop = log.scrollHeight;
+  demoReply(log, t(DEMO_REPLIES[demoK++ % DEMO_REPLIES.length]));
+}
+
+/* ---- events ---- */
+document.addEventListener('click', e=>{
+  const nav = e.target.closest('[data-nav]');
+  if (nav){ const [i,j]=nav.dataset.nav.split(':').map(Number); CUR={s:i,st:j}; OPT.a11yOpen=false; render(); return; }
+  if (e.target.closest('[data-noop]')) e.preventDefault();
+  const demo = e.target.closest('[data-demo]');
+  if (demo && fitEl.contains(demo)){ if (demo.dataset.demo==='dk'){ const ta=fitEl.querySelector('[data-composer]'); ta.value=tv('chat.quick.dont_know'); const s=fitEl.querySelector('[data-send]'); s.setAttribute('aria-disabled','false'); demoSend(); } else demoChip(demo); return; }
+  const act = e.target.closest('[data-act]');
+  if (act && fitEl.contains(act)){
+    const a = act.dataset.act;
+    if (a==='a11y'){ OPT.a11yOpen=!OPT.a11yOpen; const keep=OPT.a11yOpen; render(false); OPT.a11yOpen=keep; return; }
+    if (a==='sim-hc'){ OPT.hc=!OPT.hc; } else if (a==='sim-anim'){ OPT.noanim=!OPT.noanim; } else if (a==='sim-size'){ OPT.size=(OPT.size+1)%3; } else if (a==='sim-links'){ OPT.links=!OPT.links; } else if (a==='sim-font'){ OPT.font=!OPT.font; } else if (a==='sim-reset'){ OPT.hc=false;OPT.noanim=false;OPT.size=0;OPT.links=false;OPT.font=false; }
+    if (a.startsWith('sim-')){ const keep=OPT.a11yOpen; render(false); OPT.a11yOpen=keep; if(keep){ fitEl.innerHTML = build(stateAt()); fit(); } return; }
+    if (a==='consent'){ const cb = fitEl.querySelector('#consent-cb'); if (cb && cb.checked){ go('S1','loading'); setTimeout(()=>go('S3','opening'), 900); } else go('S1','missing'); return; }
+    if (a==='tobottom'){ const l=fitEl.querySelector('.log'); l.scrollTop=l.scrollHeight; act.remove(); return; }
+    if (a==='copy-contact'){ const note=fitEl.querySelector('.copied-note'); if (note) note.hidden=false; return; }
+  }
+  const g = e.target.closest('[data-go]');
+  if (g && fitEl.contains(g)){ e.preventDefault(); const [s,st]=g.dataset.go.split('/'); go(s,st); return; }
+  if (e.target.closest('[data-send]') && fitEl.contains(e.target)) { demoSend(); return; }
+  const seg = e.target.closest('.segopt');
+  if (seg && fitEl.contains(seg)){ seg.parentElement.querySelectorAll('.segopt').forEach(b=>b.setAttribute('aria-checked','false')); seg.setAttribute('aria-checked','true'); }
+});
+document.addEventListener('input', e=>{
+  if (e.target.matches('[data-composer]')){
+    const ta = e.target; ta.style.height='auto'; ta.style.height=Math.min(ta.scrollHeight,120)+'px';
+    const s = fitEl.querySelector('[data-send]'); if (s && !fitEl.querySelector('.typing')) s.setAttribute('aria-disabled', ta.value.trim()?'false':'true');
+  }
+});
+document.addEventListener('keydown', e=>{
+  if (e.target.matches('[data-composer]') && e.key==='Enter' && !e.shiftKey && OPT.dev==='d'){ e.preventDefault(); demoSend(); return; }
+  if (e.key==='Escape' && OPT.a11yOpen){ OPT.a11yOpen=false; render(false); return; }
+  const inField = /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName);
+  if (!inField && (e.key==='ArrowLeft'||e.key==='ArrowRight') && !fitEl.contains(e.target)){ step(e.key==='ArrowLeft'?1:-1); }
+});
+document.getElementById('prev').onclick=()=>step(-1);
+document.getElementById('next').onclick=()=>step(1);
+document.getElementById('sel-screen').onchange=e=>{CUR={s:+e.target.value,st:0};OPT.a11yOpen=false;render();};
+document.getElementById('sel-state').onchange=e=>{CUR.st=+e.target.value;OPT.a11yOpen=false;render();};
+document.querySelectorAll('[data-dev]').forEach(b=>b.onclick=()=>{OPT.dev=b.dataset.dev;OPT.a11yOpen=false;render();});
+document.querySelectorAll('[data-theme-btn]').forEach(b=>b.onclick=()=>{const v=b.dataset.themeBtn; if(v==='auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme',v); document.querySelectorAll('[data-theme-btn]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));});
+document.getElementById('opt-work').onchange=e=>{OPT.working=e.target.checked;render(false);};
+document.getElementById('opt-ids').onchange=e=>{OPT.ids=e.target.checked;render(false);};
+document.getElementById('opt-hc').onchange=e=>{OPT.hc=e.target.checked;render(false);};
+document.getElementById('opt-anim').onchange=e=>{OPT.noanim=e.target.checked;render(false);};
+document.getElementById('opt-size').onchange=e=>{OPT.size=+e.target.value;render(false);};
+window.addEventListener('resize', fit);
+if (window.ResizeObserver) new ResizeObserver(fit).observe(fitEl);
+document.fonts && document.fonts.ready.then(fit);
+
+/* ---- init from hash: #S3/waiting/m (also reacts to hash changes, for links between roles) ---- */
+buildNav();
+function fromHash(){
+  const h = decodeURIComponent(location.hash.slice(1)).split('/');
+  if (h[2]==='d'||h[2]==='m') OPT.dev = h[2];
+  const si = SCREENS.findIndex(x=>x.id===h[0]);
+  if (si>=0){ CUR.s=si; const sti=SCREENS[si].states.findIndex(x=>x.id===h[1]); CUR.st=Math.max(0,sti); }
+  OPT.a11yOpen = false;
+  render(false);
+}
+window.addEventListener('hashchange', fromHash);
+fromHash();
+</script>
+</body>
+</html>

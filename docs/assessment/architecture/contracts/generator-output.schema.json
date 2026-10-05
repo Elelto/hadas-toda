@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hadas-toda.co.il/schemas/intake/v1/generator-output.schema.json",
+  "title": "Generator output (LLM call #2)",
+  "description": "Structured output of the message generator. The policy (code) has already chosen the move and the target goal; the generator only phrases ONE message. Code then verifies: move equals the requested move; target_slot_ids is a subset of the requested goal's slots; the output check passes (question count measured by code, not trusted from question_count; length; forbidden terms; URLs/phones allowlist; Latin ratio). On failure: one retry with the failure codes, then the goal's fixed template. Same wire-schema derivation rules as the extractor.",
+  "type": "object",
+  "required": ["move", "message", "question_count", "target_slot_ids", "summary_points"],
+  "properties": {
+    "move": { "$ref": "common.schema.json#/$defs/llmMove" },
+    "message": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1200,
+      "description": "Hebrew, gender-neutral, plain text (no markup, no links, no phone numbers). For move=summary: the warm summary paragraph that surrounds the fixed outcome text."
+    },
+    "question_count": { "type": "integer", "minimum": 0, "maximum": 5, "description": "Self-reported; code recounts." },
+    "target_slot_ids": {
+      "type": "array",
+      "maxItems": 10,
+      "items": { "$ref": "common.schema.json#/$defs/slotId" },
+      "description": "Slots this message asks about. Becomes last_assistant.asked_slot_ids (gates bare yes/no answers next turn)."
+    },
+    "summary_points": {
+      "description": "Only for move=summary (else null): the points the summary paragraph covers, each tied to filled slots, so code can verify the summary only mentions recorded facts.",
+      "anyOf": [
+        {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "required": ["text", "slot_ids"],
+            "properties": {
+              "text": { "type": "string", "maxLength": 300 },
+              "slot_ids": { "type": "array", "minItems": 1, "maxItems": 6, "items": { "$ref": "common.schema.json#/$defs/slotId" } }
+            },
+            "additionalProperties": false
+          }
+        },
+        { "type": "null" }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

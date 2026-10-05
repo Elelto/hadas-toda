@@ -1,0 +1,599 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hadas-toda.co.il/schemas/intake/v1/lead-record.schema.json",
+  "title": "Lead record + Hadas feedback",
+  "description": "Created server-side at handoff, in the same request that deletes the conversation content (round 4, blocker 1). D-01/SEC-15 minimisation: contact details and the summary exist only until delivery to Hadas succeeds (normally inside the handoff request; retries at most 7 days), then they are purged; what remains for 24 months is enum-only (system outcome, would_be_outcome_3, feedback) for the agreement metric. That remainder is PSEUDONYMOUS, not anonymous: lead_ref also appears in Hadas's email (privacy policy, SEC-14/L-11). Hadas's copy is her email. A lead can only follow an urgent flag: any raised flag that allows no form blocks the lead (SEC-11).",
+  "type": "object",
+  "required": [
+    "lead_version",
+    "lead_id",
+    "session_id",
+    "created_at",
+    "channel",
+    "contact",
+    "handoff_consent",
+    "system",
+    "summary",
+    "delivery",
+    "feedback",
+    "retention",
+    "lead_ref",
+    "session_purged_at"
+  ],
+  "properties": {
+    "lead_version": {
+      "const": "1.0"
+    },
+    "lead_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{16,64}$"
+    },
+    "session_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{16,64}$"
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/isoDateTime"
+    },
+    "channel": {
+      "$ref": "common.schema.json#/$defs/channel"
+    },
+    "contact": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "name",
+            "phone_e164"
+          ],
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            "phone_e164": {
+              "type": "string",
+              "pattern": "^\\+972[0-9]{8,9}$"
+            },
+            "preferred_channel": {
+              "enum": [
+                "call",
+                "whatsapp"
+              ]
+            },
+            "preferred_time": {
+              "enum": [
+                "morning",
+                "afternoon",
+                "evening",
+                "any"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "handoff_consent": {
+      "type": "object",
+      "required": [
+        "record_id",
+        "text_ref",
+        "at"
+      ],
+      "properties": {
+        "record_id": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "text_ref": {
+          "$ref": "common.schema.json#/$defs/textRef"
+        },
+        "at": {
+          "$ref": "common.schema.json#/$defs/isoDateTime"
+        }
+      },
+      "additionalProperties": false
+    },
+    "system": {
+      "description": "What the system decided, frozen at handoff time.",
+      "type": "object",
+      "required": [
+        "outcome",
+        "reason_code",
+        "rule_id",
+        "decision_table_version",
+        "red_flag_ids",
+        "content_versions",
+        "would_be_outcome_3"
+      ],
+      "properties": {
+        "outcome": {
+          "$ref": "common.schema.json#/$defs/outcomeId"
+        },
+        "reason_code": {
+          "$ref": "common.schema.json#/$defs/entityId"
+        },
+        "rule_id": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/entityId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "downgraded_from": {
+          "enum": [
+            3,
+            4
+          ]
+        },
+        "decision_table_version": {
+          "$ref": "common.schema.json#/$defs/semver"
+        },
+        "red_flag_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/entityId"
+          }
+        },
+        "subject_relation": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "age_band": {
+          "type": "string",
+          "maxLength": 32
+        },
+        "domains": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 64
+          }
+        },
+        "content_versions": {
+          "$ref": "common.schema.json#/$defs/contentVersions"
+        },
+        "outcome_shown": {
+          "type": "boolean",
+          "description": "false for early handoff (outcome computed and recorded, not displayed)."
+        },
+        "entry_point": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "red_flag_tiers": {
+          "type": "array",
+          "items": {
+            "const": "urgent"
+          },
+          "description": "Only urgent can precede a lead (D-04 + SEC-11): a lead after an emergency/hotline/child_safety flag is invalid."
+        },
+        "duration_s": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "user_turns": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "would_be_outcome_3": {
+          "enum": [
+            "true",
+            "false",
+            "undetermined"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "summary": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "slots",
+            "notes",
+            "unresolved",
+            "generated_text",
+            "generated_origin",
+            "header_text_ref",
+            "missing",
+            "questions_asked",
+            "tags",
+            "outcome_reason_he"
+          ],
+          "properties": {
+            "slots": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "slot_id",
+                  "label_he",
+                  "status",
+                  "display_value"
+                ],
+                "properties": {
+                  "slot_id": {
+                    "$ref": "common.schema.json#/$defs/slotId"
+                  },
+                  "label_he": {
+                    "type": "string",
+                    "maxLength": 120
+                  },
+                  "status": {
+                    "$ref": "common.schema.json#/$defs/slotStatus"
+                  },
+                  "display_value": {
+                    "type": "string",
+                    "maxLength": 600
+                  },
+                  "quotes": {
+                    "type": "array",
+                    "maxItems": 3,
+                    "items": {
+                      "type": "string",
+                      "maxLength": 600
+                    }
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "notes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 600
+              }
+            },
+            "unresolved": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 300
+              },
+              "description": "Conflicts left open, critical slots unknown/declined."
+            },
+            "generated_text": {
+              "type": "string",
+              "maxLength": 1500
+            },
+            "generated_origin": {
+              "enum": [
+                "generated",
+                "template_fallback"
+              ]
+            },
+            "header_text_ref": {
+              "$ref": "common.schema.json#/$defs/textRef",
+              "description": "'Automatic summary of the applicant's words, not a professional assessment'."
+            },
+            "missing": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 200
+              },
+              "description": "Critical/desired details unknown, declined or never collected (labels)."
+            },
+            "questions_asked": {
+              "type": "array",
+              "maxItems": 10,
+              "items": {
+                "type": "object",
+                "required": [
+                  "kind"
+                ],
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "faq",
+                      "unanswered",
+                      "clinical"
+                    ]
+                  },
+                  "faq_id": {
+                    "type": "string",
+                    "maxLength": 64
+                  },
+                  "quote": {
+                    "type": "string",
+                    "maxLength": 300
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "tags": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "early_handoff",
+                  "partial_file",
+                  "returned_after_outcome",
+                  "red_flag",
+                  "summary_unavailable",
+                  "extraction_gap",
+                  "masked_identifiers",
+                  "document_request",
+                  "outcome3_anyway"
+                ]
+              }
+            },
+            "outcome_reason_he": {
+              "type": "string",
+              "maxLength": 300,
+              "description": "Plain-language reason: the rule's reason_label_he, downgrade guard, or 'early handoff'."
+            },
+            "addenda_for_hadas": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 200
+              }
+            },
+            "signs_present": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 200
+              },
+              "description": "label_he of derived conditions that were TRUE (e.g. wtc_* signs)."
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "delivery": {
+      "type": "object",
+      "required": [
+        "status",
+        "transport",
+        "attempts"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "pending",
+            "delivered",
+            "failed"
+          ]
+        },
+        "transport": {
+          "enum": [
+            "emailjs_rest",
+            "email_api",
+            "test_sink"
+          ]
+        },
+        "attempts": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 20
+        },
+        "last_attempt_at": {
+          "$ref": "common.schema.json#/$defs/isoDateTime"
+        },
+        "delivered_at": {
+          "$ref": "common.schema.json#/$defs/isoDateTime"
+        },
+        "error_code": {
+          "type": "string",
+          "maxLength": 64
+        }
+      },
+      "additionalProperties": false
+    },
+    "feedback": {
+      "type": "object",
+      "required": [
+        "triage",
+        "summary_rating",
+        "first_call"
+      ],
+      "properties": {
+        "triage": {
+          "description": "Moment A: is this lead relevant to her practice?",
+          "anyOf": [
+            {
+              "type": "object",
+              "required": [
+                "relevant",
+                "at"
+              ],
+              "properties": {
+                "relevant": {
+                  "enum": [
+                    "relevant",
+                    "not_relevant"
+                  ]
+                },
+                "at": {
+                  "$ref": "common.schema.json#/$defs/isoDateTime"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "summary_rating": {
+          "description": "Moment A, same tap: two levels (UX 5.3). Set only together with triage = relevant.",
+          "anyOf": [
+            {
+              "type": "object",
+              "required": [
+                "rating",
+                "at"
+              ],
+              "properties": {
+                "rating": {
+                  "enum": [
+                    "accurate_useful",
+                    "inaccurate"
+                  ]
+                },
+                "at": {
+                  "$ref": "common.schema.json#/$defs/isoDateTime"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "first_call": {
+          "description": "Moment B (monthly list): THE accuracy metric. hadas_outcome is required when a call happened.",
+          "anyOf": [
+            {
+              "type": "object",
+              "required": [
+                "happened",
+                "at"
+              ],
+              "properties": {
+                "happened": {
+                  "type": "boolean"
+                },
+                "hadas_outcome": {
+                  "$ref": "common.schema.json#/$defs/outcomeId",
+                  "description": "Which outcome Hadas thinks was correct for this applicant."
+                },
+                "at": {
+                  "$ref": "common.schema.json#/$defs/isoDateTime"
+                }
+              },
+              "additionalProperties": false,
+              "allOf": [
+                {
+                  "if": {
+                    "type": "object",
+                    "properties": {
+                      "happened": {
+                        "const": true
+                      }
+                    },
+                    "required": [
+                      "happened"
+                    ]
+                  },
+                  "then": {
+                    "type": "object",
+                    "required": [
+                      "hadas_outcome"
+                    ],
+                    "properties": {
+                      "hadas_outcome": true
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "history": {
+          "type": "array",
+          "maxItems": 50,
+          "description": "Every feedback change (re-marking is allowed; the latest wins).",
+          "items": {
+            "type": "object",
+            "required": [
+              "at",
+              "moment",
+              "value"
+            ],
+            "properties": {
+              "at": {
+                "$ref": "common.schema.json#/$defs/isoDateTime"
+              },
+              "moment": {
+                "enum": [
+                  "triage",
+                  "summary_rating",
+                  "first_call"
+                ]
+              },
+              "value": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "source": {
+                "enum": [
+                  "lead_email",
+                  "monthly_list"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "description": "UX draft 3 (5.3-5.5), critic F8: moment A = ONE optional tap in the lead email, 3 buttons (relevant + accurate / relevant + inaccurate / not relevant) -> confirm page -> triage (+ summary_rating when relevant). Moment B = the monthly email's list of the month's unmarked leads (lead_ref, date, system outcome); each row opens the same light page: 5 options mapped 1:1 to outcomes, or 'no call took place' -> first_call. Hadas can do it alone (~10 min) or in the monthly meeting with Eliya, who sees only lead_ref and values (L-26). No reminders, no weekly digest, no typing, no reason tags."
+    },
+    "retention": {
+      "type": "object",
+      "required": [
+        "purge_content_by",
+        "delete_record_after"
+      ],
+      "properties": {
+        "purge_content_by": {
+          "$ref": "common.schema.json#/$defs/isoDateTime"
+        },
+        "delete_record_after": {
+          "$ref": "common.schema.json#/$defs/isoDate"
+        }
+      },
+      "additionalProperties": false
+    },
+    "content_purged_at": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/isoDateTime"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "lead_ref": {
+      "type": "string",
+      "pattern": "^[A-Z0-9]{3}-[A-Z0-9]{2,4}$",
+      "description": "Short reference printed in the lead email footer and in the monthly list (e.g. K7Q-2M). Not derived from the phone or name."
+    },
+    "session_purged_at": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/isoDateTime"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Blocker 1: when the conversation's case file and traces were deleted. Written in the handoff request; null only if that delete failed, and then the hourly job deletes the session and sets it."
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,3666 @@
+{
+  "header": {
+    "contract": "fixed-texts",
+    "contract_version": "1.0.0",
+    "version": "0.5.0",
+    "status": "draft",
+    "updated_at": "2026-10-05T21:00:00+03:00",
+    "approvals": [],
+    "changelog": [
+      {
+        "version": "0.1.0",
+        "date": "2026-10-04",
+        "summary": "טיוטה 1 של תפקיד 3 (רק ב-texts.he.md)."
+      },
+      {
+        "version": "0.2.0",
+        "date": "2026-10-05",
+        "summary": "סבב 2: יישור ל-UX §7, DRAFT_NOTES §7 (סבב 3), ARCHITECTURE §1.9; 34 שאלות מטרה, 9 הודעות דגל, wtc, FAQ שלם לכל נושא, 101 בנוסחי תקלה. נגזר מ-texts.he.md."
+      },
+      {
+        "version": "0.3.0",
+        "date": "2026-10-05",
+        "summary": "סבב 3: D-01–D-04, ביקורת משפטית §2, ביקורת אבטחה, UX טיוטה 3, פערי UI, תוכנית מטרות v2 (18 מטרות). נוסחי D-02, redflag.footer, וריאנטי וואטסאפ, ack.*, אימות בקוד. נגזר מ-texts.he.md בעזרת build_texts_json.mjs."
+      },
+      {
+        "version": "0.4.0",
+        "date": "2026-10-05",
+        "summary": "סבב 4 של הארכיטקט: נוסחי 32KB, בלי מודל, פרטיות באישור לפי מצב המסירה, שורת התוספת של document_request, D-13 (גיל + minor.self.before_text עם ער\"ן וסה\"ר); error.delete_failed \"תוך כ-24 שעות\"; יצאו משימוש redflag.cta.er ו-hadas.email.tag.possible_duplicate; שדה active; chat.*, resume.* ו-closed.keep_note בבאנדל."
+      },
+      {
+        "version": "0.5.0",
+        "date": "2026-10-05",
+        "summary": "תיקון זול לפני שער 1 (אימות משפטי, סבב 2): form.confirmation.privacy.both_pending (מסירה ומחיקה ממתינות), form.confirmation.title.pending (\"בדרך\", לא \"נשלחו\"), ו-form.confirmation.privacy.pending@v2 (\"תוך כשבוע\" במקום \"לכל היותר 7 ימים\", כי הניקוי השעתי יכול לחרוג בשעה)."
+      }
+    ]
+  },
+  "locale": "he",
+  "texts": {
+    "entry.button": {
+      "version": 2,
+      "text": "שיחה קצרה עם העוזר הדיגיטלי",
+      "purpose_he": "הכפתור הראשי של נקודת כניסה (דף הבית, תחומי טיפול).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "entry.button.short": {
+      "version": 1,
+      "text": "לשיחה עם העוזר הדיגיטלי",
+      "purpose_he": "כרטיסים ורצועות צרים (דברו איתי, בלוג).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "entry.home.sub": {
+      "version": 1,
+      "text": "עוזר דיגיטלי · כ-5 דקות",
+      "purpose_he": "שורת משנה מתחת לכפתור בדף הבית.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "entry.teaser": {
+      "version": 1,
+      "text": "מתלבטים אם לפנות? אפשר לספר לעוזר הדיגיטלי של הדס, בכמה שאלות קצרות, מה מעסיק. הדס תקבל סיכום מסודר, ובסוף יוצג כיוון להמשך.",
+      "purpose_he": "שורה ליד הכפתור.",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "entry.services.title": {
+      "version": 1,
+      "text": "לא בטוחים איזה תחום מתאים?",
+      "purpose_he": "רצועה בעמוד תחומי הטיפול.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "entry.services.body": {
+      "version": 1,
+      "text": "אפשר לספר לעוזר הדיגיטלי של הדס מה מעסיק, בכמה שאלות קצרות. הדס תקבל סיכום מסודר.",
+      "purpose_he": "רצועה בעמוד תחומי הטיפול.",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "entry.contact.title": {
+      "version": 1,
+      "text": "שיחה עם העוזר הדיגיטלי",
+      "purpose_he": "כרטיס בדברו איתי, אונליין ובני ברק.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "entry.contact.body": {
+      "version": 1,
+      "text": "כמה שאלות קצרות, וסיכום מסודר שמגיע להדס. כ-5 דקות.",
+      "purpose_he": "כרטיס בדברו איתי, אונליין ובני ברק.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "entry.landing.inline": {
+      "version": 1,
+      "text": "מעדיפים לספר במילים שלכם? שיחה קצרה עם העוזר הדיגיטלי",
+      "purpose_he": "שורה מעל SmartLeadForm בדפי הנחיתה.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "entry.blog.title": {
+      "version": 1,
+      "text": "מתלבטים אם לפנות להדס?",
+      "purpose_he": "רצועה בסוף פוסט בבלוג.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "entry.unavailable": {
+      "version": 1,
+      "text": "העוזר לא זמין כרגע · ליצירת קשר · חירום: 101",
+      "purpose_he": "מחליף את הקריאה לפעולה כשהכלי מושבת (UX §2.6). מקשר לדברו איתי.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "page.tool.h1": {
+      "version": 1,
+      "text": "שיחת היכרות עם העוזר הדיגיטלי",
+      "purpose_he": "כותרת העמוד הייעודי (גם intro.title של UX).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "page.tool.sub": {
+      "version": 1,
+      "text": "לפני שפונים להדס תודה, קלינאית תקשורת: כמה שאלות קצרות, וסיכום מסודר שמגיע אליה.",
+      "purpose_he": "שורת המשנה בעמוד (גם intro.body של UX).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "page.tool.steps": {
+      "version": 3,
+      "text": "1. עוזר דיגיטלי שואל שאלה אחת בכל פעם. זה לוקח בערך 5 דקות.\n2. הדס מקבלת סיכום רק אם בוחרים לשלוח אותו.\n3. אפשר לעצור ולמחוק את השיחה בכל רגע. מה שכבר נשלח להדס נשאר אצלה.",
+      "purpose_he": "\"איך זה עובד\" ב-S1 (UX page.how.1–3).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: ⚖️ כי נקודות 2–3 הן הבטחות פרטיות. נקודה 2 נכונה לפי D-01 (אין מדגם סינון בגרסה 1). נקודה 3: מחיקה בשרת מיד (D-01), ופנייה שכבר נשלחה נשארת אצל הדס (L-04)."
+    },
+    "page.tool.not_this": {
+      "version": 1,
+      "text": "העוזר הוא תוכנה אוטומטית. הוא אינו הדס, אינו מאבחן ואינו נותן ייעוץ מקצועי או רפואי. במצב חירום יש להתקשר למד\"א 101.",
+      "purpose_he": "S1, מה זה לא.",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "page.tool.direct": {
+      "version": 1,
+      "text": "מעדיפים לדבר ישירות? אפשר להתקשר להדס: {{hadas_phone}}, או לכתוב לה בוואטסאפ.",
+      "placeholders": [
+        "hadas_phone"
+      ],
+      "purpose_he": "תחתית S1 (גם intro.alt_contact של UX).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "intro.greeting": {
+      "version": 1,
+      "text": "שלום, כאן העוזר הדיגיטלי של הדס תודה, קלינאית תקשורת.\nאני תוכנה אוטומטית, לא הדס עצמה. בכמה שאלות קצרות אפשר לספר מה מעסיק, והדס תקבל סיכום מסודר לפני שהיא חוזרת.\nזה לוקח בדרך כלל כמה דקות.",
+      "purpose_he": "טקסט בראש S1, לא בועה (החלטת UX).",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "consent.title": {
+      "version": 1,
+      "text": "לפני שמתחילים",
+      "purpose_he": "כותרת אזור ההסכמה ב-S1.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "consent.disclaimer": {
+      "version": 3,
+      "text": "- העוזר הוא תוכנה (בינה מלאכותית), לא הדס. הוא לא מאבחן, והכיוון בסוף עלול לטעות.\n- מה שנכתב, כולל מידע על בריאות, מעובד אצל ספק בינה מלאכותית. {{ai_provider_clause}}\n- {{deletion_clause}} להדס נשלח סיכום רק אם יושארו פרטים.\n- מסירת המידע אינה חובה. האחראית עליו: הדס תודה. זכויות: [מדיניות הפרטיות]({{privacy_url}})\n- מיועד לגיל 18 ומעלה, ועל ילד — להורה או לאפוטרופוס.",
+      "placeholders": [
+        "ai_provider_clause",
+        "deletion_clause",
+        "privacy_url"
+      ],
+      "purpose_he": "S1, גלוי במלואו. נשמרים זמן האישור ומזהה הנוסח.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: 52 מילים קבועות, ועוד `deletion_clause` (11 מילים בערך המומלץ) ו-`ai_provider_clause` (עד 7), כלומר עד 70. כל הרכיבים של L-09 בפנים: מידע על בריאות, ספק ה-AI, מחיקה לפי D-01, למי נשלח, שהמסירה אינה חובה, האחראית, זכויות, גיל והורה. הוצאו לעומת v2 רק דברים שמופיעים במקום אחר באותו מסך: \"ולא אדם\" (`intro.greeting`), \"ייעוץ רפואי\" ו\"איש מקצוע\" (`page.tool.not_this`), ו\"לא לכתוב פרטים מזהים\" (עבר ל-`about.data`). אם עורך הדין ידרוש עוד רכיבים, הם גוברים על יעד ה-UX (L-09). סעיף החירום הוא `consent.emergency`, שמוצג מודגש בתוך אותה תיבה."
+    },
+    "consent.emergency": {
+      "version": 1,
+      "text": "במצב חירום, או בקושי פתאומי בדיבור, בהבנה או בבליעה: מד\"א 101 — לא השיחה הזו.",
+      "purpose_he": "S1. מוצג כסעיף החירום המודגש בתוך תיבת ההסתייגות (החלטת UX ו-UI). מזהה נפרד, כדי שההסתייגות תישאר עד 70 מילים.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: UX טיוטה 3 כתב שאין צורך במזהה נפרד, כי מעצב ה-UI לא ראה אותו (המוקאפ בנוי על טיוטה 1). ההסכמה נרשמת עם הגרסאות של `consent.disclaimer`, של `consent.emergency` ושל `consent.checkbox` (→ ארכיטקט). קליני: המשמעות דורשת אישור הדס."
+    },
+    "consent.checkbox": {
+      "version": 2,
+      "text": "ידוע לי שזו תוכנה אוטומטית ולא אבחון, ושגילי 18 ומעלה. הסכמה לעיבוד מה שייכתב כאן, כולל מידע על בריאות, כמתואר למעלה וב[מדיניות הפרטיות]({{privacy_url}}).",
+      "placeholders": [
+        "privacy_url"
+      ],
+      "purpose_he": "תיבת הסכמה חובה ב-S1. הכפתור לא מושבת לפני הסימון (UX S1).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: חלופת התיבה האחת של המבקר המשפטי (§2.1), מילה במילה, ועוד קישור. אומרת בדיוק למה מסכימים (SEC-16). \"כמתואר למעלה\" מכסה את הספק ואת המחיקה. אם עורך הדין ידרוש שתי תיבות (שאלה 17): `consent.checkbox.ack` + `consent.checkbox.data`."
+    },
+    "consent.checkbox.ack": {
+      "version": 1,
+      "text": "ידוע לי שזו תוכנה אוטומטית ולא אבחון, ושבמצב חירום פונים למד\"א 101. גילי 18 ומעלה, ואם השיחה על ילד — אני ההורה או האפוטרופוס.",
+      "purpose_he": "תיבה ראשונה מתוך שתיים, רק אם עורך הדין ידרוש (UX `consent.checkbox.label`).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — חלופה, תלוי בשאלה 17 לעורך הדין.",
+      "active": false
+    },
+    "consent.checkbox.data": {
+      "version": 1,
+      "text": "הסכמה לעיבוד מה שייכתב בשיחה, כולל מידע על בריאות, כמתואר למעלה וב[מדיניות הפרטיות]({{privacy_url}}).",
+      "placeholders": [
+        "privacy_url"
+      ],
+      "purpose_he": "תיבה שנייה, רק אם עורך הדין ידרוש (UX `consent.checkbox2.label`, ARCHITECTURE `scope: intake_health_data`).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — חלופה, תלוי בשאלה 17 לעורך הדין.",
+      "active": false
+    },
+    "consent.checkbox.error": {
+      "version": 1,
+      "text": "כדי להתחיל, יש לסמן את תיבת ההסכמה.",
+      "purpose_he": "S1, לחיצה על התחלה בלי סימון.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "consent.button.accept": {
+      "version": 1,
+      "text": "הסכמה והתחלה",
+      "purpose_he": "כפתור ההתחלה ב-S1.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "consent.start_loading": {
+      "version": 1,
+      "text": "מתחילים…",
+      "purpose_he": "מצב טעינה של כפתור ההתחלה.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "consent.button.decline": {
+      "version": 1,
+      "text": "לא עכשיו",
+      "purpose_he": "כפתור משני ב-S1.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "consent.declined": {
+      "version": 1,
+      "text": "בסדר גמור. אפשר לפנות להדס ישירות: בטלפון {{hadas_phone}}, בוואטסאפ, או בטופס יצירת הקשר באתר.",
+      "placeholders": [
+        "hadas_phone"
+      ],
+      "purpose_he": "אחרי \"לא עכשיו\".",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "consent.reconsent_note": {
+      "version": 2,
+      "text": "נוסח ההסבר וההסכמה עודכן. כדי להמשיך, יש לאשר אותו שוב.",
+      "purpose_he": "S1, כשנוסח ההסתייגות עודכן ויש שיחה פתוחה.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: אין מסמך \"תנאים\" (L-09)."
+    },
+    "consent.privacy_link": {
+      "version": 1,
+      "text": "מדיניות הפרטיות",
+      "purpose_he": "קישור למדיניות הפרטיות (גם about.privacy_link).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "resume.prompt": {
+      "version": 3,
+      "text": "יש שיחה שהתחילה {{relative_time}} ולא הסתיימה. אפשר להמשיך מאותה נקודה, להתחיל מחדש או למחוק אותה.",
+      "placeholders": [
+        "relative_time"
+      ],
+      "purpose_he": "S2, יש שיחה פתוחה. שום תוכן מהשיחה לא מוצג לפני \"המשך\" (SEC-19).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: שלוש פעולות באותו משקל: `resume.continue` · `resume.restart` · `resume.delete` (UX). בלי \"עצרנו\" (VOICE 1.4).",
+      "client_bundle": true
+    },
+    "resume.continue": {
+      "version": 1,
+      "text": "המשך",
+      "purpose_he": "כפתור ב-S2.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "resume.restart": {
+      "version": 1,
+      "text": "התחלה מחדש",
+      "purpose_he": "כפתור ב-S2.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "resume.delete": {
+      "version": 1,
+      "text": "מחיקת השיחה",
+      "purpose_he": "כפתור ב-S2, באותו משקל כמו \"המשך\" ו\"התחלה מחדש\" (SEC-19, UX). פותח את דיאלוג המחיקה (`chat.delete.*`), ואחריו S9.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "resume.restart_confirm.title": {
+      "version": 1,
+      "text": "התחלה מחדש",
+      "purpose_he": "דיאלוג התחלה מחדש.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "resume.restart_confirm": {
+      "version": 2,
+      "text": "להתחיל מחדש? השיחה הקודמת תימחק עכשיו, גם מהשרת.",
+      "purpose_he": "דיאלוג התחלה מחדש (UX `dialog.restart.body`).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: לפי UX S2, התחלה מחדש מוחקת את השיחה הקודמת בשרת (→ ארכיטקט: אותו `DELETE` של D-01).",
+      "client_bundle": true
+    },
+    "resume.restart_confirm.yes": {
+      "version": 1,
+      "text": "התחלה מחדש",
+      "purpose_he": "כפתור בדיאלוג התחלה מחדש.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "resume.restart_confirm.no": {
+      "version": 1,
+      "text": "ביטול",
+      "purpose_he": "כפתור בדיאלוג התחלה מחדש.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "resume.submitted.title": {
+      "version": 1,
+      "text": "כבר נשלחה פנייה להדס",
+      "purpose_he": "S2, כבר נשלחה פנייה מהמכשיר.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "resume.submitted.body": {
+      "version": 2,
+      "text": "מהמכשיר הזה נשלחה פנייה להדס ב-{{submitted_date}}. אם עוד לא חזרו אליך, אפשר להתקשר: {{hadas_phone}}. אפשר גם להתחיל פנייה חדשה.",
+      "placeholders": [
+        "submitted_date",
+        "hadas_phone"
+      ],
+      "purpose_he": "S2, כבר נשלחה פנייה מהמכשיר.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: לא אומר ולא רומז על מי הייתה הפנייה (SEC 2.1.6). לכן הוסר \"למשל על מישהו אחר\".",
+      "client_bundle": true
+    },
+    "resume.submitted.new": {
+      "version": 1,
+      "text": "פנייה חדשה",
+      "purpose_he": "כפתור ב-S2.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "resume.marker_remove": {
+      "version": 1,
+      "text": "הסרת הסימון",
+      "purpose_he": "קישור ב-S2, מצב \"כבר נשלחה פנייה\". מוחק את הסימון המקומי (תאריך בלבד, SEC 2.1.6). לא נוגע בפנייה שנשלחה.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.header.title": {
+      "version": 1,
+      "text": "העוזר הדיגיטלי של הדס תודה",
+      "purpose_he": "הפס העליון.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.header.subtitle": {
+      "version": 1,
+      "text": "מענה אוטומטי",
+      "purpose_he": "תגית בפס העליון (UX chat.header.badge).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.disclaimer_line": {
+      "version": 2,
+      "text": "עוזר דיגיטלי, לא הדס · לא אבחון · חירום: 101",
+      "purpose_he": "השורה הקבועה בדסקטופ ובטאבלט.",
+      "legal_review": "required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.disclaimer_line.short": {
+      "version": 1,
+      "text": "מענה אוטומטי · לא אבחון · חירום: 101",
+      "purpose_he": "השורה הקבועה **במובייל (ברירת מחדל, החלטה בסבב 3)** ובזום 200%.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: תשובה ל-UI (ג): מקובל. המבקר המשפטי כבר אישר את שתי השורות (§2.6). שלושת הרכיבים ש-GOALS דורש נשארים: אוטומטי, לא אבחון, 101. \"לא הדס\" נשמר בפס העליון, שבו מוצגים תמיד `chat.header.title` (\"העוזר הדיגיטלי של הדס תודה\") ו-`chat.header.subtitle` (\"מענה אוטומטי\"), ובקישור `chat.disclaimer_more`. **תנאי:** אם הפס העליון מתקצר במובייל עד שהכותרת לא מוצגת, חוזרים לשורה המלאה.",
+      "client_bundle": true
+    },
+    "chat.disclaimer_more": {
+      "version": 1,
+      "text": "עוד",
+      "purpose_he": "קישור אחרי השורה הקבועה, פותח את \"על העוזר\".",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.stage.1": {
+      "version": 1,
+      "text": "היכרות",
+      "purpose_he": "מחוון השלבים.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.stage.2": {
+      "version": 1,
+      "text": "השלמת פרטים",
+      "purpose_he": "מחוון השלבים.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.stage.3": {
+      "version": 1,
+      "text": "סיכום",
+      "purpose_he": "מחוון השלבים.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.input.placeholder": {
+      "version": 1,
+      "text": "כתיבת הודעה…",
+      "purpose_he": "שדה הקלט הריק.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.send.label": {
+      "version": 1,
+      "text": "שליחה",
+      "purpose_he": "כפתור השליחה (גם תווית נגישות).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.send.wait": {
+      "version": 2,
+      "text": "התשובה בדרך. אפשר לשלוח אחרי שתגיע.",
+      "purpose_he": "כשהשליחה חסומה עד שמגיעה תשובה (UX chat.composer.wait). אפשר להמשיך להקליד.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: תשובה ל-UI (ד): נוסח העבודה (\"עוד לא קיבלתי תשובה\") לא אמר מי מדבר. כאן המערכת מתארת מצב, בלי \"אני\".",
+      "client_bundle": true
+    },
+    "chat.input.too_long_hint": {
+      "version": 1,
+      "text": "הודעה ארוכה. כדאי לקצר, ולפתוח במה שהשתנה לאחרונה.",
+      "purpose_he": "שורת רמז מעל 800 תווים. **השליחה לא נחסמת** (SEC-06, UX S3). אחרי השליחה: בדיקת דגלים בלבד, ואז `meta.too_long`.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.input.too_long_block": {
+      "version": 1,
+      "text": "ההודעה ארוכה מדי ולא נשלחה. הטקסט נשאר בשדה, ואפשר לקצר אותו או לחלק אותו לכמה הודעות. אם משהו השתנה לאחרונה או הופיע פתאום, כדאי לכתוב את זה קודם, בכמה מילים. במצב חירום: מד\"א 101.",
+      "purpose_he": "בועה ליד שדה הקלט, כשגוף הבקשה עובר את תקרת 32KB (כ-16,000 תווי עברית). הממשק בודק את הגודל **לפני** שליחה, לא שולח, והטקסט נשאר בשדה (ARCHITECTURE §6.1, חוסם 3). אין `maxlength` ואין חיתוך.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: 101 חובה. נחוץ כי ההודעה לא נשלחה, ולכן גם לא עברה בדיקת דגלים בשרת. אומר במפורש שלא נשלחה, ומה לעשות: לקצר, לחלק, ולפתוח במה שהשתנה פתאום (כמו `meta.too_long`, PERSONAS TX-03). בבאנדל (`chat.*`). \"32KB\" לא מופיע, כי הפונה לא מודד בבייטים.",
+      "client_bundle": true
+    },
+    "chat.typing": {
+      "version": 1,
+      "text": "ההודעה בדרך…",
+      "purpose_he": "חיווי המתנה.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.slow": {
+      "version": 1,
+      "text": "התשובה בדרך, עוד רגע.",
+      "purpose_he": "אחרי 8 שניות המתנה (UX chat.status.slow).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.not_sent": {
+      "version": 1,
+      "text": "לא נשלחה",
+      "purpose_he": "תווית על בועה שלא נשלחה.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.new_message": {
+      "version": 1,
+      "text": "הודעה חדשה",
+      "purpose_he": "התווית הגלויה \"הודעה חדשה\" כשהפונה גלל למעלה (UI). תווית הנגישות שלה היא `a11y.new_message_pill`.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.quick.dont_know": {
+      "version": 1,
+      "text": "לא ידוע לי",
+      "purpose_he": "כפתור בכל שאלה סגורה (החלטת UX).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.quick.have_question": {
+      "version": 1,
+      "text": "יש לי שאלה",
+      "purpose_he": "רק בהודעה הראשונה ובתפריט (החלטת UX). פותח את faq.topic.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.end.title": {
+      "version": 1,
+      "text": "לצאת מהשיחה?",
+      "purpose_he": "דיאלוג יציאה.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.end.confirm": {
+      "version": 3,
+      "text": "מה שסיפרת לא יישלח להדס. אחרי \"לצאת\": {{expiry_clause}} \"לצאת ולמחוק\" מוחק אותה עכשיו, גם מהשרת.",
+      "placeholders": [
+        "expiry_clause"
+      ],
+      "purpose_he": "דיאלוג יציאה (S11), 3 פעולות.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: D-01: \"לצאת\" שומר את השיחה לחזרה, והיא נמחקת מעצמה בתום החלון. \"לצאת ולמחוק\" הוא אותו `DELETE` כמו \"סיום ומחיקה\". מחליף את `dialog.exit.resume_hint` של UX ושל המבקר המשפטי.",
+      "client_bundle": true
+    },
+    "chat.end.stay": {
+      "version": 1,
+      "text": "להמשיך בשיחה",
+      "purpose_he": "כפתור ראשי בדיאלוג יציאה. מקבל מיקוד.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.end.leave": {
+      "version": 1,
+      "text": "לצאת",
+      "purpose_he": "כפתור בדיאלוג יציאה. השיחה נשמרת לחזרה עד 24 שעות מההודעה האחרונה, ואז נמחקת (D-01).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.end.leave_delete": {
+      "version": 1,
+      "text": "לצאת ולמחוק",
+      "purpose_he": "כפתור בדיאלוג יציאה. ישר ל-`DELETE` ול-S9, בלי דיאלוג נוסף (הבחירה כאן היא האישור, UX S11).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.ended": {
+      "version": 2,
+      "text": "השיחה הסתיימה. אפשר לפנות להדס בכל זמן: {{hadas_phone}}. במצב חירום: מד\"א 101.",
+      "placeholders": [
+        "hadas_phone"
+      ],
+      "purpose_he": "S9, אחרי מחיקה, ואחרי יציאה.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: נוסף 101 (מוסכמת 101: נוסח של סיום שיחה).",
+      "client_bundle": true
+    },
+    "chat.delete.title": {
+      "version": 1,
+      "text": "מחיקת השיחה",
+      "purpose_he": "דיאלוג מחיקה.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.delete.confirm": {
+      "version": 2,
+      "text": "למחוק את השיחה? היא תימחק עכשיו גם מהשרת, ואי אפשר יהיה לבטל, לחזור אליה או לשלוח את הפרטים להדס. בשרת נשאר רק רישום טכני, בלי תוכן.",
+      "purpose_he": "דיאלוג מחיקה (S11), 2 פעולות. משמש ל\"סיום ומחיקה\" בתוצאה, ל\"מחיקת השיחה\" ב-S2 ולמחיקה מהתפריט.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: D-01: המחיקה מיידית בשרת. נשארות רק רשומת מדדים ורשומת הסכמה, שתיהן בלי תוכן (\"רישום טכני\"). אחרי מחיקה אי אפשר לשלוח טופס (UX). \"בשרת\" מגביל את ה\"רק\" לשרת של האתר; השמירה אצל ספק ה-AI מתוארת ב-`ai_provider_clause` ובמדיניות.",
+      "client_bundle": true
+    },
+    "chat.delete.yes": {
+      "version": 1,
+      "text": "מחיקה",
+      "purpose_he": "כפתור בדיאלוג מחיקה.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.delete.no": {
+      "version": 1,
+      "text": "ביטול",
+      "purpose_he": "כפתור בדיאלוג מחיקה. מקבל מיקוד.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.delete.done": {
+      "version": 2,
+      "text": "השיחה נמחקה, גם מהשרת. בשרת נשאר רק רישום טכני, בלי תוכן השיחה.",
+      "purpose_he": "S9, אחרי מחיקה מוצלחת (UX). אם המחיקה נכשלה: `error.delete_failed`.",
+      "legal_review": "required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.sr.bot_label": {
+      "version": 1,
+      "text": "העוזר הדיגיטלי:",
+      "purpose_he": "תווית דובר מוסתרת לכל הודעה של העוזר (UX a11y.speaker.bot).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "chat.sr.user_label": {
+      "version": 1,
+      "text": "ההודעה שלך:",
+      "purpose_he": "תווית דובר מוסתרת להודעות הפונה (UX a11y.speaker.user).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "menu.talk_to_hadas": {
+      "version": 1,
+      "text": "לדבר עם הדס",
+      "purpose_he": "תפריט.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "menu.about": {
+      "version": 1,
+      "text": "על העוזר הדיגיטלי",
+      "purpose_he": "תפריט.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "menu.restart": {
+      "version": 1,
+      "text": "התחלה מחדש",
+      "purpose_he": "תפריט.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "menu.delete": {
+      "version": 1,
+      "text": "מחיקת השיחה",
+      "purpose_he": "תפריט.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "menu.accessibility": {
+      "version": 1,
+      "text": "נגישות",
+      "purpose_he": "תפריט, אם יוחלט.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "about.title": {
+      "version": 1,
+      "text": "על העוזר הדיגיטלי",
+      "purpose_he": "S12.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "about.body": {
+      "version": 1,
+      "text": "העוזר הדיגיטלי הוא תוכנה אוטומטית שעוזרת לפונים חדשים לספר בקצרה מה מעסיק אותם, ומכינה להדס תודה סיכום מסודר לפני שהיא חוזרת. הוא אינו הדס ואינו אדם. הוא לא מאבחן, לא נותן טיפים או תרגילים, ולא קובע אם צריך טיפול. את זה עושה רק איש מקצוע.",
+      "purpose_he": "S12.",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "about.data": {
+      "version": 2,
+      "text": "מה שנכתב בשיחה, כולל מידע על בריאות, עובר לעיבוד אצל {{ai_provider_name}}, ספק שירות הבינה המלאכותית שמפעיל את העוזר. {{ai_provider_clause}} {{deletion_clause}} בשרת נשאר רק רישום טכני, בלי תוכן.\nלהדס נשלח סיכום רק אם בוחרים להשאיר פרטים. אחרי שהסיכום הגיע אליה, הוא נמחק מהמערכת ונשאר אצלה. למחיקה של פנייה שכבר נשלחה: {{privacy_contact}}.\nכדאי לא לכתוב בשיחה פרטים מזהים מיותרים, כמו שם מלא או מספר תעודת זהות.",
+      "placeholders": [
+        "ai_provider_name",
+        "ai_provider_clause",
+        "deletion_clause",
+        "privacy_contact"
+      ],
+      "purpose_he": "S12.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: SEC-01: הספק בשמו, השמירה לפי D-01, ומה קורה אחרי שליחה (ARCHITECTURE §11.1: פרטי הקשר והסיכום נמחקים מהמערכת אחרי שהמסירה הצליחה, לכל היותר אחרי 7 ימים של ניסיונות). כאן גם ההמלצה לא לכתוב פרטים מזהים, שיצאה מ-`consent.disclaimer`."
+    },
+    "a11y.log_label": {
+      "version": 1,
+      "text": "שיחה עם העוזר הדיגיטלי",
+      "purpose_he": "שם אזור התמליל.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "a11y.quick_replies": {
+      "version": 1,
+      "text": "אפשרויות תשובה",
+      "purpose_he": "שם קבוצת הכפתורים.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "a11y.message_sent": {
+      "version": 1,
+      "text": "נשלח",
+      "purpose_he": "הכרזה שקטה אחרי שליחה (לא חובה).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "a11y.stage": {
+      "version": 1,
+      "text": "שלב {{stage_number}} מתוך 3: {{stage_name}}",
+      "placeholders": [
+        "stage_number",
+        "stage_name"
+      ],
+      "purpose_he": "הכרזת השלב.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "a11y.outcome_region": {
+      "version": 1,
+      "text": "תוצאת השיחה",
+      "purpose_he": "שם אזור כרטיס התוצאה.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "a11y.new_message_pill": {
+      "version": 1,
+      "text": "הודעה חדשה, מעבר אליה",
+      "purpose_he": "תווית \"הודעה חדשה\" כשהפונה גלל למעלה.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "a11y.restored_log": {
+      "version": 1,
+      "text": "השיחה נפתחה מחדש מאותה נקודה. ההודעות הקודמות מופיעות למעלה.",
+      "purpose_he": "טקסט מוסתר חזותית, לפני התמליל ששוחזר אחרי \"המשך\" או רענון (UI §10).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "a11y.exit": {
+      "version": 1,
+      "text": "יציאה מהשיחה",
+      "purpose_he": "כפתור היציאה בפס העליון.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "a11y.menu": {
+      "version": 1,
+      "text": "תפריט",
+      "purpose_he": "כפתור התפריט בפס העליון.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "meta.identity": {
+      "version": 2,
+      "text": "לא, כאן העוזר הדיגיטלי של הדס, תוכנה אוטומטית. הדס עצמה תקרא את הסיכום אם יושארו פרטים, ותחזור בעצמה.",
+      "purpose_he": "\"את הדס?\", \"זה בן אדם?\". גם תשובת FAQ בקטגוריה about_bot.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: נוסח האתר לא השתנה. נוסף וריאנט וואטסאפ, כי שם הדס רואה את השיחה כולה (L-07).",
+      "variants": {
+        "whatsapp": "לא, כאן העוזר הדיגיטלי של הדס, תוכנה אוטומטית. הדס עצמה רואה את השיחה הזו, ותמשיך בה בעצמה."
+      }
+    },
+    "meta.who_sees": {
+      "version": 2,
+      "text": "מה שנכתב כאן עובר לעיבוד אצל {{ai_provider_name}}, ספק שירות הבינה המלאכותית שמפעיל את העוזר. {{ai_provider_clause}} {{deletion_clause}} להדס נשלח סיכום רק אם בסוף יושארו פרטי קשר. פרטים מלאים במדיניות הפרטיות: {{privacy_url}}",
+      "placeholders": [
+        "ai_provider_name",
+        "ai_provider_clause",
+        "deletion_clause",
+        "privacy_url",
+        "wa_retention_clause"
+      ],
+      "purpose_he": "\"מי רואה את זה?\". גם תשובת FAQ בקטגוריה privacy.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: SEC-01 ו-L-11: בלי \"משמש רק\", הספק בשמו, והשמירה לפי D-01. בווריאנט וואטסאפ הדס רואה הכול.",
+      "variants": {
+        "whatsapp": "הדס רואה את כל מה שנכתב בשיחה הזו, כמו בכל שיחת וואטסאפ איתה. ההודעות עוברות לעיבוד גם אצל {{ai_provider_name}}, ספק שירות הבינה המלאכותית שמפעיל את העוזר. {{ai_provider_clause}} {{wa_retention_clause}} פרטים מלאים במדיניות הפרטיות: {{privacy_url}}"
+      }
+    },
+    "meta.why_asking.generic": {
+      "version": 1,
+      "text": "השאלה עוזרת להדס להבין את התמונה עוד לפני השיחה איתה. אם התשובה לא ידועה, אפשר להמשיך גם כך.",
+      "purpose_he": "\"למה אתם שואלים?\". נוסח גיבוי; המנסח רשאי להסביר בקצרה משלו, בלי תוכן קליני.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "meta.diagnosis_request": {
+      "version": 2,
+      "text": "על זה רק הדס יכולה לענות, אחרי שיחה מסודרת. העוזר הדיגיטלי לא מאבחן ולא קובע מה מצב הדיבור. רשמתי את השאלה, ואם בסוף יושארו פרטים, היא תופיע בסיכום להדס.",
+      "purpose_he": "\"זה גמגום?\", \"מה יש לו?\". גם fallback.clinical_deflect בחוזה ה-FAQ.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: L-11: השאלה מגיעה להדס רק אם יושארו פרטים.",
+      "variants": {
+        "whatsapp": "על זה רק הדס יכולה לענות, אחרי שיחה מסודרת. העוזר הדיגיטלי לא מאבחן ולא קובע מה מצב הדיבור. רשמתי את השאלה, והיא תופיע בסיכום להדס."
+      }
+    },
+    "meta.reassurance_request": {
+      "version": 1,
+      "text": "העוזר הדיגיטלי לא קובע אם כדאי טיפול ומה מצב הדיבור. את זה אפשר לברר רק בשיחה עם הדס או עם איש מקצוע אחר. אם יש דאגה, זו סיבה טובה לפנות.",
+      "purpose_he": "\"אז הכול בסדר?\", \"זה יעבור לבד?\".",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "meta.advice_request": {
+      "version": 2,
+      "text": "טיפים ותרגילים הדס נותנת רק אחרי שהיא מכירה את המצב, כי מה שמתאים במקרה אחד לא תמיד מתאים במקרה אחר. רשמתי שיש עניין בזה. אם יושארו פרטים, הדס תראה את זה בסיכום.",
+      "purpose_he": "\"יש תרגילים?\", \"מה לעשות בינתיים?\".",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: L-11, כמו `meta.diagnosis_request`. סומן ⚖️ בסבב 3, כי הוא אומר מה מגיע להדס.",
+      "variants": {
+        "whatsapp": "טיפים ותרגילים הדס נותנת רק אחרי שהיא מכירה את המצב, כי מה שמתאים במקרה אחד לא תמיד מתאים במקרה אחר. רשמתי שיש עניין בזה, והדס תראה את זה בסיכום."
+      }
+    },
+    "meta.want_human": {
+      "version": 3,
+      "text": "בוודאי. אפשר לעבור עכשיו לטופס, עם מה שסופר עד כה, והדס תחזור. אפשר גם להתקשר אליה ישירות: {{hadas_phone}}.",
+      "placeholders": [
+        "hadas_phone"
+      ],
+      "purpose_he": "בקשה לדבר עם הדס באמצע (UX chat.early_handoff.offer).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: נוסח האתר לא השתנה. בוואטסאפ אין טופס: וריאנט שמעביר להדס ומשתיק את הבוט, כמו `wa.message_only` (→ ארכיטקט ומפתח הוואטסאפ: לאשר שזו ההתנהגות בשלב 2).",
+      "variants": {
+        "whatsapp": "בוודאי. הדס תמשיך בשיחה הזו בעצמה, והעוזר הדיגיטלי לא יענה בה יותר. אם צריך לדבר איתה מהר, אפשר להתקשר: {{hadas_phone}}."
+      }
+    },
+    "meta.want_human.to_form": {
+      "version": 1,
+      "text": "מעבר לטופס",
+      "purpose_he": "כפתור אחרי meta.want_human.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "meta.want_human.stay": {
+      "version": 1,
+      "text": "להמשיך בשיחה",
+      "purpose_he": "כפתור אחרי meta.want_human.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "meta.multiple_subjects": {
+      "version": 1,
+      "text": "רשמתי שיש שאלה גם לגבי בני משפחה נוספים. השיחה הזו עוסקת באדם אחד בכל פעם. בסיום אפשר להתחיל שיחה נוספת לכל אחד מהם.",
+      "purpose_he": "הפונה מתאר יותר ממושא אחד (ARCHITECTURE §1.4). השאר נרשמים ב-notes.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "meta.off_topic": {
+      "version": 1,
+      "text": "בשיחה הזו אפשר לעזור רק בהכנת פנייה להדס ובשאלות על הקליניקה. אפשר לחזור לשאלה הקודמת?",
+      "purpose_he": "קלט לא ענייני או ניסיון לשנות את תפקיד הבוט. גם fallback לנושא לא קשור בחוזה ה-FAQ.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "meta.off_topic_end": {
+      "version": 2,
+      "text": "נראה שהשיחה הזו לא מתאימה כרגע, ולכן היא נעצרת כאן. אפשר לפנות להדס ישירות: בטלפון {{hadas_phone}}, בוואטסאפ, או בטופס יצירת הקשר באתר. במצב חירום: מד\"א 101.",
+      "placeholders": [
+        "hadas_phone"
+      ],
+      "purpose_he": "אחרי קלט לא ענייני חוזר, או 3 תורות רצופות של ניסיון השתלטות בלי התקדמות (UX chat.input_end; SEC-26, תשובה 2.1.4). השיחה מסתיימת.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: נוסף הטופס של האתר (SEC-26). בדיקת הדגלים ממשיכה עד הסוף."
+    },
+    "language.unsupported": {
+      "version": 2,
+      "text": "בשלב זה העוזר הדיגיטלי עונה רק בעברית. אפשר לפנות להדס ישירות: {{hadas_phone}}. במצב חירום: מד\"א 101.\nThis assistant works in Hebrew only. To reach Hadas: {{hadas_phone}}. In an emergency in Israel, call 101.\nهذا المساعد يعمل باللغة العبرية فقط. للتواصل مع هداس: {{hadas_phone}}. في حالة طوارئ في إسرائيل اتصلوا بـ 101.\nЭтот помощник работает только на иврите. Связаться с Хадас: {{hadas_phone}}. В экстренной ситуации в Израиле звоните 101.",
+      "placeholders": [
+        "hadas_phone"
+      ],
+      "purpose_he": "כתיבה בשפה שאינה עברית. השם נדרש על ידי המנוע, וחייב לכלול 101 ודרכי קשר ישירות.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: כל שורה כוללת 101, כי מי שלא קורא עברית הוא בדיוק מי שצריך אותה. השורות בערבית וברוסית (L-31) הן התרגום של המבקר המשפטי, **ולפני ההשקה דובר שפת אם צריך לאמת אותן** (→ אליה). **פטור מבדיקת האותיות הלטיניות (סבב 4):** הנוסח רשום ב-`output-rules.json` תחת `latin_ratio_exempt_text_ids` (ARCHITECTURE §1.9; הרשימה דורשת אישור המבקר המשפטי). הפטור חל על `max_latin_ratio` בלבד: 101 בכל שורה, מספרי טלפון וכל כלל אסור ממשיכים לחול."
+    },
+    "meta.too_long": {
+      "version": 2,
+      "text": "ההודעה ארוכה מדי. אם משהו השתנה לאחרונה או הופיע פתאום, כדאי לכתוב את זה קודם, בכמה מילים. את השאר אפשר לחלק לכמה הודעות קצרות. במצב חירום: מד\"א 101.",
+      "purpose_he": "בועה אחרי שליחת הודעה מעל 800 תווים. **הטקסט לא נחסם:** קודם בדיקת דגלים על כל הטקסט, בלי מודל ובלי שמירה (→ S6 אם עלה דגל), ואחר כך הבועה הזו, והטקסט חוזר לשדה כמו שהוא (SEC-06, UX S3).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: 101 חובה (ARCHITECTURE §1.9). מה לכתוב קודם — כדי שסימן חדש לא ייחתך כשמקצרים (PERSONAS TX-03). אותו נוסח משמש בוואטסאפ לחריגה אחרי איחוד הודעות."
+    },
+    "meta.data_deletion": {
+      "version": 2,
+      "text": "אפשר למחוק את השיחה עכשיו, מהתפריט: \"מחיקת השיחה\". המחיקה מיידית, גם מהשרת. לבקשות אחרות, כמו מחיקה של פנייה שכבר נשלחה להדס או עיון במידע: {{privacy_contact}}.",
+      "placeholders": [
+        "privacy_contact"
+      ],
+      "purpose_he": "\"תמחקו את מה שכתבתי\".",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: L-28 ו-SEC-20: באמצע שיחה המחיקה מהתפריט מיידית (D-01). פנייה שכבר נשלחה, ובקשות עיון, דרך `privacy_contact`. בוואטסאפ (שלב 2) ההודעות נמצאות גם בוואטסאפ של הדס (→ מפתח הוואטסאפ ועורך הדין: מה בדיוק נמחק שם).",
+      "variants": {
+        "whatsapp": "ההודעות בשיחה הזו נמצאות גם בוואטסאפ של הדס, ואפשר לבקש ממנה למחוק אותן. למחיקה של מה שנשמר במערכת של העוזר הדיגיטלי, או לעיון במידע: {{privacy_contact}}."
+      }
+    },
+    "meta.document_request": {
+      "version": 1,
+      "text": "העוזר הדיגיטלי לא כותב מסמכים, אישורים או חוות דעת, ומה שנכתב בשיחה הזו אינו מסמך מקצועי ואינו מתאים להצגה כחוות דעת. מסמכים מקצועיים הם נושא לשיחה עם הדס, אחרי היכרות.",
+      "purpose_he": "בקשה למסמך, לאישור או לחוות דעת, לכל גורם: בית משפט, ביטוח, בית ספר, \"להראות לאשתי\" (L-15). אחריו חזרה למטרה.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: אותו נוסח לכל גורם, בלי לנקוב בשמו. לא נשבר תחת לחץ (VOICE 5.7). הבקשה חוסמת תוצאה 3, ונרשמת במייל כתגית `hadas.email.tag.document_request` (→ ארכיטקט). בכרטיס התוצאה (1, 2, 4) מופיעה אחרי זה שורת התוספת `outcome.addendum.document_request` (סבב 4, L-15)."
+    },
+    "meta.omit_request": {
+      "version": 1,
+      "text": "אי אפשר לבחור חלקים מהשיחה שלא ייכנסו לסיכום. אם בסוף יושארו פרטים, הסיכום להדס עשוי לכלול גם את זה. לפני השליחה אפשר לראות מה יישלח, ואפשר גם לא לשלוח, או למחוק את השיחה מהתפריט.",
+      "purpose_he": "\"אל תכתבו את זה בסיכום\", \"שהדס לא תדע\" (SEC-11, PERSONAS EM-01).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: **אסור להבטיח השמטה.** אומרים בכנות מה יקרה, ונותנים שליטה: התצוגה המקדימה, אי-שליחה, מחיקה. אם עלה דגל אדום, הוא קודם (D-04: אחרי `child_safety` אין טופס בכלל).",
+      "variants": {
+        "whatsapp": "הדס רואה את כל מה שנכתב בשיחה הזו, ואי אפשר להסתיר ממנה חלק. אם יש משהו שלא רוצים לשתף איתה, עדיף לא לכתוב אותו כאן."
+      }
+    },
+    "faq.topic.prompt": {
+      "version": 1,
+      "text": "על מה השאלה?",
+      "purpose_he": "שורה קצרה של העוזר לפני כפתורי הנושא, אחרי \"יש לי שאלה\" (UX S4). נותנת הקשר לקורא מסך.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "faq.topic.price": {
+      "version": 1,
+      "text": "מחיר",
+      "purpose_he": "כפתור נושא (נפתח מ\"יש לי שאלה\").",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "faq.topic.location": {
+      "version": 1,
+      "text": "מיקום",
+      "purpose_he": "כפתור נושא.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "faq.topic.kupot": {
+      "version": 1,
+      "text": "קופות והחזרים",
+      "purpose_he": "כפתור נושא.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "faq.topic.online": {
+      "version": 1,
+      "text": "טיפול אונליין",
+      "purpose_he": "כפתור נושא.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "faq.topic.hours": {
+      "version": 1,
+      "text": "ימים ושעות",
+      "purpose_he": "כפתור נושא.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "faq.topic.other": {
+      "version": 1,
+      "text": "שאלה אחרת",
+      "purpose_he": "כפתור נושא.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "faq.topic.other_prompt": {
+      "version": 1,
+      "text": "אפשר לכתוב את השאלה כאן.",
+      "purpose_he": "אחרי \"שאלה אחרת\".",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "faq.source_note": {
+      "version": 2,
+      "text": "מידע מהדס",
+      "purpose_he": "תווית כרטיס המידע (UX faq.card.label).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "faq.return": {
+      "version": 1,
+      "text": "ואם אפשר, בחזרה לשאלה הקודמת:",
+      "purpose_he": "אחרי כרטיס המידע, כשהשיחה באמצע. אחריו שאלת המטרה הנוכחית.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "faq.missing": {
+      "version": 2,
+      "text": "את המידע הזה אין לי, אבל הדס תוכל לענות. רשמתי את השאלה, והיא תופיע בסיכום שיגיע להדס אם יושארו פרטים.",
+      "purpose_he": "אין עובדה מאושרת לשאלה (fallback.unknown בחוזה ה-FAQ; UX `faq.unknown`).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: נוסח האתר לא השתנה. נוסף וריאנט וואטסאפ.",
+      "variants": {
+        "whatsapp": "את המידע הזה אין לי, אבל הדס תוכל לענות. רשמתי את השאלה, והיא תופיע בסיכום להדס."
+      }
+    },
+    "faq.answer.price": {
+      "version": 1,
+      "text": "פגישה ראשונה: {{price_first_meeting}}\nמפגש בקליניקה: {{price_session_clinic}}\nמפגש אונליין: {{price_session_online}}",
+      "placeholders": [
+        "price_first_meeting",
+        "price_session_clinic",
+        "price_session_online"
+      ],
+      "purpose_he": "תשובה לשאלת מחיר.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: אם הדס מאשרת רק חלק מהמחירים — גרסה חדשה בלי השורות החסרות. עובדה: כל הערכים מ-faq.json facts, באישור הדס."
+    },
+    "faq.answer.session_length": {
+      "version": 1,
+      "text": "מפגש טיפול נמשך {{session_length}}.",
+      "placeholders": [
+        "session_length"
+      ],
+      "purpose_he": "\"כמה זמן נמשך מפגש?\".",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "עובדה: כל הערכים מ-faq.json facts, באישור הדס."
+    },
+    "faq.answer.location": {
+      "version": 1,
+      "text": "מיקום הקליניקה: {{clinic_location}}",
+      "placeholders": [
+        "clinic_location"
+      ],
+      "purpose_he": "\"איפה הקליניקה?\".",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "עובדה: כל הערכים מ-faq.json facts, באישור הדס."
+    },
+    "faq.answer.accessibility": {
+      "version": 1,
+      "text": "נגישות הקליניקה: {{clinic_accessibility}}",
+      "placeholders": [
+        "clinic_accessibility"
+      ],
+      "purpose_he": "\"יש מעלית?\", \"זה נגיש?\".",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "עובדה: כל הערכים מ-faq.json facts, באישור הדס."
+    },
+    "faq.answer.kupot": {
+      "version": 1,
+      "text": "קופות חולים והחזרים: {{kupot_refunds}}",
+      "placeholders": [
+        "kupot_refunds"
+      ],
+      "purpose_he": "\"יש החזר מהקופה?\".",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: ⚖️ כי תשובה לא מדויקת על החזרים היא מצג כספי. עובדה: כל הערכים מ-faq.json facts, באישור הדס."
+    },
+    "faq.answer.receipts": {
+      "version": 1,
+      "text": "קבלות וביטוחים פרטיים: {{receipts_insurance}}",
+      "placeholders": [
+        "receipts_insurance"
+      ],
+      "purpose_he": "קבלות וביטוחים פרטיים.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "עובדה: כל הערכים מ-faq.json facts, באישור הדס."
+    },
+    "faq.answer.online": {
+      "version": 1,
+      "text": "טיפול אונליין: {{online_info}}",
+      "placeholders": [
+        "online_info"
+      ],
+      "purpose_he": "\"אפשר אונליין?\".",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "עובדה: כל הערכים מ-faq.json facts, באישור הדס."
+    },
+    "faq.answer.hours": {
+      "version": 1,
+      "text": "ימים ושעות: {{clinic_hours}}",
+      "placeholders": [
+        "clinic_hours"
+      ],
+      "purpose_he": "ימים ושעות.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "עובדה: כל הערכים מ-faq.json facts, באישור הדס."
+    },
+    "faq.answer.first_wait": {
+      "version": 1,
+      "text": "זמן ההמתנה לתור ראשון, נכון לעכשיו: {{first_appointment_wait}}",
+      "placeholders": [
+        "first_appointment_wait"
+      ],
+      "purpose_he": "\"כמה זמן מחכים לתור?\".",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: עובדה מתיישנת. ב-`faq.json` חובה `valid_until` קצר. עובדה: כל הערכים מ-faq.json facts, באישור הדס."
+    },
+    "faq.answer.response_time": {
+      "version": 1,
+      "text": "אחרי השארת פרטים, הדס חוזרת בדרך כלל {{response_time}}.",
+      "placeholders": [
+        "response_time"
+      ],
+      "purpose_he": "\"תוך כמה זמן חוזרים?\".",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "עובדה: כל הערכים מ-faq.json facts, באישור הדס."
+    },
+    "faq.answer.languages": {
+      "version": 1,
+      "text": "שפות הטיפול: {{therapy_languages}}",
+      "placeholders": [
+        "therapy_languages"
+      ],
+      "purpose_he": "\"באיזו שפה הטיפול?\".",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "עובדה: כל הערכים מ-faq.json facts, באישור הדס."
+    },
+    "faq.answer.ages": {
+      "version": 1,
+      "text": "גילאי המטופלים: {{patient_ages}}",
+      "placeholders": [
+        "patient_ages"
+      ],
+      "purpose_he": "\"מאיזה גיל מטפלים?\".",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: התשובה מוסרת עובדה כללית בלבד. אם המקרה הספציפי מתאים — רק טבלת ההחלטה קובעת. עובדה: כל הערכים מ-faq.json facts, באישור הדס."
+    },
+    "faq.answer.cancellation": {
+      "version": 1,
+      "text": "ביטול תור: {{cancellation_policy}}",
+      "placeholders": [
+        "cancellation_policy"
+      ],
+      "purpose_he": "ביטול תור.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "עובדה: כל הערכים מ-faq.json facts, באישור הדס."
+    },
+    "faq.answer.reports": {
+      "version": 1,
+      "text": "סיכומים ומכתבים (לקופה, לגן או לבית הספר): {{reports_letters}}",
+      "placeholders": [
+        "reports_letters"
+      ],
+      "purpose_he": "סיכומים ומכתבים לקופה, לגן או לבית הספר.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "עובדה: כל הערכים מ-faq.json facts, באישור הדס."
+    },
+    "faq.answer.home_visits": {
+      "version": 1,
+      "text": "ביקורי בית: {{home_visits}}",
+      "placeholders": [
+        "home_visits"
+      ],
+      "purpose_he": "\"יש ביקורי בית?\".",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "עובדה: כל הערכים מ-faq.json facts, באישור הדס."
+    },
+    "faq.answer.contact": {
+      "version": 1,
+      "text": "אפשר לפנות להדס ישירות בטלפון {{hadas_phone}}, או בוואטסאפ: {{hadas_whatsapp_link}}",
+      "placeholders": [
+        "hadas_phone",
+        "hadas_whatsapp_link"
+      ],
+      "purpose_he": "\"איך מגיעים להדס ישירות?\".",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "עובדה: כל הערכים מ-faq.json facts, באישור הדס."
+    },
+    "faq.answer.process_duration": {
+      "version": 2,
+      "text": "השיחה כאן לוקחת בדרך כלל כמה דקות. אפשר לעצור בכל רגע, ולהדס נשלח סיכום רק אם בוחרים להשאיר פרטים.",
+      "purpose_he": "\"כמה זמן זה לוקח?\" (קטגוריה process). מתאר את הכלי, לא עובדה של הדס.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: נוסח האתר לא השתנה. נוסף וריאנט וואטסאפ.",
+      "variants": {
+        "whatsapp": "השיחה כאן לוקחת בדרך כלל כמה דקות, ואפשר לעצור בכל רגע. הדס רואה את מה שנכתב כאן, ותקבל גם סיכום מסודר."
+      }
+    },
+    "subject_ref.son": {
+      "version": 1,
+      "text": "הבן שלך",
+      "purpose_he": "{{subject_ref}} כשהמושא הוא בן של הפונה.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "subject_ref.daughter": {
+      "version": 1,
+      "text": "הבת שלך",
+      "purpose_he": "{{subject_ref}} — בת.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "subject_ref.child": {
+      "version": 1,
+      "text": "הילד או הילדה",
+      "purpose_he": "{{subject_ref}} — ילד, מגדר לא ידוע.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "subject_ref.father": {
+      "version": 1,
+      "text": "אבא שלך",
+      "purpose_he": "{{subject_ref}} — אב.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "subject_ref.mother": {
+      "version": 1,
+      "text": "אמא שלך",
+      "purpose_he": "{{subject_ref}} — אם.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "subject_ref.husband": {
+      "version": 1,
+      "text": "בעלך",
+      "purpose_he": "{{subject_ref}} — בעל.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "subject_ref.wife": {
+      "version": 1,
+      "text": "אשתך",
+      "purpose_he": "{{subject_ref}} — אישה.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "subject_ref.partner_m": {
+      "version": 1,
+      "text": "בן הזוג שלך",
+      "purpose_he": "{{subject_ref}} — בן זוג.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "subject_ref.partner_f": {
+      "version": 1,
+      "text": "בת הזוג שלך",
+      "purpose_he": "{{subject_ref}} — בת זוג.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "subject_ref.grandfather": {
+      "version": 1,
+      "text": "סבא",
+      "purpose_he": "{{subject_ref}} — סב.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "subject_ref.grandmother": {
+      "version": 1,
+      "text": "סבתא",
+      "purpose_he": "{{subject_ref}} — סבתא.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "subject_ref.grandson": {
+      "version": 1,
+      "text": "הנכד שלך",
+      "purpose_he": "{{subject_ref}} — נכד.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "subject_ref.granddaughter": {
+      "version": 1,
+      "text": "הנכדה שלך",
+      "purpose_he": "{{subject_ref}} — נכדה.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "subject_ref.brother": {
+      "version": 1,
+      "text": "האח שלך",
+      "purpose_he": "{{subject_ref}} — אח.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "subject_ref.sister": {
+      "version": 1,
+      "text": "האחות שלך",
+      "purpose_he": "{{subject_ref}} — אחות.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "subject_ref.default": {
+      "version": 1,
+      "text": "מי שעליו השיחה",
+      "purpose_he": "default_text_id — הקשר לא ידוע.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "q.relation.opt.self": {
+      "version": 1,
+      "text": "על עצמי",
+      "purpose_he": "כפתור פתיחה (UX 2×2). אם התוויות יושבות ב-label_he של הקטלוג — מעתיקים מכאן.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "q.relation.opt.son": {
+      "version": 1,
+      "text": "על הבן שלי",
+      "purpose_he": "כפתור פתיחה. ממלא core_relation=child, core_relation_detail=son, ומגדר המושא=m.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "q.relation.opt.daughter": {
+      "version": 1,
+      "text": "על הבת שלי",
+      "purpose_he": "כפתור פתיחה. ממלא core_relation=child, core_relation_detail=daughter, ומגדר המושא=f.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "q.relation.opt.other": {
+      "version": 1,
+      "text": "על מישהו אחר",
+      "purpose_he": "כפתור פתיחה. ממלא core_relation=other_adult.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "q.relation.other_followup": {
+      "version": 1,
+      "text": "מה הקשר אליך? למשל הורה, בן או בת זוג, סבא או סבתא.",
+      "purpose_he": "אחרי \"על מישהו אחר\", כשהקשר חסר. מוצג עם הכפתור `q.relation.opt.child_not_parent`, ואפשר תמיד להקליד.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "q.relation.opt.child_not_parent": {
+      "version": 1,
+      "text": "על ילד או ילדה, ואני לא ההורה",
+      "purpose_he": "כפתור אחרי `q.relation.other_followup` (UX S13b: \"ילד/ה, ואני לא ההורה\" בהקשה אחת). מוביל ישר ל-`reporter.not_parent` (D-02), לפני שנאסף פרט על הילד.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: \"ילד או ילדה\" ולא \"ילד/ה\" (VOICE 2.1). מתאים גם לסבא או לסבתא שכותבים על נכד, שגם הם מופנים להורים לפי D-02. לא בכפתורי הפתיחה, כדי לא להעמיס עליהם."
+    },
+    "q.self_age_band.opt.under_18": {
+      "version": 1,
+      "text": "מתחת ל-18",
+      "purpose_he": "כפתור אחרי \"על עצמי\", בתשובה ל-`goal.self_age_band.ask` (D-13 ענף א). ממלא `self_age_band = under_18` ו-`self_declared_minor = true`, ומפעיל את `minor_self` בקוד, בלי מודל.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: \"מתחת ל-18\" ולא \"קטין\" (נוסח שלא מרחיק). הקשה אחת, בלי גיל מדויק."
+    },
+    "q.self_age_band.opt.adult": {
+      "version": 1,
+      "text": "18 ומעלה",
+      "purpose_he": "כפתור אחרי \"על עצמי\", בתשובה ל-`goal.self_age_band.ask` (D-13 ענף א). ממלא `self_age_band = adult`.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: בלי כפתור \"מעדיף לא לומר\" (תנאי 2 של המנסח הקליני). תשובה חופשית לא ברורה נחשבת בגיר, והציטוט (`self_declared_minor`) וההצהרה בהסכמה נשארים גיבוי."
+    },
+    "goal.core_relation.ask": {
+      "version": 1,
+      "text": "כאן העוזר הדיגיטלי של הדס. על מי השיחה? אפשר לבחור כאן, או פשוט לכתוב במילים שלך מה מעסיק.",
+      "purpose_he": "הודעת הפתיחה בשיחה (UX chat.opening). עם q.relation.opt ו-chat.quick.have_question.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "goal.self_age_band.ask": {
+      "version": 1,
+      "text": "שאלה אחת לפני שממשיכים: מה טווח הגיל שלך — מתחת ל-18, או 18 ומעלה?",
+      "purpose_he": "מטרת routing `self_age_band` (D-13 ענף א). מוצגת מיד אחרי \"על עצמי\", לפני ההודעה החופשית הראשונה, עם הכפתורים `q.self_age_band.opt.*`.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: prio 995, `applies_when: core_relation = self`, `turn_budget` 1, `show_to_hadas: false`: לא נספרת בתקציב השאלות, והטווח לא מגיע להדס. שני כפתורים בלבד (ARCHITECTURE §1.4), בלי \"מעדיף לא לומר\" ובלי `chat.quick.dont_know`. \"מתחת ל-18\" מפעיל `minor.self.before_text`. הנוסח לא מסביר למה שואלים: ההסבר כבר ב-`consent.disclaimer`, ושאלה שמזהירה מראש מזמינה תשובה לא נכונה. \"הגיל שלך\" נייטרלי בכתב (VOICE ט3)."
+    },
+    "goal.self_age_band.clarify": {
+      "version": 1,
+      "text": "רציתי לוודא שהבנתי נכון. האם הגיל מתחת ל-18, או 18 ומעלה?",
+      "purpose_he": "הבהרה של `self_age_band`, כשהפונה כתב תשובה חופשית במקום ללחוץ. תשובה לא ברורה נחשבת בגיר (קליני §9.3 תנאי 2).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "goal.self_age_band.rephrase": {
+      "version": 1,
+      "text": "בפשטות: האם כבר מלאו לך 18, או שעדיין לא?",
+      "purpose_he": "ניסוח מחדש של `self_age_band`, למי שלא הבין או ענה על משהו אחר.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "goal.core_concern.ask": {
+      "version": 1,
+      "text": "מה מעסיק? אפשר לכתוב במילים פשוטות, בכמה משפטים.",
+      "placeholders": [
+        "subject_ref"
+      ],
+      "purpose_he": "מטרה core_concern.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "variants": {
+        "self": "מה מעסיק אותך? אפשר לכתוב במילים פשוטות, בכמה משפטים.",
+        "child_n": "מה מעסיק לגבי {{subject_ref}}? אפשר לכתוב במילים פשוטות, בכמה משפטים.",
+        "other": "מה מעסיק לגבי {{subject_ref}}? אפשר לכתוב במילים פשוטות, בכמה משפטים."
+      }
+    },
+    "goal.core_age.ask": {
+      "version": 1,
+      "text": "מה הגיל, בערך?",
+      "placeholders": [
+        "subject_ref"
+      ],
+      "purpose_he": "מטרה core_age (נשמר בחודשים). נשאלת כש-rel=child. בנתיב \"על עצמי\" נשאלת מוקדם, כדי לזהות קטין (D-02, UX S13).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "variants": {
+        "child_m": "בן כמה {{subject_ref}}? מתחת לגיל 3, עדיף בחודשים.",
+        "child_f": "בת כמה {{subject_ref}}? מתחת לגיל 3, עדיף בחודשים.",
+        "child_n": "מה הגיל של {{subject_ref}}? מתחת לגיל 3, עדיף בחודשים.",
+        "other": "מה הגיל של {{subject_ref}}, בערך?"
+      }
+    },
+    "goal.core_onset_pattern.ask": {
+      "version": 1,
+      "text": "איך זה התחיל: זה כך כבר הרבה זמן, זה התפתח בהדרגה, או שזה הופיע פתאום או בשבועות האחרונים?",
+      "purpose_he": "מטרת סינון core_onset_pattern (מבוגר אחר, שינוי בבגרות). לא בתחום הקול (קליני §9).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: כפתורים מוצעים: \"כבר הרבה זמן\" · \"בהדרגה\" · \"פתאום או לאחרונה\". נשארת נפרדת משאלת הסימנים (VOICE §3.10)."
+    },
+    "goal.core_onset_pattern.rephrase": {
+      "version": 1,
+      "text": "בפשטות: זה חדש, או שזה כך כבר הרבה זמן?",
+      "purpose_he": "ניסוח מחדש של core_onset_pattern.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "goal.speech_since_childhood.ask": {
+      "version": 1,
+      "text": "זה קיים מילדות, או שזה חדש?",
+      "placeholders": [
+        "subject_ref"
+      ],
+      "purpose_he": "מטרה speech_since_childhood (rel≠child).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: כפתורים מוצעים: \"מילדות\" · \"חדש\".",
+      "variants": {
+        "self": "זה קיים אצלך מילדות, או שזה חדש?",
+        "other": "זה קיים אצל {{subject_ref}} מילדות, או שזה חדש?"
+      }
+    },
+    "goal.stuttering_since_childhood.ask": {
+      "version": 1,
+      "text": "זה קיים מילדות, או שזה הופיע לראשונה בגיל מבוגר?",
+      "placeholders": [
+        "subject_ref"
+      ],
+      "purpose_he": "מטרה stuttering_since_childhood (rel≠child).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: כפתורים מוצעים: \"מילדות\" · \"התחיל בבגרות\".",
+      "variants": {
+        "self": "זה קיים אצלך מילדות, או שזה הופיע לראשונה בגיל מבוגר?",
+        "other": "זה קיים אצל {{subject_ref}} מילדות, או שזה הופיע לראשונה בגיל מבוגר?"
+      }
+    },
+    "goal.screen_neuro.ask": {
+      "version": 1,
+      "text": "שאלה שנשאלת תמיד כשמשהו הופיע לאחרונה: האם באותו זמן הופיע גם אחד מאלה?\n• דיבור מעורפל או \"כבד\"\n• קושי לדבר, להבין דיבור או למצוא מילים\n• קושי פתאומי לבלוע\n• צניחה בצד אחד של הפנים\n• חולשה ביד או ברגל\n• בלבול",
+      "purpose_he": "מטרת סינון screen_neuro, גרסת מבוגר (ממלאת `screen_neuro_any`). רק כשההופעה פתאומית או בשבועות האחרונים.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "מתי: מעלה את `sudden_onset`. \"לא ידוע לי\" אצל מבוגר מעלה את הדגל בדרגה א (קליני §9). כפתורים מוצעים: \"כן, משהו מאלה\" · \"לא, אף אחד\" · \"לא ידוע לי\". הערה: 8 הפריטים של `screen_neuro.adult` בשש שורות. שלושת קשיי הדיבור וההבנה מאוחדים בשורה אחת, כדי שהרשימה תישאר קצרה. קליני: המשמעות דורשת אישור הדס. וריאנט child_n — הערה: `screen_neuro.child`. \"לא ידוע לי\" → `doubt_tier: urgent` → `redflag.doubt.sudden_onset`. שורת ההוצאה בסוף: הורה לילד שמגמגם לא נבהל, והמחלץ לא מסמן גמגום כסימן.",
+      "variants": {
+        "child_n": "שאלה שנשאלת תמיד כשמשהו התחיל פתאום או לאחרונה: האם באותו זמן קרה גם אחד מאלה?\n• השינוי התחיל אחרי מכה בראש\n• חולשה ביד או ברגל\n• צניחה בצד אחד של הפנים\n• בלבול, או ישנוניות חריגה\n• פרכוס\n• קושי פתאומי לבלוע\nחזרות על מילים או היתקעות בתחילת מילים אינן חלק מהרשימה הזו."
+      }
+    },
+    "goal.screen_neuro.rephrase": {
+      "version": 1,
+      "text": "בפשטות: חוץ מהדיבור, הופיע עוד משהו חדש באותו זמן — למשל חולשה, בלבול, צניחה בפנים או קושי לבלוע?",
+      "purpose_he": "ניסוח מחדש של screen_neuro.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "קליני: המשמעות דורשת אישור הדס.",
+      "variants": {
+        "child_n": "בפשטות: חוץ מהדיבור, קרה עוד משהו חדש באותו זמן — למשל מכה בראש, חולשה, ישנוניות חריגה או פרכוס?"
+      }
+    },
+    "goal.screen_voice.ask": {
+      "version": 1,
+      "text": "שאלה שנשאלת תמיד כשיש שינוי בקול: האם יחד עם זה יש גם אחד מאלה?\n• קושי לבלוע\n• שיעול עם דם\n• גוש בצוואר\n• ירידה במשקל בלי הסבר\n• השינוי בקול התחיל אחרי ניתוח, הנשמה או מכה בצוואר",
+      "purpose_he": "מטרת סינון screen_voice (ממלאת `screen_voice_any`), כשהקול כך פחות מ-3 שבועות. רק `items_always`.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "מתי: מעלה את `voice_risk`. \"לא ידוע לי\" → `doubt_tier: urgent`. כפתורים מוצעים: \"כן, משהו מאלה\" · \"לא, אף אחד\" · \"לא ידוע לי\". הערה: בלי קושי בנשימה (קליני §9.1). → ארכיטקט: הבחירה בין הנוסח הזה ל-`goal.screen_voice.ask_3w` תלויה ב-`voice_duration_weeks`. לחוזה יש מזהה `ask` אחד לכל מטרה, ו-`ask_alt1|2` נבחרים לפי `seq`, לא לפי תנאי. צריך מנגנון: שתי מטרות עם `applies_when` שמוציאים זה את זה, או בחירת נוסח לפי תנאי. קליני: המשמעות דורשת אישור הדס."
+    },
+    "goal.screen_voice.ask_3w": {
+      "version": 1,
+      "text": "שאלה שנשאלת תמיד כשיש שינוי בקול: האם יחד עם זה יש גם אחד מאלה?\n• קושי לבלוע, או כאב בבליעה\n• שיעול עם דם\n• גוש בצוואר\n• ירידה במשקל בלי הסבר\n• כאב באוזן\n• עישון\n• השינוי בקול התחיל אחרי ניתוח, הנשמה או מכה בצוואר",
+      "purpose_he": "screen_voice כשהקול כך 3 שבועות ומעלה: `items_always` ועוד `items_if_weeks_ge_3` (כאב בבליעה, כאב באוזן, עישון).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: אותם כפתורים ואותה החלטה כמו `goal.screen_voice.ask`. העישון נשאל כאן ולא כמטרה נפרדת (`voice_smoking` יצא משימוש). קליני: המשמעות דורשת אישור הדס."
+    },
+    "goal.screen_voice.rephrase": {
+      "version": 1,
+      "text": "בפשטות: חוץ מהקול, יש עוד משהו — כמו קושי לבלוע, דם בשיעול, גוש בצוואר או ירידה במשקל?",
+      "purpose_he": "ניסוח מחדש של screen_voice (שני האורכים).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "קליני: המשמעות דורשת אישור הדס."
+    },
+    "goal.screen_swallow.ask": {
+      "version": 1,
+      "text": "שאלה שנשאלת תמיד בנושא אכילה ושתייה: האם יש אחד מאלה?\n• שיעול או השתנקות בזמן אכילה או שתייה\n• תחושה שהאוכל נתקע\n• דלקות ריאה חוזרות\n• ירידה במשקל",
+      "purpose_he": "מטרת סינון screen_swallow (ממלאת `screen_swallow_any`), כש-screen_neuro לא חל. מחליפה את `oral_swallow_screen` ואת `adult_swallow_screen`.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "מתי: מעלה את `swallowing`, חוץ ממבוגר שכבר במעקב רפואי בגלל הבליעה (→ תוצאה 4). \"לא ידוע לי\" → `doubt_tier: urgent`. כפתורים מוצעים: \"כן, משהו מאלה\" · \"לא, אף אחד\" · \"לא ידוע לי\". הערה: הפתיח לא מניח שיש קושי באכילה, כי השאלה נשאלת גם על מבוגר אחר שהקושי שלו הוא בדיבור. קליני: המשמעות דורשת אישור הדס.",
+      "variants": {
+        "child_n": "שאלה שנשאלת תמיד בנושא אכילה ושתייה: האם יש אחד מאלה?\n• שיעול או השתנקות בזמן אכילה או שתייה\n• תחושה שהאוכל נתקע\n• דלקות ריאה חוזרות\n• קושי לעלות במשקל"
+      }
+    },
+    "goal.screen_swallow.rephrase": {
+      "version": 1,
+      "text": "בפשטות: יש שיעול, השתנקות או תחושה שהאוכל נתקע בזמן אכילה או שתייה?",
+      "purpose_he": "ניסוח מחדש של screen_swallow.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "קליני: המשמעות דורשת אישור הדס."
+    },
+    "goal.lang_regression.ask": {
+      "version": 1,
+      "text": "שאלה שנשאלת תמיד בגיל הזה: האם קרה שמילים או יכולות שכבר היו — הפסיקו להופיע? למשל מילים שנאמרו בעבר, ועכשיו כבר לא.",
+      "purpose_he": "מטרת סינון lang_regression (rel=child). רשימה של פריט אחד, ולכן שאלה רגילה.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "מתי: מעלה את `child_regression`. \"לא ידוע לי\" → `doubt_tier: urgent`. כפתורים מוצעים: \"כן\" · \"לא\" · \"לא ידוע לי\". קליני: המשמעות דורשת אישור הדס."
+    },
+    "goal.lang_regression.rephrase": {
+      "version": 1,
+      "text": "בפשטות: יש מילים שנאמרו בעבר, ועכשיו כבר לא נאמרות?",
+      "purpose_he": "ניסוח מחדש של lang_regression.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "קליני: המשמעות דורשת אישור הדס."
+    },
+    "goal.voice_duration.ask": {
+      "version": 1,
+      "text": "כמה זמן הקול כבר כך, בערך — ימים, שבועות או חודשים? ואם זה חוזר מדי פעם, גם את זה חשוב לדעת.",
+      "placeholders": [
+        "subject_ref"
+      ],
+      "purpose_he": "מטרה voice_duration (שבועות + חוזר). נשאלת לפני screen_voice, כי היא קובעת איזה נוסח סינון יוצג.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "variants": {
+        "child_n": "כמה זמן הקול של {{subject_ref}} כבר כך, בערך — ימים, שבועות או חודשים? ואם זה חוזר מדי פעם, גם את זה חשוב לדעת.",
+        "other": "כמה זמן הקול של {{subject_ref}} כבר כך, בערך — ימים, שבועות או חודשים? ואם זה חוזר מדי פעם, גם את זה חשוב לדעת."
+      }
+    },
+    "goal.stuttering_onset.ask": {
+      "version": 1,
+      "text": "לפני כמה זמן זה התחיל, בערך? מספר חודשים מספיק.",
+      "purpose_he": "מטרה stuttering_onset (rel=child, חודשים). חודש או פחות, או \"פתאום\" → screen_neuro בגרסת ילד.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "goal.speech_scope.ask": {
+      "version": 1,
+      "text": "האם זה בעיקר צליל אחד או שניים — למשל ר' או ש' — או שבאופן כללי קשה להבין את הדיבור?",
+      "purpose_he": "מטרה speech_scope (rel=child). בדרך כלל כבר ממולאת מההודעה הראשונה.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "goal.speech_understood_by.ask": {
+      "version": 1,
+      "text": "מי מבין את הדיבור: כולם, גם מי שפחות מכיר; בעיקר בני המשפחה; או שגם בני המשפחה מתקשים לפעמים?",
+      "purpose_he": "מטרה speech_understood_by (rel=child).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: כפתורים מוצעים: \"כולם\" · \"בעיקר המשפחה\" · \"גם המשפחה מתקשה\"."
+    },
+    "goal.lang_expressive.ask": {
+      "version": 2,
+      "text": "איך נראה הדיבור היום, בערך? אפשר לבחור את מה שהכי קרוב. סופרים את המילים בכל השפות שמדברים בבית יחד.",
+      "purpose_he": "מטרה lang_expressive (נתיב שפה בגיל הרך). ממלאת מילים וצירופים.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: קליני §9: עם כפתורים, והסיפור (`lang_narrative`) עבר ל-`signs_screen`. כפתורים מוצעים, בנוסח נייטרלי (במקום \"מחבר שתי מילים\"): \"עוד אין מילים\" · \"מילים בודדות\" · \"יותר מ-50 מילים, בלי צירופים\" · \"צירופים של שתי מילים\" · \"משפטים\". \"בכל השפות\" — ספירה משותפת אצל דו-לשוניים (קליני)."
+    },
+    "goal.oral_concern_referrer.ask": {
+      "version": 1,
+      "text": "מה בעיקר מעסיק בנושא הפה — למשל דחיקת לשון, נשימה דרך הפה, נחירות, ריור או לעיסה — ומי הפנה, אם מישהו הפנה?",
+      "purpose_he": "מטרה oral_concern_referrer (מה + מי הפנה).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "goal.signs_screen.ask": {
+      "version": 1,
+      "text": "עוד כמה דברים שעוזרים להבין את התמונה: מה מהרשימה מתאים? אפשר לסמן כמה, או \"אף אחד מאלה\".",
+      "purpose_he": "מטרה signs_screen: בחירה מרובה אחת לכל תחום (`signs_sets`). מוצגת עם רשימת האפשרויות של התחום, ועוד \"אף אחד מאלה\" ו\"לא ידוע לי\".",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: לא שאלת סינון: אף אפשרות לא מעלה דגל. זה החריג השני לכלל \"בלי רשימות\" (VOICE §3.6, §3.10). הפתיח לא מבטיח שמשהו יגיע להדס, כי באתר זה קורה רק אם יושארו פרטים. התוויות של האפשרויות — בטבלה מתחת (→ קטלוג, `label_he`). קליני: המשמעות דורשת אישור הדס.",
+      "variants": {
+        "whatsapp": "עוד כמה דברים שעוזרים להבין את התמונה: מה מהרשימה מתאים? אפשר לכתוב את המספרים, למשל 1, 3, או \"אף אחד\"."
+      }
+    },
+    "goal.signs_screen.rephrase": {
+      "version": 1,
+      "text": "בפשטות: מה מהרשימה נכון? אפשר לסמן גם דבר אחד, ואם שום דבר לא מתאים — \"אף אחד מאלה\".",
+      "purpose_he": "ניסוח מחדש של signs_screen.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "goal.core_anything_else.ask": {
+      "version": 1,
+      "text": "יש עוד משהו שחשוב שהדס תדע? אם לא, אפשר להמשיך לסיכום.",
+      "purpose_he": "מטרה core_anything_else (`summary_only`, UX `wrap_up_ask`). רק אם עוד לא הגענו ליעד השאלות.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "goal.other_awareness.ask": {
+      "version": 1,
+      "text": "שאלה אחת לפני שממשיכים: האם הפנייה נעשית בידיעה של {{subject_ref}}?",
+      "placeholders": [
+        "subject_ref"
+      ],
+      "purpose_he": "\"מבוגר אחר\": שאלה אחת שלא חוסמת. התשובה מוצגת בולט במייל להדס (L-10, SEC-22, UX S13).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — אין מטרה כזו בקטלוג. תלוי בשאלה 21 לעורך הדין ובהחלטה של המנסח הקליני. הערה: כפתורים מוצעים: \"כן\" · \"עדיין לא\" · \"לא ידוע לי\".",
+      "active": false
+    },
+    "q.clarify.generic": {
+      "version": 1,
+      "text": "רציתי לוודא שהבנתי נכון. אפשר לכתוב את זה במילים אחרות?",
+      "purpose_he": "clarify של כל המטרות.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "q.rephrase.generic": {
+      "version": 1,
+      "text": "אם השאלה לא ברורה, אפשר לענות במילים פשוטות, או לכתוב שזה לא ידוע.",
+      "purpose_he": "rephrase של כל המטרות בלי rephrase ייעודי.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "q.rephrase.prefix": {
+      "version": 1,
+      "text": "אנסח אחרת:",
+      "purpose_he": "פתיח לניסוח מחדש של המנסח.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "q.dont_know.ack": {
+      "version": 1,
+      "text": "בסדר, אפשר להמשיך גם בלי זה.",
+      "purpose_he": "אישור קבוע אחרי \"לא ידוע לי\".",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "ack.thanks": {
+      "version": 1,
+      "text": "תודה.",
+      "purpose_he": "קידומת כללית.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "ack.noted": {
+      "version": 1,
+      "text": "תודה, רשמתי.",
+      "purpose_he": "קידומת כללית.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "ack.understood": {
+      "version": 1,
+      "text": "הבנתי, תודה.",
+      "purpose_he": "קידומת כללית.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "ack.extra_detail": {
+      "version": 1,
+      "text": "תודה, רשמתי גם את זה.",
+      "purpose_he": "הפונה הוסיף פרט שאינו של המטרה הנוכחית (VOICE מ5). לא אומר שזה \"יגיע להדס\", כי באתר זה קורה רק אם יושארו פרטים.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "ack.full_first_message": {
+      "version": 1,
+      "text": "תודה, זה עוזר מאוד.",
+      "purpose_he": "אחרי הודעה ראשונה מפורטת (VOICE 5.9).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "transition.returning_to_question": {
+      "version": 1,
+      "text": "ובחזרה לשאלה:",
+      "purpose_he": "חזרה למטרה אחרי מענה מטא או FAQ.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "wrapup.recap_intro": {
+      "version": 1,
+      "text": "לפני הסיכום, רק לוודא שהבנתי נכון:",
+      "purpose_he": "לפני תקציר האימות.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "wrapup.confirm": {
+      "version": 1,
+      "text": "זה נכון, או שיש מה לתקן?",
+      "purpose_he": "אחרי התקציר.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "wrapup.opt.correct": {
+      "version": 1,
+      "text": "נכון",
+      "purpose_he": "כפתור אחרי wrapup.confirm.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "wrapup.opt.fix": {
+      "version": 1,
+      "text": "יש תיקון",
+      "purpose_he": "כפתור אחרי wrapup.confirm.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "wrapup.fix_prompt": {
+      "version": 1,
+      "text": "מה לתקן? אפשר לכתוב במילים פשוטות.",
+      "purpose_he": "אחרי \"יש תיקון\". פותח טקסט חופשי לתור אחד.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "wrapup.value.unknown": {
+      "version": 1,
+      "text": "לא ידוע",
+      "purpose_he": "הערך בשורת האימות לפרט בסטטוס `unknown`.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "wrapup.age.months": {
+      "version": 1,
+      "text": "{{age_months}} חודשים",
+      "placeholders": [
+        "age_months"
+      ],
+      "purpose_he": "ערך הגיל בשורת האימות, מתחת לגיל 3 (הגיל נשמר בחודשים).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "redflag.confirm.sudden_onset": {
+      "version": 1,
+      "text": "שאלה אחת חשובה: השינוי הזה הופיע בבת אחת או בשבועות האחרונים, או שהוא קיים כבר הרבה זמן?",
+      "purpose_he": "triggers.confirm של sudden_onset. אצל מבוגר, כשיש סימן ומשך הזמן לא ידוע. נשאלת פעם אחת.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: כפתורים מוצעים: \"בבת אחת או לאחרונה\" · \"כבר הרבה זמן\". לפי המנסח הקליני, ספק אחרי השאלה מעלה את הדגל בדרגה א. קליני: המשמעות דורשת אישור הדס."
+    },
+    "outcome.3.when_to_contact.title": {
+      "version": 1,
+      "text": "מתי כן לפנות להדס",
+      "purpose_he": "כותרת הרשימה בתוצאה 3.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין.",
+      "active": false
+    },
+    "outcome.3.when_to_contact.intro": {
+      "version": 2,
+      "text": "כדאי לפנות, למשל, אם אחד מאלה קורה עכשיו או בהמשך. הרשימה אינה מלאה:",
+      "purpose_he": "שורת פתיחה לרשימה בתוצאה 3.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. הערה: L-29: \"למשל\" ו\"הרשימה אינה מלאה\", כדי שספי הגיל לא ייקראו כרשימה ממצה.",
+      "active": false
+    },
+    "when_to_contact.wtc_voice_persisting": {
+      "version": 1,
+      "text": "הקול צרוד או שונה כבר יותר משבועיים-שלושה.",
+      "purpose_he": "תוצאה 3, תחום קול.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_voice_pain_effort": {
+      "version": 1,
+      "text": "יש כאב, מאמץ או עייפות בזמן הדיבור או אחריו.",
+      "purpose_he": "תוצאה 3, תחום קול.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_voice_end_of_day": {
+      "version": 1,
+      "text": "הקול נחלש או \"נעלם\" לקראת סוף היום.",
+      "purpose_he": "תוצאה 3, תחום קול.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_voice_recurring": {
+      "version": 1,
+      "text": "הצרידות חוזרת שוב ושוב.",
+      "purpose_he": "תוצאה 3, תחום קול.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_voice_work_impact": {
+      "version": 1,
+      "text": "הקול מפריע לעבודה או ללימודים.",
+      "purpose_he": "תוצאה 3, תחום קול.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_voice_child_hoarse": {
+      "version": 1,
+      "text": "אצל ילד או ילדה: הקול צרוד רוב הזמן.",
+      "purpose_he": "תוצאה 3, תחום קול.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_voice_ent_recommended": {
+      "version": 1,
+      "text": "רופא אף-אוזן-גרון המליץ על טיפול בקול.",
+      "purpose_he": "תוצאה 3, תחום קול.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_speech_errors_after_5": {
+      "version": 1,
+      "text": "מגיל 5 ומעלה, צלילים מסוימים עדיין נאמרים אחרת.",
+      "purpose_he": "תוצאה 3, היגוי ומובנות.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_speech_interdental": {
+      "version": 1,
+      "text": "מגיל 4 וחצי בערך, הלשון יוצאת בין השיניים בזמן הדיבור (למשל בס' או בש').",
+      "purpose_he": "תוצאה 3, היגוי ומובנות.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_speech_lateral": {
+      "version": 1,
+      "text": "בכל גיל: צלילים כמו ש' או ס' נשמעים \"רטובים\", או שהאוויר יוצא מהצד.",
+      "purpose_he": "תוצאה 3, היגוי ומובנות.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_speech_intelligibility": {
+      "version": 1,
+      "text": "בגיל 3, גם בני המשפחה מתקשים להבין את הדיבור. מגיל 4, מי שלא מכיר לא מבין את רוב הדיבור.",
+      "purpose_he": "תוצאה 3, היגוי ומובנות.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_speech_child_impact": {
+      "version": 1,
+      "text": "יש תסכול, הימנעות מדיבור, או הקנטות בגלל הדיבור.",
+      "purpose_he": "תוצאה 3, היגוי ומובנות.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_speech_adult_impact": {
+      "version": 1,
+      "text": "ההגייה או הדיבור המהיר מפריעים ביום-יום.",
+      "purpose_he": "תוצאה 3, היגוי ומובנות.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_stuttering_disfluency_type": {
+      "version": 1,
+      "text": "יש חזרות על חלקי מילים (\"א-א-אמא\"), מתיחה של צלילים, או היתקעות בלי קול.",
+      "purpose_he": "תחום שטף. לפי REVIEW 4.1.1 אין כאן תוצאה 3; משמש להבחנה בין 1 ל-2.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_stuttering_physical_effort": {
+      "version": 1,
+      "text": "רואים מאמץ בזמן הדיבור, כמו מתח בפנים או מצמוץ.",
+      "purpose_he": "תחום שטף.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_stuttering_awareness": {
+      "version": 1,
+      "text": "יש מודעות לקושי, תסכול, אמירות כמו \"קשה לי לדבר\", או הימנעות מדיבור.",
+      "purpose_he": "תחום שטף.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_stuttering_duration": {
+      "version": 1,
+      "text": "ההיתקעויות בדיבור נמשכות כבר יותר מ-3 עד 6 חודשים.",
+      "purpose_he": "תחום שטף.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_stuttering_family_history": {
+      "version": 1,
+      "text": "יש במשפחה מי שהיה לו קושי דומה בשטף הדיבור.",
+      "purpose_he": "תחום שטף.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_stuttering_adult_avoidance": {
+      "version": 1,
+      "text": "הימנעות ממצבי דיבור, או החלפת מילים כדי לא להיתקע.",
+      "purpose_he": "תחום שטף.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_oral_mouth_breathing": {
+      "version": 1,
+      "text": "הפה פתוח רוב היום, או שהנשימה היא בעיקר דרך הפה. במקביל כדאי גם בדיקה אצל רופא אף-אוזן-גרון.",
+      "purpose_he": "תוצאה 3, תפקודי פה.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_oral_tongue_thrust": {
+      "version": 1,
+      "text": "הלשון נדחקת קדימה או בין השיניים בזמן בליעה או דיבור.",
+      "purpose_he": "תוצאה 3, תפקודי פה.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_oral_professional_referral": {
+      "version": 1,
+      "text": "אורתודנט או רופא שיניים המליץ לפנות.",
+      "purpose_he": "תוצאה 3, תפקודי פה.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_oral_drooling": {
+      "version": 1,
+      "text": "יש ריור אחרי גיל 4 בערך.",
+      "purpose_he": "תוצאה 3, תפקודי פה.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_oral_sucking_habit": {
+      "version": 1,
+      "text": "מציצת אצבע או מוצץ נמשכים אחרי גיל 4–5 בערך.",
+      "purpose_he": "תוצאה 3, תפקודי פה.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_oral_chewing": {
+      "version": 1,
+      "text": "יש קושי בלעיסה, או עם מרקמים מסוימים של אוכל.",
+      "purpose_he": "תוצאה 3, תפקודי פה (רק אם 1.11 בתחום).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_lang_12m": {
+      "version": 1,
+      "text": "בגיל שנה: אין מלמול, אין תגובה לשם, או אין הצבעה ונפנוף לשלום.",
+      "purpose_he": "תוצאה 3, שפה בגיל הרך.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_lang_18m": {
+      "version": 1,
+      "text": "בגיל 18 חודשים: עדיין אין מילים.",
+      "purpose_he": "תוצאה 3, שפה בגיל הרך.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_lang_24m": {
+      "version": 1,
+      "text": "בגיל שנתיים: פחות מ-50 מילים בערך, או שעדיין אין חיבור של שתי מילים יחד.",
+      "purpose_he": "תוצאה 3, שפה בגיל הרך.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_lang_36m": {
+      "version": 1,
+      "text": "בגיל 3: עדיין אין משפטים קצרים, גם בני המשפחה מתקשים להבין, או שקשה להבין בקשות פשוטות.",
+      "purpose_he": "תוצאה 3, שפה בגיל הרך.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_lang_48m": {
+      "version": 1,
+      "text": "בגיל 4: קשה לספר מה קרה, או שמי שלא מכיר לא מבין את רוב הדיבור.",
+      "purpose_he": "תוצאה 3, שפה בגיל הרך (מחושב מ-lang_narrative).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.wtc_lang_others_concerned": {
+      "version": 1,
+      "text": "בכל גיל: גננת, מורה או רופא הביעו דאגה.",
+      "purpose_he": "תוצאה 3, שפה בגיל הרך.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "when_to_contact.bilingual_note": {
+      "version": 1,
+      "text": "במשפחה שמדברת יותר משפה אחת, סופרים את המילים בכל השפות יחד.",
+      "purpose_he": "מתחת לרשימת השפה בגיל הרך. כלל הפרשנות של המנסח הקליני.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הנוסחים נשמרים להפעלה עתידית, אחרי חודש נתונים ותשובת עורך הדין. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "outcome.card.label": {
+      "version": 1,
+      "text": "הכיוון להמשך",
+      "purpose_he": "תווית קבועה מעל כותרת כרטיס התוצאה, בתוצאות 1–4 (הצעת UI, אושרה ב-UX טיוטה 3).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: \"כיוון\" הוא המונח של `consent.disclaimer` (\"הכיוון שיוצג בסוף\"). לא \"תוצאה\" ולא \"המלצה\". ⚖️ כי הוא ממסגר את כרטיס התוצאה."
+    },
+    "outcome.stale_label": {
+      "version": 1,
+      "text": "הכיוון הקודם, לפני העדכון",
+      "purpose_he": "תגית על כרטיס תוצאה קודם שנשאר בתמליל אחרי \"שכחתי לספר\" (UX S5, UI `.stale-tag`).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "outcome.extraction_gap": {
+      "version": 1,
+      "text": "חלק ממה שנכתב בשיחה לא נקלט כמו שצריך, וייתכן שהכיוון כאן לא מביא אותו בחשבון. אם יש בו משהו חשוב, כדאי לספר להדס ישירות: {{hadas_phone}}. במצב חירום: מד\"א 101.",
+      "placeholders": [
+        "hadas_phone"
+      ],
+      "purpose_he": "בתוך כרטיס התוצאה, כשהודעה של הפונה לא נקלטה גם בחילוץ החוזר (ARCHITECTURE §5.5, F1). תוצאה 3 נחסמת. 101 חובה.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: לא אומרים \"תקלה\" ולא מאשימים את הפונה. מה שנכתב עבר בדיקת דגלים בכל מקרה, אבל את זה לא אומרים לפונה, כדי שלא יסתמך על זה."
+    },
+    "transition.to_outcome": {
+      "version": 1,
+      "text": "תודה על השיתוף. הנה סיכום קצר, ומה אפשר לעשות מכאן.",
+      "purpose_he": "ההודעה לפני הסיכום והכרטיס.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "outcome.summary.label": {
+      "version": 1,
+      "text": "מה שעלה בשיחה",
+      "purpose_he": "תווית לבועת הסיכום החם.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "outcome.summary.fallback": {
+      "version": 1,
+      "text": "תודה על הזמן ועל השיתוף.",
+      "purpose_he": "במקום הסיכום החם, כשהמודל נכשל.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "outcome.disclaimer": {
+      "version": 2,
+      "text": "נוצר אוטומטית, רק ממה שנכתב בשיחה. זה לא אבחון ולא ייעוץ רפואי, ולא מחליף איש מקצוע. חירום: 101.",
+      "purpose_he": "בתוך הכרטיס, בתוצאות 1, 2 ו-4 (UX outcome.common.disclaimer).",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "outcome.addendum.document_request": {
+      "version": 1,
+      "text": "העוזר הדיגיטלי לא כותב מסמכים, אישורים או חוות דעת, והכיוון שמוצג כאן אינו מסמך מקצועי ואינו מתאים להצגה כחוות דעת. מסמכים מקצועיים הם נושא לשיחה עם הדס, אחרי היכרות.",
+      "purpose_he": "שורת תוספת (`addenda[].text_id`, `audience: user`) בכרטיס התוצאה, בתוצאות 1, 2 ו-4, כשהפונה ביקש בשיחה מסמך, אישור או חוות דעת לגורם חיצוני (`document_request`, L-15). אחרי `outcome.disclaimer`. לא מוצגת בתוצאה 3 (כבויה, ובקשת מסמך חוסמת אותה).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: באותו ניסוח של `meta.document_request`, כפי שהמבקר המשפטי ביקש: \"נושא לשיחה עם הדס, אחרי היכרות\", ולא \"הדס מספקת מכתבים אחרי הערכה\" (REVIEW 4.0.5), כי זה נקרא כהבטחה למכתב לבית משפט או לביטוח. מתייחסת ל\"הכיוון שמוצג כאן\" (`outcome.card.label`) ולא לשיחה, כי צילום מסך של הכרטיס הוא הסיכון."
+    },
+    "outcome.cta.form": {
+      "version": 1,
+      "text": "השארת פרטים להדס",
+      "purpose_he": "פעולה ראשית בתוצאות 1–3.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "outcome.cta.phone": {
+      "version": 1,
+      "text": "או להתקשר: {{hadas_phone}}",
+      "placeholders": [
+        "hadas_phone"
+      ],
+      "purpose_he": "מתחת לפעולה הראשית בתוצאות 1–3.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "outcome.add_more": {
+      "version": 1,
+      "text": "שכחתי לספר משהו",
+      "purpose_he": "קישור משני בכל מסך תוצאה.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "outcome.finish": {
+      "version": 1,
+      "text": "סיום ומחיקה",
+      "purpose_he": "קישור משני בכל מסך תוצאה. פותח את דיאלוג המחיקה (`chat.delete.*`), ומוחק בשרת (D-01). אחר כך S9.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: התווית נשארת כמו שהיא: לפי D-01 היא סוף-סוף מדויקת (L-04, כיוון א של המבקר המשפטי)."
+    },
+    "closed.keep_note": {
+      "version": 1,
+      "text": "הפרטים מוצגים עכשיו בלבד, ולא יישמרו אחרי סגירת הדף. כדאי לרשום אותם.",
+      "purpose_he": "S9, מתחת לכרטיס ההפניה (תוצאה 4), או לרשימת \"מתי לפנות\" (תוצאה 3, כשתופעל), שנשארים על המסך רק בזיכרון הדף אחרי המחיקה (UX S9).",
+      "legal_review": "required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "outcome.1.title": {
+      "version": 1,
+      "text": "כדאי לפנות להדס",
+      "purpose_he": "כרטיס תוצאה 1.",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "outcome.1.body": {
+      "version": 2,
+      "text": "לפי מה שנכתב בשיחה, הנושא שתואר הוא מהתחומים שהדס תודה עוסקת בהם, ועלו בשיחה דברים שהדס הגדירה מראש כסיבה לפנות. אפשר לפנות אליה לשיחה ראשונה, כדי להבין את התמונה המלאה ולשמוע מה האפשרויות.",
+      "purpose_he": "כרטיס תוצאה 1.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: L-21: בלי \"מומלץ\". מדווח מה עלה בשיחה, בדומה לתוצאה 3, בנוסח של המבקר המשפטי. הכותרת \"כדאי לפנות להדס\" נשארת (סבירה לדעתו)."
+    },
+    "outcome.2.title": {
+      "version": 1,
+      "text": "שווה לשוחח עם הדס",
+      "purpose_he": "כרטיס תוצאה 2.",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "outcome.2.body": {
+      "version": 1,
+      "text": "לפי מה שעלה בשיחה, כדאי לשוחח עם הדס תודה בשיחת התייעצות. שיחה קצרה איתה תעזור להבין את התמונה טוב יותר, ולברר אם ואיך אפשר לעזור.",
+      "purpose_he": "כרטיס תוצאה 2.",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "outcome.3.title": {
+      "version": 1,
+      "text": "סיכום השיחה",
+      "purpose_he": "כרטיס תוצאה 3. כותרת נייטרלית בכוונה.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03).",
+      "active": false
+    },
+    "outcome.3.body": {
+      "version": 3,
+      "text": "בשיחה הקצרה הזו לא עלה אף אחד מהסימנים שברשימה שנקבעה מראש. זה דיווח על מה שנכתב כאן בלבד: זה לא אומר שהכול בסדר, ושיחה אוטומטית יכולה להחמיץ דברים חשובים. אם יש דאגה, זו סיבה מספיקה לפנות.",
+      "purpose_he": "כרטיס תוצאה 3.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הערה: חלופה א של המבקר המשפטי (§2.3), מילה במילה: בלי לייחס את הרשימה להדס, ובלי הנוסח של GOALS, שהוא הקרוב ביותר ל\"אין צורך כעת\". \"זה לא אומר שהכול בסדר\" — שלילה מפורשת; \"בסדר\" אסור רק בטקסט של המודל (`output-rules`).",
+      "active": false
+    },
+    "outcome.3.disclaimer": {
+      "version": 2,
+      "text": "הסיכום נוצר אוטומטית, רק מתוך התשובות כאן. שיחה קצרה ואוטומטית לא רואה את כל התמונה ועלולה לטעות. היא אינה אבחון, הערכה מקצועית או ייעוץ רפואי, אינה מחליפה פגישה עם קלינאית תקשורת או רופא, ואינה מסמך שמתאים להצגה לגורם אחר. חירום: 101.",
+      "purpose_he": "בתוך כרטיס תוצאה 3 — ההסתייגות המורחבת.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הערה: L-15: לא מתאים להצגה לגורם אחר.",
+      "active": false
+    },
+    "outcome.3.when_to_contact.always": {
+      "version": 1,
+      "text": "- יש דאגה, או תחושה שמשהו לא מסתדר. זו סיבה מספיקה לפנות.\n- משהו משתנה, מחמיר, או לא משתפר עם הזמן.\n- קושי בדיבור, בהבנה או בבליעה מופיע פתאום. במקרה כזה לא לחכות: מד\"א 101 או חדר מיון.",
+      "purpose_he": "תוצאה 3, אחרי פריטי when_to_contact של התחום (return_signs_text_id).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03). הערה: המנסח הקליני אימץ אותו במקום השורה שלו (REVIEW §5). קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "outcome.3.door_open": {
+      "version": 1,
+      "text": "אפשר לפנות להדס בכל זמן, גם עכשיו. אם משהו חשוב לא עלה בשיחה, כדאי לספר לה ישירות.",
+      "purpose_he": "תוצאה 3, לפני הכפתורים.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03).",
+      "active": false
+    },
+    "outcome.4.title": {
+      "version": 1,
+      "text": "לאן כדאי לפנות",
+      "purpose_he": "כרטיס תוצאה 4.",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "outcome.4.body": {
+      "version": 1,
+      "text": "תודה על השיתוף. לפי מה שעלה בשיחה, הנושא הזה אינו מהתחומים שהדס תודה עוסקת בהם. כדי שהפנייה תגיע למי שעוסק בזה, אלה מקומות שאפשר לפנות אליהם:",
+      "purpose_he": "כרטיס תוצאה 4. משמש גם ככותרת הרשימה (UX outcome.4.referrals.title מיותר).",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "outcome.4.referral_item": {
+      "version": 1,
+      "text": "{{referral_name}} — {{referral_description}} {{referral_contact}}",
+      "placeholders": [
+        "referral_name",
+        "referral_description",
+        "referral_contact"
+      ],
+      "purpose_he": "פריט ברשימת ההפניות.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "קליני: המשמעות דורשת אישור הדס."
+    },
+    "outcome.4.external_hint": {
+      "version": 1,
+      "text": "נפתח בלשונית חדשה",
+      "purpose_he": "תווית נגישות לקישור חיצוני.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "outcome.4.referral_disclaimer": {
+      "version": 2,
+      "text": "הרשימה נועדה לעזור למצוא כתובת מתאימה. היא אינה המלצה על גורם מסוים ואינה התחייבות לזמינותו, והפרטים עשויים להשתנות. כדאי לבדוק את ההתאמה ישירות מולם.",
+      "purpose_he": "מתחת לרשימת ההפניות.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: L-16: אין התחייבות לזמינות, והפרטים עשויים להשתנות."
+    },
+    "outcome.4.no_referral": {
+      "version": 1,
+      "text": "לנושא הזה אין כרגע הפניה מוכנה. רופא המשפחה או רופא הילדים יוכלו לכוון למקום המתאים.",
+      "purpose_he": "במקום הרשימה, כשאין הפניה מתאימה.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "קליני: המשמעות דורשת אישור הדס."
+    },
+    "outcome.4.misunderstood": {
+      "version": 1,
+      "text": "נראה שמשהו לא הובן נכון בשיחה? אפשר לפנות להדס ישירות: {{hadas_phone}}.",
+      "placeholders": [
+        "hadas_phone"
+      ],
+      "purpose_he": "קישור צנוע בתוצאה 4 (רשת ביטחון לסיווג שגוי).",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "redflag.title.emergency": {
+      "version": 1,
+      "text": "חשוב לפנות עכשיו לעזרה רפואית",
+      "purpose_he": "כותרת S6, דרגת emergency.",
+      "legal_review": "required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "redflag.title.urgent": {
+      "version": 1,
+      "text": "קודם כול, בדיקה רפואית",
+      "purpose_he": "כותרת S6, דרגת urgent. מחליף את `redflag.title.medical` (אותו טקסט, שם הדרגה בחוזה).",
+      "legal_review": "required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "redflag.title.hotline": {
+      "version": 1,
+      "text": "אפשר לדבר עם מישהו עכשיו",
+      "purpose_he": "כותרת S6, דרגת hotline. מחליף את `redflag.title.helpline` (אותו טקסט).",
+      "legal_review": "required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "redflag.footer": {
+      "version": 1,
+      "text": "הודעה קבועה שמוצגת אוטומטית לפי מה שנכתב בשיחה. היא אינה אבחון.",
+      "purpose_he": "בכל מסך דגל אדום, בכל הדרגות, **אחרי הפעולות**, בגופן משני (L-19, UX S6). זו ההסתייגות של תוצאה 5 (`disclaimer_text_ref`). בוואטסאפ המתאם מצרף אותה כשורה אחרונה.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: הנוסח של המבקר המשפטי, מילה במילה. לא בפתיחה, כדי לא להחליש את הדחיפות. → הדס ועורך הדין מכריעים (שאלה 8).",
+      "client_bundle": true
+    },
+    "redflag.type.sudden_onset": {
+      "version": 2,
+      "text": "יש להתקשר עכשיו למד\"א 101, או לפנות היום לחדר מיון. שינוי חדש כזה צריך בדיקה רפואית מהירה, גם אם עברו כמה ימים.\nאם כבר היה בירור רפואי מאז שזה התחיל, ומשהו השתנה או החמיר — גם אז לפנות לבדיקה היום.\nאם אין לך אפשרות להיות שם עכשיו, אפשר להתקשר ל-101 ולמסור את הכתובת.\nהעוזר הדיגיטלי לא יכול להעריך את המצב, ולכן השיחה כאן נעצרת.",
+      "purpose_he": "S6, דגל sudden_onset (emergency).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: L-20: הפעולה קודם, בלי תנאי. \"אם כבר היה בירור\" עבר לשורה השנייה, כדי שמי שחושב \"כבר היינו אצל רופא\" לא יוותר על השיחה. המבנה של המבקר המשפטי; הניסוח הקליני אצל הדס. \"גם אם עברו כמה ימים\" — כלל 3 של המנסח הקליני. קליני: המשמעות דורשת אישור הדס. וריאנט self — הערה: למבוגר שהדיבור שלו עצמו השתנה (בקשת UX). הוסרה הטענה על ערוץ כתוב של מד\"א (ראו `redflag.cant_speak`).",
+      "variants": {
+        "self": "יש להתקשר עכשיו למד\"א 101, או לפנות היום לחדר מיון. שינוי חדש כזה צריך בדיקה רפואית מהירה, גם אם עברו כמה ימים.\nאם קשה לדבר בטלפון, כדאי לבקש ממישהו שנמצא לידך להתקשר.\nאם כבר היה בירור רפואי מאז שזה התחיל, ומשהו השתנה או החמיר — גם אז לפנות לבדיקה היום.\nהעוזר הדיגיטלי לא יכול להעריך את המצב, ולכן השיחה כאן נעצרת."
+      },
+      "client_bundle": true
+    },
+    "redflag.doubt.sudden_onset": {
+      "version": 1,
+      "text": "כדאי לפנות עוד היום לרופא הילדים, או למוקד רפואי, ולספר על השינוי. כשלא ברור אם הופיע עוד משהו חדש, עדיף לבדוק.\nאם מופיעים ישנוניות חריגה, בלבול, חולשה או פרכוס: מד\"א 101, מיד.",
+      "purpose_he": "S6, דרגת urgent, כש-`sudden_onset` עלה אצל ילד רק בגלל \"לא ידוע לי\" ב-screen_neuro (`doubt_message_text_id`, קליני §9: `screen_neuro.child` → `doubt_tier: urgent`).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: בלי זה, הכותרת של דרגת urgent הייתה מוצגת מעל הודעת 101 של דרגת emergency. אצל מבוגר הספק מעלה את הדגל בדרגה א, ואז מוצג `redflag.type.sudden_onset`. קליני: המשמעות דורשת אישור הדס.",
+      "client_bundle": true
+    },
+    "redflag.type.airway": {
+      "version": 2,
+      "text": "יש להתקשר עכשיו למד\"א 101.\nקושי לנשום, נשימה רועשת או חנק צריכים עזרה רפואית מיידית. המוקדנים ינחו מה לעשות עד שתגיע עזרה.\nאם אין לך אפשרות להיות שם עכשיו, אפשר להתקשר ל-101 ולמסור את הכתובת.",
+      "purpose_he": "S6, דגל airway (emergency).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: נוסח הבסיס לא השתנה. בווריאנט `.self` הוסרה הטענה על ערוץ כתוב של מד\"א. קליני: המשמעות דורשת אישור הדס.",
+      "variants": {
+        "self": "יש להתקשר עכשיו למד\"א 101.\nאם קשה לדבר, כדאי לבקש ממישהו שנמצא לידך להתקשר.\nקושי לנשום או חנק צריכים עזרה רפואית מיידית."
+      },
+      "client_bundle": true
+    },
+    "redflag.cant_speak": {
+      "version": 1,
+      "text": "אם אי אפשר לדבר בטלפון ואין אף אחד בסביבה: {{mda_text_channel}}",
+      "placeholders": [
+        "mda_text_channel"
+      ],
+      "purpose_he": "שורה נוספת בווריאנטים `.self` של דגלי החירום, למי שלא יכול לדבר בטלפון ואין לידו אף אחד (UI (ו)).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — מציין מקום. **לבדיקה עובדתית מול מד\"א:** האם יש ערוץ פנייה כתוב (מסרון, אפליקציה, אחר), למי הוא מיועד, ואיך משתמשים בו. אם אין ערוץ כזה, הנוסח יוצא משימוש. אם יש, המשתנה מקבל את התיאור המאומת, והנוסח מקבל גרסה חדשה רק אם צריך. הערה: הנוסח לא טוען שיש ערוץ כזה. כל המידע עליו נמצא במשתנה, שלא קיים עד שיאומת. קליני: המשמעות דורשת אישור הדס.",
+      "active": false
+    },
+    "redflag.cta.call": {
+      "version": 1,
+      "text": "חיוג ל-101",
+      "purpose_he": "כפתור ראשי בדרגת emergency, קישור tel:101.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: → תפקיד 4: המאזין הגלובלי של GA לא יעכב את הקישור (UX §6.4, SEC-05).",
+      "client_bundle": true
+    },
+    "redflag.cta.call.a11y": {
+      "version": 1,
+      "text": "חיוג למד\"א 101",
+      "purpose_he": "תווית נגישות לכפתור החיוג.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "redflag.secondary.emergency": {
+      "version": 1,
+      "text": "אפשר גם להגיע ישירות לחדר המיון הקרוב.",
+      "purpose_he": "שורת טקסט בדרגת emergency, מתחת לכפתור 101. אין כפתור \"איתור חדר מיון\" בגרסה 1: `redflag.cta.er` יצא משימוש בסבב 4 (ARCHITECTURE §20).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "redflag.after.emergency": {
+      "version": 1,
+      "text": "אחרי בדיקה רפואית אפשר לפנות להדס: {{hadas_phone}}.",
+      "placeholders": [
+        "hadas_phone"
+      ],
+      "purpose_he": "שורה פסיבית בדרגת emergency, לא כפתור (UX S6). אין טופס (D-04).",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "redflag.type.swallowing": {
+      "version": 2,
+      "text": "כדאי לקבוע בימים הקרובים בדיקה אצל רופא המשפחה או אצל רופא אף-אוזן-גרון. קשיים בבליעה ובאכילה צריכים קודם בירור רפואי.\nאם יש חנק או קושי לנשום: מד\"א 101, מיד.",
+      "purpose_he": "S6, דגל swallowing (urgent).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "קליני: המשמעות דורשת אישור הדס.",
+      "client_bundle": true
+    },
+    "redflag.type.voice_risk": {
+      "version": 1,
+      "text": "כדאי לקבוע בהקדם בדיקה אצל רופא אף-אוזן-גרון, לפני כל טיפול בקול. שינוי בקול, יחד עם מה שתואר כאן, צריך קודם בדיקה רפואית.\nאם יש קושי לנשום: מד\"א 101, מיד.",
+      "purpose_he": "S6, דגל voice_risk (urgent).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: \"יחד עם מה שתואר כאן\" — כדי לא לחזור על הסימנים ולא לרמוז על מחלה. קליני: המשמעות דורשת אישור הדס.",
+      "client_bundle": true
+    },
+    "redflag.type.child_regression": {
+      "version": 1,
+      "text": "כדאי לפנות לרופא הילדים בימים הקרובים. כשמילים או יכולות שכבר היו מפסיקות להופיע, חשוב לבדוק את זה קודם אצל רופא.\nאם זה קרה בתוך שעות, או יחד עם ישנוניות, בלבול, חולשה או פרכוס: מד\"א 101, מיד.",
+      "purpose_he": "S6, דגל child_regression (urgent).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "קליני: המשמעות דורשת אישור הדס.",
+      "client_bundle": true
+    },
+    "redflag.type.sudden_hearing_loss": {
+      "version": 1,
+      "text": "חשוב להגיע היום או מחר לבדיקה אצל רופא אף-אוזן-גרון, או לחדר מיון. כשהשמיעה יורדת פתאום, בדיקה מהירה חשובה, ולא כדאי לחכות לשיחה עם הדס.",
+      "purpose_he": "S6, דגל sudden_hearing_loss (urgent, היום או מחר).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "קליני: המשמעות דורשת אישור הדס.",
+      "client_bundle": true
+    },
+    "redflag.type.adult_new_change": {
+      "version": 1,
+      "text": "כדאי לפנות בקרוב לרופא המשפחה, ולספר על השינוי. שינוי חדש בדיבור, בקול או בבליעה אצל מבוגר צריך קודם בירור רפואי, ולפעמים גם הפניה לנוירולוג.\nאם השינוי הופיע או החמיר פתאום: מד\"א 101 או חדר מיון, היום.",
+      "purpose_he": "S6, דגל adult_new_change (urgent).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: כולל את השורה \"אם זה הופיע פתאום — 101\" (DRAFT_NOTES §6, שאלה 6). קליני: המשמעות דורשת אישור הדס.",
+      "variants": {
+        "self": "כדאי לפנות בקרוב לרופא המשפחה, ולספר על השינוי. שינוי חדש בדיבור, בקול או בבליעה בגיל מבוגר צריך קודם בירור רפואי, ולפעמים גם הפניה לנוירולוג.\nאם השינוי הופיע או מחמיר פתאום: מד\"א 101 או חדר מיון, היום. אם קשה לדבר בטלפון, כדאי לבקש ממישהו שנמצא לידך להתקשר."
+      },
+      "client_bundle": true
+    },
+    "redflag.after": {
+      "version": 2,
+      "text": "אחרי הבדיקה הרפואית אפשר לחזור להדס, עם מה שנאמר בה. אפשר גם להשאיר פרטים כבר עכשיו, אבל לא לחכות לתשובה ממנה לפני הבדיקה.",
+      "purpose_he": "דרגת urgent בלבד, מעל `redflag.cta.form` המשני (D-04).",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "redflag.cta.form": {
+      "version": 1,
+      "text": "השארת פרטים להדס",
+      "purpose_he": "כפתור משני, רק בדרגת urgent (D-04).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "redflag.type.distress": {
+      "version": 3,
+      "text": "תודה שכתבת את זה. כשמישהו קרוב אומר דברים כאלה, אפשר להתייעץ עכשיו עם ער\"ן בטלפון 1201, בכל שעה — גם עבורך וגם עבור {{subject_ref}}.\nסה\"ר — תמיכה בצ'אט, בכתב: {{sahar_url}}\nבמצב של סכנה מיידית: מד\"א 101 או משטרה 100.\nחשוב לדעת: מה שנכתב כאן לא מגיע לאף אחד בזמן אמת.",
+      "placeholders": [
+        "subject_ref",
+        "sahar_url"
+      ],
+      "purpose_he": "S6, דגל distress (hotline). גרסת הבסיס: כשמישהו קרוב אמר את הדברים (REVIEW 3.8.3), או בשיחה על ילד. אין טופס (D-04).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: ער\"ן פועל בכל שעה. שעות סה\"ר לא נכתבות עד שיאומתו. **באתר:** \"לא מגיע לאף אחד בזמן אמת\" נכון — הכלי לא מתריע לאיש (REVIEW 3.8.5), ואסור שהפונה יחשוב שמישהו הוזעק. **בוואטסאפ** המשפט הזה לא נכון, כי ההודעות מגיעות מיד לוואטסאפ של הדס (L-07). לכן וריאנט `.wa`: אומר בכנות שהן מגיעות אליה, ושהיא לא עוקבת בזמן אמת. נוסח האתר לא השתנה. קליני: המשמעות דורשת אישור הדס.",
+      "variants": {
+        "self": "תודה שכתבת את זה. אפשר לדבר עכשיו עם מישהו שמקשיב:\nער\"ן — בטלפון 1201, בכל שעה.\nסה\"ר — תמיכה בצ'אט, בכתב: {{sahar_url}}\nבמצב של סכנה מיידית: מד\"א 101 או משטרה 100.\nחשוב לדעת: מה שנכתב כאן לא מגיע לאף אחד בזמן אמת.",
+        "whatsapp": "תודה שכתבת את זה. כשמישהו קרוב אומר דברים כאלה, אפשר להתייעץ עכשיו עם ער\"ן בטלפון 1201, בכל שעה — גם עבורך וגם עבור {{subject_ref}}.\nסה\"ר — תמיכה בצ'אט, בכתב: {{sahar_url}}\nבמצב של סכנה מיידית: מד\"א 101 או משטרה 100.\nחשוב לדעת: ההודעות כאן מגיעות גם לוואטסאפ של הדס, אבל היא לא עוקבת אחריהן בזמן אמת, וייתכן שלא תראה אותן בקרוב. לכן כדאי לפנות עכשיו לאחד המספרים שלמעלה.",
+        "whatsapp.self": "תודה שכתבת את זה. אפשר לדבר עכשיו עם מישהו שמקשיב:\nער\"ן — בטלפון 1201, בכל שעה.\nסה\"ר — תמיכה בצ'אט, בכתב: {{sahar_url}}\nבמצב של סכנה מיידית: מד\"א 101 או משטרה 100.\nחשוב לדעת: ההודעות כאן מגיעות גם לוואטסאפ של הדס, אבל היא לא עוקבת אחריהן בזמן אמת, וייתכן שלא תראה אותן בקרוב. לכן כדאי לפנות עכשיו לאחד המספרים שלמעלה."
+      },
+      "client_bundle": true
+    },
+    "redflag.cta.call_1201": {
+      "version": 1,
+      "text": "חיוג לער\"ן 1201",
+      "purpose_he": "כפתור ראשי בדגל distress, קישור tel:1201 (UI `rf.call_1201`). כמו כפתור 101: בלי עיכוב של GA.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "redflag.type.child_safety": {
+      "version": 3,
+      "text": "תודה שכתבת את זה. כשיש חשש שילד נפגע או מוזנח, אפשר לפנות למוקד 118 של משרד הרווחה ולהתייעץ.\nאם ילד בסכנה עכשיו: משטרה 100.\nחשוב לדעת: מה שנכתב כאן לא מגיע לאף אחד בזמן אמת.",
+      "purpose_he": "S6, דגל child_safety (hotline). אין טופס (D-04).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: טיוטה. לא להפעיל לפני תשובת עורך הדין על חובת דיווח (חוק העונשין, סעיף 368ד), ועל השאלה אם להציע טופס בכלל (שאלה 23). לאמת שמוקד 118 פועל בכל שעה. המערכת לא חוקרת ולא שואלת שאלות המשך. הערה: נוסח האתר לא השתנה (L-02). נוסף וריאנט וואטסאפ, כמו ב-distress (L-07). בשום מקרה לא כותבים \"לא נכתוב את זה בסיכום\".",
+      "variants": {
+        "whatsapp": "תודה שכתבת את זה. כשיש חשש שילד נפגע או מוזנח, אפשר לפנות למוקד 118 של משרד הרווחה ולהתייעץ.\nאם ילד בסכנה עכשיו: משטרה 100.\nחשוב לדעת: ההודעות כאן מגיעות גם לוואטסאפ של הדס, אבל היא לא עוקבת אחריהן בזמן אמת, וייתכן שלא תראה אותן בקרוב."
+      },
+      "client_bundle": true
+    },
+    "redflag.after.hotline": {
+      "version": 1,
+      "text": "אם בהמשך תרצו עזרה גם בנושא הדיבור, אפשר להשאיר פרטים להדס. זה לא תנאי לשום דבר.",
+      "purpose_he": "מעל `redflag.cta.form` בדרגת hotline. מחליף את `redflag.after.helpline` (אותו טקסט).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — לפי D-04 אין טופס בדרגת hotline. נשמר אם הדס או עורך הדין יחליטו אחרת.",
+      "active": false
+    },
+    "nav.back_to_site": {
+      "version": 1,
+      "text": "חזרה לאתר",
+      "purpose_he": "חזרה לאתר מ-S6, S8, S9 ו-S13 (UX rf.back_to_site, confirm.back_to_site).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "error.generic": {
+      "version": 1,
+      "text": "משהו השתבש, וההודעה לא נשלחה. אפשר לנסות שוב.",
+      "purpose_he": "תקלה כללית, אפשר לנסות שוב (UX chat.error.server).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "error.retry.button": {
+      "version": 1,
+      "text": "לנסות שוב",
+      "purpose_he": "כפתור ניסיון חוזר.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "error.timeout": {
+      "version": 1,
+      "text": "התשובה מתעכבת. אפשר לחכות עוד רגע, או לנסות שוב.",
+      "purpose_he": "אחרי 25 שניות בלי תשובה.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "error.network": {
+      "version": 1,
+      "text": "נראה שהחיבור לאינטרנט נקטע. כשהחיבור יחזור, אפשר לנסות שוב.",
+      "purpose_he": "פס \"אין חיבור\" (UX chat.error.offline).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "error.rate_limit": {
+      "version": 2,
+      "text": "נשלחו הרבה הודעות בזמן קצר. אפשר להמשיך בעוד דקה. במצב חירום: מד\"א 101.",
+      "purpose_he": "הגבלת קצב. השליחה חסומה, ולכן 101.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "error.session_expired": {
+      "version": 3,
+      "text": "השיחה נסגרה ונמחקה אחרי זמן ללא פעילות, ואי אפשר להמשיך אותה. אפשר להתחיל שיחה חדשה.",
+      "purpose_he": "תוקף השיחה פג — גם UX resume.expired (S2) וגם chat.error.session_expired.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: D-01: בתום החלון התוכן נמחק, ולכן אומרים את זה.",
+      "client_bundle": true
+    },
+    "error.delete_failed": {
+      "version": 2,
+      "text": "המחיקה לא הצליחה כרגע. אפשר לנסות שוב. גם בלי זה, השיחה תימחק מעצמה תוך כ-24 שעות מההודעה האחרונה.",
+      "purpose_he": "S9, כשבקשת המחיקה נכשלה (UX). עם `error.retry.button`.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: נכון לפי D-01 ו-ARCHITECTURE §9.1: גם בלי מחיקה, התוכן נמחק בתום החלון, בקריאה אחרי `expires_at` או בניקוי השעתי (קוד `purge_failed`). לכן \"תוך כ-24 שעות\", ולא \"לכל המאוחר 24\" (SEC-01(4): 24 מול כ-25 שעות). המשך כתוב כאן במילים (אחד משלושה חריגים, ראו מוסכמות), ולכן משתנה יחד עם `deletion_clause`. בלי \"לא הצלחנו\" (VOICE 1.4). v2: סבב 4.",
+      "client_bundle": true
+    },
+    "system.unavailable": {
+      "version": 1,
+      "text": "העוזר הדיגיטלי לא זמין כרגע. אפשר לפנות להדס ישירות: בטלפון {{hadas_phone}}, בוואטסאפ, או בטופס יצירת הקשר באתר. במצב חירום: מד\"א 101.",
+      "placeholders": [
+        "hadas_phone"
+      ],
+      "purpose_he": "מסך S10: השרת או ספק המודל לא זמינים, או שתקרת העלות נוצלה. השם נדרש על ידי המנוע.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: זה גם הנוסח הסטטי היחיד בבאנדל של ה-Frontend (ARCHITECTURE §10.8), ולכן הטלפון כתוב דרך משתנה שמוטמע בזמן build.",
+      "client_bundle": true
+    },
+    "system.model_free": {
+      "version": 1,
+      "text": "כרגע העוזר הדיגיטלי לא יכול לעבד הודעות כתובות, ואפשר להמשיך רק בבחירה מהאפשרויות שמוצגות. במצב חירום: מד\"א 101.",
+      "purpose_he": "בועה קבועה כשהשיחה במצב `degraded` (בלי מודל: ספק המודל למטה, תקרת עלות או תקציב הכתובת, D-09) והפונה שלח טקסט חופשי. אחריה מוצג המסך הבא בכפתורים (ARCHITECTURE §5.4, §10.3). 101 חובה.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: אומר מה המצב, בלי הבטחות: לא \"ההודעה תיקרא\", לא \"תגיע להדס\" ולא \"לא נשמרה\", כי בדיקת הדגלים (regex) רצה על כל הודעה והשמירה תלויה במצב. לא מזכיר עלות, תקרה או ספק. בלי \"תקלה\" ובלי האשמה. \"רק\" נכון: במצב הזה ממשיכים בכפתורים בלבד."
+    },
+    "fallback.title": {
+      "version": 1,
+      "text": "העוזר הדיגיטלי לא זמין כרגע",
+      "purpose_he": "כותרת S10.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "fallback.saved": {
+      "version": 2,
+      "text": "מה שסופר עד עכשיו שמור. {{expiry_clause}}",
+      "placeholders": [
+        "expiry_clause"
+      ],
+      "purpose_he": "S10, וריאציית \"ספק המודל למטה, השרת עובד\" בלבד (UX), שבה זה נכון טכנית.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: D-01: \"שמור\" בלי גבול זמן לא היה מדויק."
+    },
+    "fallback.whatsapp": {
+      "version": 1,
+      "text": "וואטסאפ להדס",
+      "purpose_he": "כפתור ב-S10.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "fallback.phone": {
+      "version": 1,
+      "text": "שיחת טלפון",
+      "purpose_he": "כפתור ב-S10.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "fallback.contact": {
+      "version": 1,
+      "text": "טופס יצירת קשר",
+      "purpose_he": "כפתור ב-S10.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "fallback.whatsapp_prefill": {
+      "version": 1,
+      "text": "שלום, הגעתי מהאתר ואשמח לשוחח על פנייה.",
+      "purpose_he": "הטקסט שממולא מראש בקישור הוואטסאפ.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: כללי בלבד, בלי תוכן מהשיחה (מידע רפואי לא נכנס ל-URL). בשלב 2 הבוט יענה עליו ב-wa.opening.",
+      "client_bundle": true
+    },
+    "form.title": {
+      "version": 1,
+      "text": "השארת פרטים להדס",
+      "purpose_he": "כותרת S7.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.intro": {
+      "version": 1,
+      "text": "הדס תקרא את הסיכום ותחזור בטלפון.",
+      "purpose_he": "S7.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.partial_note": {
+      "version": 1,
+      "text": "הפנייה תישלח עם מה שסופר עד עכשיו. חלק מהפרטים עוד לא נאספו, והדס תשאל עליהם בשיחה.",
+      "purpose_he": "S7, תיק חלקי אחרי יציאה מוקדמת.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.preview.title": {
+      "version": 1,
+      "text": "מה יישלח להדס",
+      "purpose_he": "S7, התצוגה המקדימה.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.preview.fix": {
+      "version": 1,
+      "text": "משהו לא מדויק? חזרה לשיחה",
+      "purpose_he": "S7, קישור מתוך התצוגה המקדימה.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.preview.row.who": {
+      "version": 1,
+      "text": "מי פונה",
+      "purpose_he": "S7, תצוגה מקדימה: תווית השורה \"מי פונה\" (UX, UI).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.preview.row.about": {
+      "version": 1,
+      "text": "על מי השיחה",
+      "purpose_he": "S7, תצוגה מקדימה: על מי השיחה.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.preview.row.age": {
+      "version": 1,
+      "text": "גיל",
+      "purpose_he": "S7, תצוגה מקדימה: גיל.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.preview.row.topic": {
+      "version": 1,
+      "text": "הנושא",
+      "purpose_he": "S7, תצוגה מקדימה: הנושא. הערך הוא `recap_label_he` של `domain` (§8.7), לא שם קליני.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.preview.row.facts": {
+      "version": 1,
+      "text": "עיקרי הדברים, במילים שלך",
+      "purpose_he": "S7, תצוגה מקדימה: העובדות המרכזיות, כציטוטים.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.name.label": {
+      "version": 2,
+      "text": "השם שלך (אפשר שם פרטי בלבד)",
+      "purpose_he": "S7, שדה השם — של הפונה, לא של הילד (UX S7). מזעור מידע.",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "form.phone.label": {
+      "version": 1,
+      "text": "טלפון",
+      "purpose_he": "S7, שדה הטלפון.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.phone.hint": {
+      "version": 1,
+      "text": "כדי שהדס תחזור אליך",
+      "purpose_he": "S7, רמז לשדה הטלפון.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.best_time.label": {
+      "version": 1,
+      "text": "מתי נוח שהדס תתקשר? (לא חובה)",
+      "purpose_he": "S7, שדה רשות — רק אם אליה והדס יאשרו.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.best_time.morning": {
+      "version": 1,
+      "text": "בוקר",
+      "purpose_he": "כפתור ב-form.best_time.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.best_time.noon": {
+      "version": 1,
+      "text": "צהריים",
+      "purpose_he": "כפתור ב-form.best_time.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.best_time.evening": {
+      "version": 1,
+      "text": "ערב",
+      "purpose_he": "כפתור ב-form.best_time.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.channel_pref.label": {
+      "version": 1,
+      "text": "איך נוח שהדס תחזור? (לא חובה)",
+      "purpose_he": "S7, שדה רשות — רק אם יאושר.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.channel_pref.call": {
+      "version": 1,
+      "text": "שיחת טלפון",
+      "purpose_he": "כפתור ב-form.channel_pref.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.channel_pref.whatsapp": {
+      "version": 1,
+      "text": "וואטסאפ",
+      "purpose_he": "כפתור ב-form.channel_pref.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.consent.checkbox": {
+      "version": 3,
+      "text": "הסכמה לשליחת סיכום השיחה ופרטי הקשר להדס תודה, כדי שתחזור לגבי הפנייה. {{transcript_clause}} אחרי השליחה תוכן השיחה נמחק, והפנייה נשמרת אצל הדס.",
+      "placeholders": [
+        "transcript_clause"
+      ],
+      "purpose_he": "S7, תיבת הסכמה למסירה (נפרדת מההסכמה בפתיחה).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: הנוסח של המבקר המשפטי (§2.1), מותאם ל-D-01: עם השליחה תוכן השיחה נמחק בשרת, והפנייה נשמרת אצל הדס (UX S8)."
+    },
+    "form.privacy_note": {
+      "version": 2,
+      "text": "הפרטים ישמשו כדי שהדס תחזור לגבי הפנייה, וכדי לבדוק ולשפר את הדיוק של העוזר הדיגיטלי. במערכת הם נשמרים רק עד שהפנייה מגיעה להדס, ולכל היותר 7 ימים. [מדיניות הפרטיות]({{privacy_url}})",
+      "placeholders": [
+        "privacy_url"
+      ],
+      "purpose_he": "S7, מתחת לתיבת ההסכמה.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: L-11: בלי \"רק\" על השימוש, כי יש גם משוב ומדדים. ה\"רק\" שנשאר הוא על השמירה, ונבדק מול ARCHITECTURE §11.1: פרטי הקשר והסיכום נשמרים עד שהמסירה הצליחה (לכל היותר 7 ימים), ואחר כך נשארים רק ערכים בלי פרטי קשר. במקום `{{lead_retention}}` של המבקר המשפטי, כי זו ההתנהגות בפועל."
+    },
+    "form.submit": {
+      "version": 1,
+      "text": "שליחה להדס",
+      "purpose_he": "כפתור השליחה ב-S7.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.sending": {
+      "version": 1,
+      "text": "בשליחה…",
+      "purpose_he": "מצב טעינה של כפתור השליחה.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.validation.name_missing": {
+      "version": 1,
+      "text": "נא לכתוב שם",
+      "purpose_he": "שגיאת שדה.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.validation.phone_missing": {
+      "version": 1,
+      "text": "נא לכתוב מספר טלפון",
+      "purpose_he": "שגיאת שדה.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.validation.phone_format": {
+      "version": 1,
+      "text": "מספר הטלפון לא נקלט. אפשר לבדוק שיש בו 9 או 10 ספרות.",
+      "purpose_he": "שגיאת שדה. בלי \"תקין\" (VOICE 4.11).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.validation.consent_missing": {
+      "version": 1,
+      "text": "כדי לשלוח, יש לסמן את תיבת ההסכמה.",
+      "purpose_he": "שגיאת שדה.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.errors_summary": {
+      "version": 1,
+      "text": "שדות לתיקון: {{error_count}}",
+      "placeholders": [
+        "error_count"
+      ],
+      "purpose_he": "תקציר שגיאות לקורא מסך בראש הטופס.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "error.form_send": {
+      "version": 1,
+      "text": "הפרטים לא נשלחו בגלל תקלה. אפשר לנסות שוב, או להתקשר להדס: {{hadas_phone}}.",
+      "placeholders": [
+        "hadas_phone"
+      ],
+      "purpose_he": "כשל שליחת הטופס. הפרטים לא נמחקים.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "error.form_send_repeat": {
+      "version": 1,
+      "text": "גם הפעם הפרטים לא נשלחו. אפשר לפנות להדס ישירות, בוואטסאפ או בטלפון {{hadas_phone}}. במצב חירום: מד\"א 101.",
+      "placeholders": [
+        "hadas_phone"
+      ],
+      "purpose_he": "כשל שני בשליחת הטופס (UX form.error.fallback).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "client_bundle": true
+    },
+    "form.confirmation.title": {
+      "version": 1,
+      "text": "הפרטים נשלחו להדס",
+      "purpose_he": "כותרת S8, כשהמסירה הצליחה (`handoff_result.delivery = delivered`). כש-`delivery = pending`: `form.confirmation.title.pending`.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.confirmation.title.pending": {
+      "version": 1,
+      "text": "הפרטים בדרך להדס",
+      "purpose_he": "כותרת S8, במקום `form.confirmation.title`, כש-`handoff_result.delivery = pending`: המייל לא נשלח בתוך הבקשה, וניסיונות חוזרים כל שעה (ARCHITECTURE §13.1).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: \"בדרך\" ולא \"נשלחו\", וגם לא \"התקבלו\", שנקרא כאילו הדס כבר קיבלה. **פתוח → UX וארכיטקט:** `form.confirmation.what_now` ו-`form.confirmation.when` (\"הדס תקרא… חוזרת בדרך כלל {{response_time}}\") מניחים שהמסירה קרתה. במצב pending צריך להחליט אם הם נשארים."
+    },
+    "form.confirmation.redflag_reminder": {
+      "version": 1,
+      "text": "לפני הכול: הבדיקה הרפואית שהוזכרה עדיין חשובה. לא לחכות לשיחה עם הדס כדי לקבוע אותה.",
+      "purpose_he": "S8, רק אחרי טופס ממסך דגל אדום (דרגת urgent, D-04). לפני \"מה קורה עכשיו\".",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "form.confirmation.what_now": {
+      "version": 1,
+      "text": "הדס תקרא את הסיכום ותחזור אליך בעצמה. מכאן ממשיכים עם הדס, לא עם העוזר הדיגיטלי.",
+      "purpose_he": "S8.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.confirmation.when": {
+      "version": 2,
+      "text": "הדס חוזרת בדרך כלל {{response_time}}.",
+      "placeholders": [
+        "response_time"
+      ],
+      "purpose_he": "S8.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: משפט ה\"אם לא חזרו\" עבר ל-`form.confirmation.fallback` (ARCHITECTURE §13.2). `response_time` צריך להיות מודע לשבת ולחג (\"עד סוף יום העבודה הבא\"); בחופשה המנוע מציב `response_time_away`. עובדה: כל הערכים מ-faq.json facts, באישור הדס."
+    },
+    "form.confirmation.from_number": {
+      "version": 1,
+      "text": "השיחה תגיע מהמספר {{callback_number}}. כדאי לשמור אותו, כדי לזהות את השיחה.",
+      "placeholders": [
+        "callback_number"
+      ],
+      "purpose_he": "S8.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "עובדה: כל הערכים מ-faq.json facts, באישור הדס."
+    },
+    "form.confirmation.who": {
+      "version": 1,
+      "text": "הדס תחזור אליך, למספר שנמסר כאן, ולא ישירות אל {{subject_ref}}.",
+      "placeholders": [
+        "subject_ref"
+      ],
+      "purpose_he": "S8, רק במקרה של \"מבוגר אחר\".",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.confirmation.disclaimer": {
+      "version": 1,
+      "text": "הסיכום שנשלח נוצר אוטומטית, ואינו הערכה מקצועית. אם בינתיים מופיע קושי פתאומי בדיבור, בהבנה או בבליעה — לא לחכות: מד\"א 101.",
+      "purpose_he": "S8.",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "form.confirmation.fallback": {
+      "version": 1,
+      "text": "אם לא חזרו אליך עד {{followup_time}}, ייתכן שהפנייה לא הגיעה. אפשר לכתוב להדס בוואטסאפ: {{hadas_whatsapp_link}}, או להתקשר: {{hadas_phone}}.",
+      "placeholders": [
+        "followup_time",
+        "hadas_whatsapp_link",
+        "hadas_phone"
+      ],
+      "purpose_he": "S8, אחרי `form.confirmation.when` (ARCHITECTURE §13.2): הפונה הוא הגיבוי לכשל מסירה או למייל שנפל לספאם.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: בלי \"חזרנו\" ו\"לנו\" של נוסח העבודה, כי הבוט לא מדבר בשם הדס (VOICE 1.4). עובדה: כל הערכים מ-faq.json facts, באישור הדס."
+    },
+    "form.confirmation.add_later": {
+      "version": 1,
+      "text": "נזכרת במשהו? אפשר לכתוב להדס ישירות, בוואטסאפ או בטלפון {{hadas_phone}}.",
+      "placeholders": [
+        "hadas_phone"
+      ],
+      "purpose_he": "S8. אין \"שכחתי לספר\" אחרי שליחה (UX S8).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "form.confirmation.privacy": {
+      "version": 2,
+      "text": "תוכן השיחה נמחק, מהמכשיר ומהשרת. הסיכום ופרטי הקשר נשלחו להדס, ונשמרים אצלה.",
+      "purpose_he": "S8.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: D-01 ו-UX S8: עם אישור המסירה תוכן השיחה נמחק בשרת. מה שנשלח נמצא אצל הדס. במערכת פרטי הקשר והסיכום נמחקים אחרי שהמסירה הצליחה (ARCHITECTURE §11.1), ולכן אין כאן \"נשמר במערכת\"."
+    },
+    "form.confirmation.privacy.pending": {
+      "version": 2,
+      "text": "תוכן השיחה נמחק, מהמכשיר ומהשרת. הסיכום ופרטי הקשר נשלחים להדס. עד שיגיעו אליה, הם נשמרים במערכת, ובכל מקרה נמחקים תוך כשבוע.",
+      "purpose_he": "S8, במקום `form.confirmation.privacy`, כש-`handoff_result.delivery = pending` ו-`content_deleted = true`: המייל לא נשלח בתוך הבקשה, וניסיונות חוזרים כל שעה (ARCHITECTURE §13.1, L-04). תוכן השיחה כבר נמחק.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: נכון לפי §9.1 ו-§11.1: פרטי הקשר והסיכום נשמרים במערכת עד שהמסירה מצליחה, ונמחקים לכל המאוחר אחרי 7 ימים של ניסיונות, ועוד עד שעה של הניקוי השעתי. לכן \"תוך כשבוע\" ולא \"לכל היותר 7 ימים\" (v2: הניסוח הקודם יכול היה לחרוג בשעה). כתוב במילים (חריג, ראו מוסכמות). לא כתוב \"נשלחו\", כי עוד לא. הכותרת במצב הזה: `form.confirmation.title.pending`."
+    },
+    "form.confirmation.privacy.delete_pending": {
+      "version": 1,
+      "text": "תוכן השיחה יימחק מהשרת תוך כשעה. הסיכום ופרטי הקשר נשלחו להדס, ונשמרים אצלה.",
+      "purpose_he": "S8, במקום `form.confirmation.privacy`, כש-`handoff_result.content_deleted = false` ו-`delivery = delivered`: מחיקת התוכן נכשלה אחרי שני ניסיונות, והניקוי השעתי מוחק לפי `session_purged_at` (ARCHITECTURE §13.1, L-04).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: לא כתוב \"נמחק\", כי עוד לא. \"כשעה\" (ולא \"שעה\"): הניקוי רץ אחת לשעה, וייתכן עיכוב קטן. כתוב במילים (חריג, ראו מוסכמות). אם גם המסירה ממתינה: `form.confirmation.privacy.both_pending`."
+    },
+    "form.confirmation.privacy.both_pending": {
+      "version": 1,
+      "text": "תוכן השיחה יימחק מהשרת תוך כשעה. הסיכום ופרטי הקשר נשלחים להדס. עד שיגיעו אליה, הם נשמרים במערכת, ובכל מקרה נמחקים תוך כשבוע.",
+      "purpose_he": "S8, במקום `form.confirmation.privacy`, כש-`handoff_result.delivery = pending` **וגם** `content_deleted = false`: המייל עוד לא נשלח, ומחיקת התוכן נכשלה. שני הנוסחים הקיימים (`.pending`, `.delete_pending`) לא נכונים כאן.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: שני משפטי הזמן מההערות שלהם: \"כשעה\" (ניקוי שעתי) ו\"כשבוע\" (7 ימים ועוד עד שעה). לא כתוב \"נמחק\" ולא \"נשלחו\", כי אף אחד מהם עוד לא קרה. כותרת: `form.confirmation.title.pending`. כתוב במילים (חריג, ראו מוסכמות)."
+    },
+    "hadas_summary.header": {
+      "version": 1,
+      "text": "סיכום אוטומטי של דברי הפונה, לא הערכה מקצועית.",
+      "purpose_he": "השורה הראשונה בגוף המייל, מילה במילה לפי GOALS (UX hadas.email.disclaimer).",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "hadas_summary.detail": {
+      "version": 1,
+      "text": "הסיכום נוצר על ידי מערכת אוטומטית מתוך מה שנכתב בשיחה, וייתכנו בו טעויות והשמטות. ציטוטים מובאים כלשונם. פרטים שלא נשאלו או לא נענו מסומנים \"לא עלה בשיחה\". הכיוון שהוצג לפונה נקבע לפי טבלת ההחלטה, ואינו מחליף שיקול דעת מקצועי.",
+      "purpose_he": "מתחת לשורה הראשונה במייל.",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "hadas_summary.outcome_label": {
+      "version": 1,
+      "text": "הכיוון שהוצג לפונה: {{outcome_label}} (נוסח {{outcome_text_version}})",
+      "placeholders": [
+        "outcome_label",
+        "outcome_text_version"
+      ],
+      "purpose_he": "שורת התוצאה במייל.",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "hadas_summary.consent_record": {
+      "version": 1,
+      "text": "אישור תנאים: {{consent_time}} · נוסח הסתייגות {{disclaimer_version}}",
+      "placeholders": [
+        "consent_time",
+        "disclaimer_version"
+      ],
+      "purpose_he": "שוליים טכניים במייל.",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "hadas_summary.redflag_banner": {
+      "version": 1,
+      "text": "לתשומת לב: בשיחה עלה דגל אדום ({{redflag_type}}). לפונה הוצגה הודעה {{redflag_text_id}}.",
+      "placeholders": [
+        "redflag_type",
+        "redflag_text_id"
+      ],
+      "purpose_he": "באנר בראש מייל שנשלח אחרי דגל אדום.",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "hadas_summary.not_mentioned": {
+      "version": 1,
+      "text": "לא עלה בשיחה",
+      "purpose_he": "ערך לפרט שלא עלה.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas_summary.unknown": {
+      "version": 1,
+      "text": "סומן כלא ידוע לפונה",
+      "purpose_he": "ערך לפרט שהפונה ענה עליו \"לא ידוע\".",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas_summary.faq_missing_label": {
+      "version": 1,
+      "text": "שאלות שהעוזר לא ידע לענות עליהן:",
+      "purpose_he": "כותרת לשאלות בלי מידע.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.subject": {
+      "version": 1,
+      "text": "[שיחת היכרות] פנייה חדשה · תוצאה {{outcome_number}} · {{received_at}}",
+      "placeholders": [
+        "outcome_number",
+        "received_at"
+      ],
+      "purpose_he": "שורת הנושא. בלי תחום ובלי גיל — מוצגת במסך נעול (UX §5.2).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.subject_redflag": {
+      "version": 1,
+      "text": "[שיחת היכרות] [דגל אדום] פנייה חדשה · {{received_at}}",
+      "placeholders": [
+        "received_at"
+      ],
+      "purpose_he": "שורת הנושא אחרי דגל אדום (דרגת urgent, D-04).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: → הדס מכריעה: המבקר המשפטי מציע \"[לתשומת לב]\" במקום \"[דגל אדום]\", בגלל המסך הנעול (L-23). מבקר האבטחה מאשר את \"[דגל אדום]\" (תשובה 2.2.4). שינוי יעלה גרסה."
+    },
+    "hadas.email.btn.call": {
+      "version": 1,
+      "text": "חיוג",
+      "purpose_he": "כפתור ליד הטלפון בראש המייל (UX §5.2). קישור tel.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.btn.wa": {
+      "version": 1,
+      "text": "וואטסאפ",
+      "purpose_he": "כפתור ליד הטלפון בראש המייל. קישור וואטסאפ, בלי טקסט ממולא.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.section.received": {
+      "version": 1,
+      "text": "התקבל: {{received_at}} · נקודת כניסה: {{entry_point}}",
+      "placeholders": [
+        "received_at",
+        "entry_point"
+      ],
+      "purpose_he": "שורה בראש המייל (UX §5.2).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.section.contact": {
+      "version": 1,
+      "text": "פרטי קשר",
+      "purpose_he": "כותרת מקטע במייל.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.section.who": {
+      "version": 1,
+      "text": "מי פונה ועל מי",
+      "purpose_he": "כותרת מקטע במייל.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.section.age": {
+      "version": 1,
+      "text": "גיל המושא",
+      "purpose_he": "כותרת שורה במייל (UX §5.2).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.section.topic": {
+      "version": 1,
+      "text": "תחום (כפי שעלה מדברי הפונה)",
+      "purpose_he": "כותרת שורה במייל. הערך הוא התחום שהמחלץ הסיק ושהפונה אישר.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.section.outcome": {
+      "version": 1,
+      "text": "תוצאת המערכת",
+      "purpose_he": "כותרת מקטע במייל.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.section.reason": {
+      "version": 1,
+      "text": "למה",
+      "purpose_he": "כותרת מקטע במייל.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.section.facts": {
+      "version": 1,
+      "text": "עובדות מרכזיות (במילים של הפונה)",
+      "purpose_he": "כותרת מקטע במייל. כל טקסט של הפונה מופיע בבלוק מתוחם של ציטוט (SEC-17).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.section.more": {
+      "version": 1,
+      "text": "עוד דברים שסופרו",
+      "purpose_he": "כותרת מקטע במייל.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.section.warm_summary": {
+      "version": 1,
+      "text": "הסיכום החם כפי שהוצג לפונה (ניסוח אוטומטי)",
+      "purpose_he": "כותרת הבלוק המתוחם של הסיכום החם שהמודל כתב לפונה (SEC-17 (6), UX §5.2). מפריד ניסוח של מכונה מדברי הפונה.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.section.unknown": {
+      "version": 1,
+      "text": "לא ידוע או לא נאמר",
+      "purpose_he": "כותרת מקטע במייל.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.section.conflicts": {
+      "version": 1,
+      "text": "לבדיקה",
+      "purpose_he": "כותרת מקטע במייל.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.section.faq": {
+      "version": 1,
+      "text": "שאלות בדרך",
+      "purpose_he": "כותרת מקטע במייל.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.section.tags": {
+      "version": 1,
+      "text": "תגיות",
+      "purpose_he": "כותרת מקטע במייל.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.section.meta": {
+      "version": 1,
+      "text": "פרטים טכניים",
+      "purpose_he": "כותרת מקטע במייל.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.tag.outcome3_anyway": {
+      "version": 1,
+      "text": "פנייה למרות תוצאה 3",
+      "purpose_he": "תגית במייל.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03).",
+      "active": false
+    },
+    "hadas.email.tag.early_handoff": {
+      "version": 1,
+      "text": "יציאה מוקדמת, תיק חלקי",
+      "purpose_he": "תגית במייל.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.tag.added_after": {
+      "version": 1,
+      "text": "חזרה לשיחה אחרי התוצאה",
+      "purpose_he": "תגית במייל.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.tag.redflag": {
+      "version": 1,
+      "text": "דגל אדום",
+      "purpose_he": "תגית במייל.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.tag.document_request": {
+      "version": 1,
+      "text": "ביקש מסמך לגורם חיצוני",
+      "purpose_he": "תגית במייל, כשהפונה ביקש מסמך או חוות דעת לגורם חיצוני (`meta.document_request`, L-15).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.tag.summary_unavailable": {
+      "version": 1,
+      "text": "הסיכום החם לא זמין",
+      "purpose_he": "תגית במייל (UX §5.2), כשהסיכום החם לא נוצר או נפסל בבדיקת הפלט.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.outcome.1": {
+      "version": 1,
+      "text": "בתחום · מומלץ לפנות",
+      "purpose_he": "שם התוצאה במייל.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.outcome.2": {
+      "version": 1,
+      "text": "בתחום · שווה התייעצות",
+      "purpose_he": "שם התוצאה במייל.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.outcome.3": {
+      "version": 1,
+      "text": "לא עלו סימנים כעת",
+      "purpose_he": "שם התוצאה במייל.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "סטטוס: לא פעיל — תוצאה 3 כבויה בהשקה (D-03).",
+      "active": false
+    },
+    "hadas.email.outcome.4": {
+      "version": 1,
+      "text": "לא בתחום · הופנה",
+      "purpose_he": "שם התוצאה במייל.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.outcome.5": {
+      "version": 1,
+      "text": "דגל אדום",
+      "purpose_he": "שם התוצאה במייל.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.feedback.question": {
+      "version": 1,
+      "text": "סימון מהיר (לא חובה):",
+      "purpose_he": "הסימון המהיר במייל הפנייה, רגע א (UX §5.3). אופציונלי, בלי שאלות המשך.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.feedback.relevant_accurate": {
+      "version": 1,
+      "text": "רלוונטית · הסיכום מדויק",
+      "purpose_he": "כפתור ברגע א (`triage=relevant`, `summary_rating=accurate_useful`).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.feedback.relevant_inaccurate": {
+      "version": 1,
+      "text": "רלוונטית · הסיכום לא מדויק",
+      "purpose_he": "כפתור ברגע א (`triage=relevant`, `summary_rating=inaccurate`).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.feedback.not_relevant": {
+      "version": 1,
+      "text": "לא רלוונטית",
+      "purpose_he": "כפתור ברגע א (`triage=not_relevant`).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.judgment.question": {
+      "version": 1,
+      "text": "אחרי השיחה הראשונה — מה ההערכה שלך?",
+      "purpose_he": "רגע ב — ההערכה אחרי שיחה ראשונה, **בעמוד שנפתח מהמייל החודשי** (UX §5.3). הכפתורים ממופים 1:1 לתוצאות.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.judgment.o1": {
+      "version": 1,
+      "text": "מתאים לטיפול או הערכה אצלי",
+      "purpose_he": "כפתור ברגע ב ↔ תוצאה 1.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.judgment.o2": {
+      "version": 1,
+      "text": "התייעצות הייתה במקום",
+      "purpose_he": "כפתור ברגע ב ↔ תוצאה 2.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.judgment.o3": {
+      "version": 1,
+      "text": "לא נדרש כרגע",
+      "purpose_he": "כפתור ברגע ב ↔ תוצאה 3. **נשאר פעיל** גם כשתוצאה 3 כבויה: זו ההערכה של הדס, והיא ממלאת את שורת `would_be_outcome_3` במטריצה.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.judgment.o4": {
+      "version": 1,
+      "text": "לא בתחומי, הפניתי",
+      "purpose_he": "כפתור ברגע ב ↔ תוצאה 4.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.judgment.o5": {
+      "version": 1,
+      "text": "נדרשה הפניה דחופה",
+      "purpose_he": "כפתור ברגע ב ↔ תוצאה 5.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.email.judgment.none": {
+      "version": 1,
+      "text": "לא התקיימה שיחה",
+      "purpose_he": "כפתור ברגע ב.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.monthly.subject": {
+      "version": 1,
+      "text": "שיחת היכרות · סיכום חודשי · {{month_label}}",
+      "placeholders": [
+        "month_label"
+      ],
+      "purpose_he": "נושא המייל החודשי (UX §5.5). במקום התזכורות והסיכום השבועי. בלי פרטים מזהים (מסך נעול).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.monthly.counts": {
+      "version": 1,
+      "text": "שיחות: {{conversations_count}} · פניות: {{leads_count}} · הפניות למקום אחר: {{referrals_count}} · דגלים אדומים: {{redflags_count}} · מסלולי ביניים: {{interim_count}}",
+      "placeholders": [
+        "conversations_count",
+        "leads_count",
+        "referrals_count",
+        "redflags_count",
+        "interim_count"
+      ],
+      "purpose_he": "שורת המספרים במייל החודשי, בלי תוכן (UX §5.5).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.monthly.list_intro": {
+      "version": 1,
+      "text": "פניות החודש שעוד לא סומנו. כל שורה פותחת עמוד קצר לסימון ההערכה אחרי השיחה הראשונה:",
+      "purpose_he": "מעל רשימת הפניות שעוד לא סומנו.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.monthly.row": {
+      "version": 1,
+      "text": "{{lead_ref}} · {{received_at}} · {{outcome_label}}",
+      "placeholders": [
+        "lead_ref",
+        "received_at",
+        "outcome_label"
+      ],
+      "purpose_he": "שורה לכל פנייה ברשימה, וקישור לעמוד הקל עם רגע ב (וגם רגע א אם לא סומן).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: בלי השם הפרטי (הארכיטקט ביטל את `lead_first_name`). `lead_ref` הוא המזהה הקצר שמופיע בשולי מייל הפנייה, כך שהדס יכולה לחפש אותו ב-Gmail. אליה רואה רק מזהה וערכים (L-26)."
+    },
+    "hadas.monthly.empty": {
+      "version": 1,
+      "text": "אין החודש פניות שממתינות לסימון.",
+      "purpose_he": "במקום הרשימה, כשאין פניות שממתינות לסימון.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.page.confirm": {
+      "version": 1,
+      "text": "אישור",
+      "purpose_he": "העמוד הקל.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.page.done": {
+      "version": 1,
+      "text": "נרשם",
+      "purpose_he": "העמוד הקל.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.page.change": {
+      "version": 1,
+      "text": "שינוי",
+      "purpose_he": "העמוד הקל.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "hadas.page.expired": {
+      "version": 1,
+      "text": "הקישור הזה כבר לא בתוקף. אפשר לסמן מהמייל האחרון.",
+      "purpose_he": "העמוד הקל, קישור שפג.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "wa.prefix": {
+      "version": 2,
+      "text": "**העוזר הדיגיטלי:**",
+      "purpose_he": "בתחילת כל הודעה של הבוט.",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "wa.opening": {
+      "version": 3,
+      "text": "**העוזר הדיגיטלי של הדס תודה**\nשלום וברכה. זו הודעה אוטומטית: כאן עוזר דיגיטלי (בינה מלאכותית) שעונה במספר של הדס תודה, קלינאית תקשורת. זו לא הדס עצמה.\nאפשר לספר כאן, בכמה שאלות קצרות, מה מעסיק. הדס תקבל סיכום מסודר ותמשיך מכאן בעצמה.\n- זה לא אבחון ולא ייעוץ מקצועי.\n- הדס רואה את כל מה שנכתב בשיחה הזו. ההודעות מעובדות גם אצל ספק שירות בינה מלאכותית. {{ai_provider_clause}} {{wa_retention_clause}}\n- השיחה מיועדת לגיל 18 ומעלה, ושיחה על ילד — להורה או לאפוטרופוס.\n- במצב חירום: מד\"א 101.\n\nהסבר מלא ופרטיות: {{privacy_url}}\nלהמשיך?",
+      "placeholders": [
+        "ai_provider_clause",
+        "wa_retention_clause",
+        "privacy_url"
+      ],
+      "purpose_he": "ההודעה הראשונה למספר חדש.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: L-17 ו-SEC-16: אותם רכיבי פרטיות כמו באתר — ספק ה-AI, השמירה, הגיל וההורה. \"הסבר מלא\" במקום \"תנאים\", כי אין מסמך תנאים. הנוסח של המבקר המשפטי, ועוד `wa_retention_clause`."
+    },
+    "wa.opening.btn.accept": {
+      "version": 1,
+      "text": "אישור והמשך",
+      "purpose_he": "כפתור תשובה (עד 20 תווים).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "wa.opening.btn.message_only": {
+      "version": 1,
+      "text": "רק להשאיר הודעה",
+      "purpose_he": "כפתור תשובה (עד 20 תווים).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "wa.opening.fallback": {
+      "version": 2,
+      "text": "אפשר להשיב 1 כדי להמשיך, או 2 כדי רק להשאיר הודעה להדס. במצב חירום: מד\"א 101.",
+      "purpose_he": "כשהכפתורים לא מוצגים.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: נוסף 101 (ARCHITECTURE §1.9: כל `wa.*` שהוא תשובה לפונה)."
+    },
+    "wa.no_consent_reply": {
+      "version": 2,
+      "text": "לפני שממשיכים צריך אישור להסבר שלמעלה. אפשר להשיב 1 כדי להמשיך, או 2 כדי רק להשאיר הודעה להדס. במצב חירום: מד\"א 101.",
+      "purpose_he": "הפונה כתב תוכן בלי לאשר.",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: נוסף 101. \"ההסבר\" במקום \"התנאים\" (L-09)."
+    },
+    "wa.message_only": {
+      "version": 2,
+      "text": "בסדר. אפשר לכתוב כאן את ההודעה, והדס תקרא ותחזור בעצמה. העוזר הדיגיטלי לא יענה יותר בשיחה הזו. במצב חירום: מד\"א 101.",
+      "purpose_he": "אחרי \"רק להשאיר הודעה\". מכאן הבוט שותק.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: נוסף 101: זו ההודעה האחרונה של הבוט בשיחה."
+    },
+    "media.voice_ask_to_type": {
+      "version": 1,
+      "text": "העוזר הדיגיטלי מבין רק הודעות כתובות. אפשר לכתוב את הדברים? ההקלטה עצמה נשארת בשיחה, והדס תוכל לשמוע אותה. במצב חירום: מד\"א 101.",
+      "purpose_he": "הודעה קולית. השם נדרש על ידי המנוע, וחייב לכלול 101.",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "media.unsupported_attachment": {
+      "version": 1,
+      "text": "העוזר הדיגיטלי לא פותח תמונות או קבצים. הם נשארים בשיחה, והדס תוכל לראות אותם. במצב חירום: מד\"א 101.",
+      "purpose_he": "תמונה, קובץ או מדיה אחרת. כולל 101.",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "wa.handoff": {
+      "version": 1,
+      "text": "תודה. הסיכום הועבר להדס, והיא תמשיך מכאן בעצמה. ההודעה הבאה בשיחה הזו תהיה מהדס, לא מהעוזר הדיגיטלי. במצב חירום: מד\"א 101.",
+      "purpose_he": "ההודעה האחרונה של הבוט, אחרי התוצאה. מכאן הבוט שותק.",
+      "legal_review": "required",
+      "status": "draft"
+    },
+    "minor.self": {
+      "version": 1,
+      "text": "תודה שכתבת. השיחה כאן מיועדת לגיל 18 ומעלה, אבל אפשר לפנות להדס גם עכשיו, יחד עם הורה או עם מבוגר אחר שסומכים עליו: {{hadas_phone}}. במצב חירום: מד\"א 101.",
+      "placeholders": [
+        "hadas_phone"
+      ],
+      "purpose_he": "S13a: \"על עצמי\", וגיל מתחת ל-18 שנאמר או נענה, או אמירה מפורשת (\"אני בכיתה ח'\"). פעולות: קישור לטלפון של הדס · `nav.back_to_site`.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: 28 מילים (UX: עד 40). מפנה להדס דרך הורה או מבוגר שסומכים עליו (D-02: \"פרטי הקשר של הדס להורים\"), ולא מזמין את הקטין להשאיר טלפון. \"אבל אפשר\" — הדלת לא נסגרת. בלי ער\"ן כאן: דגל `distress` תופס מצוקה בכל גיל, ומציג את ההודעה שלו. זה נכון כשהעצירה באה **אחרי** טקסט. כשהיא באה לפני כל טקסט (D-13 ענף א), נבחר `minor.self.before_text`."
+    },
+    "minor.self.before_text": {
+      "version": 1,
+      "text": "תודה. השיחה כאן מיועדת לגיל 18 ומעלה, אבל אפשר לפנות להדס גם עכשיו, יחד עם הורה או עם מבוגר אחר שסומכים עליו: {{hadas_phone}}.\nאם קשה עכשיו, אפשר לדבר עם מישהו שמקשיב:\nער\"ן — בטלפון 1201, בכל שעה.\nסה\"ר — תמיכה בצ'אט, בכתב: {{sahar_url}}\nבמצב חירום: מד\"א 101.",
+      "placeholders": [
+        "hadas_phone",
+        "sahar_url"
+      ],
+      "purpose_he": "S13a, כשעצירת `minor_self` קורית **לפני כל טקסט חופשי**: הקשה על `q.self_age_band.opt.under_18` מיד אחרי \"על עצמי\" (D-13 ענף א; `routing_stops.minor_self.message_variants` בוחר אותו). פעולות: קישור לטלפון של הדס · `nav.back_to_site`. 101 וגם 1201 חובה (בודק השלמות, ARCHITECTURE §1.11(11)).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: תנאי הבטיחות של המנסח הקליני (§9.3, תנאי 3): דגל `distress` לא קיבל שום טקסט לסרוק, ולכן קווי הסיוע כאן. פותח ב\"תודה\" ולא ב\"תודה שכתבת\", כי עוד לא נכתב דבר. \"אם קשה עכשיו\" מנרמל ולא מניח מצוקה. מספרים בשורות נפרדות, כמו `redflag.type.distress`. 46 מילים, כולל משתנים (UX: עד 40, חריגה בגלל קווי הסיוע). `interim.deleted_note` מופיע מתחת, כרגיל. **לאימות לפני השקה (L-16, הדס ואליה):** ער\"ן 1201 פעיל בכל שעה; כתובת `{{sahar_url}}` נכונה; אין הגבלת גיל למי שפונה לער\"ן ולסה\"ר. שעות סה\"ר לא נכתבות עד שיאומתו."
+    },
+    "reporter.not_parent": {
+      "version": 1,
+      "text": "תודה שכתבת. פנייה על ילד או ילדה נעשית כאן על ידי ההורים או האפוטרופוס, כי הם אלה שמחליטים עליה. אפשר להעביר להם את פרטי הקשר של הדס, כדי שיפנו בעצמם: {{hadas_phone}}. במצב חירום: מד\"א 101.",
+      "placeholders": [
+        "hadas_phone"
+      ],
+      "purpose_he": "S13b: המושא ילד, והפונה אינו הורה או אפוטרופוס — גננת, מורה, סבא או סבתא (D-02). פעולות: `reporter.copy_contact` · `nav.back_to_site`.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: 35 מילים. מסביר למה, בלי לנזוף. בלי \"כדאי לא לכתוב כאן את שם הילד\" של המבקר המשפטי: הכרטיס מופיע אחרי שהשיחה נעצרה, ושדה הקלט כבר לא קיים. במקום זה `interim.deleted_note`."
+    },
+    "interim.deleted_note": {
+      "version": 1,
+      "text": "מה שנכתב כאן נמחק, ולא נשלח להדס.",
+      "purpose_he": "S13a ו-S13b, שורה מתחת לכרטיס (UX).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: נכון רק אם התיק נמחק בסוף התור (ARCHITECTURE §11.1, \"עצירת ניתוב\")."
+    },
+    "reporter.copy_contact": {
+      "version": 1,
+      "text": "העתקת הפרטים של הדס",
+      "purpose_he": "S13b, כפתור שמעתיק ללוח את `reporter.copy_payload`.",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "reporter.copied": {
+      "version": 1,
+      "text": "הפרטים הועתקו",
+      "purpose_he": "S13b, אחרי העתקה (מוכרז לקורא מסך).",
+      "legal_review": "not_required",
+      "status": "draft"
+    },
+    "reporter.copy_payload": {
+      "version": 1,
+      "text": "הדס תודה, קלינאית תקשורת. טלפון: {{hadas_phone}} · אתר: {{site_url}}",
+      "placeholders": [
+        "hadas_phone",
+        "site_url"
+      ],
+      "purpose_he": "הטקסט שמועתק ללוח ב-S13b. רק פרטי הקשר של הדס, בלי שום פרט מהשיחה (UX S13).",
+      "legal_review": "not_required",
+      "status": "draft"
+    }
+  }
+}

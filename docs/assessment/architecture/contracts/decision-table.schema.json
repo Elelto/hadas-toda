@@ -1,0 +1,528 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hadas-toda.co.il/schemas/intake/v1/decision-table.schema.json",
+  "title": "Outcome decision table",
+  "description": "Human-authored (clinical drafter drafts, Hadas approves; outcome texts pass the lawyer). Evaluated by code. Order each turn: (1) red flags -> 5. (2) routing_stops (D-02: minor writing about self, non-parent reporting on a child, incl. a minor subject reached via 'someone else') -> fixed text, no form, no contact collected, content deleted. Both D-02 stops are mandatory (schema). Any form is blocked after a stop and after any red flag whose form_after_message is none (SEC-11). At the end of intake: (3) first rule by 'order' whose 'when' is TRUE; UNKNOWN never fires. (4) Guards: outcome 3 -> 2 unless outcome3_enabled (D-03: false at launch), no exclusion TRUE/UNKNOWN, every applicable critical slot filled, no conflict, every user message extracted at least once. Outcome 4 is NOT gated by critical slots (critic F5): it requires the domain filled and confirmed in the recap, no flag, and the outcome4_requirements of the domain answered (filled or unknown) - the policy asks those before deciding. (5) No rule -> default (always 2). would_be_outcome_3 (true/false/undetermined) is always computed and logged. Addenda attach extra lines. Outcome 5 cannot come from a rule.",
+  "type": "object",
+  "required": [
+    "header",
+    "outcome3_enabled",
+    "outcome3_exclusions",
+    "rules",
+    "default",
+    "presentation",
+    "addenda",
+    "outcome4_requirements",
+    "routing_stops",
+    "engine_texts"
+  ],
+  "properties": {
+    "header": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/contentHeader"
+        },
+        {
+          "properties": {
+            "contract": {
+              "const": "decision-table"
+            }
+          },
+          "type": "object"
+        }
+      ]
+    },
+    "outcome3_enabled": {
+      "type": "boolean",
+      "description": "D-03: false at launch. would_be_outcome_3 is logged in every session either way."
+    },
+    "outcome3_exclusions": {
+      "type": "array",
+      "maxItems": 40,
+      "description": "Groups that never receive outcome 3 (e.g. certain ages). Evaluated conservatively: TRUE or UNKNOWN excludes.",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "label_he",
+          "when"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/entityId"
+          },
+          "label_he": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "when": {
+            "$ref": "common.schema.json#/$defs/condition"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 200,
+      "items": {
+        "$ref": "#/$defs/rule"
+      }
+    },
+    "default": {
+      "type": "object",
+      "required": [
+        "outcome",
+        "reason_code",
+        "reason_label_he"
+      ],
+      "properties": {
+        "outcome": {
+          "const": 2
+        },
+        "reason_code": {
+          "$ref": "common.schema.json#/$defs/entityId"
+        },
+        "reason_label_he": {
+          "type": "string",
+          "maxLength": 200
+        }
+      },
+      "additionalProperties": false
+    },
+    "presentation": {
+      "type": "object",
+      "required": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "properties": {
+        "1": {
+          "$ref": "#/$defs/presentation"
+        },
+        "2": {
+          "$ref": "#/$defs/presentation"
+        },
+        "3": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/presentation"
+            },
+            {
+              "required": [
+                "return_signs_text_id"
+              ],
+              "properties": {
+                "form": {
+                  "enum": [
+                    "primary",
+                    "secondary"
+                  ]
+                },
+                "return_signs_text_id": true
+              },
+              "type": "object"
+            }
+          ],
+          "description": "Outcome 3 always carries the 'when to contact' signs and a form that stays available (GOALS.md). return_signs_text_id = the block shown always (outcome.3.when_to_contact.always); return_signs_conditional = per-domain wtc lists (REVIEW_FOR_HADAS section 5), all TRUE ones shown."
+        },
+        "4": {
+          "$ref": "#/$defs/presentation"
+        },
+        "5": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/presentation"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "form": {
+                  "const": "none"
+                }
+              }
+            }
+          ],
+          "description": "Outcome 5: the form visibility comes from the raised flag's form_after_message (D-04); this field is fixed to none. The disclaimer is mandatory and must be rendered on the S6 screen (L-19)."
+        }
+      },
+      "additionalProperties": false
+    },
+    "addenda": {
+      "type": "array",
+      "maxItems": 40,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "when",
+          "outcomes",
+          "audience",
+          "label_he"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/entityId"
+          },
+          "when": {
+            "$ref": "common.schema.json#/$defs/condition"
+          },
+          "outcomes": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                1,
+                2,
+                3,
+                4
+              ]
+            }
+          },
+          "audience": {
+            "enum": [
+              "user",
+              "hadas"
+            ]
+          },
+          "text_id": {
+            "$ref": "common.schema.json#/$defs/textId"
+          },
+          "referral_id": {
+            "$ref": "common.schema.json#/$defs/entityId"
+          },
+          "label_he": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "type": "object",
+              "properties": {
+                "audience": {
+                  "const": "user"
+                }
+              }
+            },
+            "then": {
+              "type": "object",
+              "required": [
+                "text_id"
+              ],
+              "properties": {
+                "text_id": true
+              }
+            }
+          }
+        ]
+      }
+    },
+    "outcome4_requirements": {
+      "type": "object",
+      "required": [
+        "require_domain_confirmed",
+        "by_domain"
+      ],
+      "description": "REVIEW_FOR_HADAS table 4.4 (clinical section 9 outcome4_guard). Reachability is a build check, see if_applicable_slots.",
+      "properties": {
+        "require_domain_confirmed": {
+          "type": "boolean"
+        },
+        "by_domain": {
+          "type": "array",
+          "maxItems": 30,
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "when",
+              "answered_slots"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "common.schema.json#/$defs/entityId"
+              },
+              "when": {
+                "$ref": "common.schema.json#/$defs/condition"
+              },
+              "answered_slots": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 10,
+                "items": {
+                  "$ref": "common.schema.json#/$defs/slotId"
+                },
+                "description": "Must be filled or unknown (not missing) before outcome 4. The goals that fill them are asked first."
+              },
+              "applies_when": {
+                "$ref": "common.schema.json#/$defs/condition",
+                "description": "Optional extra scope of this row (e.g. social_communication: core_relation = child). Outside it the row does not apply and outcome 4 is not available through it (default 2, as matrix 1.12 says)."
+              },
+              "if_applicable_slots": {
+                "type": "array",
+                "maxItems": 10,
+                "uniqueItems": true,
+                "items": {
+                  "$ref": "common.schema.json#/$defs/slotId"
+                },
+                "description": "Subset of answered_slots that count as met when NO goal filling them applies (the clinical 'אם חל', e.g. screen_neuro). Explicit only: every other answered slot must be filled or unknown. intake:check fails if a slot NOT listed here is unreachable for some combination of the routing enums under which the row applies (clinical 9.4 item 2; never a blanket 'goal not applicable = met' for safety_screen)."
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "routing_stops": {
+      "type": "array",
+      "maxItems": 10,
+      "description": "D-02. Evaluated every turn after red flags. A stop ends the conversation with a fixed text, never shows a form, never collects contact details, and deletes the session content at the end of the turn.",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "when",
+          "text_id",
+          "label_he",
+          "end_reason"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/entityId"
+          },
+          "when": {
+            "$ref": "common.schema.json#/$defs/condition"
+          },
+          "text_id": {
+            "$ref": "common.schema.json#/$defs/textId"
+          },
+          "label_he": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "end_reason": {
+            "enum": [
+              "minor_self",
+              "non_parent_reporter",
+              "other_stop"
+            ]
+          },
+          "message_variants": {
+            "type": "array",
+            "maxItems": 4,
+            "description": "First whose 'when' is TRUE replaces text_id. D-13 branch A: a stop BEFORE any free text (e.g. {slot: core_concern, status_in: [missing]}) must use a variant that also carries the distress hotlines (ער\"ן 1201, סה\"ר) besides 101, because the distress flag had no text to scan (intake:check enforces 101 in every minor.self* text and 1201 in the before-text variant).",
+            "items": {
+              "type": "object",
+              "required": [
+                "when",
+                "text_id"
+              ],
+              "properties": {
+                "when": {
+                  "$ref": "common.schema.json#/$defs/condition"
+                },
+                "text_id": {
+                  "$ref": "common.schema.json#/$defs/textId"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 2,
+      "allOf": [
+        {
+          "type": "array",
+          "contains": {
+            "type": "object",
+            "properties": {
+              "end_reason": {
+                "const": "minor_self"
+              }
+            },
+            "required": [
+              "end_reason"
+            ]
+          }
+        },
+        {
+          "type": "array",
+          "contains": {
+            "type": "object",
+            "properties": {
+              "end_reason": {
+                "const": "non_parent_reporter"
+              }
+            },
+            "required": [
+              "end_reason"
+            ]
+          }
+        }
+      ]
+    },
+    "engine_texts": {
+      "type": "object",
+      "required": [
+        "extraction_gap_text_id"
+      ],
+      "properties": {
+        "extraction_gap_text_id": {
+          "$ref": "common.schema.json#/$defs/textId",
+          "description": "Critic F1(b): added to the outcome card (with 101) when a user message could not be extracted even after the retry."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "rule": {
+      "type": "object",
+      "required": [
+        "id",
+        "order",
+        "when",
+        "outcome",
+        "reason_code",
+        "reason_label_he"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "common.schema.json#/$defs/entityId"
+        },
+        "order": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "when": {
+          "$ref": "common.schema.json#/$defs/condition"
+        },
+        "outcome": {
+          "enum": [
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        "referral_id": {
+          "$ref": "common.schema.json#/$defs/entityId"
+        },
+        "reason_code": {
+          "$ref": "common.schema.json#/$defs/entityId"
+        },
+        "reason_label_he": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Shown to Hadas only, never to the user."
+        },
+        "note_he": {
+          "type": "string",
+          "maxLength": 500
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": 4
+              }
+            },
+            "type": "object"
+          },
+          "then": {
+            "required": [
+              "referral_id"
+            ],
+            "type": "object",
+            "properties": {
+              "referral_id": true
+            }
+          }
+        }
+      ]
+    },
+    "presentation": {
+      "type": "object",
+      "required": [
+        "title_text_id",
+        "body_text_id",
+        "disclaimer_text_id",
+        "form"
+      ],
+      "properties": {
+        "title_text_id": {
+          "$ref": "common.schema.json#/$defs/textId"
+        },
+        "body_text_id": {
+          "$ref": "common.schema.json#/$defs/textId"
+        },
+        "disclaimer_text_id": {
+          "$ref": "common.schema.json#/$defs/textId"
+        },
+        "return_signs_text_id": {
+          "$ref": "common.schema.json#/$defs/textId"
+        },
+        "extra_text_ids": {
+          "type": "array",
+          "maxItems": 5,
+          "items": {
+            "$ref": "common.schema.json#/$defs/textId"
+          }
+        },
+        "include_generated_summary": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether the warm LLM summary of what the user said is shown around the fixed text. Should be false for 5 if Hadas prefers the red-flag screen to stay fully fixed."
+        },
+        "form": {
+          "enum": [
+            "primary",
+            "secondary",
+            "none"
+          ]
+        },
+        "return_signs_conditional": {
+          "type": "array",
+          "maxItems": 80,
+          "items": {
+            "type": "object",
+            "required": [
+              "when",
+              "text_id"
+            ],
+            "properties": {
+              "when": {
+                "$ref": "common.schema.json#/$defs/condition"
+              },
+              "text_id": {
+                "$ref": "common.schema.json#/$defs/textId"
+              }
+            },
+            "additionalProperties": false
+          },
+          "description": "Per-domain 'when to contact' lines for outcome 3, e.g. {when: {slot: domain, op: contains, value: voice}, text_id: when_to_contact.wtc_voice_persisting}. All TRUE entries are shown, in order, followed by return_signs_text_id."
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

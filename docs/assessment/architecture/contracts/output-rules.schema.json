@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hadas-toda.co.il/schemas/intake/v1/output-rules.schema.json",
+  "title": "Output-check rules",
+  "description": "Rules the code applies to every generated message before it is shown (fixed texts are checked once at build time with the same rules, except rules with applies_to=generated_only). Conversation designer owns the forbidden list (diagnostic/determinative language, impersonation, gendered slash forms); legal-risk reviewer reviews it; architect owns the limits. Allowed URLs/phones = this list + every contact in referrals.json. File: intake/content/output-rules.json.",
+  "type": "object",
+  "required": [
+    "header",
+    "limits",
+    "forbidden",
+    "allowed_urls",
+    "allowed_phones"
+  ],
+  "properties": {
+    "header": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/contentHeader"
+        },
+        {
+          "properties": {
+            "contract": {
+              "const": "output-rules"
+            }
+          },
+          "type": "object"
+        }
+      ]
+    },
+    "limits": {
+      "type": "object",
+      "required": [
+        "max_chars_turn",
+        "max_chars_summary",
+        "max_questions"
+      ],
+      "properties": {
+        "max_chars_turn": {
+          "type": "integer",
+          "minimum": 60,
+          "maximum": 600,
+          "description": "Cap for ask/clarify/rephrase/bridge/wrap_up messages."
+        },
+        "max_chars_summary": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 1200
+        },
+        "max_chars_recap": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 900
+        },
+        "max_questions": {
+          "const": 1,
+          "description": "Exactly one question in question moves; zero in 'summary'."
+        },
+        "max_latin_ratio": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Max share of Latin letters among letters (English leakage guard), after removing latin_allowlist terms."
+        }
+      },
+      "additionalProperties": false
+    },
+    "forbidden": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 400,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "regex",
+          "kind",
+          "applies_to"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/entityId"
+          },
+          "regex": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "description": "ECMAScript regex source on normalized text, flag 'u'."
+          },
+          "kind": {
+            "enum": [
+              "diagnostic",
+              "determinative",
+              "impersonation",
+              "gendered_form",
+              "clinical_advice",
+              "promise",
+              "pressure",
+              "other"
+            ]
+          },
+          "applies_to": {
+            "enum": [
+              "all",
+              "generated_only"
+            ]
+          },
+          "note_he": {
+            "type": "string",
+            "maxLength": 300
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "allowed_urls": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 4,
+        "maxLength": 300
+      }
+    },
+    "allowed_phones": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[0-9+\\-\\s]{3,20}$"
+      }
+    },
+    "latin_allowlist": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "maxLength": 40
+      }
+    },
+    "latin_ratio_exempt_text_ids": {
+      "type": "array",
+      "maxItems": 5,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "common.schema.json#/$defs/textId"
+      },
+      "description": "Fixed texts exempt from max_latin_ratio only (e.g. language.unsupported, which carries English, Arabic and Russian lines). Never applies to generated text; every other rule (forbidden terms, 101, URLs, phones) still applies. Legal-risk reviewer approves the list."
+    }
+  },
+  "additionalProperties": false
+}

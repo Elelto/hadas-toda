@@ -1,0 +1,854 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hadas-toda.co.il/schemas/intake/v1/trace-record.schema.json",
+  "title": "Per-turn trace record",
+  "description": "One record per processed inbound message. D-07: production traces contain NO conversation content (content_mode 'none'); they hold codes, ids, hashes, statuses, timings and versions, and are deleted together with the session (D-01). Content-bearing traces (content_mode 'synthetic_full') exist only for synthetic conversations (test channel, persona runner, deploy previews with synthetic data) and are what deterministic replay uses. Name and phone never appear in any trace. The schema ties content_mode to deploy_context (SEC-08).",
+  "type": "object",
+  "required": [
+    "trace_version",
+    "session_id",
+    "seq",
+    "channel",
+    "at",
+    "delivery_mode",
+    "content_versions",
+    "input",
+    "gate",
+    "redflag_immediate",
+    "extract",
+    "validation",
+    "redflag",
+    "policy",
+    "outcome",
+    "generate",
+    "output",
+    "state_hash_before",
+    "state_hash_after",
+    "timings_ms",
+    "usage",
+    "errors",
+    "content_mode",
+    "deploy_context"
+  ],
+  "properties": {
+    "trace_version": {
+      "const": "1.0"
+    },
+    "session_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{16,64}$"
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "channel": {
+      "$ref": "common.schema.json#/$defs/channel"
+    },
+    "at": {
+      "$ref": "common.schema.json#/$defs/isoDateTime"
+    },
+    "delivery_mode": {
+      "enum": [
+        "live",
+        "shadow"
+      ]
+    },
+    "content_versions": {
+      "$ref": "common.schema.json#/$defs/contentVersions"
+    },
+    "input": {
+      "type": "object",
+      "required": [
+        "message_id",
+        "kind",
+        "chars"
+      ],
+      "properties": {
+        "message_id": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "kind": {
+          "enum": [
+            "text",
+            "choice",
+            "consent",
+            "handoff_submit",
+            "control",
+            "media"
+          ]
+        },
+        "choice": {
+          "type": "object",
+          "properties": {
+            "choice_set_id": {
+              "type": "string"
+            },
+            "option_id": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "chars": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "parts_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "over_cap": {
+          "type": "boolean"
+        },
+        "masked": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "gate": {
+      "enum": [
+        "pass",
+        "duplicate",
+        "stale_seq",
+        "silenced",
+        "closed",
+        "session_cap",
+        "ip_cap",
+        "cost_cap",
+        "kill_switch",
+        "degraded",
+        "content_mismatch",
+        "input_rejected",
+        "cost_cap_soft",
+        "input_too_large",
+        "form_blocked",
+        "model_free"
+      ]
+    },
+    "redflag_immediate": {
+      "type": "object",
+      "required": [
+        "matched"
+      ],
+      "properties": {
+        "matched": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "flag_id",
+              "pattern_id"
+            ],
+            "properties": {
+              "flag_id": {
+                "type": "string"
+              },
+              "pattern_id": {
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "immediate",
+                  "confirm"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "extract": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/llmStage"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "validation": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "slot_id",
+          "decision",
+          "status_after"
+        ],
+        "properties": {
+          "slot_id": {
+            "type": "string",
+            "maxLength": 48
+          },
+          "decision": {
+            "enum": [
+              "accepted",
+              "accepted_same_value",
+              "correction_applied",
+              "conflict_marked",
+              "rejected"
+            ]
+          },
+          "reject_reason": {
+            "enum": [
+              "unknown_slot",
+              "slot_not_applicable",
+              "evidence_not_found",
+              "short_quote_not_asked",
+              "type_invalid",
+              "out_of_range",
+              "option_invalid",
+              "cardinality",
+              "phase_locked"
+            ]
+          },
+          "status_after": {
+            "$ref": "common.schema.json#/$defs/slotStatus"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "redflag": {
+      "type": "object",
+      "required": [
+        "raised",
+        "confirm_requested"
+      ],
+      "properties": {
+        "raised": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "flag_id",
+              "source"
+            ],
+            "properties": {
+              "flag_id": {
+                "type": "string"
+              },
+              "source": {
+                "enum": [
+                  "immediate_pattern",
+                  "extractor_signal",
+                  "condition",
+                  "unknown_after_confirm",
+                  "doubt_condition"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "rejected_signals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "flag_id",
+              "reason"
+            ],
+            "properties": {
+              "flag_id": {
+                "type": "string"
+              },
+              "reason": {
+                "enum": [
+                  "unknown_flag",
+                  "evidence_not_found"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "confirm_requested": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "policy": {
+      "type": "object",
+      "required": [
+        "phase_before",
+        "phase_after",
+        "goal_id",
+        "move",
+        "reasons"
+      ],
+      "properties": {
+        "phase_before": {
+          "$ref": "common.schema.json#/$defs/phase"
+        },
+        "phase_after": {
+          "$ref": "common.schema.json#/$defs/phase"
+        },
+        "goal_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "move": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/llmMove"
+            },
+            {
+              "enum": [
+                "fixed_only",
+                "red_flag_confirm"
+              ]
+            }
+          ]
+        },
+        "prefix_text_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/textRef"
+          }
+        },
+        "goals_exhausted": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "goal_satisfied",
+              "goal_in_progress",
+              "budget_exhausted",
+              "conflict_pending",
+              "clarification_needed",
+              "no_progress",
+              "faq_answered",
+              "clinical_declined",
+              "unknown_question",
+              "off_topic",
+              "user_wants_end",
+              "user_wants_human",
+              "non_hebrew",
+              "intake_cap",
+              "session_cap",
+              "no_progress_cap",
+              "all_goals_done",
+              "recap_pending",
+              "red_flag",
+              "red_flag_confirm",
+              "consent_given",
+              "consent_declined",
+              "media_unsupported",
+              "llm_unavailable",
+              "outcome_decided",
+              "handoff_submitted",
+              "early_handoff",
+              "reopened_after_outcome",
+              "red_flag_unknown_after_confirm",
+              "input_over_cap",
+              "unavailable",
+              "routing_stop",
+              "decision_locked_1",
+              "decision_locked_4",
+              "screens_before_cap",
+              "pending_extraction",
+              "extraction_gap",
+              "faq_cap",
+              "skipped_decision_goals",
+              "model_free",
+              "form_blocked_by_flag",
+              "restart",
+              "handoff_content_deleted"
+            ]
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "outcome": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "outcome",
+            "rule_id",
+            "reason_code"
+          ],
+          "properties": {
+            "outcome": {
+              "$ref": "common.schema.json#/$defs/outcomeId"
+            },
+            "rule_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "reason_code": {
+              "type": "string"
+            },
+            "downgraded_from": {
+              "enum": [
+                3,
+                4
+              ]
+            },
+            "failed_guards": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "would_be_outcome_3": {
+              "enum": [
+                "true",
+                "false",
+                "undetermined"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "generate": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/llmStage"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "output_check": {
+      "type": "array",
+      "description": "One entry per generation attempt.",
+      "items": {
+        "type": "object",
+        "required": [
+          "attempt",
+          "passed",
+          "failures"
+        ],
+        "properties": {
+          "attempt": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2
+          },
+          "passed": {
+            "type": "boolean"
+          },
+          "failures": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "move_mismatch",
+                "target_not_in_goal",
+                "question_count",
+                "too_long",
+                "forbidden_term",
+                "url_not_allowed",
+                "phone_not_allowed",
+                "latin_ratio",
+                "markup",
+                "summary_unbacked_slot",
+                "empty"
+              ]
+            }
+          },
+          "forbidden_rule_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "output": {
+      "type": "object",
+      "required": [
+        "items"
+      ],
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "type"
+            ],
+            "properties": {
+              "type": {
+                "enum": [
+                  "text",
+                  "choices",
+                  "outcome",
+                  "form_request",
+                  "notice",
+                  "end"
+                ]
+              },
+              "origin": {
+                "$ref": "common.schema.json#/$defs/textOrigin"
+              },
+              "text_refs": {
+                "type": "array",
+                "items": {
+                  "$ref": "common.schema.json#/$defs/textRef"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "sent": {
+          "type": "boolean",
+          "description": "false in shadow mode or when silenced."
+        }
+      },
+      "additionalProperties": false
+    },
+    "state_hash_before": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "state_hash_after": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "timings_ms": {
+      "type": "object",
+      "required": [
+        "total"
+      ],
+      "properties": {
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "load": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "extract": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "generate": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "persist": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "usage": {
+      "type": "object",
+      "required": [
+        "calls",
+        "input_tokens",
+        "output_tokens",
+        "est_cost_usd"
+      ],
+      "properties": {
+        "calls": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "input_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cached_input_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "output_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "est_cost_usd": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "stage",
+          "code"
+        ],
+        "properties": {
+          "stage": {
+            "enum": [
+              "load",
+              "gate",
+              "normalize",
+              "extract",
+              "validate",
+              "redflag",
+              "policy",
+              "outcome",
+              "generate",
+              "output_check",
+              "persist",
+              "deliver"
+            ]
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 64,
+            "description": "Machine code only (e.g. 'timeout', 'http_429', 'contract_invalid'). Never provider error messages - they can echo user content."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "content_mode": {
+      "enum": [
+        "none",
+        "synthetic_full"
+      ]
+    },
+    "content": {
+      "type": "object",
+      "description": "ONLY when content_mode = synthetic_full.",
+      "properties": {
+        "input_text": {
+          "type": "string",
+          "maxLength": 81920
+        },
+        "extract_raw": {
+          "type": "array",
+          "maxItems": 4,
+          "items": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "generate_raw": {
+          "type": "array",
+          "maxItems": 2,
+          "items": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "output_texts": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "string",
+            "maxLength": 3000
+          }
+        },
+        "state_snapshot_after": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false
+    },
+    "deploy_context": {
+      "enum": [
+        "production",
+        "deploy_preview",
+        "branch_deploy",
+        "local",
+        "test_runner"
+      ],
+      "description": "SEC-08: from Netlify CONTEXT at write time. production forces content_mode none; synthetic_full is impossible in production."
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "llmStage": {
+      "type": "object",
+      "required": [
+        "attempts",
+        "final_status"
+      ],
+      "properties": {
+        "attempts": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 2,
+          "items": {
+            "type": "object",
+            "required": [
+              "attempt",
+              "provider",
+              "model",
+              "prompt_version",
+              "wire_schema_hash",
+              "status",
+              "latency_ms"
+            ],
+            "properties": {
+              "attempt": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 2
+              },
+              "provider": {
+                "type": "string",
+                "maxLength": 32
+              },
+              "model": {
+                "type": "string",
+                "maxLength": 80
+              },
+              "prompt_version": {
+                "type": "string",
+                "maxLength": 40
+              },
+              "wire_schema_hash": {
+                "$ref": "common.schema.json#/$defs/sha256"
+              },
+              "requested_move": {
+                "$ref": "common.schema.json#/$defs/llmMove"
+              },
+              "status": {
+                "enum": [
+                  "ok",
+                  "timeout",
+                  "http_error",
+                  "rate_limited",
+                  "refusal",
+                  "invalid_json",
+                  "contract_invalid",
+                  "aborted_deadline"
+                ]
+              },
+              "latency_ms": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "input_tokens": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "cached_input_tokens": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "output_tokens": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "final_status": {
+          "enum": [
+            "ok",
+            "failed",
+            "skipped"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "content_mode": {
+            "const": "none"
+          }
+        },
+        "required": [
+          "content_mode"
+        ]
+      },
+      "then": {
+        "not": {
+          "type": "object",
+          "required": [
+            "content"
+          ],
+          "properties": {
+            "content": true
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "deploy_context": {
+            "const": "production"
+          }
+        },
+        "required": [
+          "deploy_context"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "content_mode": {
+            "const": "none"
+          }
+        },
+        "required": [
+          "content_mode"
+        ]
+      }
+    }
+  ]
+}

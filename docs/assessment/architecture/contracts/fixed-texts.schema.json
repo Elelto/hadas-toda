@@ -1,0 +1,219 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hadas-toda.co.il/schemas/intake/v1/fixed-texts.schema.json",
+  "title": "Fixed texts (versioned)",
+  "description": "Every text the system shows that is not LLM-generated: entry/page, consent, disclaimers, opening, goal templates, outcomes, red flags, FAQ answers, errors, WhatsApp texts, Hadas-summary and feedback-page texts. Wording: conversation designer (role 3); clinical meaning: Hadas; legal gate: lawyer. Mapping from texts.he.md: heading `id@vN` -> key `id`, version N; '>' lines -> text; subject suffixes (.self/.child.m/.child.f/.child.n/.other) -> variants (self/child_m/child_f/child_n/other); the scale mark -> legal_review=required. Each text has its own integer version, bumped on ANY change to its text or variants; old versions stay in git history and the consent log / traces store (id, version, sha256 of the rendered string). The schema enforces the legal gate: an 'approved' text with legal_review=required must carry a lawyer approval. Allowed markup: newlines, '**bold**', '[label](url)' with url on the output-rules allowlist. Placeholders use {{snake_case}} (texts.he.md convention), must be declared, and must never be glued to a Hebrew prefix letter. File: intake/content/fixed-texts.he.json. Round 5: 'active' (default true). An inactive text is kept and versioned but never rendered (e.g. outcome 3 while outcome3_enabled is false, D-03; the two-box consent alternative; goal.other_awareness.ask). The production approval gate (status approved, lawyer for the scale mark) applies to ACTIVE texts only; switching a feature on (e.g. outcome3_enabled: true) makes intake:check require its texts active and approved. Mapping from texts.he.md: a '**סטטוס:** לא פעיל — <reason>' line -> active: false (the reason stays in notes).",
+  "type": "object",
+  "required": [
+    "header",
+    "locale",
+    "texts"
+  ],
+  "properties": {
+    "header": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/contentHeader"
+        },
+        {
+          "properties": {
+            "contract": {
+              "const": "fixed-texts"
+            }
+          },
+          "type": "object"
+        }
+      ]
+    },
+    "locale": {
+      "const": "he"
+    },
+    "texts": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "common.schema.json#/$defs/textId"
+      },
+      "minProperties": 1,
+      "additionalProperties": {
+        "$ref": "#/$defs/textEntry"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "textEntry": {
+      "type": "object",
+      "required": [
+        "version",
+        "text",
+        "status",
+        "legal_review",
+        "purpose_he"
+      ],
+      "properties": {
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 3000
+        },
+        "variants": {
+          "description": "Alternative wordings, same version. Keys: channel (web|whatsapp), subject (self|child_m|child_f|child_n|other), or channel.subject. Resolution order: channel.subject -> subject -> child_n (for child_m/child_f) -> channel -> text.",
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^((web|whatsapp)(\\.(self|child_m|child_f|child_n|other))?|self|child_m|child_f|child_n|other)$"
+          },
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 3000
+          },
+          "maxProperties": 18
+        },
+        "placeholders": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 10,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{1,31}$"
+          },
+          "description": "Names used as {{name}} in text/variants. Each must resolve from faq.json facts, deployment config, or the engine (see ARCHITECTURE.md placeholder registry)."
+        },
+        "purpose_he": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300,
+          "description": "Where/when it is shown (screen or step), for reviewers."
+        },
+        "legal_review": {
+          "enum": [
+            "required",
+            "not_required"
+          ]
+        },
+        "status": {
+          "enum": [
+            "draft",
+            "approved",
+            "retired"
+          ]
+        },
+        "approvals": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/approval"
+          }
+        },
+        "changed_at": {
+          "$ref": "common.schema.json#/$defs/isoDate"
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "client_bundle": {
+          "type": "boolean",
+          "default": false,
+          "description": "true = compiled at build time into the frontend's generated text module, never hand-copied (CI fails if it differs). Rule: every text the client renders WITHOUT a server response, or that is pure UI chrome: chat.* (header, input, send, typing, slow, not_sent, new_message, quick replies, stage labels, end/delete dialogs, chat.disclaimer_line, chat.ended, chat.delete.done, chat.input.too_long_hint, chat.input.too_long_block), resume.* (S2, incl. the 'already sent' state shown from the local marker), closed.keep_note, menu.*, dialog.*, a11y.*, ui.*, error.*, nav.*, and the offline safety set (system.unavailable, static fallback.*, redflag.title.*, redflag.type.*, redflag.footer, redflag.cta.call*). Consent/S1, goal, outcome, routing-stop, FAQ, form and confirmation texts are always served by the server so their versions can be logged. Bundle texts are versioned by the deploy's fixed_texts content version and follow the same legal gate."
+        },
+        "active": {
+          "type": "boolean",
+          "default": true,
+          "description": "false = kept for a feature that is off; never rendered; exempt from the production approval gate until switched on. Requires notes (the reason)."
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "approved"
+              },
+              "legal_review": {
+                "const": "required"
+              }
+            },
+            "required": [
+              "status",
+              "legal_review"
+            ],
+            "type": "object"
+          },
+          "then": {
+            "required": [
+              "approvals"
+            ],
+            "properties": {
+              "approvals": {
+                "contains": {
+                  "type": "object",
+                  "properties": {
+                    "by": {
+                      "const": "lawyer"
+                    }
+                  },
+                  "required": [
+                    "by"
+                  ]
+                },
+                "type": "array"
+              }
+            },
+            "type": "object"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "approved"
+              }
+            },
+            "required": [
+              "status"
+            ],
+            "type": "object"
+          },
+          "then": {
+            "required": [
+              "approvals",
+              "changed_at"
+            ],
+            "type": "object",
+            "properties": {
+              "approvals": true,
+              "changed_at": true
+            }
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "active": {
+                "const": false
+              }
+            },
+            "required": [
+              "active"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "required": [
+              "notes"
+            ],
+            "properties": {
+              "notes": true
+            }
+          }
+        }
+      ]
+    }
+  }
+}

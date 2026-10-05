@@ -1,0 +1,1101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hadas-toda.co.il/schemas/intake/v1/channel-envelope.schema.json",
+  "title": "Channel adapter message envelope",
+  "description": "The only interface between channel adapters (web, WhatsApp, test/persona runner) and the engine. Adapters own transport concerns (auth, signature verification, dedupe, burst aggregation, new-number gating, rendering, delivery, retries); the engine owns conversation logic and never sees channel-specific payloads. An adapter declares its capabilities on every inbound envelope; the engine shapes outbound items to them (e.g. no forms on WhatsApp -> handoff becomes a choice + name question). Adding WhatsApp requires no engine change.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/inbound"
+    },
+    {
+      "$ref": "#/$defs/outbound"
+    }
+  ],
+  "$defs": {
+    "capabilities": {
+      "type": "object",
+      "required": [
+        "rich_cards",
+        "forms",
+        "max_buttons",
+        "max_list_rows",
+        "max_text_chars",
+        "knows_contact_phone",
+        "synchronous"
+      ],
+      "properties": {
+        "rich_cards": {
+          "type": "boolean",
+          "description": "Can render outcome cards (web: yes; WhatsApp: no -> plain text)."
+        },
+        "forms": {
+          "type": "boolean",
+          "description": "Can render the handoff form (web: yes; WhatsApp: no)."
+        },
+        "max_buttons": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10,
+          "description": "WhatsApp reply buttons: 3."
+        },
+        "max_list_rows": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 20,
+          "description": "WhatsApp list message: 10."
+        },
+        "max_text_chars": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 10000
+        },
+        "knows_contact_phone": {
+          "type": "boolean",
+          "description": "WhatsApp: the phone is known, so handoff asks only for name + consent."
+        },
+        "synchronous": {
+          "type": "boolean",
+          "description": "Web: reply in the HTTP response. WhatsApp: async send."
+        }
+      },
+      "additionalProperties": false
+    },
+    "inbound": {
+      "type": "object",
+      "required": [
+        "envelope_version",
+        "direction",
+        "channel",
+        "conversation_key",
+        "message_id",
+        "received_at",
+        "kind",
+        "delivery_mode",
+        "capabilities"
+      ],
+      "properties": {
+        "envelope_version": {
+          "const": "1"
+        },
+        "direction": {
+          "const": "inbound"
+        },
+        "channel": {
+          "$ref": "common.schema.json#/$defs/channel"
+        },
+        "conversation_key": {
+          "type": "string",
+          "pattern": "^(web|wa|test):[A-Za-z0-9_-]{16,96}$",
+          "description": "Opaque. web: 'web:' + session id from the signed cookie. WhatsApp: 'wa:' + HMAC-SHA256(wa_id, WA_KEY_SECRET) - never the raw number."
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 128,
+          "description": "Idempotency key. web: client-generated UUID per send (reused on retry). WhatsApp: id of the last message in the aggregated burst."
+        },
+        "expected_seq": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "web only: the seq the client last saw (optimistic concurrency)."
+        },
+        "received_at": {
+          "$ref": "common.schema.json#/$defs/isoDateTime"
+        },
+        "kind": {
+          "enum": [
+            "text",
+            "choice",
+            "consent",
+            "handoff_submit",
+            "control",
+            "media"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 81920,
+          "description": "Raw user text, NEVER truncated by the client (no textarea maxlength; SEC-06 round 4). Web: soft cap 800 chars (UI counter + hint); the only hard limit is the 32KB request body, checked by the client before sending (over it: nothing is sent, chat.input.too_long_block with 101, text stays in the field) and by the server (413 input_too_large, same message). Server order: body size -> JSON.parse -> normalize + red-flag regex on the FULL text -> envelope validation; a regex match yields S6 even if the rest of the envelope is invalid. Over the soft cap: regex only, no LLM, nothing stored, meta.too_long (101); the text returns to the field. WhatsApp: the aggregated burst (<= 20 parts x 4,096, regex per part before aggregation), soft cap 2,000. maxLength here = what WhatsApp can carry, so validation never rejects a text the body cap allowed."
+        },
+        "parts": {
+          "description": "WhatsApp burst aggregation: the individual messages (in order) that were merged into 'text'.",
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "type": "object",
+            "required": [
+              "message_id",
+              "received_at",
+              "text"
+            ],
+            "properties": {
+              "message_id": {
+                "type": "string",
+                "maxLength": 128
+              },
+              "received_at": {
+                "$ref": "common.schema.json#/$defs/isoDateTime"
+              },
+              "text": {
+                "type": "string",
+                "maxLength": 4096
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "choice": {
+          "type": "object",
+          "required": [
+            "choice_set_id",
+            "option_id"
+          ],
+          "properties": {
+            "choice_set_id": {
+              "type": "string",
+              "maxLength": 64
+            },
+            "option_id": {
+              "type": "string",
+              "maxLength": 64
+            }
+          },
+          "additionalProperties": false
+        },
+        "consent": {
+          "type": "object",
+          "required": [
+            "scope",
+            "accepted",
+            "texts_shown"
+          ],
+          "properties": {
+            "scope": {
+              "enum": [
+                "intake",
+                "intake_health_data",
+                "handoff"
+              ]
+            },
+            "accepted": {
+              "type": "boolean"
+            },
+            "texts_shown": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "common.schema.json#/$defs/textRef"
+              },
+              "description": "Echo of the text ids+versions the client actually rendered. Server rejects (409) if they are not the current approved versions."
+            }
+          },
+          "additionalProperties": false
+        },
+        "handoff": {
+          "type": "object",
+          "required": [
+            "name"
+          ],
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80,
+              "pattern": "^[\\u05D0-\\u05EAA-Za-z][\\u05D0-\\u05EAA-Za-z '\\-\\u05F3]{0,79}$",
+              "description": "Hebrew/Latin letters, space, hyphen, apostrophe/geresh only; no CR/LF (SEC-17)."
+            },
+            "phone": {
+              "type": "string",
+              "maxLength": 20,
+              "description": "Required on web; absent on WhatsApp (known from the channel)."
+            },
+            "preferred_time": {
+              "enum": [
+                "morning",
+                "afternoon",
+                "evening",
+                "any"
+              ]
+            },
+            "preferred_channel": {
+              "enum": [
+                "call",
+                "whatsapp"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "control": {
+          "enum": [
+            "start",
+            "resume",
+            "reopen",
+            "request_handoff",
+            "finish",
+            "reset",
+            "human_takeover",
+            "expire"
+          ],
+          "description": "reopen: 'שכחתי לספר' (not after outcome 5, not after submission). request_handoff: early exit to the form; the outcome is computed and recorded but only the partial-file form is shown, unless a red flag is raised. finish: 'סיום' / 'למחוק' = D-01 (web: DELETE /api/intake/session): deletes the case file and traces immediately and clears the cookie; a lead already sent stays with Hadas. reset: restart = the same deletion, then S1 again (new session, new consent record). human_takeover: WhatsApp echo of a message Hadas sent -> permanent silence."
+        },
+        "media": {
+          "type": "object",
+          "required": [
+            "media_type"
+          ],
+          "properties": {
+            "media_type": {
+              "enum": [
+                "voice",
+                "audio",
+                "image",
+                "video",
+                "document",
+                "sticker",
+                "location",
+                "contact",
+                "reaction",
+                "other"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "description": "Media content is never downloaded or stored; the engine replies with a fixed text (e.g. channel.voice_note_ask_to_type)."
+        },
+        "delivery_mode": {
+          "enum": [
+            "live",
+            "shadow"
+          ],
+          "description": "D-05: shadow = no LLM (stubbed, network calls fail a test), no content stored anywhere; only counters (new/known number, would have replied or not)."
+        },
+        "capabilities": {
+          "$ref": "#/$defs/capabilities"
+        },
+        "channel_meta": {
+          "description": "Non-content metadata only. Never put message text, phone numbers or names here.",
+          "type": "object",
+          "properties": {
+            "client_version": {
+              "type": "string",
+              "maxLength": 32
+            },
+            "entry_point": {
+              "type": "string",
+              "maxLength": 64,
+              "description": "web: where the chat was opened from (e.g. landing_kol)."
+            },
+            "burst_size": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "text"
+              }
+            },
+            "type": "object"
+          },
+          "then": {
+            "required": [
+              "text"
+            ],
+            "type": "object",
+            "properties": {
+              "text": true
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "choice"
+              }
+            },
+            "type": "object"
+          },
+          "then": {
+            "required": [
+              "choice"
+            ],
+            "type": "object",
+            "properties": {
+              "choice": true
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "consent"
+              }
+            },
+            "type": "object"
+          },
+          "then": {
+            "required": [
+              "consent"
+            ],
+            "type": "object",
+            "properties": {
+              "consent": true
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "handoff_submit"
+              }
+            },
+            "type": "object"
+          },
+          "then": {
+            "required": [
+              "handoff"
+            ],
+            "type": "object",
+            "properties": {
+              "handoff": true
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "control"
+              }
+            },
+            "type": "object"
+          },
+          "then": {
+            "required": [
+              "control"
+            ],
+            "type": "object",
+            "properties": {
+              "control": true
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "media"
+              }
+            },
+            "type": "object"
+          },
+          "then": {
+            "required": [
+              "media"
+            ],
+            "type": "object",
+            "properties": {
+              "media": true
+            }
+          }
+        }
+      ]
+    },
+    "outbound": {
+      "type": "object",
+      "required": [
+        "envelope_version",
+        "direction",
+        "channel",
+        "conversation_key",
+        "in_reply_to",
+        "seq",
+        "phase",
+        "items",
+        "delivery_mode",
+        "ends_conversation"
+      ],
+      "properties": {
+        "envelope_version": {
+          "const": "1"
+        },
+        "direction": {
+          "const": "outbound"
+        },
+        "channel": {
+          "$ref": "common.schema.json#/$defs/channel"
+        },
+        "conversation_key": {
+          "type": "string",
+          "pattern": "^(web|wa|test):[A-Za-z0-9_-]{16,96}$"
+        },
+        "in_reply_to": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "phase": {
+          "$ref": "common.schema.json#/$defs/phase"
+        },
+        "items": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 8,
+          "items": {
+            "$ref": "#/$defs/item"
+          },
+          "description": "Rendered in order. Empty when the engine must stay silent (silenced / shadow-gated)."
+        },
+        "delivery_mode": {
+          "enum": [
+            "live",
+            "shadow"
+          ]
+        },
+        "ends_conversation": {
+          "type": "boolean"
+        },
+        "input_hint": {
+          "description": "What the UI should offer next.",
+          "enum": [
+            "free_text",
+            "choices_or_text",
+            "form",
+            "none"
+          ]
+        },
+        "display_stage": {
+          "enum": [
+            1,
+            2,
+            3
+          ],
+          "description": "UX display stage (היכרות / השלמת פרטים / סיכום)."
+        },
+        "available": {
+          "type": "boolean",
+          "description": "false when the service is capped/disabled; items then hold the fixed 'unavailable' notice (incl. 101 and direct contacts)."
+        },
+        "handoff_result": {
+          "type": "object",
+          "required": [
+            "status",
+            "submitted_on",
+            "delivery",
+            "content_deleted",
+            "clear_cookie"
+          ],
+          "description": "Blocker 1: response of intake-handoff. The case content is already deleted (or a content-free tombstone is purged within the hour); the confirmation screen is rendered from THIS response and kept in page memory only. The client writes the local 'sent' marker (date only, 14 days); a refresh shows S2 'already sent' from that marker, never server content.",
+          "properties": {
+            "status": {
+              "const": "submitted"
+            },
+            "submitted_on": {
+              "$ref": "common.schema.json#/$defs/isoDate"
+            },
+            "delivery": {
+              "enum": [
+                "delivered",
+                "pending"
+              ],
+              "description": "delivered: the email reached EmailJS within the 6 s budget and the lead's contact/summary were purged; pending: retries for up to 7 days (S8 says so)."
+            },
+            "content_deleted": {
+              "type": "boolean",
+              "description": "false only if the explicit delete failed: S8 then says the conversation is deleted from the server within an hour (tombstone purge)."
+            },
+            "clear_cookie": {
+              "const": true
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "description": "Blocker 1: after submission the conversation is closed and gone.",
+          "if": {
+            "type": "object",
+            "required": [
+              "handoff_result"
+            ],
+            "properties": {
+              "handoff_result": true
+            }
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "ends_conversation": {
+                "const": true
+              },
+              "phase": {
+                "const": "closed"
+              }
+            }
+          }
+        },
+        {
+          "description": "Blocker 2: an outcome-5 card that allows no form never travels with a form.",
+          "if": {
+            "type": "object",
+            "properties": {
+              "items": {
+                "type": "array",
+                "contains": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "const": "outcome"
+                    },
+                    "outcome": {
+                      "const": 5
+                    },
+                    "form": {
+                      "const": "none"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "outcome",
+                    "form"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "items"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "items": {
+                "type": "array",
+                "not": {
+                  "type": "array",
+                  "contains": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "const": "form_request"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  }
+                }
+              },
+              "input_hint": {
+                "not": {
+                  "const": "form"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "item": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "text",
+            "origin",
+            "text_refs"
+          ],
+          "properties": {
+            "type": {
+              "const": "text"
+            },
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 3000
+            },
+            "origin": {
+              "$ref": "common.schema.json#/$defs/textOrigin"
+            },
+            "text_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "common.schema.json#/$defs/textRef"
+              },
+              "description": "Empty for generated text."
+            },
+            "move": {
+              "anyOf": [
+                {
+                  "$ref": "common.schema.json#/$defs/llmMove"
+                },
+                {
+                  "enum": [
+                    "fixed_only",
+                    "red_flag_confirm"
+                  ]
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "choice_set_id",
+            "options",
+            "multi"
+          ],
+          "properties": {
+            "type": {
+              "const": "choices"
+            },
+            "choice_set_id": {
+              "type": "string",
+              "maxLength": 64
+            },
+            "options": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 12,
+              "items": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "label"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "maxLength": 64
+                  },
+                  "label": {
+                    "type": "string",
+                    "maxLength": 60
+                  },
+                  "exclusive": {
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "multi": {
+              "type": "boolean"
+            },
+            "allow_free_text": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "outcome",
+            "title",
+            "body",
+            "disclaimer",
+            "text_refs",
+            "form",
+            "disclaimer_text_ref"
+          ],
+          "properties": {
+            "type": {
+              "const": "outcome"
+            },
+            "outcome": {
+              "$ref": "common.schema.json#/$defs/outcomeId"
+            },
+            "title": {
+              "type": "string",
+              "maxLength": 300
+            },
+            "body": {
+              "type": "string",
+              "maxLength": 3000
+            },
+            "summary": {
+              "type": "string",
+              "maxLength": 1500,
+              "description": "Warm summary of what the user said (generated or template)."
+            },
+            "summary_origin": {
+              "enum": [
+                "generated",
+                "template_fallback"
+              ]
+            },
+            "return_signs": {
+              "type": "string",
+              "maxLength": 3000
+            },
+            "disclaimer": {
+              "type": "string",
+              "maxLength": 2000,
+              "description": "Mandatory on every outcome, including outcome 5 (L-19): the S6 red-flag screen renders it."
+            },
+            "text_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "common.schema.json#/$defs/textRef"
+              }
+            },
+            "form": {
+              "enum": [
+                "primary",
+                "secondary",
+                "none"
+              ]
+            },
+            "addenda": {
+              "type": "array",
+              "maxItems": 3,
+              "items": {
+                "type": "object",
+                "required": [
+                  "text"
+                ],
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "maxLength": 1500
+                  },
+                  "referral_label": {
+                    "type": "string",
+                    "maxLength": 160
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "red_flag_tier": {
+              "enum": [
+                "emergency",
+                "urgent",
+                "hotline"
+              ],
+              "description": "Outcome 5 only: tier of the primary block (selects the S6 variant)."
+            },
+            "referrals": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 3,
+              "items": {
+                "type": "object",
+                "required": [
+                  "label",
+                  "text"
+                ],
+                "properties": {
+                  "label": {
+                    "type": "string",
+                    "maxLength": 160
+                  },
+                  "text": {
+                    "type": "string",
+                    "maxLength": 3000
+                  },
+                  "contacts": {
+                    "type": "array",
+                    "maxItems": 4,
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "type",
+                        "value",
+                        "label"
+                      ],
+                      "properties": {
+                        "type": {
+                          "enum": [
+                            "phone",
+                            "url"
+                          ]
+                        },
+                        "value": {
+                          "type": "string",
+                          "maxLength": 300
+                        },
+                        "label": {
+                          "type": "string",
+                          "maxLength": 120
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "additionalProperties": false
+              },
+              "description": "Outcome 4: the rule's referral first, then referrals from addenda (mixed domains). Deduplicated by referral id."
+            },
+            "disclaimer_text_ref": {
+              "$ref": "common.schema.json#/$defs/textRef"
+            },
+            "extraction_gap_notice": {
+              "type": "string",
+              "maxLength": 1000,
+              "description": "Critic F1(b): shown when a message stayed unextracted."
+            },
+            "red_flag_blocks": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 3,
+              "description": "Outcome 5 only (SEC-11): the primary block (highest tier) first, then one block per other raised hotline-tier flag. If ANY block has form_after_message none, form must be none and the envelope carries no form_request.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "role",
+                  "tier",
+                  "text_ref",
+                  "form_after_message"
+                ],
+                "properties": {
+                  "role": {
+                    "enum": [
+                      "primary",
+                      "secondary"
+                    ]
+                  },
+                  "tier": {
+                    "enum": [
+                      "emergency",
+                      "urgent",
+                      "hotline"
+                    ]
+                  },
+                  "text_ref": {
+                    "$ref": "common.schema.json#/$defs/textRef"
+                  },
+                  "form_after_message": {
+                    "enum": [
+                      "none",
+                      "secondary"
+                    ]
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "type": "object",
+                "properties": {
+                  "outcome": {
+                    "const": 5
+                  }
+                },
+                "required": [
+                  "outcome"
+                ]
+              },
+              "then": {
+                "type": "object",
+                "properties": {
+                  "form": {
+                    "enum": [
+                      "secondary",
+                      "none"
+                    ]
+                  },
+                  "red_flag_tier": true,
+                  "red_flag_blocks": true
+                },
+                "required": [
+                  "red_flag_tier",
+                  "red_flag_blocks"
+                ]
+              }
+            },
+            {
+              "if": {
+                "type": "object",
+                "properties": {
+                  "red_flag_blocks": {
+                    "type": "array",
+                    "contains": {
+                      "type": "object",
+                      "properties": {
+                        "form_after_message": {
+                          "const": "none"
+                        }
+                      },
+                      "required": [
+                        "form_after_message"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "red_flag_blocks"
+                ]
+              },
+              "then": {
+                "type": "object",
+                "properties": {
+                  "form": {
+                    "const": "none"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "fields",
+            "consent_text_ref"
+          ],
+          "properties": {
+            "type": {
+              "const": "form_request"
+            },
+            "fields": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "name",
+                  "phone",
+                  "preferred_time",
+                  "preferred_channel"
+                ]
+              }
+            },
+            "consent_text_ref": {
+              "$ref": "common.schema.json#/$defs/textRef"
+            },
+            "variant": {
+              "enum": [
+                "full",
+                "partial_file"
+              ],
+              "description": "partial_file = early handoff ('I want to talk to Hadas')."
+            },
+            "preview": {
+              "type": "array",
+              "maxItems": 20,
+              "description": "UX 0.5: what will be sent to Hadas (label + display value), rendered as text.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "label",
+                  "value"
+                ],
+                "properties": {
+                  "label": {
+                    "type": "string",
+                    "maxLength": 120
+                  },
+                  "value": {
+                    "type": "string",
+                    "maxLength": 600
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "level",
+            "text",
+            "text_ref"
+          ],
+          "properties": {
+            "type": {
+              "const": "notice"
+            },
+            "level": {
+              "enum": [
+                "info",
+                "error"
+              ]
+            },
+            "text": {
+              "type": "string",
+              "maxLength": 1000
+            },
+            "text_ref": {
+              "$ref": "common.schema.json#/$defs/textRef"
+            },
+            "retryable": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "reason"
+          ],
+          "properties": {
+            "type": {
+              "const": "end"
+            },
+            "reason": {
+              "enum": [
+                "completed",
+                "red_flag",
+                "user_exit",
+                "consent_declined",
+                "caps_reached",
+                "degraded",
+                "expired",
+                "finished",
+                "minor_self",
+                "non_parent_reporter",
+                "other_stop"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

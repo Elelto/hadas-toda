@@ -1,0 +1,228 @@
+{
+  "header": {
+    "contract": "output-rules",
+    "contract_version": "1.0.0",
+    "version": "0.2.0",
+    "status": "draft",
+    "updated_at": "2026-10-05T18:00:00+03:00",
+    "approvals": [],
+    "changelog": [
+      {
+        "version": "0.1.0",
+        "date": "2026-10-05",
+        "summary": "טיוטה ראשונה של תפקיד 3: רשימת הסריקה מ-VOICE_AND_TONE §4.11, ועוד 'בסדר', 'מתאים לגיל', 'התפתחותי' (L-25, ARCHITECTURE §6.3). כללים שנוסח קבוע מאושר מפר בכוונה (הסתייגויות, נוסחי הדס, הפניות רפואיות בדגל אדום) הם generated_only."
+      },
+      {
+        "version": "0.2.0",
+        "date": "2026-10-05",
+        "summary": "סבב 4 של הארכיטקט: language.unsupported נכנס ל-latin_ratio_exempt_text_ids (יש בו שורות באנגלית, בערבית וברוסית). הפטור חל על max_latin_ratio בלבד, וכל שאר הכללים חלים עליו. הרשימה דורשת אישור המבקר המשפטי."
+      }
+    ]
+  },
+  "limits": {
+    "max_chars_turn": 450,
+    "max_chars_summary": 700,
+    "max_chars_recap": 600,
+    "max_questions": 1,
+    "max_latin_ratio": 0.2
+  },
+  "forbidden": [
+    {
+      "id": "normal_tkin",
+      "regex": "תקינ|תקין",
+      "kind": "determinative",
+      "applies_to": "all",
+      "note_he": "\"תקין\" לא מופיע באף טקסט, גם לא באימות טלפון (VOICE 4.11)."
+    },
+    {
+      "id": "normal_norm",
+      "regex": "נורמל|נורמה|בנורמה",
+      "kind": "determinative",
+      "applies_to": "all"
+    },
+    {
+      "id": "no_need",
+      "regex": "אין צורך",
+      "kind": "determinative",
+      "applies_to": "all",
+      "note_he": "הקביעה המסוכנת ביותר (GOALS)."
+    },
+    {
+      "id": "not_needed",
+      "regex": "לא צריך",
+      "kind": "determinative",
+      "applies_to": "all"
+    },
+    {
+      "id": "no_worry",
+      "regex": "אין מה לדאוג|אל תדאג|אל תדאגי|אל תדאגו|אין סיבה לדאגה",
+      "kind": "determinative",
+      "applies_to": "all"
+    },
+    {
+      "id": "will_pass",
+      "regex": "יעבור|עובר לבד|יחלוף|יעבור עם הזמן",
+      "kind": "determinative",
+      "applies_to": "all"
+    },
+    {
+      "id": "its_a",
+      "regex": "מדובר ב|נשמע כמו|נראה כמו|זה סימן ל|מעיד על",
+      "kind": "diagnostic",
+      "applies_to": "all"
+    },
+    {
+      "id": "probably",
+      "regex": "כנראה",
+      "kind": "diagnostic",
+      "applies_to": "all"
+    },
+    {
+      "id": "diagnosis_word",
+      "regex": "אבחנ|אבחון|מאבחן",
+      "kind": "diagnostic",
+      "applies_to": "generated_only",
+      "note_he": "בנוסחים קבועים מופיע רק בשלילה, בהסתייגויות המאושרות (\"לא אבחון\")."
+    },
+    {
+      "id": "suffers",
+      "regex": "סובל",
+      "kind": "diagnostic",
+      "applies_to": "all"
+    },
+    {
+      "id": "disorder",
+      "regex": "הפרעה|הפרעת|הפרעות",
+      "kind": "diagnostic",
+      "applies_to": "all"
+    },
+    {
+      "id": "impairment_word",
+      "regex": "(?<!\\p{L})[והשבכלמ]{0,2}לקות(?!\\p{L})",
+      "kind": "diagnostic",
+      "applies_to": "all",
+      "note_he": "מילה שלמה, עם תחיליות. לא תופס \"דלקות\"."
+    },
+    {
+      "id": "severity",
+      "regex": "חמור|מדאיג|קריטי|לא נורא",
+      "kind": "diagnostic",
+      "applies_to": "all"
+    },
+    {
+      "id": "age_appropriate",
+      "regex": "מתאים לגיל|מתאימה לגיל|טיפוסי לגיל|טיפוסית לגיל|תואם גיל",
+      "kind": "determinative",
+      "applies_to": "generated_only",
+      "note_he": "L-25. בנוסחים הקבועים אין, אבל הכלל נועד לטקסט המודל."
+    },
+    {
+      "id": "developmental",
+      "regex": "התפתחותי",
+      "kind": "determinative",
+      "applies_to": "generated_only",
+      "note_he": "L-25 (\"שלב התפתחותי\", \"גמגום התפתחותי\")."
+    },
+    {
+      "id": "okay_besseder",
+      "regex": "בסדר",
+      "kind": "determinative",
+      "applies_to": "generated_only",
+      "note_he": "L-25. נוסחים קבועים משתמשים ב\"בסדר\" כאישור (\"בסדר, אפשר להמשיך\") ובשלילה (\"זה לא אומר שהכול בסדר\")."
+    },
+    {
+      "id": "urgency",
+      "regex": "דחוף|לא דחוף|חירום רפואי",
+      "kind": "determinative",
+      "applies_to": "all",
+      "note_he": "קביעת דחיפות רק בנוסחי דגל אדום קבועים, והם לא משתמשים במילה."
+    },
+    {
+      "id": "advice_kedai",
+      "regex": "כדאי|מומלץ|מומלצת",
+      "kind": "clinical_advice",
+      "applies_to": "generated_only",
+      "note_he": "הסיכום החם רק משקף (\"כתבת ש...\"). המלצות והפניות רק בנוסחים קבועים."
+    },
+    {
+      "id": "tips_word",
+      "regex": "(?<!\\p{L})[והשבכלמ]{0,2}טיפ(ים)?(?!\\p{L})",
+      "kind": "clinical_advice",
+      "applies_to": "generated_only",
+      "note_he": "מילה שלמה, לא \"טיפול\". מופיע בכוונה ב-meta.advice_request וב-about.body."
+    },
+    {
+      "id": "exercise_word",
+      "regex": "תרגיל",
+      "kind": "clinical_advice",
+      "applies_to": "generated_only"
+    },
+    {
+      "id": "promise",
+      "regex": "ישתפר|מבטיח|מבטיחה|בוודאות|יעיל|הכול יהיה",
+      "kind": "promise",
+      "applies_to": "all"
+    },
+    {
+      "id": "impersonation_iam",
+      "regex": "אני הדס|אני קלינאית|אחזור אליך|אחזור אלייך|אנחנו נטפל",
+      "kind": "impersonation",
+      "applies_to": "all"
+    },
+    {
+      "id": "impersonation_present_f",
+      "regex": "אני (מבינה|שואלת|חושבת|שמחה|ממליצה|מרגישה|רושמת)",
+      "kind": "impersonation",
+      "applies_to": "all",
+      "note_he": "הווה בגוף ראשון נקבה נשמע כמו הדס (VOICE 2.4, 4.7)."
+    },
+    {
+      "id": "impersonation_clinic",
+      "regex": "אצלי|נקבע",
+      "kind": "impersonation",
+      "applies_to": "generated_only",
+      "note_he": "בנוסחים של הדס עצמה (hadas.*, hadas_summary.*) זה מותר."
+    },
+    {
+      "id": "pressure",
+      "regex": "אל תחכו|כדאי למהר|מקומות אחרונים|הזדמנות|השקעה בילד",
+      "kind": "pressure",
+      "applies_to": "all"
+    },
+    {
+      "id": "gender_slash",
+      "regex": "\\p{Script=Hebrew}/\\p{Script=Hebrew}",
+      "kind": "gendered_form",
+      "applies_to": "all",
+      "note_he": "\"ספר/י\", \"את/ה\", \"פנה/תה\" (VOICE 2.1)."
+    },
+    {
+      "id": "exclamation",
+      "regex": "!",
+      "kind": "other",
+      "applies_to": "all"
+    },
+    {
+      "id": "emoji",
+      "regex": "\\p{Extended_Pictographic}",
+      "kind": "other",
+      "applies_to": "all"
+    }
+  ],
+  "allowed_urls": [
+    "https://www.hadas-toda.co.il"
+  ],
+  "allowed_phones": [
+    "101",
+    "100",
+    "1201",
+    "118"
+  ],
+  "latin_allowlist": [
+    "Anthropic",
+    "OpenAI"
+  ],
+  "latin_ratio_exempt_text_ids": [
+    "language.unsupported"
+  ]
+}

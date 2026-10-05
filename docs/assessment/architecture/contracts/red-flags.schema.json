@@ -1,0 +1,346 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hadas-toda.co.il/schemas/intake/v1/red-flags.schema.json",
+  "title": "Red flags",
+  "description": "Human-authored (clinical drafter drafts, Hadas approves). Evaluated by code on every turn, in every phase (including before consent, for immediate patterns only), independently of the current goal, on the FULL user text (there is no client-side truncation anywhere, SEC-06). Any raised flag -> outcome 5 with the flag's fixed message (never LLM text). A raised flag is never cancelled by a later retraction (REVIEW_FOR_HADAS rule 2). Trigger layers: (1) immediate regex on normalized text, runs before any LLM call and works when the LLM is down or the cost cap is hit; (2) extractor signal with a code-verified evidence quote; (3) slot condition. 'confirm' asks ONE fixed question when the case is ambiguous; afterwards an UNKNOWN condition raises the flag if raise_on_unknown_after_confirm (the clinical 'doubt rule'). test_phrases are compiled into unit tests at build: every positive must trigger, every negative must not. Flag ids follow REVIEW_FOR_HADAS section 3 and DRAFT_NOTES section 7 (sudden_onset, airway, swallowing, voice_risk, child_regression, sudden_hearing_loss, adult_new_change, distress, child_safety). Immediate patterns must never be a bare 'פתאום' (preschool stuttering is often described that way); sudden onset is judged by accompanying signs via condition. File: intake/content/red-flags.json.",
+  "type": "object",
+  "required": [
+    "header",
+    "flags"
+  ],
+  "properties": {
+    "header": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/contentHeader"
+        },
+        {
+          "properties": {
+            "contract": {
+              "const": "red-flags"
+            }
+          },
+          "type": "object"
+        }
+      ]
+    },
+    "flags": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 60,
+      "items": {
+        "$ref": "#/$defs/flagDef"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "flagDef": {
+      "type": "object",
+      "required": [
+        "id",
+        "label_he",
+        "tier",
+        "triggers",
+        "message_text_id",
+        "form_after_message",
+        "test_phrases_he"
+      ],
+      "properties": {
+        "id": {
+          "allOf": [
+            {
+              "$ref": "common.schema.json#/$defs/entityId"
+            },
+            {
+              "not": {
+                "const": "any"
+              }
+            }
+          ]
+        },
+        "label_he": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160,
+          "description": "Shown to Hadas in the summary."
+        },
+        "extractor_hint_he": {
+          "type": "string",
+          "maxLength": 600,
+          "description": "Required when triggers.extractor_signal is true. Plain description of what the user would say."
+        },
+        "triggers": {
+          "type": "object",
+          "properties": {
+            "immediate_patterns": {
+              "type": "array",
+              "maxItems": 40,
+              "items": {
+                "$ref": "common.schema.json#/$defs/regexRule"
+              },
+              "description": "High-specificity patterns. A match raises the flag immediately, before extraction."
+            },
+            "extractor_signal": {
+              "type": "boolean",
+              "default": false
+            },
+            "condition": {
+              "$ref": "common.schema.json#/$defs/condition"
+            },
+            "confirm": {
+              "type": "object",
+              "required": [
+                "slot",
+                "question_text_id"
+              ],
+              "description": "One fixed confirmation question, asked ahead of any goal, to fill 'slot'. Asked when a confirm pattern matches OR ask_when is TRUE (e.g. neuro symptom present and onset timing unknown). Asked at most once per flag per session.",
+              "properties": {
+                "patterns": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 40,
+                  "items": {
+                    "$ref": "common.schema.json#/$defs/regexRule"
+                  }
+                },
+                "ask_when": {
+                  "$ref": "common.schema.json#/$defs/condition"
+                },
+                "slot": {
+                  "$ref": "common.schema.json#/$defs/slotId"
+                },
+                "question_text_id": {
+                  "$ref": "common.schema.json#/$defs/textId"
+                }
+              },
+              "additionalProperties": false,
+              "anyOf": [
+                {
+                  "type": "object",
+                  "required": [
+                    "patterns"
+                  ],
+                  "properties": {
+                    "patterns": true
+                  }
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "ask_when"
+                  ],
+                  "properties": {
+                    "ask_when": true
+                  }
+                }
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "anyOf": [
+            {
+              "required": [
+                "immediate_patterns"
+              ],
+              "type": "object",
+              "properties": {
+                "immediate_patterns": true
+              }
+            },
+            {
+              "required": [
+                "extractor_signal"
+              ],
+              "properties": {
+                "extractor_signal": {
+                  "const": true
+                }
+              },
+              "type": "object"
+            },
+            {
+              "required": [
+                "condition"
+              ],
+              "type": "object",
+              "properties": {
+                "condition": true
+              }
+            }
+          ]
+        },
+        "message_text_id": {
+          "$ref": "common.schema.json#/$defs/textId"
+        },
+        "test_phrases_he": {
+          "type": "object",
+          "required": [
+            "positive",
+            "negative"
+          ],
+          "properties": {
+            "positive": {
+              "type": "array",
+              "minItems": 3,
+              "items": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 300
+              }
+            },
+            "negative": {
+              "type": "array",
+              "minItems": 3,
+              "items": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 300
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "tier": {
+          "enum": [
+            "emergency",
+            "urgent",
+            "hotline"
+          ],
+          "description": "DRAFT_NOTES tiers: emergency = tier A (101 / ER now: sudden_onset, airway); urgent = tier B (see a doctor first: swallowing, voice_risk, child_regression, sudden_hearing_loss, adult_new_change); hotline = tier C (non-clinical safety -> helplines: distress, child_safety). Several raised flags (same message or different turns): the S6 primary block is the highest tier (emergency > urgent > hotline, first raised among equals); every other raised hotline-tier flag adds its own message as a secondary block (max 3 blocks); urgent is not appended under emergency. All are recorded. No real-time alert to Hadas for any tier."
+        },
+        "form_after_message": {
+          "enum": [
+            "none",
+            "secondary"
+          ],
+          "description": "D-04: emergency and hotline (incl. child_safety) -> none, and any flag whose doubt_tier is emergency/hotline -> none (both enforced below); urgent -> secondary. Never primary. CONVERSATION RULE (SEC-11 round 4): the form is available after S6 only if EVERY raised flag allows it. One raised flag with 'none' blocks the form for the whole conversation, including a form offered earlier and not yet sent (case-file handoff.status = blocked; intake-handoff re-checks and refuses). E.g. child_safety + urgent in one message -> no form, no lead, nothing reaches Hadas. A routing stop also blocks any form."
+        },
+        "raise_on_unknown_after_confirm": {
+          "type": "boolean",
+          "default": true,
+          "description": "After the confirm question was asked once, an UNKNOWN condition raises the flag (doubt -> flag)."
+        },
+        "message_variants": {
+          "type": "array",
+          "maxItems": 6,
+          "description": "Optional alternative messages (e.g. the affected person is the applicant; the applicant is not with the person). First whose 'when' is TRUE wins; else message_text_id.",
+          "items": {
+            "type": "object",
+            "required": [
+              "when",
+              "text_id"
+            ],
+            "properties": {
+              "when": {
+                "$ref": "common.schema.json#/$defs/condition"
+              },
+              "text_id": {
+                "$ref": "common.schema.json#/$defs/textId"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "confirm_note": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "doubt_tier": {
+          "enum": [
+            "emergency",
+            "urgent",
+            "hotline"
+          ],
+          "description": "Optional: tier used when the flag is raised only by raise_on_unknown_after_confirm (clinical 'doubt -> tier B'). Defaults to 'tier'."
+        },
+        "doubt_message_text_id": {
+          "$ref": "common.schema.json#/$defs/textId",
+          "description": "Optional message for the doubt case. Defaults to message_text_id."
+        },
+        "doubt_condition": {
+          "$ref": "common.schema.json#/$defs/condition",
+          "description": "Optional: when TRUE the flag is raised with doubt_tier / doubt_message_text_id (e.g. screen_voice_any status unknown -> urgent). Used for 'לא ידוע לי' on a screening list."
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "triggers": {
+                "properties": {
+                  "extractor_signal": {
+                    "const": true
+                  }
+                },
+                "required": [
+                  "extractor_signal"
+                ],
+                "type": "object"
+              }
+            },
+            "type": "object"
+          },
+          "then": {
+            "required": [
+              "extractor_hint_he"
+            ],
+            "type": "object",
+            "properties": {
+              "extractor_hint_he": true
+            }
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "tier": {
+                "enum": [
+                  "emergency",
+                  "hotline"
+                ]
+              }
+            },
+            "required": [
+              "tier"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "form_after_message": {
+                "const": "none"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "doubt_tier": {
+                "enum": [
+                  "emergency",
+                  "hotline"
+                ]
+              }
+            },
+            "required": [
+              "doubt_tier"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "form_after_message": {
+                "const": "none"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
