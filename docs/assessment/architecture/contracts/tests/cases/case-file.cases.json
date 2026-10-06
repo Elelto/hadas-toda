@@ -269,6 +269,8 @@
       "patch": [{ "op": "replace", "path": "/pending_extraction", "value": [
         { "seq": 1, "text": "a", "attempts": 1 }, { "seq": 2, "text": "b", "attempts": 1 }, { "seq": 3, "text": "c", "attempts": 1 }, { "seq": 4, "text": "d", "attempts": 1 } ] }] },
     { "id": "cf.misc.unknown_flag_source", "base": "urgent_offered", "expect": "invalid", "error": "/source/enum",
-      "patch": [{ "op": "replace", "path": "/red_flags/0/source", "value": "llm_said_so" }] }
+      "patch": [{ "op": "replace", "path": "/red_flags/0/source", "value": "llm_said_so" }] },
+
+    { "id": "cf.D02.stop_with_raised_flag", "base": "routing_stop_stub", "expect": "invalid", "error": "/allOf/3/then/properties/red_flags/maxItems", "source": "D-02, gate 1 (draft 3.3): a stop is evaluated only when no flag was raised in that turn", "patch": [{ "op": "add", "path": "/red_flags/-", "value": { "flag_id": "swallowing", "tier": "urgent", "source": "immediate_pattern", "pattern_id": "swallow_cough_meals", "raised_seq": 1, "form_after_message": "secondary" } }] }
   ]
 }

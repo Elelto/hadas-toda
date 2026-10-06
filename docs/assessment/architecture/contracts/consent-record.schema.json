@@ -2,12 +2,11 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://hadas-toda.co.il/schemas/intake/v1/consent-record.schema.json",
   "title": "Consent record",
-  "description": "Append-only proof of what the user was shown and agreed to, written at acceptance (server clock) before any LLM processing. No conversation content, no contact details. The integrity HMAC was cut (critic F12: it proves nothing to a third party); the texts themselves are versioned in git.",
+  "description": "Append-only proof of what the user was shown and agreed to, written at acceptance (server clock) before any LLM processing (scope intake) or before anything is kept (scope keep_for_improvement). No conversation content, no contact details. The integrity HMAC was cut (critic F12: it proves nothing to a third party); the texts themselves are versioned in git. Draft 3.3 (gate 1): D-13 branch B puts the age statement inside consent.checkbox@v3, recorded as age_declaration + age_declaration_text on every intake-scope record; D-01b adds the separate opt-in scope keep_for_improvement, which carries the kept record's id and NO session_id (no link from a kept conversation back to its session, lead or metrics).",
   "type": "object",
   "required": [
     "consent_version",
     "record_id",
-    "session_id",
     "channel",
     "scope",
     "accepted",
@@ -25,7 +24,8 @@
     },
     "session_id": {
       "type": "string",
-      "pattern": "^[A-Za-z0-9_-]{16,64}$"
+      "pattern": "^[A-Za-z0-9_-]{16,64}$",
+      "description": "Required for every scope except keep_for_improvement, where it is forbidden (D-01b: no linking id)."
     },
     "channel": {
       "$ref": "common.schema.json#/$defs/channel"
@@ -34,9 +34,10 @@
       "enum": [
         "intake",
         "intake_health_data",
-        "handoff"
+        "handoff",
+        "keep_for_improvement"
       ],
-      "description": "intake = disclaimer + processing (required to start). intake_health_data = only if the lawyer requires a separate box. handoff = sending summary + contact to Hadas. No improvement_use in v1 (D-07, SEC-15)."
+      "description": "intake = disclaimer + processing + the age statement (required to start). intake_health_data = only if the lawyer requires a separate box. handoff = sending summary + contact to Hadas. keep_for_improvement (D-01b, draft 3.3) = the optional, never pre-checked, unconditional end-of-conversation box: the conversation is kept, names masked by reasonable effort, no contact details, 180 days from this record's 'at', then purged automatically (D-01b': no withdrawal code). Written by DELETE /api/intake/session only when keep_offer_eligible is true on the server (ARCHITECTURE §11.1.1)."
     },
     "accepted": {
       "type": "boolean"
@@ -82,7 +83,262 @@
     "ui_version": {
       "type": "string",
       "maxLength": 32
+    },
+    "kept_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{16,64}$",
+      "description": "keep_for_improvement only: the random id of the record in intake-kept (kept-conversation.schema.json). Not derived from session_id, lead_id or metrics_id."
+    },
+    "age_declaration": {
+      "const": "adult_or_parent",
+      "description": "D-13 branch B (draft 3.3): the user declared, inside the consent checkbox text, 'over 18, or a parent writing about their child'. Required on scope intake. There are no age buttons; self_declared_minor detection on free text still runs every turn."
+    },
+    "age_declaration_text": {
+      "type": "object",
+      "required": [
+        "id",
+        "version"
+      ],
+      "properties": {
+        "id": {
+          "enum": [
+            "consent.checkbox",
+            "consent.checkbox.ack"
+          ],
+          "description": "consent.checkbox (one box), or consent.checkbox.ack if the lawyer requires two boxes."
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false,
+      "description": "Which text carried the age statement, at which version. Equal to the matching texts_shown entry (server invariant, unit-tested). consent.checkbox carries it from v3."
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "description": "Every scope except keep_for_improvement belongs to one session; it never names a kept record.",
+      "if": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "not": {
+              "const": "keep_for_improvement"
+            }
+          }
+        },
+        "required": [
+          "scope"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "required": [
+          "session_id"
+        ],
+        "properties": {
+          "session_id": true
+        },
+        "not": {
+          "type": "object",
+          "required": [
+            "kept_id"
+          ],
+          "properties": {
+            "kept_id": true
+          }
+        }
+      }
+    },
+    {
+      "description": "D-01b: the keep consent has no session_id (no link back), names its kept record, is web-only in v1, a checkbox, and records both keep texts.",
+      "if": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "const": "keep_for_improvement"
+          }
+        },
+        "required": [
+          "scope"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "required": [
+          "kept_id"
+        ],
+        "properties": {
+          "kept_id": true,
+          "channel": {
+            "const": "web"
+          },
+          "method": {
+            "const": "web_checkbox"
+          },
+          "accepted": {
+            "const": true
+          },
+          "texts_shown": {
+            "allOf": [
+              {
+                "type": "array",
+                "contains": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "const": "keep.optin.checkbox"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                }
+              },
+              {
+                "type": "array",
+                "contains": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "const": "keep.optin.note"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "not": {
+          "type": "object",
+          "required": [
+            "session_id"
+          ],
+          "properties": {
+            "session_id": true
+          }
+        }
+      }
+    },
+    {
+      "description": "D-13 branch B: the intake consent records the age statement and the checkbox text that carried it, and that text was shown.",
+      "if": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "const": "intake"
+          }
+        },
+        "required": [
+          "scope"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "required": [
+          "age_declaration",
+          "age_declaration_text"
+        ],
+        "properties": {
+          "age_declaration": true,
+          "age_declaration_text": true,
+          "texts_shown": {
+            "type": "array",
+            "contains": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "enum": [
+                    "consent.checkbox",
+                    "consent.checkbox.ack"
+                  ]
+                }
+              },
+              "required": [
+                "id"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "consent.checkbox carries the age statement from v3 (D-13 branch B); an older version cannot be the evidence.",
+      "if": {
+        "type": "object",
+        "properties": {
+          "age_declaration_text": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "const": "consent.checkbox"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          }
+        },
+        "required": [
+          "age_declaration_text"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "age_declaration_text": {
+            "type": "object",
+            "properties": {
+              "version": {
+                "minimum": 3,
+                "type": "integer"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "age_declaration and its text travel together.",
+      "if": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "required": [
+              "age_declaration"
+            ],
+            "properties": {
+              "age_declaration": true
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "age_declaration_text"
+            ],
+            "properties": {
+              "age_declaration_text": true
+            }
+          }
+        ]
+      },
+      "then": {
+        "type": "object",
+        "required": [
+          "age_declaration",
+          "age_declaration_text"
+        ],
+        "properties": {
+          "age_declaration": true,
+          "age_declaration_text": true
+        }
+      }
+    }
+  ]
 }

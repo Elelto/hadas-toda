@@ -1,0 +1,110 @@
+{
+  "schema": "kept-conversation.schema.json",
+  "note": "Draft 3.3 (gate 1, D-01b + D-01b'): the opt-in kept conversation (store intake-kept) and the viewer access log. New schema.",
+  "bases": {
+    "kept": {
+      "kept_version": "1.0",
+      "kept_id": "kept_KKKKKKKKKKKKKKKKKKKKKK",
+      "consent_record_id": "cons_KKKKKKKKKKKKKKKK",
+      "consented_at": "2026-10-05T10:20:00+03:00",
+      "purge_at": "2027-04-03T10:20:00+03:00",
+      "channel": "web",
+      "relation": "parent_of_child",
+      "content_versions": {
+        "slot_catalog": "2.0.0",
+        "red_flags": "1.0.0",
+        "decision_table": "1.0.0",
+        "faq": "1.0.0",
+        "referrals": "1.0.0",
+        "fixed_texts": "0.6.0",
+        "output_rules": "1.0.0",
+        "prompts": {
+          "extract": "extract.v1",
+          "generate": "summarize.v1"
+        },
+        "engine": "0.1.0"
+      },
+      "outcome": 2,
+      "would_be_outcome_3": "false",
+      "masked_identifiers": false,
+      "name_mask": {
+        "status": "complete",
+        "ruleset": "names.v1",
+        "replaced": 1
+      },
+      "slots": {
+        "core_relation": {
+          "status": "filled",
+          "value": "child"
+        },
+        "core_concern_text": {
+          "status": "filled",
+          "value": "[שם הוסר] בן ארבע ומגמגם"
+        }
+      },
+      "turns": [
+        {
+          "seq": 0,
+          "role": "assistant",
+          "origin": "fixed",
+          "text_refs": [
+            {
+              "id": "goal.core_subject.ask",
+              "version": 1
+            }
+          ]
+        },
+        {
+          "seq": 1,
+          "role": "user",
+          "choice": {
+            "choice_set_id": "relation",
+            "option_id": "my_son"
+          }
+        },
+        {
+          "seq": 2,
+          "role": "user",
+          "text": "[שם הוסר] בן ארבע ומגמגם"
+        },
+        {
+          "seq": 3,
+          "role": "assistant",
+          "origin": "generated",
+          "text": "כתבת שהבן שלך בן ארבע ומגמגם."
+        }
+      ]
+    },
+    "access_view": {
+      "entry_id": "log_AAAAAAAAAAAAAAAA",
+      "at": "2026-11-01T09:00:00+02:00",
+      "reader": "hadas",
+      "action": "view",
+      "kept_id": "kept_KKKKKKKKKKKKKKKKKKKKKK",
+      "second_factor": "totp_ok"
+    }
+  },
+  "cases": [
+    { "id": "kc.ok.kept", "base": "kept", "expect": "valid", "source": "D-01b, gate 1 (draft 3.3)" },
+    { "id": "kc.ok.self_adult_ended_before_outcome", "base": "kept", "expect": "valid", "source": "D-01b, gate 1 (draft 3.3)", "patch": [{ "op": "replace", "path": "/relation", "value": "self_adult" }, { "op": "replace", "path": "/outcome", "value": null }] },
+    { "id": "kc.ok.access_log_view", "schema": "kept-conversation.schema.json#/$defs/accessLogEntry", "base": "access_view", "expect": "valid", "source": "D-01b, gate 1 (draft 3.3): access log + 2FA" },
+    { "id": "kc.ok.access_log_failed_login", "schema": "kept-conversation.schema.json#/$defs/accessLogEntry", "base": "access_view", "expect": "valid", "source": "D-01b, gate 1 (draft 3.3)", "patch": [{ "op": "replace", "path": "/action", "value": "login_failed" }, { "op": "remove", "path": "/kept_id" }, { "op": "replace", "path": "/second_factor", "value": "totp_failed" }] },
+    { "id": "kc.D01b.session_id", "base": "kept", "expect": "invalid", "error": "additionalProperties", "source": "D-01b, gate 1 (draft 3.3): no linking ids", "patch": [{ "op": "add", "path": "/session_id", "value": "sess_AAAAAAAAAAAAAAAA" }] },
+    { "id": "kc.D01b.lead_ref", "base": "kept", "expect": "invalid", "error": "additionalProperties", "source": "D-01b, gate 1 (draft 3.3): no linking ids", "patch": [{ "op": "add", "path": "/lead_ref", "value": "K7Q-2M" }] },
+    { "id": "kc.D01b.metrics_id", "base": "kept", "expect": "invalid", "error": "additionalProperties", "source": "D-01b, gate 1 (draft 3.3): no linking ids", "patch": [{ "op": "add", "path": "/metrics_id", "value": "met_AAAAAAAAAAAAAAAA" }] },
+    { "id": "kc.D01b.contact_name", "base": "kept", "expect": "invalid", "error": "additionalProperties", "source": "D-01b, gate 1 (draft 3.3): no name, no phone", "patch": [{ "op": "add", "path": "/name", "value": "דנה" }] },
+    { "id": "kc.D01b.turn_timestamp", "base": "kept", "expect": "invalid", "error": "additionalProperties", "source": "D-01b, gate 1 (draft 3.3): per-turn times dropped", "patch": [{ "op": "add", "path": "/turns/2/at", "value": "2026-10-05T10:02:00+03:00" }] },
+    { "id": "kc.D01b.red_flag_outcome", "base": "kept", "expect": "invalid", "error": "/outcome/maximum", "source": "D-01b, gate 1 (draft 3.3): never after a red flag", "patch": [{ "op": "replace", "path": "/outcome", "value": 5 }] },
+    { "id": "kc.D01b.red_flags_field", "base": "kept", "expect": "invalid", "error": "additionalProperties", "source": "D-01b, gate 1 (draft 3.3)", "patch": [{ "op": "add", "path": "/red_flags", "value": [] }] },
+    { "id": "kc.D01b.other_adult", "base": "kept", "expect": "invalid", "error": "/relation/enum", "source": "D-01b, gate 1 (draft 3.3) + legal: only about oneself or one's own child", "patch": [{ "op": "replace", "path": "/relation", "value": "other_adult" }] },
+    { "id": "kc.D01b.whatsapp", "base": "kept", "expect": "invalid", "error": "/channel/const", "source": "D-01b, gate 1 (draft 3.3): web only in v1", "patch": [{ "op": "replace", "path": "/channel", "value": "whatsapp" }] },
+    { "id": "kc.D01b.name_mask_incomplete", "base": "kept", "expect": "invalid", "error": "/name_mask/properties/status/const", "source": "D-01b, gate 1 (draft 3.3): masking fails safe, nothing is kept", "patch": [{ "op": "replace", "path": "/name_mask/status", "value": "pattern_slow" }] },
+    { "id": "kc.D01b.no_name_mask", "base": "kept", "expect": "invalid", "error": "required", "source": "D-01b, gate 1 (draft 3.3)", "patch": [{ "op": "remove", "path": "/name_mask" }] },
+    { "id": "kc.D01b.fixed_text_copied", "base": "kept", "expect": "invalid", "error": "/allOf/2/then/not", "source": "D-01b, gate 1 (draft 3.3): fixed texts by reference only", "patch": [{ "op": "add", "path": "/turns/0/text", "value": "על מי הפנייה?" }] },
+    { "id": "kc.D01b.user_turn_with_origin", "base": "kept", "expect": "invalid", "error": "/allOf/0/then/not", "source": "D-01b, gate 1 (draft 3.3)", "patch": [{ "op": "add", "path": "/turns/2/origin", "value": "generated" }] },
+    { "id": "kc.D01b.no_turns", "base": "kept", "expect": "invalid", "error": "/turns/minItems", "source": "D-01b, gate 1 (draft 3.3)", "patch": [{ "op": "replace", "path": "/turns", "value": [] }] },
+    { "id": "kc.D01b.view_without_second_factor", "schema": "kept-conversation.schema.json#/$defs/accessLogEntry", "base": "access_view", "expect": "invalid", "error": "/second_factor/const", "source": "D-01b, gate 1 (draft 3.3): 2FA before any content", "patch": [{ "op": "replace", "path": "/second_factor", "value": "totp_failed" }] },
+    { "id": "kc.D01b.view_without_kept_id", "schema": "kept-conversation.schema.json#/$defs/accessLogEntry", "base": "access_view", "expect": "invalid", "error": "required", "source": "D-01b, gate 1 (draft 3.3): every view names what was read", "patch": [{ "op": "remove", "path": "/kept_id" }] },
+    { "id": "kc.D01b.ai_reader", "schema": "kept-conversation.schema.json#/$defs/accessLogEntry", "base": "access_view", "expect": "invalid", "error": "/reader/enum", "source": "D-01b, gate 1 (draft 3.3) + D-07: no model and no AI assistant reads kept conversations", "patch": [{ "op": "replace", "path": "/reader", "value": "ai_assistant" }] }
+  ]
+}

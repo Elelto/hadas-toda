@@ -170,7 +170,11 @@
           ]
         }
       ]
-    }
+    },
+    "intake_turn_keep_offer": { "envelope_version": "1", "direction": "outbound", "channel": "web", "conversation_key": "web:AAAAAAAAAAAAAAAA", "in_reply_to": "m-00000003", "seq": 4, "phase": "intake", "delivery_mode": "live", "ends_conversation": false, "input_hint": "free_text", "keep_offer_eligible": true, "items": [{ "type": "text", "text": "נוסח שאלה קבוע", "origin": "fixed", "text_refs": [{ "id": "goal.core_concern.ask", "version": 1 }] }] },
+    "finish_with_keep": { "envelope_version": "1", "direction": "inbound", "channel": "web", "conversation_key": "web:AAAAAAAAAAAAAAAA", "message_id": "m-00000010", "expected_seq": 4, "received_at": "2026-10-05T10:20:00+03:00", "kind": "control", "control": "finish", "delivery_mode": "live", "capabilities": { "rich_cards": true, "forms": true, "max_buttons": 6, "max_list_rows": 10, "max_text_chars": 3000, "knows_contact_phone": false, "synchronous": true }, "keep": { "accepted": true, "texts_shown": [{ "id": "keep.optin.checkbox", "version": 1 }, { "id": "keep.optin.note", "version": 1 }, { "id": "chat.end.leave_keep", "version": 1 }] } },
+    "keep_result_kept": { "envelope_version": "1", "direction": "outbound", "channel": "web", "conversation_key": "web:AAAAAAAAAAAAAAAA", "in_reply_to": "m-00000010", "seq": 5, "phase": "closed", "delivery_mode": "live", "ends_conversation": true, "input_hint": "none", "keep_result": { "kept": true, "reason": "kept", "purge_on": "2027-04-03" }, "items": [{ "type": "text", "text": "השיחה נשמרה", "origin": "fixed", "text_refs": [{ "id": "keep.saved_note", "version": 1 }] }] },
+    "stop_minor": { "envelope_version": "1", "direction": "outbound", "channel": "web", "conversation_key": "web:AAAAAAAAAAAAAAAA", "in_reply_to": "m-00000002", "seq": 3, "phase": "closed", "delivery_mode": "live", "ends_conversation": true, "input_hint": "none", "items": [{ "type": "text", "text": "נוסח קבוע לקטין", "origin": "fixed", "text_refs": [{ "id": "minor.self", "version": 2 }] }, { "type": "end", "reason": "minor_self" }] }
   },
   "cases": [
     {
@@ -560,6 +564,25 @@
           }
         }
       ]
-    }
+    },
+
+    { "id": "env.ok.D01b.keep_offer", "base": "intake_turn_keep_offer", "expect": "valid", "source": "D-01b, gate 1 (draft 3.3)" },
+    { "id": "env.ok.D01b.finish_with_keep", "base": "finish_with_keep", "expect": "valid", "source": "D-01b, gate 1 (draft 3.3)" },
+    { "id": "env.ok.D01b.keep_result_kept", "base": "keep_result_kept", "expect": "valid", "source": "D-01b, gate 1 (draft 3.3)" },
+    { "id": "env.ok.D01b.keep_result_mask_failed", "base": "keep_result_kept", "expect": "valid", "source": "D-01b, gate 1 (draft 3.3): fail-safe, nothing kept, session still deleted", "patch": [{ "op": "replace", "path": "/keep_result", "value": { "kept": false, "reason": "mask_failed" } }] },
+    { "id": "env.ok.D02.stop_minor", "base": "stop_minor", "expect": "valid", "source": "D-02, gate 1 (draft 3.3)" },
+    { "id": "env.D01b.keep_offer_on_red_flag_card", "base": "s6_urgent_with_form", "expect": "invalid", "error": "/allOf/2/then/properties/items/not", "source": "D-01b, gate 1 (draft 3.3): never after a red flag, any tier", "patch": [{ "op": "add", "path": "/keep_offer_eligible", "value": true }] },
+    { "id": "env.D01b.keep_offer_after_stop", "base": "stop_minor", "expect": "invalid", "error": "/allOf/2/then/properties/items/not", "source": "D-01b, gate 1 (draft 3.3): never on S13", "patch": [{ "op": "add", "path": "/keep_offer_eligible", "value": true }] },
+    { "id": "env.D01b.keep_offer_after_lead", "base": "handoff_result", "expect": "invalid", "error": "/allOf/2/then/not", "source": "D-01b, gate 1 (draft 3.3): never after a lead was sent", "patch": [{ "op": "add", "path": "/keep_offer_eligible", "value": true }] },
+    { "id": "env.D01b.keep_offer_on_whatsapp", "base": "intake_turn_keep_offer", "expect": "invalid", "error": "/allOf/2/then/properties/channel/const", "source": "D-01b, gate 1 (draft 3.3): web only in v1", "patch": [{ "op": "replace", "path": "/channel", "value": "whatsapp" }, { "op": "replace", "path": "/conversation_key", "value": "wa:AAAAAAAAAAAAAAAA" }] },
+    { "id": "env.D01b.keep_on_reset", "base": "finish_with_keep", "expect": "invalid", "error": "/control/const", "source": "D-01b, gate 1 (draft 3.3): the keep consent rides only on finish", "patch": [{ "op": "replace", "path": "/control", "value": "reset" }] },
+    { "id": "env.D01b.keep_on_text_message", "base": "inbound_text", "expect": "invalid", "error": "/kind/const", "source": "D-01b, gate 1 (draft 3.3)", "patch": [{ "op": "add", "path": "/keep", "value": { "accepted": true, "texts_shown": [{ "id": "keep.optin.checkbox", "version": 1 }, { "id": "keep.optin.note", "version": 1 }] } }] },
+    { "id": "env.D01b.keep_inbound_whatsapp", "base": "finish_with_keep", "expect": "invalid", "error": "/then/properties/channel/const", "source": "D-01b, gate 1 (draft 3.3)", "patch": [{ "op": "replace", "path": "/channel", "value": "whatsapp" }, { "op": "replace", "path": "/conversation_key", "value": "wa:AAAAAAAAAAAAAAAA" }] },
+    { "id": "env.D01b.keep_unticked_sent", "base": "finish_with_keep", "expect": "invalid", "error": "/accepted/const", "source": "D-01b, gate 1 (draft 3.3): unticked = no keep object", "patch": [{ "op": "replace", "path": "/keep/accepted", "value": false }] },
+    { "id": "env.D01b.keep_without_texts", "base": "finish_with_keep", "expect": "invalid", "error": "/texts_shown/minItems", "source": "D-01b, gate 1 (draft 3.3) + L-09", "patch": [{ "op": "replace", "path": "/keep/texts_shown", "value": [{ "id": "keep.optin.checkbox", "version": 1 }] }] },
+    { "id": "env.D01b.kept_without_purge_on", "base": "keep_result_kept", "expect": "invalid", "error": "oneOf", "source": "D-01b, gate 1 (draft 3.3): the 180-day date comes with the saved note", "patch": [{ "op": "remove", "path": "/keep_result/purge_on" }] },
+    { "id": "env.D01b.not_kept_but_says_kept", "base": "keep_result_kept", "expect": "invalid", "error": "oneOf", "source": "D-01b, gate 1 (draft 3.3): never \"saved\" for something not saved", "patch": [{ "op": "replace", "path": "/keep_result/kept", "value": false }] },
+    { "id": "env.D01b.keep_result_conversation_open", "base": "keep_result_kept", "expect": "invalid", "error": "/allOf/3/then/properties/phase/const", "source": "D-01b, gate 1 (draft 3.3)", "patch": [{ "op": "replace", "path": "/phase", "value": "intake" }] },
+    { "id": "env.D02.stop_with_red_flag_card", "base": "stop_minor", "expect": "invalid", "error": "/allOf/4/then/properties/items/not", "source": "D-02, gate 1 (draft 3.3): a flag on the minor path ends in S6, not in the stop text", "patch": [{ "op": "add", "path": "/items/0", "value": { "type": "outcome", "outcome": 5, "title": "קודם כול, בדיקה רפואית", "body": "נוסח קבוע", "disclaimer": "הודעה קבועה", "text_refs": [{ "id": "redflag.type.swallowing", "version": 2 }], "form": "secondary", "disclaimer_text_ref": { "id": "redflag.footer", "version": 1 }, "red_flag_tier": "urgent", "red_flag_blocks": [{ "role": "primary", "tier": "urgent", "text_ref": { "id": "redflag.type.swallowing", "version": 2 }, "form_after_message": "secondary" }] } }] }
   ]
 }

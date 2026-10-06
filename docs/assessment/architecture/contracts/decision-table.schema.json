@@ -321,7 +321,7 @@
           "message_variants": {
             "type": "array",
             "maxItems": 4,
-            "description": "First whose 'when' is TRUE replaces text_id. D-13 branch A: a stop BEFORE any free text (e.g. {slot: core_concern, status_in: [missing]}) must use a variant that also carries the distress hotlines (ער\"ן 1201, סה\"ר) besides 101, because the distress flag had no text to scan (intake:check enforces 101 in every minor.self* text and 1201 in the before-text variant).",
+            "description": "First whose 'when' is TRUE replaces text_id. Draft 3.3: D-02 (gate 1) removed 101 and the helplines from every fixed minor / non-parent text (minor.self*, reporter.not_parent); an emergency message appears only when a red flag is raised, and flags are checked before stops in every turn, so such a turn ends in S6, never in the stop. D-13 branch B: no age buttons, so a minor_self stop happens only after free text that the regex and the extractor already scanned; the before-text variant (minor.self.before_text) is used only with an ACTIVE self_age_band goal (branch A) and intake:check fails if a variant points to it while that goal is inactive.",
             "items": {
               "type": "object",
               "required": [

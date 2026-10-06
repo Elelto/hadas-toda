@@ -1,6 +1,6 @@
 {
   "schema": "consent-record.schema.json",
-  "note": "Reconstructed in round 5.",
+  "note": "Reconstructed in round 5. Draft 3.3: bases intake_age (D-13 branch B) and keep (D-01b).",
   "bases": {
     "intake": {
       "consent_version": "1.0", "record_id": "cons_AAAAAAAAAAAAAAAA", "session_id": "sess_AAAAAAAAAAAAAAAA", "channel": "web",
@@ -9,13 +9,34 @@
         { "id": "intro.greeting", "version": 2, "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
         { "id": "consent.emergency", "version": 1, "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" }
       ]
-    }
+    },
+    "intake_age": { "consent_version": "1.0", "record_id": "cons_CCCCCCCCCCCCCCCC", "session_id": "sess_AAAAAAAAAAAAAAAA", "channel": "web", "scope": "intake", "accepted": true, "at": "2026-10-05T10:00:00+03:00", "method": "web_checkbox", "age_declaration": "adult_or_parent", "age_declaration_text": { "id": "consent.checkbox", "version": 3 }, "texts_shown": [{ "id": "intro.greeting", "version": 2, "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" }, { "id": "consent.emergency", "version": 1, "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" }, { "id": "consent.checkbox", "version": 3, "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" }] },
+    "keep": { "consent_version": "1.0", "record_id": "cons_KKKKKKKKKKKKKKKK", "kept_id": "kept_KKKKKKKKKKKKKKKKKKKKKK", "channel": "web", "scope": "keep_for_improvement", "accepted": true, "at": "2026-10-05T10:20:00+03:00", "method": "web_checkbox", "texts_shown": [{ "id": "keep.optin.checkbox", "version": 1, "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" }, { "id": "keep.optin.note", "version": 1, "sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" }] }
   },
   "cases": [
     { "id": "cr.ok.intake", "base": "intake", "expect": "valid" },
     { "id": "cr.L09.no_texts_shown", "base": "intake", "expect": "invalid", "error": "/texts_shown/minItems", "source": "L-09", "patch": [{ "op": "replace", "path": "/texts_shown", "value": [] }] },
     { "id": "cr.text_without_hash", "base": "intake", "expect": "invalid", "error": "required", "source": "L-09/L-14", "patch": [{ "op": "remove", "path": "/texts_shown/0/sha256" }] },
     { "id": "cr.ip_field", "base": "intake", "expect": "invalid", "error": "additionalProperties", "source": "no IP / user agent on the consent record", "patch": [{ "op": "add", "path": "/ip", "value": "1.2.3.4" }] },
-    { "id": "cr.unknown_method", "base": "intake", "expect": "invalid", "error": "/method/enum", "patch": [{ "op": "replace", "path": "/method", "value": "implied" }] }
+    { "id": "cr.unknown_method", "base": "intake", "expect": "invalid", "error": "/method/enum", "patch": [{ "op": "replace", "path": "/method", "value": "implied" }] },
+
+    { "id": "cr.ok.D13.intake_with_age_declaration", "base": "intake_age", "expect": "valid", "source": "D-13 branch B, gate 1 (draft 3.3)" },
+    { "id": "cr.ok.D13.two_box_alternative", "base": "intake_age", "expect": "valid", "source": "D-13 branch B, gate 1 (draft 3.3): consent.checkbox.ack carries the age line if the lawyer requires two boxes", "patch": [{ "op": "replace", "path": "/age_declaration_text", "value": { "id": "consent.checkbox.ack", "version": 2 } }, { "op": "replace", "path": "/texts_shown/2/id", "value": "consent.checkbox.ack" }, { "op": "replace", "path": "/texts_shown/2/version", "value": 2 }] },
+    { "id": "cr.ok.D01b.keep", "base": "keep", "expect": "valid", "source": "D-01b, gate 1 (draft 3.3)" },
+    { "id": "cr.D13.intake_without_age_declaration", "base": "intake_age", "expect": "invalid", "error": "/allOf/2/then/required", "source": "D-13 branch B, gate 1 (draft 3.3)", "patch": [{ "op": "remove", "path": "/age_declaration" }, { "op": "remove", "path": "/age_declaration_text" }] },
+    { "id": "cr.D13.age_declaration_without_text", "base": "intake_age", "expect": "invalid", "error": "/allOf/4/then/required", "source": "D-13 branch B, gate 1 (draft 3.3): the declaration and the text version that carried it travel together", "patch": [{ "op": "remove", "path": "/age_declaration_text" }] },
+    { "id": "cr.D13.age_declaration_other_value", "base": "intake_age", "expect": "invalid", "error": "/age_declaration/const", "source": "D-13 branch B, gate 1 (draft 3.3)", "patch": [{ "op": "replace", "path": "/age_declaration", "value": "minor" }] },
+    { "id": "cr.D13.checkbox_v2_cannot_carry_age", "base": "intake_age", "expect": "invalid", "error": "/allOf/3/then/properties/age_declaration_text/properties/version/minimum", "source": "D-13 branch B, gate 1 (draft 3.3): consent.checkbox carries the age line from v3", "patch": [{ "op": "replace", "path": "/age_declaration_text/version", "value": 2 }] },
+    { "id": "cr.D13.age_text_not_a_checkbox", "base": "intake_age", "expect": "invalid", "error": "/age_declaration_text/properties/id/enum", "source": "D-13 branch B, gate 1 (draft 3.3)", "patch": [{ "op": "replace", "path": "/age_declaration_text/id", "value": "consent.title" }] },
+    { "id": "cr.D13.checkbox_not_in_texts_shown", "base": "intake_age", "expect": "invalid", "error": "/allOf/2/then/properties/texts_shown/contains", "source": "D-13 branch B, gate 1 (draft 3.3) + L-09", "patch": [{ "op": "remove", "path": "/texts_shown/2" }] },
+    { "id": "cr.intake_without_session_id", "base": "intake_age", "expect": "invalid", "error": "/allOf/0/then/required", "source": "draft 3.3: session_id left the top-level required list", "patch": [{ "op": "remove", "path": "/session_id" }] },
+    { "id": "cr.D01b.keep_with_session_id", "base": "keep", "expect": "invalid", "error": "/allOf/1/then/not", "source": "D-01b, gate 1 (draft 3.3): no link from a kept conversation to its session", "patch": [{ "op": "add", "path": "/session_id", "value": "sess_AAAAAAAAAAAAAAAA" }] },
+    { "id": "cr.D01b.keep_without_kept_id", "base": "keep", "expect": "invalid", "error": "/allOf/1/then/required", "source": "D-01b, gate 1 (draft 3.3)", "patch": [{ "op": "remove", "path": "/kept_id" }] },
+    { "id": "cr.D01b.kept_id_on_intake_scope", "base": "intake_age", "expect": "invalid", "error": "/allOf/0/then/not", "source": "D-01b, gate 1 (draft 3.3)", "patch": [{ "op": "add", "path": "/kept_id", "value": "kept_KKKKKKKKKKKKKKKKKKKKKK" }] },
+    { "id": "cr.D01b.keep_on_whatsapp", "base": "keep", "expect": "invalid", "error": "/allOf/1/then/properties/channel/const", "source": "D-01b, gate 1 (draft 3.3): web only in v1", "patch": [{ "op": "replace", "path": "/channel", "value": "whatsapp" }] },
+    { "id": "cr.D01b.keep_by_button", "base": "keep", "expect": "invalid", "error": "/allOf/1/then/properties/method/const", "source": "D-01b, gate 1 (draft 3.3) + legal: a separate, unticked checkbox", "patch": [{ "op": "replace", "path": "/method", "value": "web_button" }] },
+    { "id": "cr.D01b.keep_declined_recorded", "base": "keep", "expect": "invalid", "error": "/allOf/1/then/properties/accepted/const", "source": "D-01b, gate 1 (draft 3.3): unticked = nothing kept, nothing recorded", "patch": [{ "op": "replace", "path": "/accepted", "value": false }] },
+    { "id": "cr.D01b.keep_note_not_shown", "base": "keep", "expect": "invalid", "error": "contains", "source": "D-01b, gate 1 (draft 3.3) + legal: purpose, 6 months, readers and partial masking are in the note", "patch": [{ "op": "remove", "path": "/texts_shown/1" }] },
+    { "id": "cr.D01b.old_improvement_scope", "base": "keep", "expect": "invalid", "error": "/scope/enum", "source": "D-01b, gate 1 (draft 3.3): the scope is keep_for_improvement, not improvement_use", "patch": [{ "op": "replace", "path": "/scope", "value": "improvement_use" }] }
   ]
 }

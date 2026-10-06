@@ -232,6 +232,18 @@
     "redflag_scan_incomplete": {
       "type": "boolean",
       "description": "Round 5: the linear-time red-flag scan ran out of budget or failed in this conversation (flags raised as scan_incomplete, ARCHITECTURE §1.5). Should always be false; any true is a heartbeat code."
+    },
+    "keep_result": {
+      "enum": [
+        "not_offered",
+        "declined",
+        "kept",
+        "consent_mismatch",
+        "not_eligible",
+        "mask_failed",
+        "store_failed"
+      ],
+      "description": "Draft 3.3, D-01b: what happened to the opt-in keep box. not_offered = keep_offer_eligible was false at the end (or the session ended without 'סיום'); declined = offered, left unticked; the rest mirror the envelope's keep_result. A count only: no kept_id, nothing that links this record to intake-kept."
     }
   },
   "additionalProperties": false,
@@ -429,6 +441,123 @@
             "required": [
               "form_blocked"
             ]
+          }
+        }
+      }
+    },
+    {
+      "description": "D-01b: no keep box after a red flag of any tier, a routing stop, a lead, or outside the web.",
+      "if": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "red_flag": {
+                "type": "object",
+                "properties": {
+                  "raised": {
+                    "const": true
+                  }
+                },
+                "required": [
+                  "raised"
+                ]
+              }
+            },
+            "required": [
+              "red_flag"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "routing_stop": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "routing_stop"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "handed_off": {
+                "const": true
+              }
+            },
+            "required": [
+              "handed_off"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "channel": {
+                "not": {
+                  "const": "web"
+                }
+              }
+            },
+            "required": [
+              "channel"
+            ]
+          }
+        ]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "keep_result": {
+            "const": "not_offered"
+          }
+        }
+      }
+    },
+    {
+      "description": "D-02 (draft 3.3): red flags are checked before routing stops in every turn and a stop closes the conversation, so a stopped conversation never has a raised flag (a flag on a minor or non-parent path ends in S6, not S13).",
+      "if": {
+        "type": "object",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "routing_stop": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "routing_stop"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "end_reason": {
+                "enum": [
+                  "minor_self",
+                  "non_parent_reporter",
+                  "other_stop"
+                ]
+              }
+            },
+            "required": [
+              "end_reason"
+            ]
+          }
+        ]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "red_flag": {
+            "type": "object",
+            "properties": {
+              "raised": {
+                "const": false
+              }
+            }
           }
         }
       }

@@ -41,6 +41,32 @@
       "maxItems": 40,
       "items": {
         "$ref": "#/$defs/goalDef"
+      },
+      "not": {
+        "description": "D-13 branch B (gate 1, draft 3.3): there are no age buttons on the self path. A goal self_age_band may stay in the catalog only with active: false. Switching to branch A is a contract change (architect) after a new owner decision.",
+        "type": "array",
+        "contains": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "const": "self_age_band"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "not": {
+            "type": "object",
+            "properties": {
+              "active": {
+                "const": false
+              }
+            },
+            "required": [
+              "active"
+            ]
+          }
+        }
       }
     },
     "limits": {
@@ -58,7 +84,7 @@
           "type": "integer",
           "minimum": 3,
           "maximum": 40,
-          "description": "User turns in 'intake', counted from the first free-text message (opening taps such as core_relation and self_age_band are not counted), before the policy stops asking routing/decision/summary goals (clinical section 9: 6). safety_screen goals that apply and were not asked are ALWAYS asked before wrap_up, even past this cap or the no-progress cap (critic F2)."
+          "description": "User turns in 'intake', counted from the first free-text message (opening taps such as core_relation are not counted; self_age_band is inactive under D-13 branch B), before the policy stops asking routing/decision/summary goals (clinical section 9: 6). safety_screen goals that apply and were not asked are ALWAYS asked before wrap_up, even past this cap or the no-progress cap (critic F2)."
         },
         "max_session_turns": {
           "type": "integer",
@@ -713,9 +739,44 @@
             },
             "additionalProperties": false
           }
+        },
+        "active": {
+          "type": "boolean",
+          "default": true,
+          "description": "Draft 3.3. false = the goal is kept (and versioned) for a feature that is off; the engine treats it as never applicable (applies_when FALSE), it is never asked, its turns are not counted, and its texts may be active: false. Requires inactive_reason. First use: self_age_band under D-13 branch B."
+        },
+        "inactive_reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300,
+          "description": "Why the goal is off and what would switch it on (e.g. \"D-13 ענף ב׳, ממתין לשאלה 17 לעו\"ד\")."
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "active": {
+                "const": false
+              }
+            },
+            "required": [
+              "active"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "required": [
+              "inactive_reason"
+            ],
+            "properties": {
+              "inactive_reason": true
+            }
+          }
+        }
+      ]
     }
   }
 }

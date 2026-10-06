@@ -259,7 +259,7 @@
         "intake": {
           "type": "integer",
           "minimum": 0,
-          "description": "User turns in intake counted from the FIRST free-text message. Opening taps before it (core_relation, and self_age_band if D-13 passes) are not counted, so the clinical 2-3 question target and max_intake_turns (6) start after the first message."
+          "description": "User turns in intake counted from the FIRST free-text message. Opening taps before it (core_relation; self_age_band exists only under D-13 branch A and is inactive since gate 1, branch B) are not counted, so the clinical 2-3 question target and max_intake_turns (6) start after the first message."
         },
         "total": {
           "type": "integer",
@@ -1307,6 +1307,29 @@
             ]
           }
         ]
+      }
+    },
+    {
+      "description": "D-02 (draft 3.3): a routing stop is evaluated only after the red-flag check of the same turn found nothing, and closes the conversation; a stopped case therefore holds no raised flag.",
+      "if": {
+        "type": "object",
+        "properties": {
+          "routing_stop": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "routing_stop"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "red_flags": {
+            "type": "array",
+            "maxItems": 0
+          }
+        }
       }
     }
   ]

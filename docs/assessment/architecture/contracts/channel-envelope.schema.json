@@ -238,7 +238,7 @@
             "human_takeover",
             "expire"
           ],
-          "description": "reopen: 'שכחתי לספר' (not after outcome 5, not after submission). request_handoff: early exit to the form; the outcome is computed and recorded but only the partial-file form is shown, unless a red flag is raised. finish: 'סיום' / 'למחוק' = D-01 (web: DELETE /api/intake/session): deletes the case file and traces immediately and clears the cookie; a lead already sent stays with Hadas. reset: restart = the same deletion, then S1 again (new session, new consent record). human_takeover: WhatsApp echo of a message Hadas sent -> permanent silence."
+          "description": "reopen: 'שכחתי לספר' (not after outcome 5, not after submission). request_handoff: early exit to the form; the outcome is computed and recorded but only the partial-file form is shown, unless a red flag is raised. finish: 'סיום' / 'למחוק' = D-01 (web: DELETE /api/intake/session): deletes the case file and traces immediately and clears the cookie; a lead already sent stays with Hadas. Draft 3.3 (D-01b): finish may carry the optional 'keep' consent; the session is deleted either way. reset: restart = the same deletion, then S1 again (new session, new consent record). human_takeover: WhatsApp echo of a message Hadas sent -> permanent silence."
         },
         "media": {
           "type": "object",
@@ -294,6 +294,30 @@
             }
           },
           "additionalProperties": false
+        },
+        "keep": {
+          "type": "object",
+          "required": [
+            "accepted",
+            "texts_shown"
+          ],
+          "properties": {
+            "accepted": {
+              "const": true,
+              "description": "Only a ticked box is sent. Unticked = no keep object (the default: everything is deleted)."
+            },
+            "texts_shown": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 4,
+              "items": {
+                "$ref": "common.schema.json#/$defs/textRef"
+              },
+              "description": "Echo of the keep texts the client rendered (keep.optin.checkbox, keep.optin.note, and the leave_keep button). The server rejects the keep (keep_result consent_mismatch, everything still deleted) if they are not the current approved versions."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Draft 3.3, D-01b: the optional keep consent, sent with control 'finish' (DELETE /api/intake/session) on the web only. The server never trusts it alone: it recomputes keepOfferEligible(case) and keeps nothing if that is false. A keep never delays or prevents the deletion of the session."
         }
       },
       "additionalProperties": false,
@@ -410,6 +434,36 @@
             "properties": {
               "media": true
             }
+          }
+        },
+        {
+          "description": "D-01b: a keep consent only rides on 'סיום' (control finish), on the web.",
+          "if": {
+            "type": "object",
+            "required": [
+              "keep"
+            ],
+            "properties": {
+              "keep": true
+            }
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "const": "control"
+              },
+              "control": {
+                "const": "finish"
+              },
+              "channel": {
+                "const": "web"
+              }
+            },
+            "required": [
+              "kind",
+              "control"
+            ]
           }
         }
       ]
@@ -532,6 +586,38 @@
             }
           },
           "additionalProperties": false
+        },
+        "keep_offer_eligible": {
+          "type": "boolean",
+          "description": "Draft 3.3, D-01b: computed in code by keepOfferEligible(case) on every outbound envelope (absent = false). TRUE only if: web; relation self_adult or parent_of_child; no red flag of any tier (incl. doubt and scan_incomplete, so never after mask_incomplete); no lead sent; no routing stop (S13). The end dialog shows the unticked keep box only when the LAST envelope said true; DELETE re-checks on the server."
+        },
+        "keep_result": {
+          "type": "object",
+          "required": [
+            "kept",
+            "reason"
+          ],
+          "properties": {
+            "kept": {
+              "type": "boolean"
+            },
+            "reason": {
+              "enum": [
+                "kept",
+                "not_eligible",
+                "consent_mismatch",
+                "mask_failed",
+                "store_failed"
+              ],
+              "description": "kept; not_eligible (server re-check said no); consent_mismatch (keep texts not the current approved versions); mask_failed (name masking did not complete: fail-safe, nothing kept); store_failed (write to intake-kept failed). In every case the session itself is deleted."
+            },
+            "purge_on": {
+              "$ref": "common.schema.json#/$defs/isoDate",
+              "description": "Date the kept conversation is deleted (consent + 180 days). Only when kept."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Draft 3.3, D-01b: answer to a finish that carried a keep consent. The UI shows keep.saved_note only when kept is true, so it never says 'saved' for something that was not."
         }
       },
       "additionalProperties": false,
@@ -614,6 +700,209 @@
               "input_hint": {
                 "not": {
                   "const": "form"
+                }
+              }
+            }
+          }
+        },
+        {
+          "description": "D-01b: the keep box is never offered on WhatsApp, after a red flag (outcome 5), after a routing stop (S13) or after a lead was sent.",
+          "if": {
+            "type": "object",
+            "properties": {
+              "keep_offer_eligible": {
+                "const": true
+              }
+            },
+            "required": [
+              "keep_offer_eligible"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "channel": {
+                "const": "web"
+              },
+              "items": {
+                "type": "array",
+                "not": {
+                  "type": "array",
+                  "contains": {
+                    "type": "object",
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "const": "outcome"
+                          },
+                          "outcome": {
+                            "const": 5
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "outcome"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "const": "end"
+                          },
+                          "reason": {
+                            "enum": [
+                              "red_flag",
+                              "minor_self",
+                              "non_parent_reporter",
+                              "other_stop"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "reason"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "not": {
+              "type": "object",
+              "required": [
+                "handoff_result"
+              ],
+              "properties": {
+                "handoff_result": true
+              }
+            }
+          }
+        },
+        {
+          "description": "D-01b: a keep result closes the conversation; kept and reason agree; purge_on exactly when kept.",
+          "if": {
+            "type": "object",
+            "required": [
+              "keep_result"
+            ],
+            "properties": {
+              "keep_result": true
+            }
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "phase": {
+                "const": "closed"
+              },
+              "ends_conversation": {
+                "const": true
+              },
+              "keep_result": {
+                "type": "object",
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kept": {
+                        "const": true
+                      },
+                      "reason": {
+                        "const": "kept"
+                      },
+                      "purge_on": true
+                    },
+                    "required": [
+                      "kept",
+                      "reason",
+                      "purge_on"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kept": {
+                        "const": false
+                      },
+                      "reason": {
+                        "not": {
+                          "const": "kept"
+                        }
+                      }
+                    },
+                    "required": [
+                      "kept",
+                      "reason"
+                    ],
+                    "not": {
+                      "type": "object",
+                      "required": [
+                        "purge_on"
+                      ],
+                      "properties": {
+                        "purge_on": true
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "description": "D-02 (draft 3.3): a routing stop and a red-flag card never share a reply. Red flags are checked first in every turn, so a flag raised on a minor or non-parent path yields S6 (its own fixed texts, 101 in the emergency tier), never the stop text, which no longer carries 101.",
+          "if": {
+            "type": "object",
+            "properties": {
+              "items": {
+                "type": "array",
+                "contains": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "const": "end"
+                    },
+                    "reason": {
+                      "enum": [
+                        "minor_self",
+                        "non_parent_reporter",
+                        "other_stop"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "reason"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "items"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "items": {
+                "type": "array",
+                "not": {
+                  "type": "array",
+                  "contains": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "const": "outcome"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  }
                 }
               }
             }

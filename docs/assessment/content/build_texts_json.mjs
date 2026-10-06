@@ -8,8 +8,9 @@
 //
 // Checks: fixed-texts.schema.json (Ajv 2020, strict) · output-rules.json against its schema · every
 // 'all'-scope forbidden rule against every fixed text · placeholders declared, never glued to a Hebrew
-// letter · variants share the base version · 101 where ARCHITECTURE §1.9 requires it · every '<id>.a11y' opens
-// with the visible text of '<id>' (WCAG 2.5.3).
+// letter · variants share the base version · 101 where ARCHITECTURE §1.9 requires it (minus the per-ID D-02
+// exemption) · the red-flag texts that carry 101 keep it · every '<id>.a11y' opens with the visible text of '<id>'
+// (WCAG 2.5.3).
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -27,9 +28,9 @@ const CHECK = process.argv.includes('--check');
 const HEADER = {
   contract: 'fixed-texts',
   contract_version: '1.0.0',
-  version: '0.6.0',
+  version: '0.7.0',
   status: 'draft',
-  updated_at: '2026-10-06T03:30:00+03:00',
+  updated_at: '2026-10-06T14:00:00+03:00',
   approvals: [],
   changelog: [
     { version: '0.1.0', date: '2026-10-04', summary: 'טיוטה 1 של תפקיד 3 (רק ב-texts.he.md).' },
@@ -38,6 +39,7 @@ const HEADER = {
     { version: '0.4.0', date: '2026-10-05', summary: 'סבב 4 של הארכיטקט: נוסחי 32KB, בלי מודל, פרטיות באישור לפי מצב המסירה, שורת התוספת של document_request, D-13 (גיל + minor.self.before_text עם ער"ן וסה"ר); error.delete_failed "תוך כ-24 שעות"; יצאו משימוש redflag.cta.er ו-hadas.email.tag.possible_duplicate; שדה active; chat.*, resume.* ו-closed.keep_note בבאנדל.' },
     { version: '0.5.0', date: '2026-10-05', summary: 'תיקון זול לפני שער 1 (אימות משפטי, סבב 2): form.confirmation.privacy.both_pending (מסירה ומחיקה ממתינות), form.confirmation.title.pending ("בדרך", לא "נשלחו"), ו-form.confirmation.privacy.pending@v2 ("תוך כשבוע" במקום "לכל היותר 7 ימים", כי הניקוי השעתי יכול לחרוג בשעה).' },
     { version: '0.6.0', date: '2026-10-06', summary: 'רשימה סגורה אחרי UX 4.1–4.2: S8 כשהמסירה ממתינה (what_now.pending, when.pending), redflag.after.no_form, redflag.form_not_sent, כותרות hotline לפי סוג (distress, child_safety), a11y.buttons_hint (בטיחות בהקשת הגיל), redflag.cta.call.a11y@v2 (WCAG 2.5.3). הממיר בודק שכל <מזהה>.a11y פותח בנוסח הבסיס. נוקתה הפניה שיורית ל-possible_duplicate (הנוסח יצא ב-0.4.0).' },
+    { version: '0.7.0', date: '2026-10-06', summary: 'סבב 5, שער 1 — הכרעות אליה: שמירה מרצון בסוף השיחה (keep.optin.checkbox, keep.optin.note, keep.saved_note, chat.end.leave_keep; D-01b ו-D-01b׳); consent.checkbox@v3 עם הצהרת גיל ו-.ack@v2 (D-13 ענף ב׳), goal.self_age_band.* ו-q.self_age_band.opt.* לא פעילים; minor.self, minor.self.before_text ו-reporter.not_parent בלי 101 וקווי סיוע (D-02), עם החרגה לפי מזהה ב-NEEDS_101 ובדיקה שנוסחי הדגל שומרים על 101; about.data@v3 ו-meta.who_sees@v3 עם Cloudflare ו-Netlify (D-07 + D-12).' },
   ],
 };
 
@@ -59,11 +61,26 @@ const BUNDLE = [
 ];
 
 // 101 is mandatory here (ARCHITECTURE §1.9).
-const NEEDS_101 = (id) =>
+// Exception, D-02 (Eliya, 2026-10-06): the fixed S13a cards for a minor carry no 101 and no hotlines; the emergency
+// message reaches a minor only through the red-flag mechanism (S6), which always runs first. Narrow, per text ID:
+// every other NEEDS_101 rule still applies, and an exempt ID that no longer exists is an error (no silent leftovers).
+// reporter.not_parent loses 101 under the same ruling, but was never in NEEDS_101, so it needs no entry here.
+const NEEDS_101_EXEMPT = {
+  'minor.self': 'D-02, אליה 2026-10-06',
+  'minor.self.before_text': 'D-02, אליה 2026-10-06',
+};
+// D-02 guard: with S13 silent on 101, these red-flag texts are the only route to it for a minor or a non-parent
+// reporter. Each must keep 101 in its text and in every variant. (This is the set that carried 101 at round 5.)
+const REDFLAG_KEEPS_101 = [
+  'redflag.type.sudden_onset', 'redflag.doubt.sudden_onset', 'redflag.type.airway', 'redflag.type.swallowing',
+  'redflag.type.voice_risk', 'redflag.type.child_regression', 'redflag.type.adult_new_change', 'redflag.type.distress',
+  'redflag.cta.call', 'redflag.cta.call.a11y',
+];
+const NEEDS_101 = (id) => !Object.hasOwn(NEEDS_101_EXEMPT, id) && (
   ['system.unavailable', 'fallback.static', 'language.unsupported', 'meta.too_long', 'meta.off_topic_end', 'outcome.extraction_gap', 'chat.input.too_long_block', 'system.model_free'].includes(id) ||
   /^media\./.test(id) ||
   /^minor\.self(\.|$)/.test(id) ||
-  (/^wa\./.test(id) && !/^wa\.opening\.btn\./.test(id) && id !== 'wa.prefix');
+  (/^wa\./.test(id) && !/^wa\.opening\.btn\./.test(id) && id !== 'wa.prefix'));
 
 const SUBJECT = { self: 'self', 'child.m': 'child_m', 'child.f': 'child_f', 'child.n': 'child_n', other: 'other' };
 const HEADING = /^(#{4,5}) `([a-z0-9_.]+)@v(\d+)`(.*)$/;
@@ -206,6 +223,7 @@ function build({ entries, declared }) {
     }
     for (const p of ph) if (!placeholderOk(p)) warn(`${id}: placeholder {{${p}}} is not in the variables table`);
     if (NEEDS_101(id)) for (const s of all) if (!s.includes('101')) err(`${id}: 101 is mandatory (ARCHITECTURE §1.9)`);
+    if (REDFLAG_KEEPS_101.includes(id)) for (const s of all) if (!s.includes('101')) err(`${id}: 101 is mandatory (D-02 guard: the red-flag route is the only one to 101 for a minor)`);
     const notes = t._notes.join(' ');
     const o = { version: t.version, text: t.text };
     if (ph.length) o.placeholders = ph;
@@ -220,6 +238,8 @@ function build({ entries, declared }) {
     if (t._notes.some((n) => n.startsWith('סטטוס: לא פעיל'))) o.active = false;
     out[id] = o;
   }
+  for (const id of Object.keys(NEEDS_101_EXEMPT)) if (!out[id]) err(`NEEDS_101_EXEMPT: ${id} is not in texts.he.md (remove the exemption)`);
+  for (const id of REDFLAG_KEEPS_101) if (!out[id]) err(`REDFLAG_KEEPS_101: ${id} is not in texts.he.md`);
   return { header: HEADER, locale: 'he', texts: out };
 }
 

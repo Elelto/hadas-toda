@@ -1,0 +1,428 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hadas-toda.co.il/schemas/intake/v1/kept-conversation.schema.json",
+  "title": "Kept conversation (opt-in, D-01b)",
+  "description": "Draft 3.3 (gate 1, D-01b + D-01b'). The ONLY conversation content that outlives 'סיום', and only when the user ticked the unticked keep box (consent scope keep_for_improvement) AND keepOfferEligible(case) was true on the server at DELETE time. Store intake-kept, key k/<purge day>/<kept_id>, encrypted with its own key (INTAKE_KEPT_KEY, not derived from INTAKE_MASTER_SECRET). No linking ids: no session_id, lead_id, lead_ref, metrics_id, cookie, IP or user agent; per-turn timestamps are dropped. User text is the already identifier-masked text (SEC-07) after a second pass of name masking (reasonable effort); masking that did not complete means nothing is written (fail-safe), so name_mask.status can only be 'complete'. purge_at = consented_at + 180 days; the hourly job deletes it (purge_failed heartbeat); a viewer read after purge_at deletes it on the spot. No withdrawal code (D-01b': accepted risk, chosen by Eliya against the security recommendation). Read only through intake-kept-viewer (2FA, access log, no export); never by a model or an AI assistant. Never written for WhatsApp in v1, after any red flag, after a routing stop, or after a lead was sent.",
+  "type": "object",
+  "required": [
+    "kept_version",
+    "kept_id",
+    "consent_record_id",
+    "consented_at",
+    "purge_at",
+    "channel",
+    "relation",
+    "content_versions",
+    "outcome",
+    "name_mask",
+    "turns"
+  ],
+  "properties": {
+    "kept_version": {
+      "const": "1.0"
+    },
+    "kept_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{16,64}$",
+      "description": "Random (128 bit), generated at keep time. Appears only here, in the store key, in the keep consent record and in the viewer's access log."
+    },
+    "consent_record_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{16,64}$",
+      "description": "record_id of the keep_for_improvement consent record (which has no session_id)."
+    },
+    "consented_at": {
+      "$ref": "common.schema.json#/$defs/isoDateTime",
+      "description": "Server time of the keep consent. The 180-day clock starts here (D-01b), not at the first message."
+    },
+    "purge_at": {
+      "$ref": "common.schema.json#/$defs/isoDateTime",
+      "description": "consented_at + 180 days, a code constant (not configuration: the consent text promises it). Checked by unit test, not by this schema."
+    },
+    "channel": {
+      "const": "web",
+      "description": "v1: web only. WhatsApp keeps a phone number as its identity; keeping there is a phase-6 decision."
+    },
+    "relation": {
+      "enum": [
+        "self_adult",
+        "parent_of_child"
+      ],
+      "description": "keep_relation as computed by keepOfferEligible: self_adult = core_relation self and self_declared_minor not true; parent_of_child = core_relation child, reporter_role parent and subject_minor TRUE. Nobody else may be offered the box (legal: one cannot consent for another adult)."
+    },
+    "content_versions": {
+      "$ref": "common.schema.json#/$defs/contentVersions"
+    },
+    "outcome": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Null if the user ended before an outcome. Never 5: a raised red flag (any tier) makes the conversation ineligible."
+    },
+    "would_be_outcome_3": {
+      "enum": [
+        "true",
+        "false",
+        "undetermined"
+      ]
+    },
+    "masked_identifiers": {
+      "type": "boolean",
+      "description": "SEC-07 masking replaced an ID, phone or email in some message (the text below is the masked text)."
+    },
+    "name_mask": {
+      "type": "object",
+      "required": [
+        "status",
+        "ruleset",
+        "replaced"
+      ],
+      "properties": {
+        "status": {
+          "const": "complete",
+          "description": "Fail-safe: any other result (pattern over budget, engine error, exception) means the conversation is NOT kept (keep_result mask_failed)."
+        },
+        "ruleset": {
+          "type": "string",
+          "pattern": "^names\\.v[0-9]{1,3}$",
+          "description": "Version of the name-masking rules and lexicon (engine/keep)."
+        },
+        "replaced": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        }
+      },
+      "additionalProperties": false,
+      "description": "Reasonable effort only: common-word names (e.g. חיים, שמחה), institutions and rare details are not caught, which is why the opt-in text says 'we will try to remove names' (security, legal Q34)."
+    },
+    "slots": {
+      "type": "object",
+      "maxProperties": 120,
+      "propertyNames": {
+        "$ref": "common.schema.json#/$defs/slotId"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "$ref": "common.schema.json#/$defs/slotStatus"
+          },
+          "value": {
+            "$ref": "common.schema.json#/$defs/slotValue"
+          }
+        },
+        "additionalProperties": false
+      },
+      "description": "Final slot states. Quote values went through the same name masking. No evidence spans, no history."
+    },
+    "turns": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 80,
+      "items": {
+        "$ref": "#/$defs/turn"
+      },
+      "description": "The conversation in order, without timestamps. Assistant fixed texts are kept as (id, version) only; their wording is in git."
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "turn": {
+      "type": "object",
+      "required": [
+        "seq",
+        "role"
+      ],
+      "properties": {
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "role": {
+          "enum": [
+            "user",
+            "assistant"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 3000,
+          "description": "user: the masked message. assistant: only a generated or template summary (origin generated / template_fallback), also name-masked."
+        },
+        "choice": {
+          "type": "object",
+          "required": [
+            "choice_set_id",
+            "option_id"
+          ],
+          "properties": {
+            "choice_set_id": {
+              "$ref": "common.schema.json#/$defs/entityId"
+            },
+            "option_id": {
+              "$ref": "common.schema.json#/$defs/entityId"
+            }
+          },
+          "additionalProperties": false
+        },
+        "origin": {
+          "$ref": "common.schema.json#/$defs/textOrigin"
+        },
+        "text_refs": {
+          "type": "array",
+          "maxItems": 12,
+          "items": {
+            "$ref": "common.schema.json#/$defs/textRef"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "description": "A user turn is a message or a tap, never a fixed text.",
+          "if": {
+            "type": "object",
+            "properties": {
+              "role": {
+                "const": "user"
+              }
+            },
+            "required": [
+              "role"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "anyOf": [
+              {
+                "type": "object",
+                "required": [
+                  "text"
+                ],
+                "properties": {
+                  "text": true
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "choice"
+                ],
+                "properties": {
+                  "choice": true
+                }
+              }
+            ],
+            "not": {
+              "type": "object",
+              "anyOf": [
+                {
+                  "type": "object",
+                  "required": [
+                    "origin"
+                  ],
+                  "properties": {
+                    "origin": true
+                  }
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "text_refs"
+                  ],
+                  "properties": {
+                    "text_refs": true
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "description": "An assistant turn always has an origin; fixed and FAQ texts are kept as references only, never as copied wording.",
+          "if": {
+            "type": "object",
+            "properties": {
+              "role": {
+                "const": "assistant"
+              }
+            },
+            "required": [
+              "role"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "required": [
+              "origin"
+            ],
+            "properties": {
+              "origin": true
+            },
+            "not": {
+              "type": "object",
+              "required": [
+                "choice"
+              ],
+              "properties": {
+                "choice": true
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "role": {
+                "const": "assistant"
+              },
+              "origin": {
+                "enum": [
+                  "fixed",
+                  "faq"
+                ]
+              }
+            },
+            "required": [
+              "role",
+              "origin"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "required": [
+              "text_refs"
+            ],
+            "properties": {
+              "text_refs": {
+                "minItems": 1,
+                "type": "array"
+              }
+            },
+            "not": {
+              "type": "object",
+              "required": [
+                "text"
+              ],
+              "properties": {
+                "text": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    "accessLogEntry": {
+      "description": "One line of the viewer's append-only access log (store intake-kept-log, key a/<YYYY-MM>/<entry_id>, 24 months). Content-free: who, when, what action, which kept_id. Written BEFORE the viewer returns any content; a failed log write means the content is not shown.",
+      "type": "object",
+      "required": [
+        "entry_id",
+        "at",
+        "reader",
+        "action",
+        "second_factor"
+      ],
+      "properties": {
+        "entry_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{16,64}$"
+        },
+        "at": {
+          "$ref": "common.schema.json#/$defs/isoDateTime"
+        },
+        "reader": {
+          "enum": [
+            "eliya",
+            "hadas"
+          ],
+          "description": "D-01b: only Eliya and Hadas read kept conversations. No service account, no model, no AI assistant."
+        },
+        "action": {
+          "enum": [
+            "login",
+            "login_failed",
+            "list",
+            "view",
+            "purged_on_read"
+          ]
+        },
+        "kept_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{16,64}$"
+        },
+        "second_factor": {
+          "enum": [
+            "totp_ok",
+            "totp_failed"
+          ],
+          "description": "2FA (SEC-24) on every session; content is served only after totp_ok."
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "enum": [
+                  "view",
+                  "purged_on_read"
+                ]
+              }
+            },
+            "required": [
+              "action"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "required": [
+              "kept_id"
+            ],
+            "properties": {
+              "kept_id": true,
+              "second_factor": {
+                "const": "totp_ok"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "const": "list"
+              }
+            },
+            "required": [
+              "action"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "second_factor": {
+                "const": "totp_ok"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
