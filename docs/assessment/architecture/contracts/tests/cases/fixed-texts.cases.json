@@ -1,0 +1,13 @@
+{
+  "schema": "fixed-texts.schema.json",
+  "note": "Round 5. The positive case is the REAL generated content/texts.he.json; negatives patch it.",
+  "cases": [
+    { "id": "ft.ok.real_texts_he_json", "file": "../../../content/texts.he.json", "expect": "valid" },
+    { "id": "ft.active_false_without_notes", "file": "../../../content/texts.he.json", "expect": "invalid", "error": "/allOf/2/then/required", "source": "planning critic 4(a)", "patch": [{ "op": "add", "path": "/texts/form.confirmation.title/active", "value": false }] },
+    { "id": "ft.approved_without_approvals", "file": "../../../content/texts.he.json", "expect": "invalid", "error": "required", "patch": [{ "op": "replace", "path": "/texts/form.confirmation.title/status", "value": "approved" }] },
+    { "id": "ft.bad_text_id", "file": "../../../content/texts.he.json", "expect": "invalid", "error": "propertyNames", "patch": [{ "op": "add", "path": "/texts/Bad Id", "value": { "version": 1, "text": "x", "status": "draft", "legal_review": "not_required", "purpose_he": "x" } }] },
+    { "id": "ft.text_over_3000", "file": "../../../content/texts.he.json", "expect": "invalid", "error": "/text/maxLength", "patch": [{ "op": "replace", "path": "/texts/form.confirmation.title/text", "value": { "$repeat": ["א", 3001] } }] },
+    { "id": "ft.unknown_variant_key", "file": "../../../content/texts.he.json", "expect": "invalid", "error": "propertyNames", "patch": [{ "op": "add", "path": "/texts/form.confirmation.title/variants", "value": { "sms": "x" } }] },
+    { "id": "ft.locale_en", "file": "../../../content/texts.he.json", "expect": "invalid", "error": "/locale/const", "patch": [{ "op": "replace", "path": "/locale", "value": "en" }] }
+  ]
+}

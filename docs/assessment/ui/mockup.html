@@ -353,8 +353,10 @@ body{background:var(--c-bg);color:var(--c-text);font-family:Rubik,Heebo,system-u
 .preview summary{list-style:none;display:flex;align-items:center;gap:10px;min-height:52px;padding:8px 14px;font-weight:600;font-size:var(--t16);cursor:pointer;color:var(--dark)}
 .preview summary::-webkit-details-marker{display:none}
 .preview summary .grow{flex:1}
-.preview[open] summary .chev{transform:rotate(180deg)}
-.preview summary .chev{transition:transform .2s ease}
+/* the arrow's direction is two separate SVGs swapped by [open], never rotate(): stop-animations zeroes transform (frontend consult, finding 5) */
+.preview summary .chev .up{display:none}
+.preview[open] summary .chev .up{display:inline-block}
+.preview[open] summary .chev .down{display:none}
 .pv{padding:2px 14px 12px;border-top:1px solid var(--it-hair)}
 .pv dl{margin:8px 0;display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:var(--t15)}
 .pv dt{color:var(--dark-light)}
@@ -393,7 +395,7 @@ body{background:var(--c-bg);color:var(--c-text);font-family:Rubik,Heebo,system-u
 .way .grow{flex:1}
 
 /* ---------- S1 / S2 / S0 page content ---------- */
-.intro{position:relative;padding:22px 16px 120px}
+.intro{position:relative;padding:22px 16px 28px}   /* the 112px bottom room for the floating buttons now belongs to the footer (.tool-ft) */
 .dev-desktop .intro{padding:8px 0 40px}
 .intro h1{font-size:var(--t34);font-weight:500;line-height:1.2;color:var(--night-shadz)}
 .dev-desktop .intro h1{font-size:calc(var(--u)*44)}
@@ -426,7 +428,7 @@ body{background:var(--c-bg);color:var(--c-text);font-family:Rubik,Heebo,system-u
 .rcard-h{display:flex;gap:12px;align-items:center;margin-bottom:12px}
 .rcard-h .rci{width:44px;height:44px;border-radius:12px;background:var(--it-badge-bg);color:var(--night-shadz);display:grid;place-items:center;flex:none}
 .rcard p{font-size:var(--t16)}
-.toast{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:8;background:var(--dark-light);color:#fff;border-radius:12px;padding:10px 16px;font-size:var(--t14);box-shadow:0 8px 20px rgba(0,0,0,.18);max-width:90%}
+.toast{position:absolute;top:12px;left:0;right:0;margin-inline:auto;width:fit-content;z-index:8;background:var(--dark-light);color:#fff;border-radius:12px;padding:10px 16px;font-size:var(--t14);box-shadow:0 8px 20px rgba(0,0,0,.18);max-width:90%}
 /* entry points */
 .pill-tag{display:inline-flex;align-items:center;gap:6px;font-size:var(--t13);font-weight:500;color:var(--night-shadz);background:var(--it-badge-bg);border:1px solid rgba(167,55,100,.15);border-radius:999px;padding:3px 12px}
 .hero{padding:26px 18px 30px;position:relative}
@@ -552,13 +554,56 @@ body{background:var(--c-bg);color:var(--c-text);font-family:Rubik,Heebo,system-u
 @keyframes it-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @keyframes it-fade{from{opacity:0}to{opacity:1}}
 @keyframes it-bar{0%,100%{transform:scaleY(.4)}50%{transform:scaleY(1)}}
-.screen.sim-noanim *,.screen.sim-noanim *::before,.screen.sim-noanim *::after{animation:none!important;transition:none!important}
+.screen.sim-noanim *,.screen.sim-noanim *::before,.screen.sim-noanim *::after{animation:none!important;transition:none!important;transform:none!important;scroll-behavior:auto!important} /* = body.stop-animations in src/styles/accessibility.css: it zeroes transform too, so nothing in the tool may depend on transform */
 .screen.sim-noanim .bars i:nth-child(1){height:7px}.screen.sim-noanim .bars i:nth-child(2){height:12px}.screen.sim-noanim .bars i:nth-child(3){height:16px}.screen.sim-noanim .bars i:nth-child(4){height:11px}.screen.sim-noanim .bars i:nth-child(5){height:6px}
 @media (prefers-reduced-motion: reduce){
   .screen *,.screen *::before,.screen *::after{animation:none!important;transition:none!important}
   .screen .bars i:nth-child(1){height:7px}.screen .bars i:nth-child(2){height:12px}.screen .bars i:nth-child(3){height:16px}.screen .bars i:nth-child(4){height:11px}.screen .bars i:nth-child(5){height:6px}
   .log{scroll-behavior:auto}
 }
+
+/* ---------- the tool page's own static header and footer (COMPONENTS §3.23): plain links, no Firestore, no third party ---------- */
+.tool-hd .logo-link{display:inline-flex;text-decoration:none}
+.screen .tool-hd a.logo-link:hover{text-decoration:none}
+.tool-hd .back-site{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border:1.5px solid var(--bouquet);border-radius:999px;background:#fff;color:var(--night-shadz);font-size:var(--t15);font-weight:600;white-space:nowrap}
+.screen .tool-hd a.back-site,.screen .tool-hd a.back-site:hover{color:var(--night-shadz);text-decoration:none}
+.m-page.nohdr{top:28px}   /* the tool page's header is not fixed: it scrolls with the page (inside .page-scroll / .d-main) */
+.d-main.nohdr{top:0}
+.tool-ft{position:relative;z-index:1;display:flex;flex-wrap:wrap;align-items:center;gap:0 24px;border-top:1px solid rgba(101,139,164,.15);background:#fff;padding:14px 16px 112px;font-size:var(--t15)}
+.dev-desktop .tool-ft{padding:12px 48px 24px}
+.tool-ft a{display:inline-flex;align-items:center;gap:6px;min-height:44px;font-weight:500}
+.screen .tool-ft a.back-foot{color:var(--night-shadz);font-weight:600}
+
+/* ---------- closed update 3 (accessibility consult round 2, UX 4.2) ---------- */
+/* chrome: a visible mirror of what the single announcer was given (the mirror itself is not a live region) */
+.ch-ann{margin:-4px 0 10px;font-size:13px;color:var(--c-muted);background:var(--c-surface-2);border:1px dashed var(--c-border);border-radius:10px;padding:6px 10px;min-height:32px}
+.ch-ann-l{font-weight:600;color:var(--c-text)}
+/* "הצגת יעד המיקוד": where focus lands on a screen change (a design aid, not part of the product) */
+.screen.show-focus [data-focus]{outline:3px dashed #14795a!important;outline-offset:3px}
+/* the transcript is a labelled region (section) holding an ol; every message, system line and card is an li */
+.msgs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.msgs > li{flex-shrink:0}
+/* short height / 400% zoom: the fixed bars are released into the scroll flow in steps, the input stays the only fixed part.
+   rel1: stage indicator scrolls with the content · rel2: + the top bar · rel3: + the disclaimer, now the first item of the transcript.
+   Same DOM and same focus order in every step; only "sticky" turns into "static" (no remount, so focus and scroll survive a step change). */
+.tool.short{display:block;overflow-y:auto;overflow-x:hidden;scroll-padding-bottom:84px}
+.tool.short > .log,.tool.short > .main-area{overflow:visible;flex:none}
+.tool.short > .composer-wrap{position:sticky;bottom:0;z-index:6}
+.tool.short > .tb{position:sticky;top:0;z-index:5}
+.tool.short > .disc{position:sticky;top:56px;z-index:4}
+.tool.short.rel2 > .tb,.tool.short.rel3 > .tb{position:static}
+.tool.short.rel2 > .disc{top:0}
+.device.m.framed{border-radius:22px}
+.flow-disc{display:flex;gap:8px;align-items:flex-start;padding:8px 12px;background:var(--light-hover);border:1px solid var(--it-hair);border-radius:12px;font-size:var(--t14);line-height:1.5;color:var(--dark-light)}
+.flow-disc .ic{margin-top:2px}
+/* S13b copy: success is plain visible text (announced through the announcer, focus stays on the button); failure reveals the details as selectable text */
+.copy-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.copied-note{display:inline-flex;align-items:center;gap:6px;font-size:var(--t14);font-weight:500;color:var(--dark-light)}
+.copy-failed{display:flex;gap:8px;align-items:flex-start;margin-top:12px;font-size:var(--t15);font-weight:500;color:var(--dark)}
+.copy-failed .ic{color:var(--it-error-ink);margin-top:2px}
+.payload{display:block;width:100%;margin-top:8px;font-size:var(--t16);line-height:1.6;color:var(--dark);background:var(--it-field-bg);border:1.5px solid var(--it-field-border);border-radius:14px;padding:10px 14px;overflow-wrap:break-word}
+.payload .nb{white-space:nowrap}
+.payload:focus{outline:none;border-color:var(--night-shadz);box-shadow:var(--it-ring)}
 
 /* ---------- simulation of AccessibilityWidget "high contrast" (mirrors src/styles/accessibility.css) ---------- */
 /* the a11y panel is always a direct child of .screen and is excluded, like .accessibility-widget on the site */
@@ -572,17 +617,20 @@ body{background:var(--c-bg);color:var(--c-text);font-family:Rubik,Heebo,system-u
 </style>
 </head>
 <body>
+<!-- THE announcer (COMPONENTS §7.1): present and empty from page load, outside the tree that gets swapped (#fit), and the only live region in this file. -->
+<div id="sr-announcer" class="sr" aria-live="polite" aria-atomic="true" lang="he" dir="rtl"></div>
 <header class="ch-head">
   <div class="ch-head-in">
     <div class="ch-title">
       <h1>מוקאפ שיחת היכרות</h1>
-      <p>העוזר הדיגיטלי של הדס תודה · תפקיד 2 (UI) · עדכון רשימה סגורה · 2026-10-05 · מבוסס על UX_SPEC.md (טיוטה 4) ועל content/texts.he.json (v0.4.0). כל הכפתורים בתוך המסגרת לחיצים ומובילים למצב הבא.</p>
+      <p>העוזר הדיגיטלי של הדס תודה · תפקיד 2 (UI) · עדכון סגור 3 (אחרי ייעוץ הנגישות) · 2026-10-06 · מבוסס על UX_SPEC.md (טיוטה 4.2) ועל content/texts.he.json (v0.6.0). כל הכפתורים בתוך המסגרת לחיצים ומובילים למצב הבא.</p>
     </div>
     <div class="ch-controls" role="group" aria-label="הגדרות תצוגה">
       <span><span class="seg-label" id="lbl-dev">מכשיר</span><span class="seg" role="group" aria-labelledby="lbl-dev"><button type="button" data-dev="m" aria-pressed="true">מובייל 390</button><button type="button" data-dev="d" aria-pressed="false">דסקטופ 1280</button></span></span>
       <span><span class="seg-label" id="lbl-theme">רקע המוקאפ</span><span class="seg" role="group" aria-labelledby="lbl-theme"><button type="button" data-theme-btn="auto" aria-pressed="true">אוטומטי</button><button type="button" data-theme-btn="light" aria-pressed="false">בהיר</button><button type="button" data-theme-btn="dark" aria-pressed="false">כהה</button></span></span>
       <label class="tog"><input type="checkbox" id="opt-work"> נוסחי עבודה במקום טקסטים חסרים</label>
       <label class="tog"><input type="checkbox" id="opt-ids"> הצגת מזהי טקסט</label>
+      <label class="tog"><input type="checkbox" id="opt-focus"> הצגת יעד המיקוד</label>
       <label class="tog"><input type="checkbox" id="opt-hc"> ניגודיות גבוהה</label>
       <label class="tog"><input type="checkbox" id="opt-anim"> עצירת אנימציות</label>
       <label class="tog">גודל טקסט <select class="ch-sel" id="opt-size"><option value="0">רגיל</option><option value="1">גדול</option><option value="2">ענק</option></select></label>
@@ -598,7 +646,8 @@ body{background:var(--c-bg);color:var(--c-text);font-family:Rubik,Heebo,system-u
       <button class="ch-btn" type="button" id="prev">הקודם</button>
       <button class="ch-btn" type="button" id="next">הבא</button>
     </div>
-    <div class="ch-crumb" aria-live="polite"><b id="crumb-t"></b><span id="crumb-s"></span></div>
+    <div class="ch-crumb"><b id="crumb-t"></b><span id="crumb-s"></span></div>
+    <div class="ch-ann" aria-hidden="true"><span class="ch-ann-l">מה שהמכריז קיבל:</span> <span id="ann-vis">—</span></div>
     <div class="ch-view" id="view">
       <div class="fit" id="fit"></div>
       <aside class="ch-notes" id="notes" aria-label="הערות למצב הנוכחי"></aside>
@@ -608,13 +657,16 @@ body{background:var(--c-bg);color:var(--c-text);font-family:Rubik,Heebo,system-u
 
 <script>
 /* =====================================================================
-   TEXTS — current ids/content from docs/assessment/content/texts.he.json (v0.4.0; the second closed-list pass added the ids for S6 combined, the 32KB block, model-free, the D-13 age tap and the S8 privacy variants, and refreshed the ones on those screens).
+   TEXTS — ids/content from docs/assessment/content/texts.he.json. Closed update 3 (v0.6.0) refreshed the ones on S3 (the age-tap hint), S6 (101 name v2, hotline titles, no_form), S8 (pending variants) and S13 (copy). Earlier passes added the ids for S6 combined, the 32KB block, model-free, the D-13 age tap and the S8 privacy variants.
    The deep clinical goal-tree (goal.*.ask beyond the opening question, q.age/q.onset/
    q.situations/q.impact/q.prev_treatment/q.anything_else and their chip options) is left
    as demo flavor from the previous draft — out of scope for this UI closed-list update.
    ===================================================================== */
 const PHONE = '050-679-6209'; // from texts.he.json "variables": shown today on the site; in production read from the facts sheet
 const T = {
+ 'reporter.copy_failed':`הפרטים לא הועתקו. הם מוצגים כאן כטקסט, ואפשר לסמן ולהעתיק אותם.`,
+ 'a11y.call_hadas':`${PHONE}, התקשרות להדס`,
+ 'page.header.logo.a11y':`הדס תודה, דף הבית`,
  'entry.button':`שיחה קצרה עם העוזר הדיגיטלי`,
  'entry.button.short':`לשיחה עם העוזר הדיגיטלי`,
  'entry.home.sub':`עוזר דיגיטלי · כ-5 דקות`,
@@ -625,7 +677,7 @@ const T = {
  'page.tool.sub':`לפני שפונים להדס תודה, קלינאית תקשורת: כמה שאלות קצרות, וסיכום מסודר שמגיע אליה.`,
  'page.tool.steps':[`עוזר דיגיטלי שואל שאלה אחת בכל פעם. זה לוקח בערך 5 דקות.`,`הדס מקבלת סיכום רק אם בוחרים לשלוח אותו.`,`אפשר לעצור ולמחוק את השיחה בכל רגע. מה שכבר נשלח להדס נשאר אצלה.`],
  'page.tool.not_this':`העוזר הוא תוכנה אוטומטית. הוא אינו הדס, אינו מאבחן ואינו נותן ייעוץ מקצועי או רפואי. במצב חירום יש להתקשר למד"א 101.`,
- 'page.tool.direct':`מעדיפים לדבר ישירות? אפשר להתקשר להדס: {{hadas_phone}}, או לכתוב לה בוואטסאפ.`,
+ 'page.tool.direct':`מעדיפים לדבר ישירות? אפשר להתקשר להדס: ${PHONE}, או לכתוב לה בוואטסאפ.`,
  'intro.greeting':[`שלום, כאן העוזר הדיגיטלי של הדס תודה, קלינאית תקשורת.`,`אני תוכנה אוטומטית, לא הדס עצמה. בכמה שאלות קצרות אפשר לספר מה מעסיק, והדס תקבל סיכום מסודר לפני שהיא חוזרת.`,`זה לוקח בדרך כלל כמה דקות.`],
  'consent.title':`לפני שמתחילים`,
  'consent.disclaimer':[`העוזר הוא תוכנה (בינה מלאכותית), לא הדס. הוא לא מאבחן, והכיוון בסוף עלול לטעות.`,`מה שנכתב, כולל מידע על בריאות, מעובד אצל ספק בינה מלאכותית.`,`מה שנכתב בשיחה נמחק בתוך 24 שעות, גם מהשרת. להדס נשלח סיכום רק אם יושארו פרטים.`,`מסירת המידע אינה חובה. האחראית עליו: הדס תודה. זכויות: [מדיניות הפרטיות]({{privacy_url}})`,`מיועד לגיל 18 ומעלה, ועל ילד — להורה או לאפוטרופוס.`],
@@ -635,8 +687,8 @@ const T = {
  'consent.button.accept':`הסכמה והתחלה`,
  'consent.start_loading':`מתחילים…`,
  'consent.button.decline':`לא עכשיו`,
- 'consent.declined':`בסדר גמור. אפשר לפנות להדס ישירות: בטלפון {{hadas_phone}}, בוואטסאפ, או בטופס יצירת הקשר באתר.`,
- 'consent.reconsent_note':`עדכנו את הנוסח — נשמח לאישור מחדש.`,
+ 'consent.declined':`בסדר גמור. אפשר לפנות להדס ישירות: בטלפון ${PHONE}, בוואטסאפ, או בטופס יצירת הקשר באתר.`,
+ 'consent.reconsent_note':`נוסח ההסבר וההסכמה עודכן. כדי להמשיך, יש לאשר אותו שוב.`,
  'consent.privacy_link':`מדיניות הפרטיות`,
  'chat.disclaimer_line':`עוזר דיגיטלי, לא הדס · לא אבחון · חירום: 101`,
  'chat.disclaimer_line.short':`מענה אוטומטי · לא אבחון · חירום: 101`,
@@ -660,7 +712,7 @@ const T = {
  'chat.end.stay':`להמשיך בשיחה`,
  'chat.end.leave':`לצאת`,
  'chat.end.leave_delete':`לצאת ולמחוק`,
- 'chat.ended':`השיחה הסתיימה. אפשר לפנות להדס בכל זמן: {{hadas_phone}}. במצב חירום: מד"א 101.`,
+ 'chat.ended':`השיחה הסתיימה. אפשר לפנות להדס בכל זמן: ${PHONE}. במצב חירום: מד"א 101.`,
  'chat.delete.title':`מחיקת השיחה`,
  'chat.delete.confirm':`למחוק את השיחה? היא תימחק עכשיו גם מהשרת, ואי אפשר יהיה לבטל, לחזור אליה או לשלוח את הפרטים להדס. בשרת נשאר רק רישום טכני, בלי תוכן.`,
  'chat.delete.yes':`מחיקה`,
@@ -668,13 +720,14 @@ const T = {
  'chat.delete.done':`השיחה נמחקה, גם מהשרת. בשרת נשאר רק רישום טכני, בלי תוכן השיחה.`,
  'chat.sr.bot_label':`העוזר הדיגיטלי:`,
  'chat.sr.user_label':`ההודעה שלך:`,
- 'menu.talk_to_hadas':`לדבר עם הדס`, 'menu.about':`על הכלי`, 'menu.restart':`התחלה מחדש`, 'menu.delete':`מחיקת השיחה`, 'menu.accessibility':`נגישות`,
+ 'menu.talk_to_hadas':`לדבר עם הדס`, 'menu.about':`על העוזר הדיגיטלי`, 'menu.restart':`התחלה מחדש`, 'menu.delete':`מחיקת השיחה`, 'menu.accessibility':`נגישות`,
  'about.title':`על העוזר הדיגיטלי`,
  'about.body':`העוזר הדיגיטלי הוא תוכנה אוטומטית שעוזרת לפונים חדשים לספר בקצרה מה מעסיק אותם, ומכינה להדס תודה סיכום מסודר לפני שהיא חוזרת. הוא אינו הדס ואינו אדם. הוא לא מאבחן, לא נותן טיפים או תרגילים, ולא קובע אם צריך טיפול. את זה עושה רק איש מקצוע.`,
  'about.data':[`מה שנכתב בשיחה, כולל מידע על בריאות, עובר לעיבוד אצל ספק שירות הבינה המלאכותית שמפעיל את העוזר. השיחה נמחקת בתוך 24 שעות, גם מהשרת. בשרת נשאר רק רישום טכני, בלי תוכן.`,`להדס נשלח סיכום רק אם בוחרים להשאיר פרטים. אחרי שהסיכום הגיע אליה, הוא נמחק מהמערכת ונשאר אצלה.`,`כדאי לא לכתוב בשיחה פרטים מזהים מיותרים, כמו שם מלא או מספר תעודת זהות.`],
  'a11y.log_label':`שיחה עם העוזר הדיגיטלי`,
  'a11y.quick_replies':`אפשרויות תשובה`,
  'a11y.message_sent':`נשלח`,
+ 'a11y.buttons_hint':`יש אפשרויות לבחירה מתחת להודעה.`,
  'a11y.stage':`שלב {{stage_number}} מתוך 3: {{stage_name}}`,
  'a11y.outcome_region':`תוצאת השיחה`,
  'a11y.new_message_pill':`הודעה חדשה, מעבר אליה`,
@@ -708,7 +761,7 @@ const T = {
  'outcome.summary.label':`מה שעלה בשיחה`,
  'outcome.summary.fallback':`תודה על הזמן ועל השיתוף.`,
  'outcome.cta.form':`השארת פרטים להדס`,
- 'outcome.cta.phone':`או להתקשר: {{hadas_phone}}`,
+ 'outcome.cta.phone':`או להתקשר: ${PHONE}`,
  'outcome.add_more':`שכחתי לספר משהו`,
  'outcome.finish':`סיום ומחיקה`,
  'outcome.stale_label':`הכיוון הקודם, לפני העדכון`,
@@ -730,16 +783,19 @@ const T = {
  'outcome.4.external_hint':`נפתח בלשונית חדשה`,
  'outcome.4.referral_disclaimer':`הרשימה נועדה לעזור למצוא כתובת מתאימה. היא אינה המלצה על גורם מסוים ואינה התחייבות לזמינותו, והפרטים עשויים להשתנות. כדאי לבדוק את ההתאמה ישירות מולם.`,
  'outcome.4.no_referral':`לנושא הזה אין כרגע הפניה מוכנה. רופא המשפחה או רופא הילדים יוכלו לכוון למקום המתאים.`,
- 'outcome.4.misunderstood':`נראה שמשהו לא הובן נכון בשיחה? אפשר לפנות להדס ישירות: {{hadas_phone}}.`,
+ 'outcome.4.misunderstood':`נראה שמשהו לא הובן נכון בשיחה? אפשר לפנות להדס ישירות: ${PHONE}.`,
  'redflag.title.emergency':`חשוב לפנות עכשיו לעזרה רפואית`,
  'redflag.title.urgent':`קודם כול, בדיקה רפואית`,
  'redflag.title.hotline':`אפשר לדבר עם מישהו עכשיו`,
+ 'redflag.title.hotline.distress':`אם קשה עכשיו`,
+ 'redflag.title.hotline.child_safety':`אם יש חשש לפגיעה בילד`,
  'redflag.footer':`הודעה קבועה שמוצגת אוטומטית לפי מה שנכתב בשיחה. היא אינה אבחון.`,
  'redflag.type.sudden_onset':[`יש להתקשר עכשיו למד"א 101, או לפנות היום לחדר מיון. שינוי חדש כזה צריך בדיקה רפואית מהירה, גם אם עברו כמה ימים.`,`אם כבר היה בירור רפואי מאז שזה התחיל, ומשהו השתנה או החמיר — גם אז לפנות לבדיקה היום.`,`אם אין לך אפשרות להיות שם עכשיו, אפשר להתקשר ל-101 ולמסור את הכתובת.`,`העוזר הדיגיטלי לא יכול להעריך את המצב, ולכן השיחה כאן נעצרת.`],
  'redflag.cta.call':`חיוג ל-101`,
- 'redflag.cta.call.a11y':`חיוג למד"א 101`,
+ 'redflag.cta.call.a11y':`חיוג ל-101, מד"א`, /* v2: opens with the visible text (WCAG 2.5.3) */
  'redflag.secondary.emergency':`אפשר גם להגיע ישירות לחדר המיון הקרוב.`,
- 'redflag.after.emergency':`אחרי בדיקה רפואית אפשר לפנות להדס: {{hadas_phone}}.`,
+ 'redflag.after.emergency':`אחרי בדיקה רפואית אפשר לפנות להדס: ${PHONE}.`,
+ 'redflag.after.no_form':`אחרי הבדיקה הרפואית אפשר לפנות להדס: ${PHONE}.`,
  'redflag.after':`אחרי הבדיקה הרפואית אפשר לחזור להדס, עם מה שנאמר בה. אפשר גם להשאיר פרטים כבר עכשיו, אבל לא לחכות לתשובה ממנה לפני הבדיקה.`,
  'redflag.cta.form':`השארת פרטים להדס`,
  'redflag.type.swallowing':[`כדאי לקבוע בימים הקרובים בדיקה אצל רופא המשפחה או אצל רופא אף-אוזן-גרון. קשיים בבליעה ובאכילה צריכים קודם בירור רפואי.`,`אם יש חנק או קושי לנשום: מד"א 101, מיד.`],
@@ -748,12 +804,13 @@ const T = {
  'redflag.cta.call_1201':`חיוג לער"ן 1201`,
  'redflag.type.child_safety':[`תודה שכתבת את זה. כשיש חשש שילד נפגע או מוזנח, אפשר לפנות למוקד 118 של משרד הרווחה ולהתייעץ.`,`אם ילד בסכנה עכשיו: משטרה 100.`,`חשוב לדעת: מה שנכתב כאן לא מגיע לאף אחד בזמן אמת.`],
  'nav.back_to_site':`חזרה לאתר`,
- 'minor.self':`תודה שכתבת. השיחה כאן מיועדת לגיל 18 ומעלה, אבל אפשר לפנות להדס גם עכשיו, יחד עם הורה או עם מבוגר אחר שסומכים עליו: {{hadas_phone}}. במצב חירום: מד"א 101.`,
+ 'minor.self':`תודה שכתבת. השיחה כאן מיועדת לגיל 18 ומעלה, אבל אפשר לפנות להדס גם עכשיו, יחד עם הורה או עם מבוגר אחר שסומכים עליו: ${PHONE}. במצב חירום: מד"א 101.`,
  'minor.self.before_text':[`תודה. השיחה כאן מיועדת לגיל 18 ומעלה, אבל אפשר לפנות להדס גם עכשיו, יחד עם הורה או עם מבוגר אחר שסומכים עליו: {{hadas_phone}}.`,`אם קשה עכשיו, אפשר לדבר עם מישהו שמקשיב:`,`ער"ן — בטלפון 1201, בכל שעה.`,`סה"ר — תמיכה בצ'אט, בכתב: {{sahar_url}}`,`במצב חירום: מד"א 101.`],
- 'reporter.not_parent':`תודה שכתבת. פנייה על ילד או ילדה נעשית כאן על ידי ההורים או האפוטרופוס, כי הם אלה שמחליטים עליה. אפשר להעביר להם את פרטי הקשר של הדס, כדי שיפנו בעצמם: {{hadas_phone}}. במצב חירום: מד"א 101.`,
+ 'reporter.not_parent':`תודה שכתבת. פנייה על ילד או ילדה נעשית כאן על ידי ההורים או האפוטרופוס, כי הם אלה שמחליטים עליה. אפשר להעביר להם את פרטי הקשר של הדס, כדי שיפנו בעצמם: ${PHONE}. במצב חירום: מד"א 101.`,
  'interim.deleted_note':`מה שנכתב כאן נמחק, ולא נשלח להדס.`,
  'reporter.copy_contact':`העתקת הפרטים של הדס`,
  'reporter.copied':`הפרטים הועתקו`,
+ 'reporter.copy_payload':`הדס תודה, קלינאית תקשורת. טלפון: {{hadas_phone}} · אתר: {{site_url}}`,
  'error.generic':`משהו השתבש, וההודעה לא נשלחה. אפשר לנסות שוב.`,
  'error.retry.button':`לנסות שוב`,
  'error.timeout':`התשובה מתעכבת. אפשר לחכות עוד רגע, או לנסות שוב.`,
@@ -761,9 +818,9 @@ const T = {
  'error.rate_limit':`נשלחו הרבה הודעות בזמן קצר. אפשר להמשיך בעוד דקה. במצב חירום: מד"א 101.`,
  'error.session_expired':`השיחה נסגרה ונמחקה אחרי זמן ללא פעילות, ואי אפשר להמשיך אותה. אפשר להתחיל שיחה חדשה.`,
  'error.delete_failed':`המחיקה לא הצליחה כרגע. אפשר לנסות שוב. גם בלי זה, השיחה תימחק מעצמה תוך כ-24 שעות מההודעה האחרונה.`,
- 'error.form_send':`הפרטים לא נשלחו בגלל תקלה. אפשר לנסות שוב, או להתקשר להדס: {{hadas_phone}}.`,
- 'error.form_send_repeat':`גם הפעם הפרטים לא נשלחו. אפשר לפנות להדס ישירות, בוואטסאפ או בטלפון {{hadas_phone}}. במצב חירום: מד"א 101.`,
- 'system.unavailable':`העוזר הדיגיטלי לא זמין כרגע. אפשר לפנות להדס ישירות: בטלפון {{hadas_phone}}, בוואטסאפ, או בטופס יצירת הקשר באתר. במצב חירום: מד"א 101.`,
+ 'error.form_send':`הפרטים לא נשלחו בגלל תקלה. אפשר לנסות שוב, או להתקשר להדס: ${PHONE}.`,
+ 'error.form_send_repeat':`גם הפעם הפרטים לא נשלחו. אפשר לפנות להדס ישירות, בוואטסאפ או בטלפון ${PHONE}. במצב חירום: מד"א 101.`,
+ 'system.unavailable':`העוזר הדיגיטלי לא זמין כרגע. אפשר לפנות להדס ישירות: בטלפון ${PHONE}, בוואטסאפ, או בטופס יצירת הקשר באתר. במצב חירום: מד"א 101.`,
  'system.model_free':`כרגע העוזר הדיגיטלי לא יכול לעבד הודעות כתובות, ואפשר להמשיך רק בבחירה מהאפשרויות שמוצגות. במצב חירום: מד"א 101.`,
  'fallback.title':`העוזר הדיגיטלי לא זמין כרגע`,
  'fallback.saved':`מה שסופר עד עכשיו שמור. {{expiry_clause}}`,
@@ -807,17 +864,21 @@ const T = {
  'form.validation.consent_missing':`כדי לשלוח, יש לסמן את תיבת ההסכמה.`,
  'form.errors_summary':`שדות לתיקון: {{error_count}}`,
  'form.confirmation.title':`הפרטים נשלחו להדס`,
+ 'form.confirmation.title.pending':`הפרטים בדרך להדס`,
  'form.confirmation.redflag_reminder':`לפני הכול: הבדיקה הרפואית שהוזכרה עדיין חשובה. לא לחכות לשיחה עם הדס כדי לקבוע אותה.`,
  'form.confirmation.what_now':`הדס תקרא את הסיכום ותחזור אליך בעצמה. מכאן ממשיכים עם הדס, לא עם העוזר הדיגיטלי.`,
+ 'form.confirmation.what_now.pending':`ההעברה להדס עוד לא הושלמה, והמערכת ממשיכה לנסות. כשהסיכום יגיע אליה, הדס תקרא ותחזור אליך בעצמה. מכאן ממשיכים עם הדס, לא עם העוזר הדיגיטלי.`,
  'form.confirmation.when':`הדס חוזרת בדרך כלל {{response_time}}.`,
+ 'form.confirmation.when.pending':`אחרי שהסיכום יגיע אליה, הדס חוזרת בדרך כלל {{response_time}}.`,
  'form.confirmation.from_number':`השיחה תגיע מהמספר {{callback_number}}. כדאי לשמור אותו, כדי לזהות את השיחה.`,
  'form.confirmation.who':`הדס תחזור אליך, למספר שנמסר כאן, ולא ישירות אל {{subject_ref}}.`,
  'form.confirmation.disclaimer':`הסיכום שנשלח נוצר אוטומטית, ואינו הערכה מקצועית. אם בינתיים מופיע קושי פתאומי בדיבור, בהבנה או בבליעה — לא לחכות: מד"א 101.`,
  'form.confirmation.fallback':`אם לא חזרו אליך עד {{followup_time}}, ייתכן שהפנייה לא הגיעה. אפשר לכתוב להדס בוואטסאפ: {{hadas_whatsapp_link}}, או להתקשר: {{hadas_phone}}.`,
- 'form.confirmation.add_later':`נזכרת במשהו? אפשר לכתוב להדס ישירות, בוואטסאפ או בטלפון {{hadas_phone}}.`,
+ 'form.confirmation.add_later':`נזכרת במשהו? אפשר לכתוב להדס ישירות, בוואטסאפ או בטלפון ${PHONE}.`,
  'form.confirmation.privacy':`תוכן השיחה נמחק, מהמכשיר ומהשרת. הסיכום ופרטי הקשר נשלחו להדס, ונשמרים אצלה.`,
- 'form.confirmation.privacy.pending':`תוכן השיחה נמחק, מהמכשיר ומהשרת. הסיכום ופרטי הקשר נשלחים להדס. עד שיגיעו אליה, הם נשמרים במערכת לכל היותר 7 ימים.`,
+ 'form.confirmation.privacy.pending':`תוכן השיחה נמחק, מהמכשיר ומהשרת. הסיכום ופרטי הקשר נשלחים להדס. עד שיגיעו אליה, הם נשמרים במערכת, ובכל מקרה נמחקים תוך כשבוע.`,
  'form.confirmation.privacy.delete_pending':`תוכן השיחה יימחק מהשרת תוך כשעה. הסיכום ופרטי הקשר נשלחו להדס, ונשמרים אצלה.`,
+ 'form.confirmation.privacy.both_pending':`תוכן השיחה יימחק מהשרת תוך כשעה. הסיכום ופרטי הקשר נשלחים להדס. עד שיגיעו אליה, הם נשמרים במערכת, ובכל מקרה נמחקים תוך כשבוע.`,
  'hadas_summary.header':`סיכום אוטומטי של דברי הפונה, לא הערכה מקצועית.`,
  'hadas_summary.outcome_label':`הכיוון שהוצג לפונה: {{outcome_label}} (נוסח {{outcome_text_version}})`,
  'hadas_summary.consent_record':`אישור תנאים: {{consent_time}} · נוסח הסתייגות {{disclaimer_version}}`,
@@ -843,17 +904,24 @@ const T = {
  'hadas.monthly.list_intro':`פניות החודש שעוד לא סומנו. כל שורה פותחת עמוד קצר לסימון ההערכה אחרי השיחה הראשונה:`,
  'hadas.monthly.row':`{{lead_ref}} · {{received_at}} · {{outcome_label}}`,
  'hadas.monthly.empty':`אין החודש פניות שממתינות לסימון.`,
- 'hadas.page.confirm':`אישור`, 'hadas.page.done':`נרשם`, 'hadas.page.change':`שינוי`, 'hadas.page.expired':`הקישור הזה כבר לא בתוקף. אפשר לסמן מהמייל העדכני.`
+ 'hadas.page.confirm':`אישור`, 'hadas.page.done':`נרשם`, 'hadas.page.change':`שינוי`, 'hadas.page.expired':`הקישור הזה כבר לא בתוקף. אפשר לסמן מהמייל האחרון.`
 };
-/* All ids above are current (texts.he.json v0.4.0). Genuinely open items (no canonical
+/* Ids above are current for the closed-update-3 screens (texts.he.json v0.6.0). Genuinely open items (no canonical
    text yet, or explicitly inactive pending legal/clinical sign-off) stay out of T and are
-   called out in the per-screen notes instead of invented here. */
-const W = {};
+   called out in the per-screen notes instead of invented here. (T synced from texts.he.json by the manager's script, 2026-10-06; see HANDOFF_LOG row 139):
+   reporter.copy_failed (UX §7.0), a11y.call_hadas (UX working name) and page.header.logo.a11y (UX 4.3). "חזרה לאתר" uses nav.back_to_site, which has the same wording as UX's working name page.header.back.
+   Stale against 0.6.0 and left alone because they are outside the closed list: consent.reconsent_note, chat.end.confirm,
+   menu.about, about.data, form.consent.checkbox, hadas.page.expired, language.unsupported (extra languages). */
+const W = { /* working text, shown only with the "נוסחי עבודה" toggle; with it off the id shows as [טקסט חסר] */
+ 'reporter.copy_failed':['הפרטים לא הועתקו, והם מוצגים כאן לבחירה ידנית.','UX §7.0: עד 15 מילים, בלי "לא הצלחנו"'],
+ 'a11y.call_hadas':['התקשרות להדס','UX §S13: שם עבודה'],
+ 'page.header.logo.a11y':['הדס תודה, דף הבית','UX §7: שם נגיש ללוגו, כולל "דף הבית" (2.5.3)']
+};
 
 /* =====================================================================
    STATE
    ===================================================================== */
-const OPT = {dev:'m', working:false, ids:false, hc:false, noanim:false, size:0, a11yOpen:false, links:false, font:false};
+const OPT = {dev:'m', working:false, ids:false, focus:false, hc:false, noanim:false, size:0, a11yOpen:false, links:false, font:false};
 let CUR = {s:0, st:0};
 const FOCUS_MARK = '__focus__';
 
@@ -862,7 +930,7 @@ function vchip(v){return `<span class="var" title="משתנה">{{${v}}}</span>`;
 function fill(s, ctx={}){
   s = esc(s);
   s = s.replace(/\[([^\]]+)\]\(\{\{privacy_url\}\}\)/g,'<a href="#" data-noop>$1</a>');
-  s = s.replace(/\{\{hadas_phone\}\}/g,`<a href="#" data-noop dir="ltr">${PHONE}</a>`);
+  s = s.replace(/\{\{hadas_phone\}\}/g,()=>`<a href="#" data-noop dir="ltr">${ctx.call_name?`<span class="sr">${t('a11y.call_hadas')} </span>`:''}${PHONE}</a>`);
   s = s.replace(/\{\{(\w+)\}\}/g,(m,v)=> ctx[v]!=null ? ctx[v] : vchip(v));
   s = s.replace(/מד&quot;א 101/g,'<a href="#" data-noop class="tel101">מד&quot;א 101</a>');
   return s;
@@ -914,6 +982,7 @@ const P = {
  cloudoff:'<path d="M3 3l18 18"/><path d="M8.3 8.5A5 5 0 0 0 6.5 18h10.2"/><path d="M10.8 6.3A6 6 0 0 1 18.3 11a4 4 0 0 1 2.4 6.2"/>',
  ext:'<path d="M14 4h6v6"/><path d="M20 4l-8.5 8.5"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
  chev:'<path d="M6 9l6 6 6-6"/>',
+ chevu:'<path d="M6 15l6-6 6 6"/>',
  chevl:'<path d="M15 6l-6 6 6 6"/>',
  wifioff:'<path d="M3 3l18 18"/><path d="M8.7 16.3a4.6 4.6 0 0 1 6.6 0"/><path d="M5.2 12.9a9.7 9.7 0 0 1 4.6-2.6"/><path d="M14.4 10.3a9.7 9.7 0 0 1 4.4 2.6"/><path d="M12 19.8v.01" stroke-width="2.8"/>',
  retry:'<path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20 4v5h-5"/>',
@@ -940,30 +1009,40 @@ const BARS = '<span class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i>
 /* =====================================================================
    COMPONENTS
    ===================================================================== */
-function bot(html,{first=true,anchor=false,cls=''}={}){return `<div class="row bot"${anchor?' id="anchor"':''}><span class="mark-col">${first?mark(28):''}</span><div class="bubble bot ${cls}"><span class="sr">${tv('chat.sr.bot_label')} </span>${html}</div></div>`;}
-function user(text,{unsent=false}={}){return `<div class="row user"><div class="bubble user${unsent?' unsent':''}"><span class="sr">${tv('chat.sr.user_label')} </span>${esc(text)}</div></div>` + (unsent?`<div class="unsent-row">${I('alert',16)} ${t('chat.not_sent')} <button class="btn-sm" data-go="S3/waiting">${I('retry',16)} ${t('error.retry.button')}</button></div>`:'');}
-function typing({slow=false}={}){return `<div class="row bot"><span class="mark-col">${mark(28)}</span><div class="bubble bot typing" role="status">${BARS}<span class="typing-t">${t('chat.typing')}</span></div></div>${slow?`<span class="slow-t" role="status">${t('chat.slow')}</span>`:''}`;}
-function sys(html, acts=''){return `<div class="sys" role="status">${I('info',20)}<div>${html}${acts?`<div class="sys-acts">${acts}</div>`:''}</div></div>`;}
-function chips(list,{grid=false,label=true}={}){return `<div class="chips${grid?' grid2':''}" role="group" aria-label="${esc(tv('a11y.quick_replies'))}">${list.join('')}</div>`;}
+function bot(html,{first=true,anchor=false,cls='',q=false,focus=false}={}){
+  // q: a closed question with quick-reply buttons under it. The buttons sit BEFORE the input in the DOM, so the question text carries
+  // the id that names the group (aria-labelledby), and the message ends with a visually hidden hint that there are options (a11y.buttons_hint).
+  const inner = q ? `<div id="q-cur">${html}</div><span class="sr q-hint"> ${t('a11y.buttons_hint')}</span>` : html;
+  return `<li class="row bot"${anchor?' id="anchor"':''}><span class="mark-col">${first?mark(28):''}</span><div class="bubble bot ${cls}"${focus?' tabindex="-1" data-focus':''}><span class="sr">${tv('chat.sr.bot_label')} </span>${inner}</div></li>`;
+}
+function user(text,{unsent=false}={}){return `<li class="row user"><div class="bubble user${unsent?' unsent':''}"><span class="sr">${tv('chat.sr.user_label')} </span>${esc(text)}</div></li>` + (unsent?`<li class="unsent-row">${I('alert',16)} ${t('chat.not_sent')} <button class="btn-sm" data-go="S3/waiting">${I('retry',16)} ${t('error.retry.button')}</button></li>`:'');}
+function typing({slow=false}={}){return `<li class="row bot"><span class="mark-col">${mark(28)}</span><div class="bubble bot typing">${BARS}<span class="typing-t">${t('chat.typing')}</span></div></li>${slow?`<li class="slow-t">${t('chat.slow')}</li>`:''}`;}
+function sys(html, acts=''){return `<li class="sys">${I('info',20)}<div>${html}${acts?`<div class="sys-acts">${acts}</div>`:''}</div></li>`;}
+function chips(list,{grid=false,noq=false}={}){return `<div class="chips${grid?' grid2':''}" role="group" ${noq?`aria-label="${esc(tv('a11y.quick_replies'))}"`:'aria-labelledby="q-cur"'}>${list.join('')}</div>`;}
 function chip(html,{alt=false,wide=false,solid=false,go='',demo='',icon=''}={}){return `<button type="button" class="chip${alt?' alt':''}${wide?' wide':''}${solid?' solid':''}"${go?` data-go="${go}"`:''}${demo?` data-demo="${demo}"`:''}>${icon?I(icon,18):''}${html}</button>`;}
-function composer({value='',state='idle'}={}){
+function composer({value='',state='idle',focus=true}={}){
   const wait = state==='wait', over = state==='toolong', block = state==='block';
+  // None of the lines around the field is a live region (COMPONENTS §7.1): the one announcer says them. They are plain elements.
   // Over 800 chars: a soft, non-blocking hint only. Sending is never blocked (SEC-06, UX S3) —
   // the flags-only check and meta.too_long bubble happen after send, not here.
-  const hint = wait ? `<div class="c-hint" role="status">${I('clock',15)} ${t('chat.send.wait')}</div>` : over ? `<div class="c-hint" role="status">${I('info',15)} ${t('chat.input.too_long_hint')}</div>` : '';
-  const counter = over ? `<div class="counter" aria-live="polite">812 / 800</div>` : '';
+  const hint = wait ? `<div class="c-hint">${I('clock',15)} ${t('chat.send.wait')}</div>` : over ? `<div class="c-hint">${I('info',15)} ${t('chat.input.too_long_hint')}</div>` : '';
+  const counter = over ? `<div class="counter">812 / 800</div>` : '';
   // Over 32KB (checked in the browser, before sending): nothing was sent, so no flags check ran on it. The message sits
   // beside the field, not in the transcript; it replaces the soft hint and counter; the text stays; Send stays enabled.
-  const blockMsg = block ? `<div class="c-block" id="cmp-block" role="status">${I('alert',20)}<p>${t('chat.input.too_long_block')}</p></div>` : '';
+  const blockMsg = block ? `<div class="c-block" id="cmp-block">${I('alert',20)}<p>${t('chat.input.too_long_block')}</p></div>` : '';
   const dis = (wait||(!value && state!=='idle-active' && !block)) ? 'true':'false';
-  return `<div class="composer-wrap">${hint}${blockMsg}<div class="composer"><label class="sr" for="cmp">${tv('chat.input.placeholder')}</label><textarea id="cmp" rows="1"${block?' class="over" aria-invalid="true" aria-describedby="cmp-block"':''} placeholder="${esc(tv('chat.input.placeholder'))}" data-composer>${esc(value)}</textarea><button type="button" class="send" aria-label="${esc(tv('chat.send.label'))}" aria-disabled="${dis}" data-send>${I('send',22,2.2)}</button></div>${counter}</div>`;
+  return `<div class="composer-wrap">${hint}${blockMsg}<div class="composer"><label class="sr" for="cmp">${tv('chat.input.placeholder')}</label><textarea id="cmp" rows="1"${block?' class="over" aria-invalid="true" aria-describedby="cmp-block"':''} placeholder="${esc(tv('chat.input.placeholder'))}" data-composer${focus?' data-focus':''}>${esc(value)}</textarea><button type="button" class="send" aria-label="${esc(tv('chat.send.label'))}" aria-disabled="${dis}" data-send>${I('send',22,2.2)}</button></div>${counter}</div>`;
 }
 function topbar(){return `<header class="tb"><button type="button" class="ibtn" aria-label="${esc(tv('a11y.exit'))}" data-go="S11/exit">${I('close',22)}</button><div class="tb-title">${mark(32)}<div class="tb-names"><span class="tb-name">${t('chat.header.title')}</span><span class="badge">${t('chat.header.subtitle')}</span></div></div><button type="button" class="ibtn a11y-ibtn" aria-label="תפריט נגישות" aria-expanded="${OPT.a11yOpen}" data-act="a11y"><span class="a11y-dot">${I('a11y',20,2)}</span></button><button type="button" class="ibtn" aria-label="${esc(tv('a11y.menu'))}" aria-haspopup="menu" data-go="S12/menu">${I('dots',22)}</button></header>`;}
 function stages(n){return `<ol class="stages" aria-label="שלבי השיחה">${[1,2,3].map(i=>`<li class="${i<n?'done':i===n?'cur':''}"${i===n?' aria-current="step"':''}><span class="sr">${fill(T['a11y.stage'],{stage_number:i,stage_name:tv('chat.stage.'+i)})} </span>${t('chat.stage.'+i)}</li>`).join('')}</ol>`;}
 function disc(){return `<div class="disc">${I('info',16)}<span class="disc-txt"><span class="disc-short">${t('chat.disclaimer_line.short')}</span><span class="disc-full">${t('chat.disclaimer_line')}</span></span><button type="button" class="disc-more" data-go="S12/about">${t('chat.disclaimer_more')}</button></div>`;}
 function shell(o){
-  const center = o.main!=null ? `<div class="main-area" tabindex="-1">${o.main}</div>` : `<div class="log" role="log" aria-live="polite" aria-label="${esc(tv('a11y.log_label'))}" tabindex="0" data-scroll="${o.scroll||'bottom'}">${o.log||''}</div>`;
-  return `<div class="tool">${topbar()}${o.banner||''}${stages(o.stage||1)}${disc()}${center}${o.pill?`<button type="button" class="newpill" aria-label="${esc(tv('a11y.new_message_pill'))}" data-act="tobottom">${I('down',16,2)} ${t('chat.new_message')}</button>`:''}${o.quick||''}${o.composer===false?'':composer(o.composer||{})}${o.overlay||''}</div>`;
+  const sh = o.short||0;   // 0 = normal; 1..3 = how many of the fixed bars have been released into the scroll flow (short height / 400% zoom)
+  // The transcript is a labelled region (section + a11y.log_label), NOT role="log" and NOT aria-live: the announcer outside this tree says
+  // new assistant messages, once, whole. Messages are an ol > li for message-by-message navigation. Step 3: the disclaimer is the first item.
+  const flowDisc = sh>=3 ? `<li class="flow-disc">${I('info',16)}<span>${t('chat.disclaimer_line')}</span></li>` : '';
+  const center = o.main!=null ? `<div class="main-area" tabindex="-1">${o.main}</div>` : `<section class="log" aria-label="${esc(tv('a11y.log_label'))}" tabindex="0" data-scroll="${o.scroll||'bottom'}"><ol class="msgs">${flowDisc}${o.log||''}</ol></section>`;
+  return `<div class="tool${sh?` short rel${sh}`:''}">${topbar()}${o.banner||''}${stages(o.stage||1)}${sh>=3?'':disc()}${center}${o.pill?`<button type="button" class="newpill" aria-label="${esc(tv('a11y.new_message_pill'))}" data-act="tobottom">${I('down',16,2)} ${t('chat.new_message')}</button>`:''}${o.quick||''}${o.composer===false?'':composer({...(o.composer||{}),focus:!o.overlay})}${o.overlay||''}</div>`;
 }
 function btnP(html,go='',extra=''){return `<button type="button" class="btn-p"${go?` data-go="${go}"`:''} ${extra}>${html}</button>`;}
 function btnS(html,go='',extra=''){return `<button type="button" class="btn-s"${go?` data-go="${go}"`:''} ${extra}>${html}</button>`;}
@@ -977,18 +1056,20 @@ LOG.A = bot(t('goal.core_relation.ask')) + user(SU.u1) + bot(model(SB.b2));
 LOG.B = LOG.A + user(SU.u2) + bot(model(SB.b3));
 LOG.C = LOG.B + user(SU.u3) + bot(t('meta.diagnosis_request'));
 LOG.D = LOG.C + user(SU.u4) + bot(t('q.dont_know.ack')+' '+t('q.prev_treatment'));
+  LOG.Dq = LOG.C + user(SU.u4) + bot(t('q.dont_know.ack')+' '+t('q.prev_treatment'),{q:true});
 function rebuildLogs(){
   LOG.A = bot(t('goal.core_relation.ask')) + user(SU.u1) + bot(model(SB.b2));
   LOG.B = LOG.A + user(SU.u2) + bot(model(SB.b3));
   LOG.C = LOG.B + user(SU.u3) + bot(t('meta.diagnosis_request'));
   LOG.D = LOG.C + user(SU.u4) + bot(t('q.dont_know.ack')+' '+t('q.prev_treatment'));
+  LOG.Dq = LOG.C + user(SU.u4) + bot(t('q.dont_know.ack')+' '+t('q.prev_treatment'),{q:true});
 }
 function relChips(){return chips([chip(t('q.relation.opt.self'),{demo:'self'}),chip(t('q.relation.opt.son'),{demo:'son'}),chip(t('q.relation.opt.daughter'),{demo:'daughter'}),chip(t('q.relation.opt.other'),{demo:'other'}),chip(t('chat.quick.have_question'),{alt:true,wide:true,icon:'help',go:'S4/topics'})],{grid:true});}
 
 /* ---- FAQ ---- */
 function faqCard(topicId, factKey){
   const fact = `<span class="tx miss" data-tid="facts.${factKey}">[טקסט חסר: עובדה מדף העובדות של הדס · ${factKey}]</span>`;
-  return `<article class="faq" aria-label="${esc(tv(topicId))} ${esc(tv('faq.source_note'))}"><div class="faq-head"><span class="faq-ic">${I('info',20)}</span><div><div class="faq-topic">${t(topicId)}</div><div class="faq-src">${t('faq.source_note')}</div></div></div><div class="faq-body">${t('faq.answer_frame',{fact})}</div></article>`;
+  return `<li><article class="faq" aria-label="${esc(tv(topicId))} ${esc(tv('faq.source_note'))}"><div class="faq-head"><span class="faq-ic">${I('info',20)}</span><div><div class="faq-topic">${t(topicId)}</div><div class="faq-src">${t('faq.source_note')}</div></div></div><div class="faq-body">${t('faq.answer_frame',{fact})}</div></article></li>`;
 }
 
 /* ---- outcome ---- */
@@ -1010,13 +1091,13 @@ function oc(n,{stale=false,noref=false}={}){
   if (n===3){ const b=tl('outcome.3.body'); body=`<p>${b[0]}</p>`; extra=`<div class="oc-important">${I('info',18)}<p>${b[1]}</p></div>`+whenList(); acts=`<p class="oc-door">${t('outcome.3.door_open')}</p>`+ctaForm()+ctaPhone(); }
   if (n===4){ body=`<p>${t('outcome.4.body')}</p>`; extra = noref?`<p class="oc-noref">${t('outcome.4.no_referral')}</p>`:refList(); acts=`${noref?'':`<p class="oc-small">${t('outcome.4.referral_disclaimer')}</p>`}<p class="oc-small">${t('outcome.4.misunderstood')}</p>`; }
   const disc = n===3 ? `<div class="oc-foot oc-foot-full">${I('info',16)}<p>${t('outcome.3.disclaimer')}</p></div>` : `<div class="oc-foot">${I('info',16)}<p>${t('outcome.disclaimer')}</p></div>`;
-  return `<section class="oc o${n}${stale?' stale':''}" aria-labelledby="oc-t" tabindex="-1" data-focus>${stale?`<span class="stale-tag">${t('outcome.stale_label')}</span>`:''}<div class="oc-head"><span class="oc-icon">${I(icon,24)}</span><div><div class="oc-eyebrow">${t('outcome.card.label')}</div><h2 class="oc-title" id="oc-t">${t(`outcome.${n}.title`)}</h2></div></div><div class="oc-body">${body}</div>${extra}<div class="oc-actions">${stale?'':acts}</div>${disc}</section>`;
+  return `<li class="li-oc"><section class="oc o${n}${stale?' stale':''}" aria-labelledby="oc-t">${stale?`<span class="stale-tag">${t('outcome.stale_label')}</span>`:''}<div class="oc-head"><span class="oc-icon">${I(icon,24)}</span><div><div class="oc-eyebrow">${t('outcome.card.label')}</div><h2 class="oc-title" id="oc-t">${t(`outcome.${n}.title`)}</h2></div></div><div class="oc-body">${body}</div>${extra}<div class="oc-actions">${stale?'':acts}</div>${disc}</section></li>`;
 }
-function summaryBubble(){return bot(`<div class="sum-label">${t('outcome.summary.label')}</div><p>${model(SB.sum,'VOICE 3.8')}</p>`,{cls:'summary'});}
+function summaryBubble(focus=true){return bot(`<div class="sum-label">${t('outcome.summary.label')}</div><p>${model(SB.sum,'VOICE 3.8')}</p>`,{cls:'summary',focus});}  // S5: the one focus target (tabindex -1), no announcement; the card follows it in the DOM
 function outcomeLog(n,o={}){
-  const sum = o.fallback ? bot(t('outcome.summary.fallback')) : summaryBubble();
+  const sum = o.fallback ? bot(t('outcome.summary.fallback'),{focus:true}) : summaryBubble();
   // "סיום ומחיקה" always opens the delete dialog first (S11); the dialog's own confirm is the DELETE (D-01).
-  return LOG.D + user(SU.u5) + bot(t('transition.to_outcome'),{anchor:true}) + sum + oc(n,o) + (o.stale?'':`<div class="oc-after">${lnk(t('outcome.add_more'),'S5/reopened')}${lnk(t('outcome.finish'),'S11/delete')}</div>`);
+  return LOG.D + user(SU.u5) + bot(t('transition.to_outcome'),{anchor:true}) + sum + oc(n,o) + (o.stale?'':`<li class="oc-after">${lnk(t('outcome.add_more'),'S5/reopened')}${lnk(t('outcome.finish'),'S11/delete')}</li>`);
 }
 
 /* ---- red flag ---- */
@@ -1024,35 +1105,43 @@ function rfTop(){return `<div class="rf-top">${mark(28)}<span class="grow">${t('
 function rf(variant){
   // Tiers: emergency / urgent / hotline (D-04). A secondary form only ever appears for urgent ALONE: any other flag in the
   // same conversation cancels it (UX_SPEC S6, draft 4). No ER button anywhere: in an emergency, one 101 button plus one text line.
-  const tier = (variant==='emergency'||variant==='combined3') ? 'emergency' : (variant==='urgent'||variant==='combined') ? 'urgent' : 'hotline';
+  // Closed update 3: NO role="alert" and NO aria-live anywhere on this screen. One mechanism only: focus goes to the h1 once the screen
+  // is painted (the input that had focus was removed from the DOM), and the announcer is emptied on entry. The 101 button's accessible
+  // name is redflag.cta.call.a11y@v2 ("חיוג ל-101, מד"א"): it opens with the visible text (WCAG 2.5.3).
+  const tier = (variant==='emergency'||variant==='combined3') ? 'emergency' : (variant==='urgent'||variant==='urgent-noform'||variant==='combined') ? 'urgent' : 'hotline';
   let action='', btns='', secline='', after='', secs='';
-  const call101 = `<a href="#" data-noop class="btn-dark" aria-label="${esc(tv('redflag.cta.call.a11y'))}" data-track-ignore="true">${I('phone',26,2)}${t('redflag.cta.call')}</a>`;
+  const n101 = `aria-label="${esc(tv('redflag.cta.call.a11y'))}" data-atid="redflag.cta.call.a11y@v2"`;
+  const call101 = `<a href="#" data-noop class="btn-dark" ${n101} data-track-ignore="true">${I('phone',26,2)}${t('redflag.cta.call')}</a>`;
   const call1201o = `<a href="#" data-noop class="btn-dark-o" data-track-ignore="true">${I('phone',22,2)}${t('redflag.cta.call_1201')}</a>`;
   const childPend = `<p class="oc-small" style="margin-top:8px"><span class="pending-tag">טיוטה — ממתין לאישור עו"ד על חובת דיווח</span></p>`;
-  // A secondary block is complete in itself: its own h2 (the tier title), its own text, its own action.
-  const sec = (n, inner, b='')=>`<section class="rf-sec" aria-labelledby="rf-sec-${n}"><h2 id="rf-sec-${n}">${t('redflag.title.hotline')}</h2><div class="rf-action sec">${inner}</div>${b?`<div class="rf-btns">${b}</div>`:''}</section>`;
+  // A secondary block is complete in itself: its own h2 (titled by flag type: .distress / .child_safety), its own text, its own action.
+  const sec = (n, titleId, inner, b='')=>`<section class="rf-sec" aria-labelledby="rf-sec-${n}"><h2 id="rf-sec-${n}">${t(titleId)}</h2><div class="rf-action sec">${inner}</div>${b?`<div class="rf-btns">${b}</div>`:''}</section>`;
   if (variant==='emergency'){
-    action = `<div class="rf-action" role="alert"><p>${t('redflag.type.sudden_onset')}</p></div>`;
+    action = `<div class="rf-action"><p>${t('redflag.type.sudden_onset')}</p></div>`;
     btns = call101;
     secline = `<p class="rf-secline">${t('redflag.secondary.emergency')}</p>`;
     after = `<hr class="rf-sep"><p class="rf-passive">${t('redflag.after.emergency')}</p>`;
-  } else if (variant==='urgent'){
-    action = `<div class="rf-action" role="alert"><p>${t('redflag.type.swallowing')}</p></div>`;
+  } else if (variant==='urgent'){ // form: secondary (Hadas approved it, and no other flag forbids it)
+    action = `<div class="rf-action"><p>${t('redflag.type.swallowing')}</p></div>`;
     after = `<hr class="rf-sep"><p class="rf-passive">${t('redflag.after')}</p><div style="margin-top:12px">${btnS(t('redflag.cta.form'),'S7/default')}</div><p class="oc-small" style="margin-top:6px"><span class="pending-tag">רק באישור הדס (D-04)</span></p>`;
+  } else if (variant==='urgent-noform'){ // form: none (Hadas did not approve a secondary form, or another flag forbids it): the closing line makes no form promise
+    action = `<div class="rf-action"><p>${t('redflag.type.swallowing')}</p></div>`;
+    after = `<hr class="rf-sep"><p class="rf-passive">${t('redflag.after.no_form')}</p>`;
   } else if (variant==='hotline-distress'){
-    action = `<div class="rf-action" role="alert"><p>${t('redflag.type.distress',{subject_ref:'יוסי'})}</p></div>`;
-    btns = `<a href="#" data-noop class="btn-dark" data-track-ignore="true">${I('phone',26,2)}${t('redflag.cta.call_1201')}</a><a href="#" data-noop class="btn-dark-o" aria-label="${esc(tv('redflag.cta.call.a11y'))}" data-track-ignore="true">${I('phone',22,2)}${t('redflag.cta.call')}</a>`;
+    action = `<div class="rf-action"><p>${t('redflag.type.distress',{subject_ref:'יוסי'})}</p></div>`;
+    btns = `<a href="#" data-noop class="btn-dark" data-track-ignore="true">${I('phone',26,2)}${t('redflag.cta.call_1201')}</a><a href="#" data-noop class="btn-dark-o" ${n101} data-track-ignore="true">${I('phone',22,2)}${t('redflag.cta.call')}</a>`;
   } else if (variant==='hotline-child'){ // no dedicated CTA id yet (texts.he.json has no redflag.cta.* for 118/100) — message only, no form (D-04), pending legal sign-off on the message itself.
-    action = `<div class="rf-action" role="alert"><p>${t('redflag.type.child_safety')}</p>${childPend}</div>`;
-  } else if (variant==='combined'){ // developmental regression (urgent) + child safety (hotline): the UX_SPEC S6 example. No form, no redflag.after.
-    action = `<div class="rf-action" role="alert"><p>${t('redflag.type.child_regression')}</p></div>`;
-    secs = sec(1, `<p>${t('redflag.type.child_safety')}</p>${childPend}`);
+    action = `<div class="rf-action"><p>${t('redflag.type.child_safety')}</p>${childPend}</div>`;
+  } else if (variant==='combined'){ // developmental regression (urgent) + child safety (hotline): the UX_SPEC S6 example. The form is blocked, so the urgent block closes with redflag.after.no_form (not redflag.after, no redflag.cta.form).
+    action = `<div class="rf-action"><p>${t('redflag.type.child_regression')}</p></div>`;
+    after = `<p class="rf-passive rf-main-end">${t('redflag.after.no_form')}</p>`;
+    secs = sec(1, 'redflag.title.hotline.child_safety', `<p>${t('redflag.type.child_safety')}</p>${childPend}`);
   } else { // combined3: emergency + distress + child safety = the 3-block maximum
-    action = `<div class="rf-action" role="alert"><p>${t('redflag.type.sudden_onset')}</p></div>`;
+    action = `<div class="rf-action"><p>${t('redflag.type.sudden_onset')}</p></div>`;
     btns = call101;
     secline = `<p class="rf-secline">${t('redflag.secondary.emergency')}</p>`;
     after = `<p class="rf-passive rf-main-end">${t('redflag.after.emergency')}</p>`;
-    secs = sec(1, `<p>${t('redflag.type.distress',{subject_ref:'יוסי'})}</p>`, call1201o) + sec(2, `<p>${t('redflag.type.child_safety')}</p>${childPend}`);
+    secs = sec(1, 'redflag.title.hotline.distress', `<p>${t('redflag.type.distress',{subject_ref:'יוסי'})}</p>`, call1201o) + sec(2, 'redflag.title.hotline.child_safety', `<p>${t('redflag.type.child_safety')}</p>${childPend}`);
   }
   const footer = `<p class="rf-footer">${t('redflag.footer')}</p>`;
   return `<div class="rf">${rfTop()}<div class="rf-body"><span class="rf-icon">${I('pause',26,2.4)}</span><h1 tabindex="-1" data-focus>${t('redflag.title.'+tier)}</h1>${action}${btns?`<div class="rf-btns">${btns}</div>`:''}${secline}${after}${secs}${footer}<div class="rf-foot">${lnk(I('back',18)+t('nav.back_to_site'),'S0/contact')}</div></div></div>`;
@@ -1061,15 +1150,15 @@ function rf(variant){
 /* ---- handoff form ---- */
 function form(st){
   const errs = st==='errors', sending = st==='sending', failed = st==='failed'||st==='failed2';
-  const pv = `<details class="preview"${st==='preview'?' open':''}><summary>${I('mail',20)}<span class="grow">${t('form.preview.title')}</span><span class="chev">${I('chev',20)}</span></summary><div class="pv"><dl><dt>${t('form.preview.row.who')}</dt><dd>הורה</dd><dt>${t('form.preview.row.about')}</dt><dd>הבן, יוסי</dd><dt>${t('form.preview.row.age')}</dt><dd>4</dd><dt>${t('form.preview.row.topic')}</dt><dd>"נתקע במילים"</dd><dt>${t('form.preview.row.facts')}</dt><dd>"כבר כמה חודשים" · "בעיקר כשהוא נלהב לספר משהו" · "הגננת אמרה שאולי כדאי לבדוק שמיעה"</dd></dl><span class="oc-small">דוגמת חילוץ — הערכים מגיעים מהתיק</span><div>${lnk(t('form.preview.fix'),'S3/typing')}</div></div></details>`;
-  const fName = `<div class="field${errs?' err':''}"><label for="f-name">${t('form.name.label')}</label><input id="f-name" autocomplete="given-name" ${errs?'aria-invalid="true" aria-describedby="e-name"':''} value="${errs?'':'מיכל'}">${errs?`<span class="err-msg" id="e-name">${I('alert',16)} ${t('form.validation.name_missing')}</span>`:''}</div>`;
+  const pv = `<details class="preview"${st==='preview'?' open':''}><summary>${I('mail',20)}<span class="grow">${t('form.preview.title')}</span><span class="chev"><span class="down">${I('chev',20)}</span><span class="up">${I('chevu',20)}</span></span></summary><div class="pv"><dl><dt>${t('form.preview.row.who')}</dt><dd>הורה</dd><dt>${t('form.preview.row.about')}</dt><dd>הבן, יוסי</dd><dt>${t('form.preview.row.age')}</dt><dd>4</dd><dt>${t('form.preview.row.topic')}</dt><dd>"נתקע במילים"</dd><dt>${t('form.preview.row.facts')}</dt><dd>"כבר כמה חודשים" · "בעיקר כשהוא נלהב לספר משהו" · "הגננת אמרה שאולי כדאי לבדוק שמיעה"</dd></dl><span class="oc-small">דוגמת חילוץ — הערכים מגיעים מהתיק</span><div>${lnk(t('form.preview.fix'),'S3/typing')}</div></div></details>`;
+  const fName = `<div class="field${errs?' err':''}"><label for="f-name">${t('form.name.label')}</label><input id="f-name" autocomplete="given-name" ${errs?'aria-invalid="true" aria-describedby="e-name" data-focus':''} value="${errs?'':'מיכל'}">${errs?`<span class="err-msg" id="e-name">${I('alert',16)} ${t('form.validation.name_missing')}</span>`:''}</div>`;
   const fPhone = `<div class="field${errs?' err':''}"><label for="f-phone">${t('form.phone.label')}</label><input id="f-phone" type="tel" dir="ltr" inputmode="tel" autocomplete="tel" ${errs?'aria-invalid="true" aria-describedby="e-phone"':'aria-describedby="h-phone"'} value="${errs?'050-12':'050-1234567'}"><span class="fhint" id="h-phone">${t('form.phone.hint')}</span>${errs?`<span class="err-msg" id="e-phone">${I('alert',16)} ${t('form.validation.phone_format')}</span>`:''}</div>`;
   const seg = (ids,sel)=>`<div class="segopts" role="radiogroup">${ids.map((id,i)=>`<button type="button" class="segopt" role="radio" aria-checked="${i===sel}"><span class="dot"></span>${t(id)}</button>`).join('')}</div>`;
   const fTime = `<fieldset class="optgrp"><legend class="flabel">${t('form.best_time.label')} <span class="pending-tag">ממתין לאישור אליה והדס</span></legend>${seg(['form.best_time.morning','form.best_time.noon','form.best_time.evening'],2)}</fieldset>`;
   const fChan = `<fieldset class="optgrp"><legend class="flabel">${t('form.channel_pref.label')} <span class="pending-tag">ממתין לאישור</span></legend>${seg(['form.channel_pref.call','form.channel_pref.whatsapp'],-1)}</fieldset>`;
   const fCons = `<div><label class="cbx${errs?' err':''}"><input type="checkbox" ${errs?'aria-invalid="true" aria-describedby="e-cons"':'checked'}><span class="box">${I('check',16,3)}</span><span>${t('form.consent.checkbox')}</span></label>${errs?`<span class="err-msg" id="e-cons" style="margin-top:6px">${I('alert',16)} ${t('form.validation.consent_missing')}</span>`:''}</div>`;
-  const sum = errs ? `<div class="errsum" role="alert" tabindex="-1"><b>${I('alert',18)} ${t('form.errors_summary',{error_count:'3'})}</b><ul><li><a href="#f-name" data-noop>${tv('form.validation.name_missing')}</a></li><li><a href="#f-phone" data-noop>${tv('form.validation.phone_format')}</a></li><li><a href="#" data-noop>${tv('form.validation.consent_missing')}</a></li></ul></div>`:'';
-  const fail = failed ? `<div class="errbox" role="alert">${I('alert',20)}<div><p>${t('error.form_send')}</p><div class="sys-acts"><button class="btn-sm" data-go="S7/sending">${I('retry',16)} ${t('error.retry.button')}</button></div></div></div>`:'';
+  const sum = errs ? `<div class="errsum"><b>${I('alert',18)} ${t('form.errors_summary',{error_count:'3'})}</b><ul><li><a href="#f-name" data-noop>${tv('form.validation.name_missing')}</a></li><li><a href="#f-phone" data-noop>${tv('form.validation.phone_format')}</a></li><li><a href="#" data-noop>${tv('form.validation.consent_missing')}</a></li></ul></div>`:'';
+  const fail = failed ? `<div class="errbox" tabindex="-1" data-focus>${I('alert',20)}<div><p>${t('error.form_send')}</p><div class="sys-acts"><button class="btn-sm" data-go="S7/sending">${I('retry',16)} ${t('error.retry.button')}</button></div></div></div>`:'';
   const fail2 = st==='failed2' ? `<p class="lead">${t('error.form_send_repeat')}</p><div class="alt-ways"><a href="#" data-noop class="way"><span class="wic wa">${I('wa',22)}</span><span class="grow">${t('fallback.whatsapp')}</span>${I('chevl',18)}</a><a href="#" data-noop class="way"><span class="wic">${I('phone',20)}</span><span class="grow">${t('fallback.phone')} · <span dir="ltr">${PHONE}</span></span>${I('chevl',18)}</a></div>`:'';
   const submit = sending ? `<button type="button" class="btn-p is-loading" aria-disabled="true">${BARS}${t('form.sending')}</button>` : btnP(t('form.submit'), errs?'':'S7/sending');
   return `<form class="hform" novalidate onsubmit="return false"><h2 tabindex="-1" data-focus>${t('form.title')}</h2><p class="lead">${t('form.intro')}</p>${st==='partial'?`<p class="note">${I('info',18)} <span>${t('form.partial_note')}</span></p>`:''}${sum}${pv}${fName}${fPhone}${fTime}${fChan}${fCons}<p class="privacy">${t('form.privacy_note')}</p>${fail}${fail2}${submit}</form>`;
@@ -1079,11 +1168,22 @@ function form(st){
 function confirmScr(v){
   // D-01 / legal: the conversation content is deleted from the device AND the server — form.confirmation.privacy
   // says so explicitly. form.confirmation.redflag_reminder only appears after a form sent from the urgent red-flag screen.
-  return `<div class="confirm"><span class="cf-icon">${I('mail',28)}</span><h2 tabindex="-1" data-focus>${t('form.confirmation.title')}</h2>${v==='privacy_pending'?`<p class="cf-small"><span class="pending-tag">הכותרת אומרת "נשלחו" ובמצב הזה עוד לא · כותרת חלופית חסרה</span></p>`:''}${v==='afterflag'?`<div class="cf-rf">${t('form.confirmation.redflag_reminder')}</div>`:''}<p>${t('form.confirmation.what_now')}</p>${v==='other'?`<p class="cf-line">${I('info',18)}<span>${t('form.confirmation.who',{subject_ref:'יוסי'})}</span></p>`:''}<p class="cf-line">${I('phone',18)}<span>${t('form.confirmation.from_number',{callback_number:PHONE})}</span></p><p>${t('form.confirmation.when',{response_time:'עד סוף יום העבודה הבא'})}</p><p class="cf-line">${I('info',18)}<span>${t('form.confirmation.fallback',{followup_time:'מחר בצהריים'})}</span></p><p class="cf-line">${I('alert',18)}<span>${t('form.confirmation.disclaimer')}</span></p><p class="cf-small">${t('form.confirmation.add_later')}</p><p class="cf-small">${t(v==='privacy_pending'?'form.confirmation.privacy.pending':v==='privacy_delete'?'form.confirmation.privacy.delete_pending':'form.confirmation.privacy')}</p><div style="margin-top:6px">${btnS(t('nav.back_to_site'),'S0/contact')}</div></div>`;
+  // delivery: pending (privacy_pending, both_pending) swaps the title, "what now" and "when" for their .pending variants (UX S8, 4.1).
+  // The privacy line is one of four, by the server's answer: delivered / pending / delete_pending / both_pending.
+  const pend = v==='privacy_pending' || v==='both_pending';
+  const priv = v==='both_pending' ? 'form.confirmation.privacy.both_pending' : v==='privacy_pending' ? 'form.confirmation.privacy.pending' : v==='privacy_delete' ? 'form.confirmation.privacy.delete_pending' : 'form.confirmation.privacy';
+  return `<div class="confirm"><span class="cf-icon">${I('mail',28)}</span><h2 tabindex="-1" data-focus>${t(pend?'form.confirmation.title.pending':'form.confirmation.title')}</h2>${v==='afterflag'?`<div class="cf-rf">${t('form.confirmation.redflag_reminder')}</div>`:''}<p>${t(pend?'form.confirmation.what_now.pending':'form.confirmation.what_now')}</p>${v==='other'?`<p class="cf-line">${I('info',18)}<span>${t('form.confirmation.who',{subject_ref:'יוסי'})}</span></p>`:''}<p class="cf-line">${I('phone',18)}<span>${t('form.confirmation.from_number',{callback_number:PHONE})}</span></p><p>${t(pend?'form.confirmation.when.pending':'form.confirmation.when',{response_time:'עד סוף יום העבודה הבא'})}</p><p class="cf-line">${I('info',18)}<span>${t('form.confirmation.fallback',{followup_time:'מחר בצהריים'})}</span></p><p class="cf-line">${I('alert',18)}<span>${t('form.confirmation.disclaimer')}</span></p><p class="cf-small">${t('form.confirmation.add_later')}</p><p class="cf-small">${t(priv)}</p><div style="margin-top:6px">${btnS(t('nav.back_to_site'),'S0/contact')}</div></div>`;
 }
 function fallbackScr(v){
   const body = v==='ratelimit' ? t('error.rate_limit') : t('system.unavailable');
   return `<div class="fallback"><span class="cf-icon">${I(v==='ratelimit'?'clock':'cloudoff',28)}</span><h2 tabindex="-1" data-focus>${t('fallback.title')}</h2><p>${body}</p>${v==='midchat'?`<p class="cf-line">${I('info',18)}<span>${t('fallback.saved',{expiry_clause:'השיחה תימחק אוטומטית תוך 24 שעות.'})}</span></p>`:''}<div class="alt-ways"><a href="#" data-noop class="way"><span class="wic wa">${I('wa',22)}</span><span class="grow">${t('fallback.whatsapp')}</span>${I('chevl',18)}</a><a href="#" data-noop class="way"><span class="wic">${I('phone',20)}</span><span class="grow">${t('fallback.phone')} · <span dir="ltr">${PHONE}</span></span>${I('chevl',18)}</a><a href="#" data-noop class="way"><span class="wic">${I('page',20)}</span><span class="grow">${t('fallback.contact')}</span>${I('chevl',18)}</a></div>${v==='ratelimit'?`<div>${btnS(t('error.retry.button'),'S3/typing')}</div>`:''}<p class="cf-small">קישור הוואטסאפ נושא רק טקסט כללי (fallback.whatsapp_prefill) — בלי תוכן מהשיחה.</p></div>`;
+}
+
+/* S10 variation ד: JavaScript is off, blocked, or never loaded. A static block in the page's own HTML (plus <noscript>), replaced when React comes up.
+   Same generator as system.unavailable, so its text is the same text. 101, Hadas's phone and a WhatsApp link (general text only). No form, no chat.
+   The tool's own static header and footer stay. */
+function noJsScr(){
+  return `<div class="fallback nojs"><span class="cf-icon">${I('cloudoff',28)}</span><h2 tabindex="-1" data-focus>${t('fallback.title')}</h2><p>${t('system.unavailable')}</p><div class="alt-ways"><a href="tel:101" data-noop class="way" aria-label="${esc(tv('redflag.cta.call.a11y'))}" data-atid="redflag.cta.call.a11y@v2"><span class="wic">${I('phone',20)}</span><span class="grow">${t('redflag.cta.call')}</span>${I('chevl',18)}</a><a href="#" data-noop class="way"><span class="wic wa">${I('wa',22)}</span><span class="grow">${t('fallback.whatsapp')}</span>${I('chevl',18)}</a><a href="#" data-noop class="way"><span class="wic">${I('phone',20)}</span><span class="grow">${t('fallback.phone')} · <span dir="ltr">${PHONE}</span></span>${I('chevl',18)}</a></div></div>`;
 }
 
 /* ---- intro page (S1) ---- */
@@ -1098,10 +1198,10 @@ function intro(st){
   const discList = `<ul class="dlist">${discItems.join('')}</ul>`;
   const cbx = `<label class="cbx${missing?' err':''}"><input type="checkbox" id="consent-cb" ${missing?'aria-invalid="true" aria-describedby="e-consent"':''} ${loading?'checked':''}><span class="box">${I('check',16,3)}</span><span>${t('consent.checkbox')}</span></label>${missing?`<span class="err-msg" id="e-consent" style="margin-top:8px">${I('alert',16)} ${t('consent.checkbox.error')}</span>`:''}`;
   const acts = st==='declined' ? '' : `<div class="c-acts">${loading?`<button type="button" class="btn-p is-loading" aria-disabled="true">${BARS}${t('consent.start_loading')}</button>`:btnP(t('consent.button.accept'),'','data-act="consent"')}${btnS(t('consent.button.decline'),'S1/declined')}</div>`;
-  const declined = `<div class="notice" role="status" tabindex="-1" data-focus>${I('info',20)}<div><p>${t('consent.declined')}</p><div class="direct-ways" style="margin-top:10px"><a href="#" data-noop class="btn-sm">${I('phone',16)} <span dir="ltr">${PHONE}</span></a><a href="#" data-noop class="btn-sm">${I('wa',16)} וואטסאפ</a><a href="#" data-noop class="btn-sm">${I('page',16)} דברו איתי</a></div></div></div>`;
+  const declined = `<div class="notice" tabindex="-1" data-focus>${I('info',20)}<div><p>${t('consent.declined')}</p><div class="direct-ways" style="margin-top:10px"><a href="#" data-noop class="btn-sm">${I('phone',16)} <span dir="ltr">${PHONE}</span></a><a href="#" data-noop class="btn-sm">${I('wa',16)} וואטסאפ</a><a href="#" data-noop class="btn-sm">${I('page',16)} דברו איתי</a></div></div></div>`;
   return `<div class="intro">
     ${st==='reconsent'?`<div class="notice">${I('info',20)}<p>${t('consent.reconsent_note')}</p></div>`:''}
-    ${st==='expired'?`<div class="notice" role="status">${I('clock',20)}<p>${t('error.session_expired')}</p></div>`:''}
+    ${st==='expired'?`<div class="notice">${I('clock',20)}<p>${t('error.session_expired')}</p></div>`:''}
     <span class="pill-tag">${mark(18)} ${t('chat.header.subtitle')}</span>
     <h1 style="margin-top:10px">${t('page.tool.h1')}</h1>
     <p class="sub">${t('page.tool.sub')}</p>
@@ -1155,19 +1255,32 @@ function s9Scr(v){
 }
 
 /* ---- S13: minor on self, and a reporter who isn't the parent (D-02) ---- */
+/* S13b copy (UX S13): success is announced through the announcer (focus stays on the button, the text stays visible); failure says so
+   and reveals the details as selectable text. "הפרטים הועתקו" is never shown unless the clipboard write actually succeeded. */
+function copyPayloadText(){ return tv('reporter.copy_payload').replace(/\{\{site_url\}\}/g,'hadas-toda.co.il'); }
+function copyFailHtml(){
+  // the exact reporter.copy_payload text, in a focusable read-only box that selects itself on focus; the phone and the URL are nowrap runs so they never split across lines
+  const txt = esc(T['reporter.copy_payload']).replace(/\{\{hadas_phone\}\}/g,`<bdi dir="ltr" class="nb">${PHONE}</bdi>`).replace(/\{\{site_url\}\}/g,'<bdi dir="ltr" class="nb">hadas-toda.co.il</bdi>');
+  return `<p class="copy-failed" id="cf-msg">${I('alert',18)}<span>${t('reporter.copy_failed')}</span></p><div class="payload" role="textbox" aria-readonly="true" aria-multiline="true" aria-labelledby="cf-msg" tabindex="0" onfocus="getSelection().selectAllChildren(this)">${txt}</div>`;
+}
+// the phone link is digits only on screen, so its accessible name starts with words (a11y.call_hadas, 2.4.4) and still contains the visible digits (2.5.3)
+function callBtn(cls='btn-s',extra=''){ return `<a href="#" data-noop class="${cls}" ${extra}><span class="sr">${t('a11y.call_hadas')} </span><span dir="ltr">${I('phone',18)} ${PHONE}</span></a>`; }
 function s13Scr(v){
   if (v==='minor_pre'){
     // D-13 branch A, stopped from the age tap, BEFORE any free text: the same card, plus 101 and the distress help lines
     // (the distress red flag has nothing to scan yet, so a minor stopped here would meet no other screen).
-    const L = tl('minor.self.before_text');
-    return `<div class="rcard"><div class="rcard-h"><span class="rci">${I('info',24)}</span><h2 style="font-size:var(--t19);font-weight:500;color:var(--dark)" tabindex="-1" data-focus>השיחה הזו מיועדת לגיל 18 ומעלה</h2></div><p>${L[0]}</p><div class="helplines"><p>${L[1]}</p><ul><li>${I('phone',18)}<span>${L[2]}</span></li><li>${I('talk',18)}<span>${L[3]}</span></li></ul></div><p class="sec-emerg">${L[4]}</p><div class="c-acts c-acts-equal" style="margin-top:14px"><a href="#" data-noop class="btn-s"><span dir="ltr">${I('phone',18)} ${PHONE}</span></a><a href="#" data-noop class="btn-s" data-track-ignore="true">${I('phone',18)} ${t('redflag.cta.call_1201')}</a></div><p class="cf-small" style="margin-top:14px">${t('interim.deleted_note')}</p><div style="margin-top:10px">${btnS(t('nav.back_to_site'),'S0/contact')}</div></div>`;
+    // The Sahar link opens in a new tab, so it carries the hidden hint (outcome.4.external_hint). Focus goes to the card heading, no announcement.
+    const sahar = `<a href="#" data-noop class="ext-link" target="_blank" rel="noopener">${vchip('sahar_url')} ${I('ext',16)}<span class="sr"> ${t('outcome.4.external_hint')}</span></a>`;
+    const L = tl('minor.self.before_text',{call_name:true, sahar_url:sahar});
+    return `<div class="rcard"><div class="rcard-h"><span class="rci">${I('info',24)}</span><h2 style="font-size:var(--t19);font-weight:500;color:var(--dark)" tabindex="-1" data-focus>השיחה הזו מיועדת לגיל 18 ומעלה</h2></div><p>${L[0]}</p><div class="helplines"><p>${L[1]}</p><ul><li>${I('phone',18)}<span>${L[2]}</span></li><li>${I('talk',18)}<span>${L[3]}</span></li></ul></div><p class="sec-emerg">${L[4]}</p><div class="c-acts c-acts-equal" style="margin-top:14px">${callBtn('btn-s')}<a href="#" data-noop class="btn-s" data-track-ignore="true">${I('phone',18)} ${t('redflag.cta.call_1201')}</a></div><p class="cf-small" style="margin-top:14px">${t('interim.deleted_note')}</p><div style="margin-top:10px">${btnS(t('nav.back_to_site'),'S0/contact')}</div></div>`;
   }
   const isMinor = v==='minor';
-  const body = isMinor ? t('minor.self',{hadas_phone:PHONE}) : t('reporter.not_parent',{hadas_phone:PHONE});
+  const copied = v==='not_parent_copied', failed = v==='not_parent_failed';
+  const body = isMinor ? t('minor.self',{call_name:true}) : t('reporter.not_parent',{call_name:true});
   const action = isMinor
-    ? `<a href="#" data-noop class="btn-s" style="align-self:flex-start"><span dir="ltr">${I('phone',18)} ${PHONE}</span></a>`
-    : `<div><button type="button" class="btn-s" data-act="copy-contact">${I('copy',18)}${t('reporter.copy_contact')}</button><span class="copied-note" role="status" hidden>${I('check',16)} ${t('reporter.copied')}</span></div>`;
-  return `<div class="rcard"><div class="rcard-h"><span class="rci">${I('info',24)}</span><h2 style="font-size:var(--t19);font-weight:500;color:var(--dark)" tabindex="-1" data-focus>${isMinor?'השיחה הזו מיועדת לגיל 18 ומעלה':'פנייה על ילד או ילדה'}</h2></div><p>${body}</p>${action}<p class="cf-small" style="margin-top:14px">${t('interim.deleted_note')}</p><div style="margin-top:10px">${btnS(t('nav.back_to_site'),'S0/contact')}</div></div>`;
+    ? callBtn('btn-s','style="align-self:flex-start"')
+    : `<div class="copy-row"><button type="button" class="btn-s" data-act="copy-contact"${copied||failed?' data-focus':''}>${I('copy',18)}${t('reporter.copy_contact')}</button>${copied?`<span class="copied-note">${I('check',16)} ${t('reporter.copied')}</span>`:''}</div>${failed?copyFailHtml():''}`;
+  return `<div class="rcard"><div class="rcard-h"><span class="rci">${I('info',24)}</span><h2 style="font-size:var(--t19);font-weight:500;color:var(--dark)"${copied||failed?'':' tabindex="-1" data-focus'}>${isMinor?'השיחה הזו מיועדת לגיל 18 ומעלה':'פנייה על ילד או ילדה'}</h2></div><p>${body}</p>${action}<p class="cf-small" style="margin-top:14px">${t('interim.deleted_note')}</p><div style="margin-top:10px">${btnS(t('nav.back_to_site'),'S0/contact')}</div></div>`;
 }
 
 /* ---- a11y widget mock (texts are the site's own, from AccessibilityWidget.jsx) ---- */
@@ -1222,73 +1335,78 @@ function hpage(st){
 const LONGPASTE = (()=>{ const u='סיכום כל הבדיקות והביקורים מהשנים האחרונות, כפי שהודבק ממסמך אחר. '; let s=''; while(new TextEncoder().encode(s).length<33000) s+=u; return s; })();
 const SCREENS = [
  {id:'S0', name:'נקודות כניסה', states:[
-  {id:'contact', name:'כרטיס ב"דברו איתי"', mode:'page', html:()=>entryContact(), d:'כרטיס נוסף בגריד ה-bento, באותה שפה של כרטיסי הטלפון והוואטסאפ (זכוכית, רדיוס 32). סמל העוזר (פסי קול) ולא תמונה. הכפתור משני (מתאר), כי הטופס הוא הפעולה הראשית בעמוד.', f:'כרטיס = קישור אחד (לא כרטיס לחיץ כולו), כדי שקורא מסך ישמע את שם הפעולה.'},
-  {id:'home', name:'דף הבית — קישור משני', mode:'page', html:()=>entryHome(), d:'"קביעת פגישת ייעוץ" נשאר הכפתור הראשי בלי שינוי. מתחתיו קישור טקסט עם סמל העוזר ושורת משנה שמגלה שזה עוזר דיגיטלי. לא כפתור שני באותו משקל.', f:'קישור רגיל בסדר הטאב אחרי הכפתור הראשי.'},
-  {id:'landing', name:'דף נחיתה — שורה מעל הטופס', mode:'page', html:()=>entryLanding(), d:'שורה מעל SmartLeadForm בצבע התחום של הדף (--accent-topic, כאן גמגום). הכפתור הראשי בכותרת הדף לא נוגע (מבחני A/B). צבע התחום חי רק בדף הנחיתה — בתוך הכלי אין ערכת צבע לפי תחום.', f:'—'},
-  {id:'services', name:'תחומי טיפול — רצועה', mode:'page', html:()=>entryServices(), d:'רצועת זכוכית בין תחנות התחומים ל"איך מתנהל הטיפול".', f:'—'},
-  {id:'unavailable', name:'הכלי לא זמין', mode:'page', html:()=>entryContact(true), d:'כשהמנוע מושבת או תקרת העלות נוצלה: הכרטיס מתחלף בהודעה ובקישור ל"דברו איתי" (מסגרת מקווקוות, בלי סמל העוזר). בדף הבית ובדפי הנחיתה הקישור פשוט מוסתר.', f:'—'}
+  {id:'contact', name:'כרטיס ב"דברו איתי"', mode:'page', site:true, html:()=>entryContact(), d:'כרטיס נוסף בגריד ה-bento, באותה שפה של כרטיסי הטלפון והוואטסאפ (זכוכית, רדיוס 32). סמל העוזר (פסי קול) ולא תמונה. הכפתור משני (מתאר), כי הטופס הוא הפעולה הראשית בעמוד.', f:'כרטיס = קישור אחד (לא כרטיס לחיץ כולו), כדי שקורא מסך ישמע את שם הפעולה.'},
+  {id:'home', name:'דף הבית — קישור משני', mode:'page', site:true, html:()=>entryHome(), d:'"קביעת פגישת ייעוץ" נשאר הכפתור הראשי בלי שינוי. מתחתיו קישור טקסט עם סמל העוזר ושורת משנה שמגלה שזה עוזר דיגיטלי. לא כפתור שני באותו משקל.', f:'קישור רגיל בסדר הטאב אחרי הכפתור הראשי.'},
+  {id:'landing', name:'דף נחיתה — שורה מעל הטופס', mode:'page', site:true, html:()=>entryLanding(), d:'שורה מעל SmartLeadForm בצבע התחום של הדף (--accent-topic, כאן גמגום). הכפתור הראשי בכותרת הדף לא נוגע (מבחני A/B). צבע התחום חי רק בדף הנחיתה — בתוך הכלי אין ערכת צבע לפי תחום.', f:'—'},
+  {id:'services', name:'תחומי טיפול — רצועה', mode:'page', site:true, html:()=>entryServices(), d:'רצועת זכוכית בין תחנות התחומים ל"איך מתנהל הטיפול".', f:'—'},
+  {id:'unavailable', name:'הכלי לא זמין', mode:'page', site:true, html:()=>entryContact(true), d:'כשהמנוע מושבת או תקרת העלות נוצלה: הכרטיס מתחלף בהודעה ובקישור ל"דברו איתי" (מסגרת מקווקוות, בלי סמל העוזר). בדף הבית ובדפי הנחיתה הקישור פשוט מוסתר.', f:'—'}
  ]},
  {id:'S1', name:'פתיחה והסכמה', states:[
-  {id:'default', name:'רגיל', mode:'page', html:()=>intro('default'), d:'עמוד רגיל של האתר (כותרת, כפתורי וואטסאפ ונגישות צפים). H1 ראשון (סמנטיקה ו-SEO), ומיד אחריו הצגת העוזר כטקסט — לא כבועה. ההסתייגות גלויה במלואה בכרטיס מידע רגוע, לא אזהרה. שורת החירום (סעיף 4) מודגשת בסמל טלפון במקום תבליט. הכפתור לא מושבת מראש.', f:'מיקוד טבעי בראש הדף. אין live region.'},
+  {id:'default', name:'רגיל', mode:'page', html:()=>intro('default'), d:'עמוד הכלי, ב-entry נפרד: כותרת ופוטר סטטיים משלו (לא Header ו-Footer של האתר, שטוענים תוכן מ-Firestore וסותרים את D-06). הכותרת: הלוגו וקישור טקסט גלוי "חזרה לאתר", בלי ניווט של האתר, לא דביקה (נגללת עם הדף). הפוטר: "חזרה לאתר" ומדיניות הפרטיות בלשונית חדשה. כפתורי וואטסאפ ונגישות צפים. H1 ראשון (סמנטיקה ו-SEO), ומיד אחריו הצגת העוזר כטקסט — לא כבועה. ההסתייגות גלויה במלואה בכרטיס מידע רגוע, לא אזהרה. שורת החירום (סעיף 4) מודגשת בסמל טלפון במקום תבליט. הכפתור לא מושבת מראש.', f:'מיקוד טבעי בראש הדף. אין live region.'},
   {id:'missing', name:'חסרה הסכמה', mode:'page', html:()=>intro('missing'), d:'לחיצה על "הסכמה והתחלה" בלי סימון: מסגרת התיבה מתעבה (2.5px) בצבע שגיאה, והודעה עם סמל צמודה לתיבה. לא רק צבע: סמל, עובי וטקסט.', f:'המיקוד עובר לתיבה. aria-invalid ו-aria-describedby על ההודעה, כך שהיא מוקראת עם התיבה.'},
-  {id:'loading', name:'מתחיל', mode:'page', html:()=>intro('loading'), d:'הכפתור במצב טעינה: פסי הקול זזים בלבן בתוך הכפתור, ולחיצה כפולה חסומה (aria-disabled).', f:'"מתחילים…" מוקרא פעם אחת (role=status). אחר כך מעבר ל-S3 והמיקוד לשדה הקלט.'},
+  {id:'loading', name:'מתחיל', mode:'page', html:()=>intro('loading'), ann:()=>tv('consent.start_loading'), d:'הכפתור במצב טעינה: פסי הקול זזים בלבן בתוך הכפתור, ולחיצה כפולה חסומה (aria-disabled).', f:'מנגנון: הכרזה. "מתחילים…" מוכרז פעם אחת דרך המכריז, והמיקוד נשאר בכפתור. אחר כך S3: המיקוד לשדה הקלט, ורק אחרי שהתייצב השאלה הראשונה והרמז.'},
   {id:'declined', name:'"לא עכשיו"', mode:'page', html:()=>intro('declined'), d:'הכרטיס מחליף את התיבה והכפתורים בהודעה רגועה ובשלוש דרכים ישירות. לא נשמר דבר.', f:'המיקוד להודעה.'},
   {id:'reconsent', name:'הסכמה מחדש', mode:'page', html:()=>intro('reconsent'), d:'נוסח ההסתייגות התעדכן ויש שיחה פתוחה: שורת מידע (פס כחול-אפור בצד ההתחלה) מעל אותו מסך.', f:'כמו "רגיל".'}
  ]},
  {id:'S2', name:'חזרה', states:[
   {id:'open', name:'שיחה פתוחה', mode:'page', html:()=>resumeCard('open'), d:'כרטיס במקום תוכן S1: שלוש פעולות באותו משקל חזותי — "המשך" · "התחלה מחדש" (עם אישור) · "מחיקת השיחה" (עם אישור ← S9). שום תוכן מהשיחה לא מוצג לפני "המשך" (SEC-19, מכשיר משותף). ברענון לא מציגים את זה — חוזרים ישר לשיחה.', f:'המיקוד לכותרת הכרטיס. שלושת הכפתורים נגישים שווה ב-Tab.'},
-  {id:'expired', name:'פג תוקף', mode:'page', html:()=>resumeCard('expired'), d:'שורת מידע קצרה מעל S1 הרגיל.', f:'השורה role=status, מוקראת פעם אחת.'},
+  {id:'expired', name:'פג תוקף', mode:'page', html:()=>resumeCard('expired'), d:'שורת מידע קצרה מעל S1 הרגיל.', f:'מנגנון: מיקוד. השורה היא טקסט רגיל בראש העמוד (לא אזור חי). המיקוד לכותרת, בלי הכרזה.'},
   {id:'submitted', name:'כבר נשלחה פנייה', mode:'page', html:()=>resumeCard('submitted'), d:'סימון מקומי "נשלח" ותאריך בלבד, בלי תוכן, בלי לרמוז על מי הייתה הפנייה (2.1.6). קישור "הסרת הסימון" מוחק רק את הסימון המקומי.', f:'המיקוד לכותרת הכרטיס.'}
  ]},
  {id:'S3', name:'שיחה', states:[
-  {id:'opening', name:'פתיחה', mode:'focus', html:()=>shell({stage:1,log:bot(t('goal.core_relation.ask')),quick:relChips()}), d:'מצב מיקוד: כותרת האתר, הפוטר והוואטסאפ מוסתרים. **מאושר שחל מתחת ל-1024px, כלומר גם בטאבלט** — לא רק במובייל — בגלל התנגשות כפתור הנגישות הצף עם כפתור השליחה. כפתור הנגישות עבר לפס העליון (עיגול ורוד, אותו סמל כמו באתר). 4 כפתורי קשר ב-2×2 ו"יש לי שאלה" ברוחב מלא. נסו ללחוץ על כפתור או להקליד — זו הדגמה חיה.', f:'המיקוד בשדה הקלט. ההודעה הראשונה מוקראת דרך ה-log. קבוצת הכפתורים מוכרזת (a11y.quick_replies).'},
-  {id:'age_band', name:'שאלת גיל אחרי "על עצמי" — ממתין לאליה (D-13)', mode:'focus', html:()=>shell({stage:1,log:bot(t('goal.core_relation.ask'))+user(tv('q.relation.opt.self'))+bot(t('goal.self_age_band.ask')),quick:chips([chip(t('q.self_age_band.opt.under_18'),{go:'S13/minor_pre'}),chip(t('q.self_age_band.opt.adult'),{demo:'age_adult'})],{grid:true})}), d:'ענף א של D-13, ממתין לאליה. מיד אחרי ההקשה "על עצמי", לפני ההודעה החופשית הראשונה, העוזר שואל שאלה אחת ובה שני כפתורים **באותו משקל**: אותו גודל, אותו מתאר ואותו צבע, בלי "מעדיף/ה לא לומר", בלי "לא ידוע לי" ובלי "יש לי שאלה". אפשר גם להקליד. "מתחת ל-18" מוביל ל-S13 באותו תור (קטין שנעצר). "18 ומעלה" מוביל לשאלה הבאה (בהדגמה: שאלה לדוגמה בלבד). בענף ב (המצב הקיים) השורה הזו לא קיימת, והפתיחה עוברת ישר לשאלה הבאה.', f:'הקבוצה מוכרזת (a11y.quick_replies), "מתחת ל-18" ראשון בסדר הקריאה. אחרי בחירה הכפתורים נעלמים והבחירה מופיעה כבועת פונה. אחרי "מתחת ל-18" המיקוד לכותרת הכרטיס.'},
+  {id:'opening', name:'פתיחה', mode:'focus', html:()=>shell({stage:1,log:bot(t('goal.core_relation.ask'),{q:true}),quick:relChips()}), ann:()=>annBot('goal.core_relation.ask',true), annDelay:700, d:'מצב מיקוד: כותרת האתר, הפוטר והוואטסאפ מוסתרים. **מאושר שחל מתחת ל-1024px, כלומר גם בטאבלט** — לא רק במובייל — בגלל התנגשות כפתור הנגישות הצף עם כפתור השליחה. כפתור הנגישות עבר לפס העליון (עיגול ורוד, אותו סמל כמו באתר). 4 כפתורי קשר ב-2×2 ו"יש לי שאלה" ברוחב מלא. נסו ללחוץ על כפתור או להקליד — זו הדגמה חיה.', f:'היוצא דופן היחיד: מיקוד ואז הכרזה, בסדר הזה. המיקוד עובר לשדה הקלט (שם הוא נשאר לאורך השיחה), ורק אחרי שהתייצב שם המכריז אומר את השאלה הראשונה ואחריה a11y.buttons_hint, לא באותו רגע (לבדיקה במכשיר). הכפתורים לפני השדה ב-DOM, ושם הקבוצה הוא השאלה עצמה (aria-labelledby). הרמז גם כטקסט מוסתר בסוף הבועה.'},
+  {id:'age_band', name:'שאלת גיל אחרי "על עצמי" — ממתין לאליה (D-13)', mode:'focus', html:()=>shell({stage:1,log:bot(t('goal.core_relation.ask'))+user(tv('q.relation.opt.self'))+bot(t('goal.self_age_band.ask'),{q:true}),quick:chips([chip(t('q.self_age_band.opt.under_18'),{go:'S13/minor_pre'}),chip(t('q.self_age_band.opt.adult'),{demo:'age_adult'})],{grid:true})}), ann:()=>annBot('goal.self_age_band.ask',true), d:'ענף א של D-13, ממתין לאליה. מיד אחרי ההקשה "על עצמי", לפני ההודעה החופשית הראשונה, העוזר שואל שאלה אחת ובה שני כפתורים **באותו משקל**: אותו גודל, אותו מתאר ואותו צבע, בלי "מעדיף/ה לא לומר", בלי "לא ידוע לי" ובלי "יש לי שאלה". אפשר גם להקליד. "מתחת ל-18" מוביל ל-S13 באותו תור (קטין שנעצר). "18 ומעלה" מוביל לשאלה הבאה (בהדגמה: שאלה לדוגמה בלבד). בענף ב (המצב הקיים) השורה הזו לא קיימת, והפתיחה עוברת ישר לשאלה הבאה.', f:'מנגנון: הכרזה, והמיקוד נשאר בשדה הקלט. המכריז אומר את השאלה ואחריה, תמיד וללא תנאי, a11y.buttons_hint ("יש אפשרויות לבחירה מתחת להודעה."): הכפתורים לפני השדה ב-DOM, ומי שלא יודע עליהם מקליד, וטקסט לא ברור ממשיך כמבוגר. לכן זה תנאי בטיחות ולא נוחות. אותו רמז גם כטקסט מוסתר בסוף בועת השאלה, כדי שיישמע גם בניווט הודעה-הודעה. שם הקבוצה הוא השאלה עצמה (aria-labelledby), לא "אפשרויות תשובה". אחרי בחירה הכפתורים והרמז נעלמים והבחירה נשארת בתמליל כבועת פונה. אחרי "מתחת ל-18": מיקוד לכותרת הכרטיס, בלי הכרזה. לבדיקה במכשיר: איך הקול העברי מקריא "ל-18" (יש סיכון ל"מינוס").'},
   {id:'typing', name:'הקלדה', mode:'focus', html:()=>shell({stage:2,log:LOG.B,composer:{value:SU.u3,state:'idle-active'}}), d:'כפתור השליחה פעיל (מעבר צבע). השדה גדל עד 4 שורות. דסקטופ: Enter שולח, Shift+Enter שורה. מובייל: Enter שורה, שולחים בכפתור.', f:'—'},
-  {id:'waiting', name:'ממתין', mode:'focus', html:()=>shell({stage:2,log:LOG.B+user(SU.u3)+typing(),composer:{value:'ועוד משהו',state:'wait'}}), d:'חיווי ההקלדה הוא פסי קול של האתר (לא שלוש נקודות), עם הטקסט "ההודעה בדרך…" גלוי לכולם. מוצג לפחות 600ms. אפשר להקליד, אי אפשר לשלוח — הכפתור אפור והשורה מסבירה.', f:'"ההודעה בדרך…" מוקרא פעם אחת באזור סטטוס נפרד, לא בלולאה. aria-disabled על השליחה (לא disabled) — נשאר בסדר הטאב ומסביר.'},
-  {id:'slow', name:'איטי', mode:'focus', html:()=>shell({stage:2,log:LOG.B+user(SU.u3)+typing({slow:true}),composer:{state:'wait'}}), d:'אחרי 8 שניות: שורה רכה מתחת לחיווי. בלי ספינר נוסף.', f:'"עוד רגע" מוקרא פעם אחת.'},
-  {id:'newmsg', name:'תשובה חדשה + גלילה', mode:'focus', html:()=>shell({stage:2,log:LOG.D,scroll:'top',pill:true}), d:'הפונה גלל למעלה לקרוא — לא חוטפים אותו. תווית "הודעה חדשה" צפה מעל הקלט. כשהפונה למטה: גלילה לראש ההודעה החדשה, לא לסופה.', f:'ההודעה מוקראת ב-log (polite) עם תווית דובר מוסתרת. המיקוד לא זז. התווית היא כפתור.'},
-  {id:'quick', name:'כפתורי בחירה', mode:'focus', html:()=>shell({stage:2,log:LOG.D,quick:chips([chip(t('q.prev_treatment.opt.yes')),chip(t('q.prev_treatment.opt.no')),chip(t('chat.quick.dont_know'),{alt:true})])}), d:'שאלה סגורה: כפתורים מעל הקלט, נשברים לשורות (אין גלילה אופקית). "לא ידוע לי" בסגנון ניטרלי — תשובה לגיטימית, לא "כישלון". תמיד אפשר להקליד.', f:'Tab מגיע לכפתורים לפני השדה. אחרי בחירה הם נעלמים והבחירה מופיעה כבועת פונה; המיקוד חוזר לשדה.'},
-  {id:'toolong', name:'הודעה ארוכה (רמז, לא חסימה)', mode:'focus', html:()=>shell({stage:2,log:LOG.A,composer:{value:'כדי שתביני את כל התמונה אני רוצה לספר מההתחלה. כשיוסי היה בן שנתיים וחצי הוא התחיל לדבר במשפטים, ובהתחלה הכול נשמע רגיל. בערך בחנוכה שמנו לב שהוא חוזר על ההברה הראשונה של מילים, בעיקר כשהוא מתרגש או כשהוא רוצה לספר משהו מהר. בגן אמרו לנו שזה קורה גם לילדים אחרים בגיל הזה, ושכדאי לחכות קצת. אחר כך היו כמה שבועות שזה כמעט נעלם, ואז זה חזר, ועכשיו יש גם פעמים שהוא נתקע בכלל ולא מצליח להוציא את המילה, ואז הוא מתעצבן ומוותר. אבא שלו גם גמגם קצת כשהיה ילד…',state:'toolong'}}), d:'מונה תווים מ-800. מעל זה: שורת רמז רגועה (chat.input.too_long_hint) ליד השדה. השליחה לא נחסמת (SEC-06) — הכפתור נשאר פעיל, אפשר לשלוח כמו שהוא.', f:'המונה מוכרז (aria-live polite). בלי מסגרת שגיאה אדומה — זה רמז, לא שגיאה.'},
-  {id:'toolong_sent', name:'הודעה ארוכה — אחרי שליחה', mode:'focus', html:()=>shell({stage:2,log:LOG.A+user('כדי שתביני את כל התמונה אני רוצה לספר מההתחלה… (הודעה של מעל 800 תווים)')+bot(t('meta.too_long')),composer:{value:'כדי שתביני את כל התמונה אני רוצה לספר מההתחלה… (הודעה של מעל 800 תווים)',state:'idle-active'}}), d:'בשליחה: בדיקת דגלים בלבד על כל הטקסט (בלי מודל, בלי שמירה) — אם עלה דגל, S6; אחרת בועת meta.too_long (עם 101) מחליפה את הבועה הרגילה, **והטקסט חוזר לשדה הקלט בשלמותו**, כדי שלא יאבד.', f:'הבועה מוכרזת כרגיל דרך ה-log.'},
-  {id:'toolong_block', name:'הודעה מעל 32KB — לא נשלחה', mode:'focus', html:()=>shell({stage:2,log:LOG.A,composer:{value:LONGPASTE,state:'block'}}), d:'הודעה שחורגת מ-32KB (כ-16,000 תווים בעברית, נבדק בדפדפן לפני שליחה) לא נשלחה, ולכן גם לא עברה בדיקת דגלים. chat.input.too_long_block מוצגת **ליד שדה הקלט**, בתיבה צמודה מעליו ולא כבועה בתמליל. היא אומרת במפורש שההודעה לא נשלחה, מה לעשות, ומוסיפה 101. הטקסט **נשאר בשדה** כמו שהודבק, השדה במסגרת 2px בצבע שגיאה, וכפתור השליחה **נשאר פעיל** (לא מושבת). התיבה באה במקום רמז ה-800 והמונה. אין maxlength ואין חיתוך.', f:'התיבה role=status, מוכרזת פעם אחת. השדה aria-invalid עם aria-describedby על התיבה. המיקוד נשאר בשדה. סמל, טקסט ומסגרת, לא צבע בלבד.'},
-  {id:'timeout', name:'תם הזמן', mode:'focus', html:()=>shell({stage:2,log:LOG.B+user(SU.u3)+sys(t('error.timeout'),`<button class="btn-sm" data-go="S3/waiting">${I('retry',16)} ${t('error.retry.button')}</button>`)}), d:'אחרי 25 שניות: הודעה מערכתית (מלבן אפור-בהיר עם סמל מידע, לא בועה של העוזר ולא אדום). הודעת הפונה נשמרת.', f:'המיקוד ל"לנסות שוב".'},
-  {id:'offline', name:'אין חיבור', mode:'focus', html:()=>shell({stage:2,banner:`<div class="offline" role="status">${I('wifioff',18)}<span>${t('error.network')}</span></div>`,log:LOG.B+user(SU.u3,{unsent:true})}), d:'פס אפור-כהה מתחת לפס העליון (רגוע, לא אדום). הבועה האחרונה במסגרת מקווקוות + "לא נשלחה" + "לנסות שוב". ניסיון אוטומטי אחד כשהחיבור חוזר.', f:'הפס מוקרא פעם אחת (role=status).'},
-  {id:'early', name:'יציאה מוקדמת', mode:'focus', html:()=>shell({stage:2,log:LOG.A+user('אני רוצה לדבר עם הדס')+bot(t('meta.want_human',{hadas_phone:PHONE})),quick:chips([chip(t('meta.want_human.to_form'),{solid:true,go:'S7/partial'}),chip(t('meta.want_human.stay'),{alt:true})])}), d:'שני כפתורים, בלי שכנוע להישאר. "מעבר לטופס" מוביל לטופס במצב "תיק חלקי".', f:'כמו כפתורי בחירה.'},
+  {id:'waiting', name:'ממתין', mode:'focus', html:()=>shell({stage:2,log:LOG.B+user(SU.u3)+typing(),composer:{value:'ועוד משהו',state:'wait'}}), ann:()=>tv('chat.typing'), d:'חיווי ההקלדה הוא פסי קול של האתר (לא שלוש נקודות), עם הטקסט "ההודעה בדרך…" גלוי לכולם. מוצג לפחות 600ms. אפשר להקליד, אי אפשר לשלוח — הכפתור אפור והשורה מסבירה.', f:'מנגנון: הכרזה. "ההודעה בדרך…" מוכרז פעם אחת דרך המכריז היחיד, לא בלולאה. בועת ההקלדה עצמה אינה אזור חי. aria-disabled על השליחה (לא disabled): נשארת בסדר הטאב ומסבירה.'},
+  {id:'slow', name:'איטי', mode:'focus', html:()=>shell({stage:2,log:LOG.B+user(SU.u3)+typing({slow:true}),composer:{state:'wait'}}), ann:()=>tv('chat.slow'), d:'אחרי 8 שניות: שורה רכה מתחת לחיווי. בלי ספינר נוסף.', f:'מנגנון: הכרזה. "עוד רגע" מוכרז פעם אחת דרך המכריז. השורה עצמה אינה אזור חי.'},
+  {id:'newmsg', name:'תשובה חדשה + גלילה', mode:'focus', html:()=>shell({stage:2,log:LOG.D,scroll:'top',pill:true}), ann:()=>tv('chat.sr.bot_label')+' '+tv('q.dont_know.ack')+' '+tv('q.prev_treatment'), d:'הפונה גלל למעלה לקרוא — לא חוטפים אותו. תווית "הודעה חדשה" צפה מעל הקלט. כשהפונה למטה: גלילה לראש ההודעה החדשה, לא לסופה.', f:'מנגנון: הכרזה. ההודעה מוכרזת במלואה, פעם אחת, דרך המכריז היחיד, אחרי תווית דובר מוסתרת. המיקוד לא זז מהשדה, והודעות הפונה לא מוכרזות. כל הודעה היא li ברשימה, לניווט הודעה-הודעה. התווית "הודעה חדשה" היא כפתור.'},
+  {id:'quick', name:'כפתורי בחירה', mode:'focus', html:()=>shell({stage:2,log:LOG.Dq,quick:chips([chip(t('q.prev_treatment.opt.yes')),chip(t('q.prev_treatment.opt.no')),chip(t('chat.quick.dont_know'),{alt:true})])}), d:'שאלה סגורה: כפתורים מעל הקלט, נשברים לשורות (אין גלילה אופקית). "לא ידוע לי" בסגנון ניטרלי — תשובה לגיטימית, לא "כישלון". תמיד אפשר להקליד.', f:'מנגנון: הכרזה, המיקוד נשאר בשדה. Tab מגיע לכפתורים לפני השדה. שם הקבוצה הוא השאלה (aria-labelledby), והרמז a11y.buttons_hint מוכרז עם ההודעה וגם כטקסט מוסתר בסוף הבועה. אחרי בחירה הכפתורים והרמז נעלמים, הבחירה מופיעה כבועת פונה, והמיקוד חוזר לשדה.'},
+  {id:'toolong', name:'הודעה ארוכה (רמז, לא חסימה)', mode:'focus', html:()=>shell({stage:2,log:LOG.A,composer:{value:'כדי שתביני את כל התמונה אני רוצה לספר מההתחלה. כשיוסי היה בן שנתיים וחצי הוא התחיל לדבר במשפטים, ובהתחלה הכול נשמע רגיל. בערך בחנוכה שמנו לב שהוא חוזר על ההברה הראשונה של מילים, בעיקר כשהוא מתרגש או כשהוא רוצה לספר משהו מהר. בגן אמרו לנו שזה קורה גם לילדים אחרים בגיל הזה, ושכדאי לחכות קצת. אחר כך היו כמה שבועות שזה כמעט נעלם, ואז זה חזר, ועכשיו יש גם פעמים שהוא נתקע בכלל ולא מצליח להוציא את המילה, ואז הוא מתעצבן ומוותר. אבא שלו גם גמגם קצת כשהיה ילד…',state:'toolong'}}), d:'מונה תווים מ-800. מעל זה: שורת רמז רגועה (chat.input.too_long_hint) ליד השדה. השליחה לא נחסמת (SEC-06) — הכפתור נשאר פעיל, אפשר לשלוח כמו שהוא.', f:'המונה מוכרז ב-800 דרך המכריז. המונה והרמז עצמם אינם אזורים חיים. בלי מסגרת שגיאה אדומה: זה רמז, לא שגיאה.'},
+  {id:'toolong_sent', name:'הודעה ארוכה — אחרי שליחה', mode:'focus', html:()=>shell({stage:2,log:LOG.A+user('כדי שתביני את כל התמונה אני רוצה לספר מההתחלה… (הודעה של מעל 800 תווים)')+bot(t('meta.too_long')),composer:{value:'כדי שתביני את כל התמונה אני רוצה לספר מההתחלה… (הודעה של מעל 800 תווים)',state:'idle-active'}}), d:'בשליחה: בדיקת דגלים בלבד על כל הטקסט (בלי מודל, בלי שמירה) — אם עלה דגל, S6; אחרת בועת meta.too_long (עם 101) מחליפה את הבועה הרגילה, **והטקסט חוזר לשדה הקלט בשלמותו**, כדי שלא יאבד.', f:'הבועה מוכרזת כרגיל, דרך המכריז.'},
+  {id:'toolong_block', name:'הודעה מעל 32KB — לא נשלחה', mode:'focus', html:()=>shell({stage:2,log:LOG.A,composer:{value:LONGPASTE,state:'block'}}), ann:()=>tv('chat.input.too_long_block'), d:'הודעה שחורגת מ-32KB (כ-16,000 תווים בעברית, נבדק בדפדפן לפני שליחה) לא נשלחה, ולכן גם לא עברה בדיקת דגלים. chat.input.too_long_block מוצגת **ליד שדה הקלט**, בתיבה צמודה מעליו ולא כבועה בתמליל. היא אומרת במפורש שההודעה לא נשלחה, מה לעשות, ומוסיפה 101. הטקסט **נשאר בשדה** כמו שהודבק, השדה במסגרת 2px בצבע שגיאה, וכפתור השליחה **נשאר פעיל** (לא מושבת). התיבה באה במקום רמז ה-800 והמונה. אין maxlength ואין חיתוך.', f:'התיבה היא אלמנט רגיל (לא אזור חי), והטקסט שלה מוכרז פעם אחת דרך המכריז. השדה aria-invalid עם aria-describedby על התיבה. המיקוד נשאר בשדה. סמל, טקסט ומסגרת, לא צבע בלבד.'},
+  {id:'timeout', name:'תם הזמן', mode:'focus', html:()=>shell({stage:2,log:LOG.B+user(SU.u3)+sys(t('error.timeout'),`<button class="btn-sm" data-focus data-go="S3/waiting">${I('retry',16)} ${t('error.retry.button')}</button>`)}), d:'אחרי 25 שניות: הודעה מערכתית (מלבן אפור-בהיר עם סמל מידע, לא בועה של העוזר ולא אדום). הודעת הפונה נשמרת.', f:'המיקוד ל"לנסות שוב".'},
+  {id:'offline', name:'אין חיבור', mode:'focus', html:()=>shell({stage:2,banner:`<div class="offline">${I('wifioff',18)}<span>${t('error.network')}</span></div>`,log:LOG.B+user(SU.u3,{unsent:true})}), ann:()=>tv('error.network'), d:'פס אפור-כהה מתחת לפס העליון (רגוע, לא אדום). הבועה האחרונה במסגרת מקווקוות + "לא נשלחה" + "לנסות שוב". ניסיון אוטומטי אחד כשהחיבור חוזר.', f:'מנגנון: הכרזה. הפס עצמו אינו אזור חי, והטקסט שלו מוכרז פעם אחת דרך המכריז. המיקוד לא זז.'},
+  {id:'early', name:'יציאה מוקדמת', mode:'focus', html:()=>shell({stage:2,log:LOG.A+user('אני רוצה לדבר עם הדס')+bot(t('meta.want_human',{hadas_phone:PHONE}),{q:true}),quick:chips([chip(t('meta.want_human.to_form'),{solid:true,go:'S7/partial'}),chip(t('meta.want_human.stay'),{alt:true})])}), ann:()=>annBot('meta.want_human',true), d:'שני כפתורים, בלי שכנוע להישאר. "מעבר לטופס" מוביל לטופס במצב "תיק חלקי".', f:'כמו כפתורי בחירה.'},
   {id:'clinical', name:'שאלה קלינית', mode:'focus', html:()=>shell({stage:2,log:LOG.C}), d:'נוסח קבוע (meta.diagnosis_request) באותה בועה רגילה של העוזר — בלי עיצוב "אזהרה". בתור הבא — המטרה הבאה.', f:'—'},
   {id:'language', name:'שפה לא נתמכת', mode:'focus', html:()=>shell({stage:1,log:bot(t('goal.core_relation.ask'))+user('Hi, my son stutters. Can you help?')+bot(`<p>${tl('language.unsupported')[0]}</p><p lang="en" dir="ltr" style="text-align:left">${tl('language.unsupported')[1]}</p>`)}), d:'השורה באנגלית מסומנת lang="en" dir="ltr" בתוך הבועה, כדי שקורא מסך יחליף שפה.', f:'—'},
-  {id:'expired', name:'פג תוקף באמצע', mode:'focus', html:()=>shell({stage:2,log:LOG.B+sys(t('error.session_expired'),`<button class="btn-sm" data-go="S1/default">${t('resume.restart')}</button>`),composer:false}), d:'רק אחרי התוקף המלא. שדה הקלט מוסר.', f:'המיקוד לכפתור.'},
-  {id:'server', name:'תקלת שרת', mode:'focus', html:()=>shell({stage:2,log:LOG.B+user(SU.u3)+sys(t('error.generic'),`<button class="btn-sm" data-go="S10/midchat">${I('retry',16)} ${t('error.retry.button')}</button>`)}), d:'אחרי ניסיון חוזר אוטומטי אחד. כישלון שני → S10.', f:'המיקוד ל"לנסות שוב".'},
-  {id:'a11y', name:'נגישות במצב מיקוד', mode:'focus', a11y:true, html:()=>shell({stage:1,log:bot(t('goal.core_relation.ask')),quick:relChips()}), d:'החלטה לנקודה 1 מה-UX: במצב מיקוד הכפתור הצף של AccessibilityWidget מוסתר (הוא היה יושב בדיוק על כפתור השליחה), ובפס העליון מופיע כפתור זהה במראה שפותח את אותו תפריט — כלפי מטה, מתחת לפס. נסו את הכפתורים בתפריט: הם מפעילים את הסימולציה על המסגרת.', f:'aria-expanded על הכפתור. Esc סוגר ומחזיר מיקוד לכפתור. המיקום: אחרי ה-✕ והכותרת, לפני ⋮.'}
+  {id:'expired', name:'פג תוקף באמצע', mode:'focus', html:()=>shell({stage:2,log:LOG.B+sys(t('error.session_expired'),`<button class="btn-sm" data-focus data-go="S1/default">${t('resume.restart')}</button>`),composer:false}), d:'רק אחרי התוקף המלא. שדה הקלט מוסר.', f:'המיקוד לכפתור.'},
+  {id:'server', name:'תקלת שרת', mode:'focus', html:()=>shell({stage:2,log:LOG.B+user(SU.u3)+sys(t('error.generic'),`<button class="btn-sm" data-focus data-go="S10/midchat">${I('retry',16)} ${t('error.retry.button')}</button>`)}), d:'אחרי ניסיון חוזר אוטומטי אחד. כישלון שני → S10.', f:'המיקוד ל"לנסות שוב".'},
+  {id:'a11y', name:'נגישות במצב מיקוד', mode:'focus', a11y:true, html:()=>shell({stage:1,log:bot(t('goal.core_relation.ask'),{q:true}),quick:relChips()}), d:'החלטה לנקודה 1 מה-UX: במצב מיקוד הכפתור הצף של AccessibilityWidget מוסתר (הוא היה יושב בדיוק על כפתור השליחה), ובפס העליון מופיע כפתור זהה במראה שפותח את אותו תפריט — כלפי מטה, מתחת לפס. נסו את הכפתורים בתפריט: הם מפעילים את הסימולציה על המסגרת.', f:'aria-expanded על הכפתור. Esc סוגר ומחזיר מיקוד לכפתור. המיקום: אחרי ה-✕ והכותרת, לפני ⋮.'},
+  {id:'short1', name:'גובה קצר · שלב 1', mode:'focus', frame:{w:390,h:300}, html:()=>shell({stage:2,short:1,scroll:'top',log:LOG.A}), d:'גובה קצר (טלפון לאורך עם מקלדת פתוחה, או זום 400%): הרכיבים הקבועים לא יכולים לאכול את התמליל. הכלל הוא קריטריון ולא מספר: מה שנשאר לתמליל אחרי הרכיבים הקבועים חייב להספיק לשלוש שורות טקסט ולא להסתיר את מה שבמיקוד. שלב 1: מחוון השלבים עובר לזרימת הגלילה (גוללו בתוך המסגרת). הפס העליון וההסתייגות עדיין דביקים, והקלט הוא הרכיב הקבוע האחרון. גודל המסגרת כאן הוא המחשה בלבד: ספי הפיקסלים נקבעים אחרי מדידה במכשירים.', f:'מנגנון: אין הכרזה על המעבר. סדר ה-DOM וסדר המיקוד לא משתנים, רק מצב ההצמדה של הרכיב (דביק או בזרימה), בלי הרכבה מחדש, ולכן מיקוד וגלילה שורדים מעבר בין שלבים. מיקוד על רכיב שנגלל החוצה מחזיר אותו לתצוגה, מעל הקלט הדביק (scroll-padding).'},
+  {id:'short2', name:'גובה קצר · שלב 2', mode:'focus', frame:{w:390,h:230}, html:()=>shell({stage:2,short:2,scroll:'top',log:LOG.A}), d:'שלב 2: גם הפס העליון עובר לזרימה. ✕, כפתור הנגישות ו-⋮ נשארים ראשונים בסדר המיקוד, ומיקוד עליהם מחזיר אותם לתצוגה. רק ההסתייגות והקלט נשארים דביקים.', f:'כמו שלב 1.'},
+  {id:'short3', name:'גובה קצר · שלב 3 (זום 400%)', mode:'focus', frame:{w:320,h:180}, html:()=>shell({stage:2,short:3,scroll:'disc',log:LOG.A}), d:'שלב 3, כמו זום 400% במסך 1280×720 (כ-320×180). גם ההסתייגות עוברת לזרימה, והיא הפריט הראשון בתוך אזור התמליל: במלואה (chat.disclaimer_line, לא הנוסח הקצר) ובלי "עוד" (S12 נשאר ב-⋮, "על הכלי"). בתחילת שיחה היא בתוך המסך, וכל גלילה לראש מחזירה אותה. בכרטיס התוצאה ובדגל האדום ההסתייגות נמצאת בתוך הכרטיס (outcome.disclaimer, redflag.footer). הקלט הוא הרכיב הקבוע היחיד. ממתין לאישור משפטי (UX §3.0, §8): אם התשובה שלילית לא מחזירים פס קבוע, אלא סמל בשורת הקלט שפותח את "על הכלי".', f:'כמו שלב 1. ההסתייגות היא li ראשון ברשימת ההודעות, בלי תווית דובר (שורה של המערכת).'},
+  {id:'short3_age', name:'גובה קצר · שלב 3, שאלת הגיל', mode:'focus', frame:{w:320,h:180}, html:()=>shell({stage:1,short:3,scroll:'bottom',log:bot(t('goal.core_relation.ask'))+user(tv('q.relation.opt.self'))+bot(t('goal.self_age_band.ask'),{q:true,anchor:true}),quick:chips([chip(t('q.self_age_band.opt.under_18'),{go:'S13/minor_pre'}),chip(t('q.self_age_band.opt.adult'),{demo:'age_adult'})],{grid:true})}), ann:()=>annBot('goal.self_age_band.ask',true), d:'שאלת הגיל בשלב 3: כפתורי הבחירה נמצאים בזרימה, מיד אחרי בועת השאלה (כך הם נשארים צמודים אליה), והקלט הוא הרכיב הקבוע היחיד. הגלילה לראש ההודעה. השאלה והכפתורים לא נכנסים בבת אחת. אחרי גלילה לראש ההודעה (כלל S3) הכפתורים נמצאים מתחת לקיפול, מאחורי הקלט הדביק. מיקוד Tab עליהם גולל אותם לתצוגה מעל הקלט (scroll-padding), והרמז שיש כפתורים נאמר בהכרזה וגם כטקסט מוסתר בסוף הבועה. כאן הגלילה היא לסוף.', f:'מנגנון: הכרזה (השאלה ואחריה a11y.buttons_hint), המיקוד נשאר בשדה הקלט. שם הקבוצה הוא השאלה.'}
  ]},
  {id:'S4', name:'שאלה נפוצה', states:[
-  {id:'topics', name:'כפתורי נושא', mode:'focus', html:()=>shell({stage:1,log:bot(t('goal.core_relation.ask'))+user(tv('chat.quick.have_question'))+bot(t('faq.topic.prompt')),quick:chips(['faq.topic.price','faq.topic.location','faq.topic.kupot','faq.topic.online','faq.topic.hours'].map(id=>chip(t(id),{go:'S4/answer'})).concat([chip(t('faq.topic.other'),{alt:true})]))}), d:'"יש לי שאלה" פותח שורה קצרה של העוזר (faq.topic.prompt), שנותנת הקשר לקורא מסך ושומרת על תמליל קריא, ואז כפתורי נושא (מקומי, בלי שרת). "שאלה אחרת" מבקש להקליד.', f:'השורה מוקראת כהודעה רגילה. הקבוצה מוכרזת; המיקוד לכפתור הראשון.'},
-  {id:'answer', name:'יש מידע', mode:'focus', html:()=>shell({stage:2,log:LOG.A+user('כמה זה עולה?')+faqCard('faq.topic.price','price')+bot(t('faq.return')+' '+t('q.situations.child.n',{subject_ref:'יוסי'}))}), d:'כרטיס מידע = "הדף של הדס": מלבן ברוחב מלא (לא מיושר כבועה), מסגרת 1.5px כחול-אפור, סמל i בריבוע ושורת מקור. אחריו העוזר חוזר בעדינות לשאלה שחיכתה.', f:'הכרטיס הוא article עם תווית; נכנס ל-log ומוקרא.'},
+  {id:'topics', name:'כפתורי נושא', mode:'focus', html:()=>shell({stage:1,log:bot(t('goal.core_relation.ask'))+user(tv('chat.quick.have_question'))+bot(t('faq.topic.prompt'),{q:true}),quick:chips(['faq.topic.price','faq.topic.location','faq.topic.kupot','faq.topic.online','faq.topic.hours'].map(id=>chip(t(id),{go:'S4/answer'})).concat([chip(t('faq.topic.other'),{alt:true})]))}), ann:()=>annBot('faq.topic.prompt',true), d:'"יש לי שאלה" פותח שורה קצרה של העוזר (faq.topic.prompt), שנותנת הקשר לקורא מסך ושומרת על תמליל קריא, ואז כפתורי נושא (מקומי, בלי שרת). "שאלה אחרת" מבקש להקליד.', f:'מנגנון: הכרזה, המיקוד נשאר בשדה. השורה מוכרזת כהודעה רגילה ואחריה a11y.buttons_hint. שם הקבוצה הוא השורה עצמה.'},
+  {id:'answer', name:'יש מידע', mode:'focus', html:()=>shell({stage:2,log:LOG.A+user('כמה זה עולה?')+faqCard('faq.topic.price','price')+bot(t('faq.return')+' '+t('q.situations.child.n',{subject_ref:'יוסי'}))}), d:'כרטיס מידע = "הדף של הדס": מלבן ברוחב מלא (לא מיושר כבועה), מסגרת 1.5px כחול-אפור, סמל i בריבוע ושורת מקור. אחריו העוזר חוזר בעדינות לשאלה שחיכתה.', f:'מנגנון: הכרזה. הכרטיס הוא article עם תווית בתוך li, והנושא והטקסט שלו מוכרזים כהודעה, דרך המכריז. המיקוד לא זז.'},
   {id:'unknown', name:'אין מידע', mode:'focus', html:()=>shell({stage:2,log:LOG.A+user('אפשר להגיע ביום שישי?')+bot(t('faq.missing'))+bot(t('faq.return')+' '+t('q.situations.child.n',{subject_ref:'יוסי'}),{first:false})}), d:'אין מידע בדף העובדות: בועה רגילה של העוזר (לא כרטיס — זה לא מידע מהדס).', f:'—'},
   {id:'multiple', name:'כמה שאלות ברצף', mode:'focus', html:()=>shell({stage:2,log:LOG.A+user('כמה זה עולה, ואיפה הקליניקה?')+faqCard('faq.topic.price','price')+faqCard('faq.topic.location','location')+bot(t('faq.return')+' '+t('q.situations.child.n',{subject_ref:'יוסי'}))}), d:'כרטיס לכל שאלה, ואז חזרה אחת.', f:'—'}
  ]},
  {id:'S5', name:'תוצאות 1–4', states:[
-  {id:'o1', name:'1 · כדאי לפנות', mode:'focus', html:()=>shell({stage:3,log:outcomeLog(1),scroll:'anchor',composer:false}), d:'בועת הסיכום (מודל) היא בועה רגילה עם תווית "מה שעלה בשיחה". כרטיס התוצאה (נוסח קבוע) שונה בצורה ולא רק בצבע: מלבן ברוחב מלא, מסגרת 2px עם פס עליון 8px, סמל בריבוע, שורת תווית, כותרת גדולה, וההסתייגות בתחתית הכרטיס. שדה הקלט מוסר.', f:'המיקוד לכרטיס (region עם aria-labelledby על הכותרת). המחוון עובר ל"סיכום".'},
+  {id:'o1', name:'1 · כדאי לפנות', mode:'focus', html:()=>shell({stage:3,log:outcomeLog(1),scroll:'anchor',composer:false}), d:'בועת הסיכום (מודל) היא בועה רגילה עם תווית "מה שעלה בשיחה". כרטיס התוצאה (נוסח קבוע) שונה בצורה ולא רק בצבע: מלבן ברוחב מלא, מסגרת 2px עם פס עליון 8px, סמל בריבוע, שורת תווית, כותרת גדולה, וההסתייגות בתחתית הכרטיס. שדה הקלט מוסר.', f:'מנגנון: מיקוד. המיקוד עובר פעם אחת לבועת הסיכום (tabindex=-1, עם תווית דובר מוסתרת), אחרי שהציור הסתיים. בלי הכרזה ובלי טיימר, והמכריז מרוקן. הכרטיס מיד אחרי הסיכום בסדר ה-DOM, וההמשך הוא סדר הקריאה הרגיל: כותרת h2, גוף, הסתייגות, פעולות. המחוון עובר ל"סיכום" בשקט. לבדיקה במכשיר: שהסיכום מוקרא כולו.'},
   {id:'o2', name:'2 · שווה התייעצות', mode:'focus', html:()=>shell({stage:3,log:outcomeLog(2),scroll:'anchor',composer:false}), d:'אותו מבנה, טון כחול-אפור (hoki) וסמל שיחה: דלת פתוחה, בלי דחיפות. אותו כפתור.', f:'כמו 1.'},
   {id:'o3', name:'3 · לא עלו סימנים כעת — כבוי בהשקה (D-03)', mode:'focus', html:()=>shell({stage:3,log:outcomeLog(3),scroll:'anchor',composer:false}), d:'כבוי בהשקה (D-03): המקרים האלה מקבלים תוצאה 2 בפועל, ונרשם would_be_outcome_3. המסך כאן נשאר מתוכנן, להפעלה עתידית. אין וי, אין ירוק, אין צבע הצלחה. טון ניטרלי (chatelle כהה), סמל "דף עם שורות", כותרת בשחור. "חשוב לדעת" בבלוק עם פס בצד ההתחלה, רשימת "מתי כן לפנות" עם עיגולים חלולים (לא וי), ו-101 כקישור. הכפתור באותה בולטות כמו ב-1–2, אחרי ההסתייגות המלאה והרשימה.', f:'כמו 1. הרשימה היא ul אמיתית.'},
   {id:'o4', name:'4 · לא בתחום', mode:'focus', html:()=>shell({stage:3,log:outcomeLog(4),scroll:'anchor',composer:false}), d:'טון bali-hai וסמל שלט הכוונה. כל הפניה בכרטיס משנה עם קישור חיצוני מסומן. אין טופס; "נראה שמשהו לא הובן נכון?" צנוע עם טלפון.', f:'קישורים חיצוניים: target=_blank + טקסט מוסתר "נפתח בלשונית חדשה".'},
-  {id:'fallback', name:'הסיכום החם נכשל', mode:'focus', html:()=>shell({stage:3,log:outcomeLog(1,{fallback:true}),scroll:'anchor',composer:false}), d:'נוסח קבוע קצר במקום בועת הסיכום. הכרטיס לא תלוי במודל ותמיד מוצג.', f:'כמו 1.'},
+  {id:'fallback', name:'הסיכום החם נכשל', mode:'focus', html:()=>shell({stage:3,log:outcomeLog(1,{fallback:true}),scroll:'anchor',composer:false}), d:'נוסח קבוע קצר במקום בועת הסיכום. הכרטיס לא תלוי במודל ותמיד מוצג.', f:'כמו 1, אבל אין סיכום: המיקוד לנוסח הקבוע שבא במקומו (outcome.summary.fallback). אם גם הוא חסר, לכותרת הכרטיס.'},
   {id:'noref', name:'4 · אין הפניה מתאימה', mode:'focus', html:()=>shell({stage:3,log:outcomeLog(4,{noref:true}),scroll:'anchor',composer:false}), d:'outcome.4.no_referral במקום הרשימה.', f:'כמו 1.'},
-  {id:'reopened', name:'חזרה לשיחה ("שכחתי לספר")', mode:'focus', html:()=>shell({stage:3,log:LOG.D+user(SU.u5)+summaryBubble()+oc(2,{stale:true})+user(tv('outcome.add_more'))}), d:'המחוון נשאר ב"סיכום" ולא חוזר ל"השלמת פרטים" — זו שאלה אחת (wrap_up_ask), וחזרה אחורה הייתה נחווית כמו "מתחילים מחדש". הכרטיס הקודם נשאר בתמליל: מסגרת מקווקוות, בלי פס עליון ובלי כפתורים, ותגית "הכיוון הקודם, לפני העדכון". שדה הקלט חוזר. תוצאה חדשה תופיע ככרטיס חדש.', f:'המיקוד לשדה הקלט.'}
+  {id:'reopened', name:'חזרה לשיחה ("שכחתי לספר")', mode:'focus', html:()=>shell({stage:3,log:LOG.D+user(SU.u5)+summaryBubble(false)+oc(2,{stale:true})+user(tv('outcome.add_more'))}), d:'המחוון נשאר ב"סיכום" ולא חוזר ל"השלמת פרטים" — זו שאלה אחת (wrap_up_ask), וחזרה אחורה הייתה נחווית כמו "מתחילים מחדש". הכרטיס הקודם נשאר בתמליל: מסגרת מקווקוות, בלי פס עליון ובלי כפתורים, ותגית "הכיוון הקודם, לפני העדכון". שדה הקלט חוזר. תוצאה חדשה תופיע ככרטיס חדש.', f:'המיקוד לשדה הקלט.'}
  ]},
  {id:'S6', name:'דגל אדום — דרגות ומסך משולב', states:[
-  {id:'emergency', name:'emergency · חירום', mode:'rf', html:()=>rf('emergency'), d:'מחליף את כל המסך (אין תמליל, אין קלט, אין תפריט). בדסקטופ מחליף רק את לוח הכלי — כותרת האתר נשארת, בלי פוטר או קריאות לפעולה לצידו. רקע נייר בהיר, טקסט שחור, בלי אדום ובלי תנועה. סמל "השהיה" בעיגול — לא משולש אזהרה. הפעולה ראשונה בבלוק עם פס 8px. כפתור 101 בגובה 64, פחם (#282a2b) על רקע בהיר, 14.4:1 — הכי בולט במסך בלי להיות אזעקה. redflag.footer אחרי הפעולות, בגופן משני. אין טופס (D-04: emergency בלי טופס). מתחת לכפתור 101 שורת טקסט משנית (redflag.secondary.emergency) ולא כפתור: **אין כפתור חדר מיון בשום מקום** (הוחלט, ARCHITECTURE §20), כך שנשארת פעולה אחת בולטת.', f:'המיקוד לכותרת. הבלוק מוכרז פעם אחת (role=alert / assertive). קישור 101 עם data-track-ignore (UX §6.4).'},
+  {id:'emergency', name:'emergency · חירום', mode:'rf', html:()=>rf('emergency'), d:'מחליף את כל המסך (אין תמליל, אין קלט, אין תפריט). בדסקטופ מחליף רק את לוח הכלי — כותרת האתר נשארת, בלי פוטר או קריאות לפעולה לצידו. רקע נייר בהיר, טקסט שחור, בלי אדום ובלי תנועה. סמל "השהיה" בעיגול — לא משולש אזהרה. הפעולה ראשונה בבלוק עם פס 8px. כפתור 101 בגובה 64, פחם (#282a2b) על רקע בהיר, 14.4:1 — הכי בולט במסך בלי להיות אזעקה. redflag.footer אחרי הפעולות, בגופן משני. אין טופס (D-04: emergency בלי טופס). מתחת לכפתור 101 שורת טקסט משנית (redflag.secondary.emergency) ולא כפתור: **אין כפתור חדר מיון בשום מקום** (הוחלט, ARCHITECTURE §20), כך שנשארת פעולה אחת בולטת.', f:'מנגנון אחד: מיקוד. המיקוד לכותרת (h1) אחרי הציור, כי שדה הקלט נמחק מה-DOM. אין role=alert, אין aria-live=assertive ואין הכרזה: הכותרת עומדת בפני עצמה, והפעולה ו-101 מיד אחריה. בכניסה למסך המכריז מרוקן, כדי ש"ההודעה בדרך…" לא תוקרא אחרי הכותרת. השם הנגיש של כפתור 101 הוא redflag.cta.call.a11y@v2 ("חיוג ל-101, מד"א"): הוא פותח בטקסט הגלוי (WCAG 2.5.3). קישור 101 עם data-track-ignore (UX §6.4). ברענון: אותו מיקוד, בלי הכרזה.'},
   {id:'urgent', name:'urgent · בירור רפואי בהקדם', mode:'rf', html:()=>rf('urgent'), d:'אותו מבנה בלי כפתור 101 ראשי; 101 כקישור בתוך הנוסח. **היחידה עם טופס משני** (D-04: form_after_message=secondary), מוצג רק באישור הדס, ורק כשזה הדגל היחיד: דגל נוסף שאוסר טופס מבטל אותו (ראו "משולב"). redflag.footer אחרי הפעולות.', f:'כמו emergency.'},
+  {id:'urgent-noform', name:'urgent · בלי טופס (form: none)', mode:'rf', html:()=>rf('urgent-noform'), d:'אותו בלוק urgent, אבל הטופס חסום: הדס לא אישרה טופס משני (D-04), או שדגל אחר אוסר אותו. בלי redflag.after ובלי redflag.cta.form: שורת הסגירה היא redflag.after.no_form (הטלפון כטקסט, בלי משפט על טופס ובלי כפתור). השרת בוחר את המזהה לפי form במעטפה, והממשק מציג מה שקיבל.', f:'כמו emergency.'},
   {id:'hotline-distress', name:'hotline · מצוקה', mode:'rf', html:()=>rf('hotline-distress'), d:'דרגת hotline: ער"ן 1201 ככפתור הראשי, 101 משני. בלי טופס (D-04). redflag.footer אחרי הפעולות.', f:'כמו emergency.'},
   {id:'hotline-child', name:'hotline · בטיחות ילד — טיוטה', mode:'rf', html:()=>rf('hotline-child'), d:'גם זו דרגת hotline (D-04: בלי טופס), עם נוסח משלה (118/משרד הרווחה, 100 למשטרה). הנוסח עצמו עדיין טיוטה — ממתין לאישור עורך הדין על חובת דיווח, ולכן מסומן ככזה במסך. redflag.footer אחרי הפעולות בכל זאת, כי הוא קבוע ולא תלוי בניסוח.', f:'כמו emergency.'},
-  {id:'combined', name:'משולב · בירור רפואי + בטיחות ילד', mode:'rf', html:()=>rf('combined'), d:'מסך אחד כשעלו שני דגלים (UX_SPEC S6, טיוטה 4), בין אם באותה הודעה ובין אם בתורות שונות. **בלוק ראשי** לדרגה הגבוהה (urgent: redflag.title.urgent והנוסח, 101 בתוך הנוסח), ומתחתיו **בלוק משני שלם** לדגל קו הסיוע הנוסף (בטיחות ילד): h2 משלו, הנוסח שלו והפעולה שלו. הבלוק המשני נבדל מהראשי בעוד מעבר לצבע: כותרת h2 קטנה (22 מול 28), מסגרת 1.5px עם פס 4px (מול 2px ו-8px), טקסט 17 מול 19, כפתור במתאר (52 מול 64 מלא) וקו דק מעליו. **אין טופס**: דגל בטיחות הילד אוסר אותו, ולכן אין redflag.after ואין redflag.cta.form, גם אם urgent לבדו היה מציע אותו. redflag.footer פעם אחת בסוף, אחרי כל הבלוקים. אין חזרה לשיחה.', f:'המיקוד לכותרת הראשית. רק הבלוק הראשי הוא role=alert (הכרזה אחת, assertive), והמשני נקרא ברצף אחריו. כל בלוק הוא section עם aria-labelledby על ה-h2 שלו, לניווט בכותרות.'},
-  {id:'combined3', name:'משולב · חירום + מצוקה + בטיחות ילד (3 בלוקים)', mode:'rf', html:()=>rf('combined3'), d:'המקסימום: בלוק ראשי (חירום: כפתור 101 ושורת טקסט משנית) ושני בלוקים משניים, אחד לכל דגל קו סיוע נוסף (מצוקה עם ער"ן 1201 בכפתור במתאר, ובטיחות ילד). urgent לא מתווסף מתחת לחירום. הסתייגות אחת בסוף. **פתוח:** (1) אין כותרת לפי סוג דגל, ולכן שני הבלוקים המשניים נושאים אותה כותרת (redflag.title.hotline) ← תפקיד 3. (2) השורה הפסיבית של חירום (redflag.after.emergency, הטלפון של הדס כטקסט) נשארת בבלוק הראשי; אם דגל קו סיוע אמור להוריד אותה ← UX.', f:'כמו "משולב".'}
+  {id:'combined', name:'משולב · בירור רפואי + בטיחות ילד', mode:'rf', html:()=>rf('combined'), d:'מסך אחד כשעלו שני דגלים (UX_SPEC S6, טיוטה 4), בין אם באותה הודעה ובין אם בתורות שונות. **בלוק ראשי** לדרגה הגבוהה (urgent: redflag.title.urgent והנוסח, 101 בתוך הנוסח), ומתחתיו **בלוק משני שלם** לדגל קו הסיוע הנוסף (בטיחות ילד): h2 משלו, הנוסח שלו והפעולה שלו. הבלוק המשני נבדל מהראשי בעוד מעבר לצבע: כותרת h2 קטנה (22 מול 28), מסגרת 1.5px עם פס 4px (מול 2px ו-8px), טקסט 17 מול 19, כפתור במתאר (52 מול 64 מלא) וקו דק מעליו. **אין טופס**: דגל בטיחות הילד אוסר אותו, ולכן בבלוק הראשי מוצג redflag.after.no_form במקום redflag.after ו-redflag.cta.form, גם אם urgent לבדו היה מציע אותו. כותרת הבלוק המשני: redflag.title.hotline.child_safety. redflag.footer פעם אחת בסוף, אחרי כל הבלוקים. אין חזרה לשיחה.', f:'מנגנון אחד: מיקוד, לכותרת הראשית (h1). אין role=alert ואין הכרזה בשום בלוק, והמשני נקרא ברצף אחריה. כל בלוק הוא section עם aria-labelledby על ה-h2 שלו, לניווט בכותרות. הכותרות המשניות לפי סוג הדגל, כך ששני h2 לא זהים.'},
+  {id:'combined3', name:'משולב · חירום + מצוקה + בטיחות ילד (3 בלוקים)', mode:'rf', html:()=>rf('combined3'), d:'המקסימום: בלוק ראשי (חירום: כפתור 101 ושורת טקסט משנית) ושני בלוקים משניים, אחד לכל דגל קו סיוע נוסף (מצוקה עם ער"ן 1201 בכפתור במתאר, ובטיחות ילד). urgent לא מתווסף מתחת לחירום. הסתייגות אחת בסוף. **נסגר:** כל בלוק משני נושא כותרת לפי סוג הדגל (redflag.title.hotline.distress, redflag.title.hotline.child_safety), ולכן בניווט לפי כותרות אין שני h2 זהים. השורה הפסיבית על הדס (redflag.after.emergency) נשארת בבלוק הראשי בלבד (UX S6: שורה אחת על הדס בכל מסך).', f:'כמו "משולב": מיקוד ל-h1, בלי הכרזה.'}
  ]},
  {id:'S7', name:'טופס מסירה', states:[
   {id:'default', name:'רגיל', mode:'focus', html:()=>shell({stage:3,main:form('default'),composer:false}), d:'המשך טבעי של השיחה, באותו פס עליון. שם, טלפון (dir=ltr, מיושר לימין), שני שדות רשות כפתורים (ממתינים לאישור), הסכמה נפרדת. אין שדה הערות. "מה יישלח להדס" סגור כברירת מחדל.', f:'המיקוד לכותרת הטופס.'},
   {id:'preview', name:'תצוגה מקדימה פתוחה', mode:'focus', html:()=>shell({stage:3,main:form('preview'),composer:false}), d:'details/summary אמיתי. העובדות במילים של הפונה, וקישור "משהו לא מדויק? חזרה לשיחה".', f:'summary הוא כפתור מקלדת טבעי; aria-expanded מגיע מהדפדפן.'},
   {id:'partial', name:'תיק חלקי', mode:'focus', html:()=>shell({stage:2,main:form('partial'),composer:false}), d:'יציאה מוקדמת: שורת מידע מעל התצוגה המקדימה.', f:'—'},
-  {id:'errors', name:'שגיאות שדה', mode:'focus', html:()=>shell({stage:3,main:form('errors'),composer:false}), d:'תקציר בראש הטופס עם קישורים לשדות, ושגיאה צמודה לכל שדה: סמל + טקסט + מסגרת 2px. לא רק צבע.', f:'המיקוד לשדה השגוי הראשון; התקציר role=alert.'},
-  {id:'sending', name:'שולח', mode:'focus', html:()=>shell({stage:3,main:form('sending'),composer:false}), d:'פסי הקול בלבן בתוך הכפתור. לחיצה כפולה חסומה.', f:'"בשליחה…" מוכרז.'},
+  {id:'errors', name:'שגיאות שדה', mode:'focus', html:()=>shell({stage:3,main:form('errors'),composer:false}), d:'תקציר בראש הטופס עם קישורים לשדות, ושגיאה צמודה לכל שדה: סמל + טקסט + מסגרת 2px. לא רק צבע.', f:'מנגנון: מיקוד, לשדה השגוי הראשון. השגיאה מקושרת אליו ב-aria-describedby ולכן נקראת כחלק מהמיקוד. התקציר נשאר גלוי ואינו מוכרז (אין role=alert).'},
+  {id:'sending', name:'שולח', mode:'focus', html:()=>shell({stage:3,main:form('sending'),composer:false}), ann:()=>tv('form.sending'), d:'פסי הקול בלבן בתוך הכפתור. לחיצה כפולה חסומה.', f:'מנגנון: הכרזה. "בשליחה…" מוכרז דרך המכריז, והמיקוד נשאר בכפתור.'},
   {id:'failed', name:'כשל', mode:'focus', html:()=>shell({stage:3,main:form('failed'),composer:false}), d:'הפרטים לא נמחקים. תיבת שגיאה עם "לנסות שוב".', f:'המיקוד לתיבת השגיאה.'},
   {id:'failed2', name:'כשל חוזר', mode:'focus', html:()=>shell({stage:3,main:form('failed2'),composer:false}), d:'בנוסף: וואטסאפ (טקסט כללי בלבד) וטלפון כשורות גדולות.', f:'—'}
  ]},
@@ -1296,7 +1414,8 @@ const SCREENS = [
   {id:'default', name:'רגיל', mode:'focus', html:()=>shell({stage:3,main:confirmScr('default'),composer:false}), d:'שקט ומדויק: מעטפה בעיגול ורוד-בהיר, בלי וי ירוק ובלי קונפטי. מה קורה עכשיו, מתי (משתנה מדף העובדות), מאיזה מספר, ושורת 101. **תוכן השיחה נמחק עם אישור המסירה — מהמכשיר ומהשרת (D-01, form.confirmation.privacy v2).** הפנייה עצמה (סיכום ופרטי קשר) נשארת אצל הדס. שורת הפרטיות נבחרת לפי תשובת השליחה: כאן delivered (form.confirmation.privacy v2), ושני האחרים בנפרד. שורת הגיבוי כוללת עכשיו קישור וואטסאפ (משתנה מדף העובדות).', f:'המיקוד לכותרת. ה-✕ כאן חוזר לאתר בלי דיאלוג (אין מה לאבד).'},
   {id:'other', name:'מבוגר אחר', mode:'focus', html:()=>shell({stage:3,main:confirmScr('other'),composer:false}), d:'שורה נוספת: הדס חוזרת לפונה, לא למושא.', f:'—'},
   {id:'afterflag', name:'אחרי דגל אדום', mode:'focus', html:()=>shell({stage:3,main:confirmScr('afterflag'),composer:false}), d:'וריאציית "בירור רפואי" בלבד: שורת הפעולה הרפואית חוזרת בבלוק הפחם לפני "מה קורה עכשיו".', f:'—'},
-  {id:'privacy_pending', name:'מסירה ממתינה (delivery: pending)', mode:'focus', html:()=>shell({stage:3,main:confirmScr('privacy_pending'),composer:false}), d:'שורת הפרטיות היא form.confirmation.privacy.pending: הפרטים **נשלחים** (לא "נשלחו"), ועד שיגיעו להדס הם נשמרים במערכת לכל היותר 7 ימים. תוכן השיחה כבר נמחק. **פתוח ← UX ותפקיד 3:** הכותרת form.confirmation.title אומרת "הפרטים נשלחו להדס", וזה לא מדויק כשהמסירה ממתינה. אין בקובץ כותרת חלופית, ולכן היא מסומנת במסך. גם אין נוסח משולב כש-pending וגם delete_pending.', f:'כמו "רגיל".'},
+  {id:'privacy_pending', name:'מסירה ממתינה (delivery: pending)', mode:'focus', html:()=>shell({stage:3,main:confirmScr('privacy_pending'),composer:false}), d:'המייל לא נשלח בתוך הבקשה, והמערכת ממשיכה לנסות. הכותרת היא form.confirmation.title.pending ("בדרך", לא "נשלחו"), ו"מה קורה עכשיו" ו"מתי" הם הגרסאות .pending: "מתי" מעוגן להגעת הסיכום להדס ולא ללחיצה. שורת הגיבוי, המספר, ההסתייגות ו-add_later נשארים כמו שהם, ואין כפתור "בדיקת סטטוס". שורת הפרטיות היא form.confirmation.privacy.pending: הפרטים נשלחים, נשמרים במערכת עד שיגיעו, ובכל מקרה נמחקים תוך כשבוע. תוכן השיחה כבר נמחק.', f:'כמו "רגיל": מיקוד לכותרת, בלי הכרזה.'},
+  {id:'both_pending', name:'מסירה ומחיקה ממתינות', mode:'focus', html:()=>shell({stage:3,main:confirmScr('both_pending'),composer:false}), d:'delivery: pending וגם content_deleted: false. אותה כותרת ואותם נוסחי .pending, ושורת הפרטיות היא form.confirmation.privacy.both_pending (תוכן השיחה יימחק תוך כשעה, והפרטים נשלחים ונמחקים תוך כשבוע).', f:'כמו "רגיל".'},
   {id:'privacy_delete', name:'מחיקה ממתינה (content_deleted: false)', mode:'focus', html:()=>shell({stage:3,main:confirmScr('privacy_delete'),composer:false}), d:'שורת הפרטיות היא form.confirmation.privacy.delete_pending: תוכן השיחה **יימחק** מהשרת תוך כשעה (לא "נמחק"). המסירה הצליחה, ולכן הכותרת נכונה והמסך זהה לרגיל חוץ מהשורה הזו.', f:'כמו "רגיל".'}
  ]},
  {id:'S9', name:'השיחה נמחקה', states:[
@@ -1308,10 +1427,11 @@ const SCREENS = [
   {id:'unavailable', name:'לא זמין בפתיחה', mode:'page', html:()=>`<div class="intro">${fallbackScr('unavailable')}</div>`, d:'אחראי ולא מאשים: ענן חצוי בעיגול אפור, כותרת בשחור, שלוש דרכים כשורות גדולות (56px).', f:'המיקוד לכותרת.'},
   {id:'midchat', name:'תקלה באמצע', mode:'focus', html:()=>shell({stage:2,main:fallbackScr('midchat'),composer:false}), d:'כמו למעלה + "מה שסיפרת שמור" (רק אם נכון טכנית).', f:'המיקוד לכותרת.'},
   {id:'ratelimit', name:'הגבלת קצב', mode:'focus', html:()=>shell({stage:2,main:fallbackScr('ratelimit'),composer:false}), d:'error.rate_limit + "לנסות שוב".', f:'—'},
-  {id:'model_free', name:'בלי מודל (וריאציה ב)', mode:'focus', html:()=>shell({stage:2,log:LOG.B+user(SU.u3)+bot(t('system.model_free'))+bot(t('q.prev_treatment'),{first:false}),quick:chips([chip(t('q.prev_treatment.opt.yes')),chip(t('q.prev_treatment.opt.no')),chip(t('chat.quick.dont_know'),{alt:true})])}), d:'שיחה פתוחה שנשארה בלי מודל (3 כשלי מודל רצופים, השבתה, תקרת עלות 100% או תקציב כתובת). **זה לא מסך חדש אלא S3 עצמו, בלי באנר:** בלי הודעת מעבר, והפס העליון והמחוון לא משתנים. טקסט חופשי מקבל בועה רגילה של העוזר עם system.model_free (101), ואחריה המסך הבא בכפתורים, באותו מראה של שאלות סגורות. השדה נשאר. כשנגמרים המסכים: כרטיס תוצאה עם outcome.extraction_gap, בלי תוצאה 3, ואז הטופס כרגיל. המסך הבא כאן הוא דוגמה: אותה שאלה סגורה כמו ב"כפתורי בחירה" (אפשרויות התשובה שלה עדיין חסרות בקובץ).', f:'system.model_free מוכרזת כבועה רגילה (log, polite). קבוצת הכפתורים מוכרזת (a11y.quick_replies). אין הכרזה נפרדת על המעבר.'}
+  {id:'nojs', name:'בלי JavaScript (וריאציה ד)', mode:'page', html:()=>`<div class="intro">${noJsScr()}</div>`, d:'JavaScript כבוי, חסום או שלא נטען. בלוק סטטי ב-HTML של העמוד עצמו (וגם <noscript>), שמוחלף כש-React עולה, כדי שכשל טעינה לא ייראה כדף לבן. אותו מחולל של system.unavailable, ולכן אותו טקסט: 101 (קישור tel:), הטלפון של הדס וקישור וואטסאפ (טקסט כללי בלבד). בלי טופס, בלי שיחה, בלי style="" (CSP): העיצוב מקובץ ה-CSS של הכלי. הכותרת והפוטר הסטטיים של הכלי נשארים.', f:'בלי סקריפט אין מיקוד מנוהל: הדף נטען עם המיקוד הטבעי בראשו. כל הפעולות הן <a> אמיתיים (tel: ו-wa.me).'},
+  {id:'model_free', name:'בלי מודל (וריאציה ב)', mode:'focus', html:()=>shell({stage:2,log:LOG.B+user(SU.u3)+bot(t('system.model_free'))+bot(t('q.prev_treatment'),{first:false,q:true}),quick:chips([chip(t('q.prev_treatment.opt.yes')),chip(t('q.prev_treatment.opt.no')),chip(t('chat.quick.dont_know'),{alt:true})])}), ann:()=>tv('chat.sr.bot_label')+' '+tv('system.model_free')+' '+tv('q.prev_treatment')+' '+tv('a11y.buttons_hint'), d:'שיחה פתוחה שנשארה בלי מודל (3 כשלי מודל רצופים, השבתה, תקרת עלות 100% או תקציב כתובת). **זה לא מסך חדש אלא S3 עצמו, בלי באנר:** בלי הודעת מעבר, והפס העליון והמחוון לא משתנים. טקסט חופשי מקבל בועה רגילה של העוזר עם system.model_free (101), ואחריה המסך הבא בכפתורים, באותו מראה של שאלות סגורות. השדה נשאר. כשנגמרים המסכים: כרטיס תוצאה עם outcome.extraction_gap, בלי תוצאה 3, ואז הטופס כרגיל. המסך הבא כאן הוא דוגמה: אותה שאלה סגורה כמו ב"כפתורי בחירה" (אפשרויות התשובה שלה עדיין חסרות בקובץ).', f:'מנגנון: הכרזה. system.model_free מוכרזת כבועה רגילה דרך המכריז, ואחריה השאלה והרמז a11y.buttons_hint (הכפתורים לפני השדה). שם הקבוצה הוא השאלה. אין הכרזה נפרדת על המעבר.'}
  ]},
  {id:'S11', name:'דיאלוגים', states:[
-  {id:'exit', name:'יציאה (✕)', mode:'focus', html:()=>shell({stage:2,log:LOG.B,overlay:dlg('exit')}), d:'גיליון תחתון במובייל, חלון במרכז בדסקטופ. **3 פעולות:** "להמשיך בשיחה" (ראשי, מקבל מיקוד) · "לצאת" (נשמר 24 שעות ואז נמחק מעצמו) · "לצאת ולמחוק" (ישר ל-DELETE ול-S9 — הבחירה בדיאלוג היא האישור, בלי דיאלוג נוסף).', f:'מלכודת מיקוד, Esc = "להמשיך בשיחה", המיקוד חוזר ל-✕.'},
+  {id:'exit', name:'יציאה (✕)', mode:'focus', html:()=>shell({stage:2,log:LOG.B,overlay:dlg('exit')}), d:'גיליון תחתון במובייל, חלון במרכז בדסקטופ. נפתח מ-✕, ובדסקטופ גם מקישורי "חזרה לאתר" בכותרת ובפוטר כשמוצג מסך שיחה, תוצאה או טופס (בשאר המסכים הם ניווט רגיל). **3 פעולות:** "להמשיך בשיחה" (ראשי, מקבל מיקוד) · "לצאת" (נשמר 24 שעות ואז נמחק מעצמו) · "לצאת ולמחוק" (ישר ל-DELETE ול-S9 — הבחירה בדיאלוג היא האישור, בלי דיאלוג נוסף).', f:'מנגנון: מיקוד, לפעולה הבטוחה (שם הדיאלוג נקרא כחלק מהמיקוד). מלכודת מיקוד, Esc = "להמשיך בשיחה", והמיקוד חוזר למי שפתח את הדיאלוג: ✕, או קישור "חזרה לאתר" בכותרת או בפוטר (דסקטופ).'},
   {id:'restart', name:'התחלה מחדש', mode:'focus', html:()=>shell({stage:2,log:LOG.B,overlay:dlg('restart')}), d:'"ביטול" מקבל את המיקוד (פעולה הרסנית). אישור מוחק את השיחה הקודמת עכשיו, גם מהשרת.', f:'כמו יציאה.'},
   {id:'delete', name:'מחיקה (2 פעולות)', mode:'focus', html:()=>shell({stage:2,log:LOG.B,overlay:dlg('delete')}), d:'משמש לכל נתיב שמוביל למחיקה: "סיום ומחיקה" בתוצאה, "מחיקת השיחה" ב-S2, או "מחיקה" מהתפריט. **2 פעולות בלבד:** מחיקה (← S9) · ביטול (מקבל מיקוד). כפתור המחיקה מתאר בצבע שגיאה עם סמל פח — לא רקע אדום מלא.', f:'"ביטול" מקבל את המיקוד.'}
  ]},
@@ -1320,16 +1440,18 @@ const SCREENS = [
   {id:'about', name:'"על הכלי"', mode:'focus', html:()=>shell({stage:2,log:LOG.B,overlay:aboutSheet()}), d:'גיליון תחתון במובייל (88% גובה), חלונית צד בדסקטופ. מה זה, מה זה לא, ההסתייגות המלאה, מה נשמר, מדיניות פרטיות.', f:'דיאלוג מודאלי; המיקוד לכותרת.'}
  ]},
  {id:'S13', name:'מסלולי ביניים (D-02)', states:[
-  {id:'minor', name:'קטין על עצמו — אחרי טקסט (minor.self)', mode:'focus', html:()=>shell({stage:1,main:s13Scr('minor'),composer:false}), d:'טריגר: "על עצמי" וגיל מתחת ל-18 (שנאמר, נענה, או אמירה מפורשת כמו "אני בכיתה ח\'"). כרטיס קבוע — לא בועה ולא כרטיס תוצאה. אין טופס, אין איסוף טלפון, אין סיכום מודל, אין "שכחתי לספר". רק קישור טלפון של הדס (בשביל ההורים) ו"חזרה לאתר". **התיק נמחק עם הצגת המסך** (SEC-02). דגלים אדומים פעילים וקודמים לזה בכל מקרה — אם עלה דגל, מוצג S6 ולא המסך הזה.', f:'המיקוד לכותרת הכרטיס. הכרזה אחת.'},
-  {id:'minor_pre', name:'קטין שנעצר מהקשת הגיל — ממתין לאליה (D-13)', mode:'focus', html:()=>shell({stage:1,main:s13Scr('minor_pre'),composer:false}), d:'ענף א של D-13, ממתין לאליה. אותו כרטיס קבוע של "קטין על עצמו", בנוסח minor.self.before_text ⚖️, כשהעצירה באה מההקשה "מתחת ל-18", **לפני** כל טקסט חופשי. בנוסף ל-101 יש קווי סיוע למצוקה (ער"ן 1201 וסה"ר בצ\'אט), כי דגל המצוקה לא קיבל טקסט לסרוק, וקטין שנעצר כאן לא ייתקל באף מסך אחר. שורות קווי הסיוע מקובצות בבלוק רגוע אחד (לא אדום, לא מסך דגל), עם כפתור חיוג לער"ן לצד הטלפון של הדס. אין טופס, אין איסוף טלפון, אין סיכום ואין "שכחתי לספר". התיק נמחק עם הצגת המסך. קישור סה"ר הוא המשתנה {{sahar_url}}; אין עדיין תווית טקסט לקישור.', f:'המיקוד לכותרת הכרטיס. הכרזה אחת. הנוסח ממתין לאישור משפטי.'},
-  {id:'not_parent', name:'מי שאינו הורה, על ילד', mode:'focus', html:()=>shell({stage:1,main:s13Scr('not_parent'),composer:false}), d:'טריגר: המושא ילד, והפונה אינו הורה/אפוטרופוס (גננת, מורה, סבתא). כרטיס קבוע, בלי טופס ובלי טלפון. פעולה: "העתקת הפרטים של הדס" מעתיקה ללוח רק טלפון+כתובת אתר (reporter.copy_payload) — בלי שום פרט מהשיחה — ומציגה אישור "הפרטים הועתקו". **התיק נמחק עם הצגת המסך.**', f:'המיקוד לכותרת הכרטיס. אחרי ההעתקה מוכרז role=status.'}
+  {id:'minor', name:'קטין על עצמו — אחרי טקסט (minor.self)', mode:'focus', html:()=>shell({stage:1,main:s13Scr('minor'),composer:false}), d:'טריגר: "על עצמי" וגיל מתחת ל-18 (שנאמר, נענה, או אמירה מפורשת כמו "אני בכיתה ח\'"). כרטיס קבוע — לא בועה ולא כרטיס תוצאה. אין טופס, אין איסוף טלפון, אין סיכום מודל, אין "שכחתי לספר". רק קישור טלפון של הדס (בשביל ההורים) ו"חזרה לאתר". **התיק נמחק עם הצגת המסך** (SEC-02). דגלים אדומים פעילים וקודמים לזה בכל מקרה — אם עלה דגל, מוצג S6 ולא המסך הזה.', f:'מנגנון אחד: מיקוד, לכותרת הכרטיס, בלי הכרזה. הקישור לטלפון של הדס מוצג כספרות, ולכן השם הנגיש שלו מתחיל במילים (a11y.call_hadas, שם עבודה, חסר בקובץ) וממשיך בספרות הגלויות (2.4.4 ו-2.5.3).'},
+  {id:'minor_pre', name:'קטין שנעצר מהקשת הגיל — ממתין לאליה (D-13)', mode:'focus', html:()=>shell({stage:1,main:s13Scr('minor_pre'),composer:false}), d:'ענף א של D-13, ממתין לאליה. אותו כרטיס קבוע של "קטין על עצמו", בנוסח minor.self.before_text ⚖️, כשהעצירה באה מההקשה "מתחת ל-18", **לפני** כל טקסט חופשי. בנוסף ל-101 יש קווי סיוע למצוקה (ער"ן 1201 וסה"ר בצ\'אט), כי דגל המצוקה לא קיבל טקסט לסרוק, וקטין שנעצר כאן לא ייתקל באף מסך אחר. שורות קווי הסיוע מקובצות בבלוק רגוע אחד (לא אדום, לא מסך דגל), עם כפתור חיוג לער"ן לצד הטלפון של הדס. אין טופס, אין איסוף טלפון, אין סיכום ואין "שכחתי לספר". התיק נמחק עם הצגת המסך. קישור סה"ר הוא המשתנה {{sahar_url}}; אין עדיין תווית טקסט לקישור.', f:'מנגנון אחד: מיקוד, לכותרת הכרטיס, בלי הכרזה. שם נגיש לטלפון של הדס כמו ב-minor (a11y.call_hadas). קישור סה"ר נפתח בלשונית חדשה, ולכן יש לו רמז מוסתר (outcome.4.external_hint). הנוסח ממתין לאישור משפטי.'},
+  {id:'not_parent', name:'מי שאינו הורה, על ילד', mode:'focus', html:()=>shell({stage:1,main:s13Scr('not_parent'),composer:false}), d:'טריגר: המושא ילד, והפונה אינו הורה/אפוטרופוס (גננת, מורה, סבתא). כרטיס קבוע, בלי טופס. הפרטים של הדס מוצגים בכרטיס גם כטקסט (הטלפון ב-reporter.not_parent), וההעתקה היא נוחות ולא הדרך היחידה. "העתקת הפרטים של הדס" מעתיקה ללוח רק טלפון וכתובת אתר (reporter.copy_payload), בלי שום פרט מהשיחה. נסו ללחוץ: ההעתקה נבדקת באמת, ואם היא נכשלת (למשל בדפדפן בתוך אפליקציה) מוצג מצב הכשל. **התיק נמחק עם הצגת המסך.**', f:'מנגנון: מיקוד, לכותרת הכרטיס, בלי הכרזה. בלחיצה על ההעתקה המיקוד נשאר על הכפתור. שם נגיש לקישור הטלפון כמו ב-minor.'},
+  {id:'not_parent_copied', name:'מי שאינו הורה — אחרי העתקה שהצליחה', mode:'focus', html:()=>shell({stage:1,main:s13Scr('not_parent_copied'),composer:false}), ann:()=>tv('reporter.copied'), d:'"הפרטים הועתקו" מוצג רק אחרי שכתיבה ללוח הצליחה בפועל. הוא טקסט רגיל וגלוי לצד הכפתור, ולא נכתב לאזור חי שמוסתר ונחשף (אזור כזה בדרך כלל לא מוכרז). הפרטים נשארים גלויים בכרטיס.', f:'מנגנון: הכרזה. reporter.copied מוכרז דרך המכריז היחיד, בלי להזיז מיקוד (נשאר על הכפתור).'},
+  {id:'not_parent_failed', name:'מי שאינו הורה — ההעתקה נכשלה', mode:'focus', html:()=>shell({stage:1,main:s13Scr('not_parent_failed'),composer:false}), ann:()=>tv('reporter.copy_failed'), d:'navigator.clipboard נכשל בדפדפנים בתוך אפליקציות (אינסטגרם, פייסבוק) ובלי הרשאה. אז מוצג reporter.copy_failed (נוסח חדש, חסר בקובץ, ולכן מסומן [טקסט חסר]), והכרטיס חושף את הפרטים (reporter.copy_payload) בשדה קריאה בלבד לבחירה ידנית: מקבל מיקוד ובוחר הכול. אסור להציג "הפרטים הועתקו" כשההעתקה לא הצליחה.', f:'מנגנון: הכרזה. reporter.copy_failed מוכרז דרך המכריז, המיקוד נשאר על הכפתור, והפרטים נשארים זמינים לבחירה ידנית (שם השדה הוא הודעת הכשל).'},
  ]},
  {id:'H', name:'הצד של הדס', states:[
   {id:'email', name:'מייל פנייה', mode:'mail', html:()=>mailScr(), d:'השורה הראשונה היא ההסתייגות (זה גם מה שמופיע בתצוגה המקדימה של ההתראה). חיוג ווואטסאפ ככפתורים, ואז פרטי קשר, מי/גיל/תחום/תוצאה ולמה, עובדות בציטוט, הסיכום החם כפי שהוצג לפונה, ו**סימון מהיר אחד** (לא חובה, בלי שאלות המשך): רלוונטית·מדויק / רלוונטית·לא מדויק / לא רלוונטית. בלי תזכורות, בלי "הפסקת תזכורות" — הן לא קיימות. מבנה מבוסס טבלאות בפועל (תאימות לתוכנות דואר) — כאן רק המראה.', f:'כל כפתור הוא קישור עם אסימון; פותח עמוד קל.'},
   {id:'monthly', name:'מייל חודשי (רגע ב\')', mode:'mail', html:()=>monthlyScr(), d:'פעם בחודש, במקום תזכורות וסיכום שבועי: מספרי החודש בלי תוכן, ואחריהם רשימת הפניות שעוד לא סומנו. כל שורה פותחת עמוד קל עם ההערכה אחרי השיחה הראשונה (רגע ב\'), שממופה 1:1 לתוצאות + "לא התקיימה שיחה".', f:'—'},
   {id:'feedback_page', name:'עמוד קל — סימון מהיר (רגע א\')', mode:'hpage', html:()=>hpage('feedback'), d:'הבחירה מסומנת מראש מהקישור (לא נרשמת לבד — סורקי דואר פותחים קישורים אוטומטית), ו"אישור" אחד רושם.', f:'המיקוד לכותרת.'},
   {id:'judgment_page', name:'עמוד קל — הערכה חודשית (רגע ב\')', mode:'hpage', html:()=>hpage('judgment'), d:'נפתח משורה במייל החודשי. 5 אפשרויות שממופות 1:1 לתוצאות + "לא התקיימה שיחה". "אישור" אחד רושם.', f:'המיקוד לכותרת.'},
-  {id:'done', name:'עמוד קל — נרשם', mode:'hpage', html:()=>hpage('done'), d:'"נרשם" + קישור "שינוי". אין שאלת המשך משני הרגעים — הסימון הוא חד-פעמי ואופציונלי.', f:'"נרשם" role=status.'},
+  {id:'done', name:'עמוד קל — נרשם', mode:'hpage', html:()=>hpage('done'), d:'"נרשם" + קישור "שינוי". אין שאלת המשך משני הרגעים — הסימון הוא חד-פעמי ואופציונלי.', f:'מנגנון: מיקוד. המיקוד לכותרת "נרשם", בלי הכרזה.'},
   {id:'expired', name:'עמוד קל — פג', mode:'hpage', html:()=>hpage('expired'), d:'קישור שפג.', f:'—'}
  ]}
 ];
@@ -1339,22 +1461,47 @@ const SCREENS = [
    ===================================================================== */
 function statusbar(){return `<div class="m-status" aria-hidden="true"><span>21:40</span><span class="dots"><i></i></span></div>`;}
 function mHeader(){return `<div class="m-header">${logo(40)}<button type="button" class="ham" aria-label="תפריט האתר">${I('menu',26,2)}</button></div>`;}
+/* the tool page's own static header and footer (UX 4.3, COMPONENTS §3.23). The site's Header and Footer load their content through Firestore, which breaks
+   D-06 (no third party on the tool page, connect-src 'self'). The pair is static and minimal: the logo and a visible "חזרה לאתר" link, no site navigation,
+   no calls to action, every link a plain <a>. The header is neither sticky nor fixed (it scrolls with the page). */
+function logoLink(h){return `<a href="#" data-noop class="logo-link" aria-label="${esc(tv('page.header.logo.a11y'))}" data-atid="page.header.logo.a11y">${logo(h)}</a>`;}
+// the visible "חזרה לאתר" link. While a chat, a result or a form is open (S3 to S5, S7) the header and footer links open the existing exit dialog (S11),
+// which returns focus to whatever opened it; elsewhere they are plain navigation. Either way they stay real <a href>.
+function backLink(kind){
+  const open = ['S3','S4','S5','S7'].includes(SCREENS[CUR.s].id);
+  return `<a href="#" ${open?'data-go="S11/exit"':'data-noop'} class="${kind==='foot'?'back-foot':'back-site'}">${I('back',18)}${t('nav.back_to_site')}</a>`;
+}
+function toolHeaderM(){return `<div class="m-header tool-hd">${logoLink(40)}${backLink()}</div>`;}
+function toolHeaderD(){return `<div class="d-header tool-hd">${logoLink(52)}${backLink()}</div>`;}
+// footer: a second "חזרה לאתר" and the privacy policy (new tab, with the hidden hint, so it never leaves an open conversation). Nothing else.
+// The accessibility statement joins it when there is one.
+function toolFooter(){return `<footer class="tool-ft">${backLink('foot')}<a href="#" data-noop target="_blank" rel="noopener">${t('consent.privacy_link')} ${I('ext',16)}<span class="sr"> ${t('outcome.4.external_hint')}</span></a></footer>`;}
 function dHeader(){return `<div class="d-header">${logo(52)}<nav class="d-nav" aria-label="ניווט האתר"><span>ראשי</span><span>קצת עליי</span><span>תחומי טיפול</span><span>מטופלים מספרים</span><span>בלוג מקצועי</span><span>טיפול אונליין</span><span>דברו איתי</span></nav></div>`;}
 function fabs(wa=true){return `${wa?`<a href="#" data-noop class="fab-wa" aria-label="שלחו הודעה בוואטסאפ">${I('wa',32,1.6)}</a>`:''}<button type="button" class="fab-a11y" aria-label="תפריט נגישות" data-act="a11y">${I('a11y',28,2)}</button>`;}
-function simCls(){return [OPT.hc?'sim-hc':'',OPT.noanim?'sim-noanim':'',OPT.size===1?'sim-tl':'',OPT.size===2?'sim-txl':'',OPT.links?'sim-links':'',OPT.font?'sim-rf':'',OPT.ids?'show-ids':''].join(' ');}
+function simCls(){return [OPT.hc?'sim-hc':'',OPT.noanim?'sim-noanim':'',OPT.size===1?'sim-tl':'',OPT.size===2?'sim-txl':'',OPT.links?'sim-links':'',OPT.font?'sim-rf':'',OPT.ids?'show-ids':'',OPT.focus?'show-focus':''].join(' ');}
 function build(state){
   const html = state.html();
   const m = state.mode;
+  if (state.frame){ // a bare viewport of the given size (short height / zoom), not a device: no status bar, no site chrome
+    const {w,h} = state.frame;
+    return `<div class="device m framed" style="width:${w+24}px"><div class="screen dev-mobile ${simCls()}" style="width:${w}px;height:${h}px;border-radius:12px">${html}</div></div>`;
+  }
   if (OPT.dev==='m'){
     let body='';
-    if (m==='page') body = `${mHeader()}<div class="m-page"><div class="aur"></div><div class="page-scroll">${html}</div></div>${fabs(true)}${OPT.a11yOpen?a11yPanel('bottom'):''}`;
+    if (m==='page') body = state.site
+      ? `${mHeader()}<div class="m-page"><div class="aur"></div><div class="page-scroll">${html}</div></div>${fabs(true)}${OPT.a11yOpen?a11yPanel('bottom'):''}`
+      : `<div class="m-page nohdr"><div class="aur"></div><div class="page-scroll">${toolHeaderM()}${html}${toolFooter()}</div></div>${fabs(true)}${OPT.a11yOpen?a11yPanel('bottom'):''}`;
     else body = `<div class="m-focus">${html}</div>${OPT.a11yOpen?a11yPanel('top'):''}`;
     return `<div class="device m"><div class="screen dev-mobile ${simCls()}">${statusbar()}${body}</div></div>`;
   }
   let body='';
-  if (m==='page') body = `<div class="d-site">${dHeader()}<div class="d-main scroll"><div class="aur" style="position:fixed"></div><div class="d-page">${html}</div></div>${fabs(false)}</div>`;
-  else if (m==='focus') body = `<div class="d-site">${dHeader()}<div class="d-main"><div class="aur"></div><div class="tool-panel">${html}</div></div>${fabs(false)}</div>`;
-  else if (m==='rf') body = `<div class="d-site">${dHeader()}<div class="d-main"><div class="aur"></div><div class="tool-panel rf-panel">${html}</div></div>${fabs(false)}</div>`;
+  // desktop: the tool page keeps its own header on every screen (not sticky, scrolls with the page) and its footer on every screen except S6
+  const aur = '<div class="aur" style="position:fixed"></div>';
+  if (m==='page') body = state.site
+    ? `<div class="d-site">${dHeader()}<div class="d-main scroll">${aur}<div class="d-page">${html}</div></div>${fabs(false)}</div>`
+    : `<div class="d-site"><div class="d-main scroll nohdr">${aur}${toolHeaderD()}<div class="d-page">${html}</div>${toolFooter()}</div>${fabs(false)}</div>`;
+  else if (m==='focus') body = `<div class="d-site"><div class="d-main scroll nohdr">${aur}${toolHeaderD()}<div class="tool-panel">${html}</div>${toolFooter()}</div>${fabs(false)}</div>`;
+  else if (m==='rf') body = `<div class="d-site"><div class="d-main scroll nohdr">${aur}${toolHeaderD()}<div class="tool-panel rf-panel">${html}</div></div>${fabs(false)}</div>`;
   else if (m==='mail') body = html;
   else body = html;
   if (OPT.a11yOpen && (m==='page'||m==='focus'||m==='rf')) body += a11yPanel('bottom');
@@ -1376,23 +1523,31 @@ function render(pushHash=true){
   fitEl.querySelectorAll('[data-composer]').forEach(ta=>{ if (ta.value){ ta.style.height='auto'; ta.style.height=Math.min(ta.scrollHeight,120)+'px'; } });
   document.getElementById('view').classList.toggle('is-m', OPT.dev==='m');
   document.getElementById('crumb-t').textContent = `${sc.id} · ${sc.name}`;
-  document.getElementById('crumb-s').textContent = `${st.name} · ${OPT.dev==='m'?'מובייל':'דסקטופ'}`;
+  document.getElementById('crumb-s').textContent = `${st.name} · ${st.frame?`מסגרת ${st.frame.w}×${st.frame.h}`:OPT.dev==='m'?'מובייל':'דסקטופ'}`;
   // scroll positions inside frame
   fitEl.querySelectorAll('.log').forEach(l=>{
+    const box = l.closest('.tool.short') || l;   // in the short-height mode the shell is what scrolls, not the transcript
     const how = l.dataset.scroll;
-    if (how==='top') l.scrollTop = 0;
-    else if (how==='anchor'){ const a=l.querySelector('#anchor'); l.scrollTop = a ? a.offsetTop - l.offsetTop - 8 : l.scrollHeight; }
-    else l.scrollTop = l.scrollHeight;
+    if (how==='top') box.scrollTop = 0;
+    else if (how==='disc'){ const d=l.querySelector('.flow-disc'); box.scrollTop = d ? d.offsetTop - 6 : 0; }
+    else if (how==='anchor'){ const a=l.querySelector('#anchor'); box.scrollTop = a ? a.offsetTop - (box===l ? l.offsetTop : 0) - 8 : box.scrollHeight; }
+    else box.scrollTop = box.scrollHeight;
   });
+  // the announcer is emptied on every state change; states that say something do it through the announcer (after focus has settled when annDelay is set)
+  const key = `${sc.id}/${st.id}/${OPT.dev}`;
+  if (key !== lastKey){
+    lastKey = key; announceClear();
+    if (st.ann){ const say = ()=>announce(st.ann()); if (st.annDelay) annDelayT = setTimeout(say, st.annDelay); else say(); }
+  }
   notes(sc, st);
   navSync();
   fit();
   if (pushHash) history.replaceState(null,'',`#${sc.id}/${st.id}/${OPT.dev}`);
 }
 function notes(sc, st){
-  const ids = [...new Set([...fitEl.querySelectorAll('[data-tid]')].map(e=>e.dataset.tid))];
+  const ids = [...new Set([...fitEl.querySelectorAll('[data-tid],[data-atid]')].map(e=>e.dataset.tid||e.dataset.atid))];   // data-atid: an id used only as an attribute (an accessible name)
   const known = ids.filter(i=>!i.startsWith('דוגמת') && !i.startsWith('facts.'));
-  const missingIds = known.filter(i=>{const base=i.split('#')[0]; return isMissing(base);});
+  const missingIds = known.filter(i=>{const base=i.split('#')[0].split('@')[0]; return isMissing(base);});
   const okIds = known.filter(i=>!missingIds.includes(i));
   const models = ids.filter(i=>i.startsWith('דוגמת'));
   document.getElementById('notes').innerHTML = `
@@ -1439,32 +1594,62 @@ function navSync(){
   document.getElementById('opt-hc').checked = OPT.hc; document.getElementById('opt-anim').checked = OPT.noanim; document.getElementById('opt-size').value = OPT.size;
 }
 
+/* ---- the ONE announcer (COMPONENTS §7.1) ---- */
+const ANN = document.getElementById('sr-announcer'), ANN_VIS = document.getElementById('ann-vis');
+let annT = 0, annDelayT = 0, lastKey = '';
+function plain(html){ const d=document.createElement('div'); d.innerHTML=html; return d.textContent.replace(/\s+/g,' ').trim(); }
+function announceClear(){ clearTimeout(annT); clearTimeout(annDelayT); ANN.textContent=''; ANN_VIS.textContent='—'; }
+function announce(text){ // emptied first, so that an identical message is announced again; then the text is written
+  clearTimeout(annT); ANN.textContent=''; ANN_VIS.textContent=text;
+  annT = setTimeout(()=>{ ANN.textContent = text; }, 60);
+}
+// a new assistant message as the announcer gets it: speaker label, the whole message, and (when it has quick replies) the hint
+const annBot = (id, hint=false)=> tv('chat.sr.bot_label')+' '+tv(id)+(hint?' '+tv('a11y.buttons_hint'):'');
+
 /* ---- live demo inside S3/opening ---- */
 const DEMO_REPLIES = ['q.onset.child.n','q.impact.child.n','q.prev_treatment','q.anything_else'];
 let demoK = 0;
-function demoReply(log, html, then){
+function demoReply(log, html, then, withChips=false){
+  const list = log.querySelector('.msgs');
   const reduce = OPT.noanim || matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const tw = document.createElement('div'); tw.innerHTML = typing(); const node = tw.firstElementChild; log.appendChild(node); log.scrollTop = log.scrollHeight;
+  // the buttons that were there are gone, so the hint and the group-naming id of the old question go too
+  list.querySelectorAll('.q-hint').forEach(e=>e.remove()); list.querySelectorAll('#q-cur').forEach(e=>e.removeAttribute('id'));
+  const tw = document.createElement('div'); tw.innerHTML = typing(); const node = tw.firstElementChild; list.appendChild(node); log.scrollTop = log.scrollHeight;
+  announce(tv('chat.typing'));   // once, through the announcer; the typing bubble itself is not a live region
   const send = fitEl.querySelector('[data-send]'); if (send) send.setAttribute('aria-disabled','true');
-  setTimeout(()=>{ node.remove(); const w=document.createElement('div'); w.innerHTML = bot(html); log.appendChild(w.firstElementChild); log.scrollTop = log.scrollHeight; then && then(); const ta=fitEl.querySelector('[data-composer]'); if (send) send.setAttribute('aria-disabled', ta && ta.value.trim()?'false':'true'); }, reduce?600:1300);
+  setTimeout(()=>{ node.remove(); const w=document.createElement('div'); w.innerHTML = bot(html,{q:withChips}); list.appendChild(w.firstElementChild); log.scrollTop = log.scrollHeight;
+    announce(tv('chat.sr.bot_label')+' '+plain(html)+(withChips?' '+tv('a11y.buttons_hint'):''));   // whole, once; focus stays in the input
+    then && then(); const ta=fitEl.querySelector('[data-composer]'); if (send) send.setAttribute('aria-disabled', ta && ta.value.trim()?'false':'true'); }, reduce?600:1300);
 }
 function demoChip(btn){
   const log = fitEl.querySelector('.log'); if(!log) return;
   const rel = btn.dataset.demo; const label = btn.textContent.trim();
   const qc = fitEl.querySelector('.chips'); if (qc) qc.remove();
-  const u = document.createElement('div'); u.innerHTML = user(label); log.appendChild(u.firstElementChild);
+  const u = document.createElement('div'); u.innerHTML = user(label); log.querySelector('.msgs').appendChild(u.firstElementChild);
   const q = rel==='age_adult'?t('goal.core_onset_pattern.ask'):rel==='son'?t('q.age.child.m',{subject_ref:'הבן שלך'}):rel==='daughter'?t('q.age.child.f',{subject_ref:'הבת שלך'}):rel==='self'?t('q.age.self'):t('q.relation.other_followup');
-  demoReply(log, q, ()=>{ const tool = fitEl.querySelector('.tool'); const cw = tool.querySelector('.composer-wrap'); const c = document.createElement('div'); c.innerHTML = chips([chip(t('chat.quick.dont_know'),{alt:true,demo:'dk'})]); tool.insertBefore(c.firstElementChild, cw); });
+  demoReply(log, q, ()=>{ const tool = fitEl.querySelector('.tool'); const cw = tool.querySelector('.composer-wrap'); const c = document.createElement('div'); c.innerHTML = chips([chip(t('chat.quick.dont_know'),{alt:true,demo:'dk'})]); tool.insertBefore(c.firstElementChild, cw); }, true);
 }
 function demoSend(){
   const ta = fitEl.querySelector('[data-composer]'); const log = fitEl.querySelector('.log'); const send = fitEl.querySelector('[data-send]');
   if (!ta || !log || !send) return;
-  if (send.getAttribute('aria-disabled')==='true'){ if(!fitEl.querySelector('.c-hint')){ const h=document.createElement('div'); h.className='c-hint'; h.setAttribute('role','status'); h.innerHTML=`${I('clock',15)} ${t('chat.send.wait')}`; ta.closest('.composer-wrap').prepend(h); setTimeout(()=>h.remove(),2500);} return; }
+  if (send.getAttribute('aria-disabled')==='true'){ if(!fitEl.querySelector('.c-hint')){ const h=document.createElement('div'); h.className='c-hint'; h.innerHTML=`${I('clock',15)} ${t('chat.send.wait')}`; ta.closest('.composer-wrap').prepend(h); announce(tv('chat.send.wait')); setTimeout(()=>h.remove(),2500);} return; }
   const v = ta.value.trim(); if (!v) return;
   const qc = fitEl.querySelector('.chips'); if (qc) qc.remove();
-  const u = document.createElement('div'); u.innerHTML = user(v); log.appendChild(u.firstElementChild);
+  const u = document.createElement('div'); u.innerHTML = user(v); log.querySelector('.msgs').appendChild(u.firstElementChild);
   ta.value=''; ta.style.height=''; log.scrollTop = log.scrollHeight;
   demoReply(log, t(DEMO_REPLIES[demoK++ % DEMO_REPLIES.length]));
+}
+
+function copyContact(btn){
+  // success: plain visible text + one announcement; failure: the failure text + the details as selectable text. Focus stays on the button either way.
+  const done = ok=>{
+    const row = btn.closest('.copy-row'), card = btn.closest('.rcard');
+    row.querySelectorAll('.copied-note').forEach(e=>e.remove()); card.querySelectorAll('.copy-failed,.payload').forEach(e=>e.remove());
+    if (ok){ row.insertAdjacentHTML('beforeend', `<span class="copied-note">${I('check',16)} ${t('reporter.copied')}</span>`); announce(tv('reporter.copied')); }
+    else { row.insertAdjacentHTML('afterend', copyFailHtml()); announce(tv('reporter.copy_failed')); }
+    btn.focus();
+  };
+  try { navigator.clipboard.writeText(copyPayloadText()).then(()=>done(true), ()=>done(false)); } catch(e){ done(false); }
 }
 
 /* ---- events ---- */
@@ -1482,7 +1667,7 @@ document.addEventListener('click', e=>{
     if (a.startsWith('sim-')){ const keep=OPT.a11yOpen; render(false); OPT.a11yOpen=keep; if(keep){ fitEl.innerHTML = build(stateAt()); fit(); } return; }
     if (a==='consent'){ const cb = fitEl.querySelector('#consent-cb'); if (cb && cb.checked){ go('S1','loading'); setTimeout(()=>go('S3','opening'), 900); } else go('S1','missing'); return; }
     if (a==='tobottom'){ const l=fitEl.querySelector('.log'); l.scrollTop=l.scrollHeight; act.remove(); return; }
-    if (a==='copy-contact'){ const note=fitEl.querySelector('.copied-note'); if (note) note.hidden=false; return; }
+    if (a==='copy-contact'){ copyContact(act); return; }
   }
   const g = e.target.closest('[data-go]');
   if (g && fitEl.contains(g)){ e.preventDefault(); const [s,st]=g.dataset.go.split('/'); go(s,st); return; }
@@ -1510,6 +1695,7 @@ document.querySelectorAll('[data-dev]').forEach(b=>b.onclick=()=>{OPT.dev=b.data
 document.querySelectorAll('[data-theme-btn]').forEach(b=>b.onclick=()=>{const v=b.dataset.themeBtn; if(v==='auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme',v); document.querySelectorAll('[data-theme-btn]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));});
 document.getElementById('opt-work').onchange=e=>{OPT.working=e.target.checked;render(false);};
 document.getElementById('opt-ids').onchange=e=>{OPT.ids=e.target.checked;render(false);};
+document.getElementById('opt-focus').onchange=e=>{OPT.focus=e.target.checked;render(false);};
 document.getElementById('opt-hc').onchange=e=>{OPT.hc=e.target.checked;render(false);};
 document.getElementById('opt-anim').onchange=e=>{OPT.noanim=e.target.checked;render(false);};
 document.getElementById('opt-size').onchange=e=>{OPT.size=+e.target.value;render(false);};

@@ -1,0 +1,42 @@
+{
+  "schema": "metrics-record.schema.json",
+  "note": "Reconstructed in round 5. uiEvents/dailyCounters are tested through their $defs paths in common-defs.cases.json.",
+  "bases": {
+    "completed": {
+      "metrics_version": "1.0", "metrics_id": "met_AAAAAAAAAAAAAAAA", "month": "2026-10", "channel": "web",
+      "duration_bucket": "2_5m", "phase_reached": "closed", "user_turns": 6, "outcome": 2, "would_be_outcome_3": "false",
+      "red_flag": { "raised": false }, "handed_off": true, "end_reason": "completed",
+      "content_versions": {
+        "slot_catalog": "2.0.0", "red_flags": "1.0.0", "decision_table": "1.0.0", "faq": "1.0.0",
+        "referrals": "1.0.0", "fixed_texts": "0.5.0", "output_rules": "1.0.0",
+        "prompts": { "extract": "extract.v1", "generate": "summarize.v1" }, "engine": "0.1.0"
+      },
+      "est_cost_usd": 0.012
+    },
+    "hotline_blocked": {
+      "metrics_version": "1.0", "metrics_id": "met_BBBBBBBBBBBBBBBB", "month": "2026-10", "channel": "web",
+      "duration_bucket": "lt_2m", "phase_reached": "outcome", "user_turns": 1, "outcome": 5, "would_be_outcome_3": null,
+      "red_flag": { "raised": true, "ids": ["child_safety", "child_regression"], "tiers": ["hotline", "urgent"], "form_blocked": true },
+      "handed_off": false, "end_reason": "red_flag",
+      "content_versions": {
+        "slot_catalog": "2.0.0", "red_flags": "1.0.0", "decision_table": "1.0.0", "faq": "1.0.0",
+        "referrals": "1.0.0", "fixed_texts": "0.5.0", "output_rules": "1.0.0",
+        "prompts": { "extract": "extract.v1", "generate": "summarize.v1" }, "engine": "0.1.0"
+      }
+    }
+  },
+  "cases": [
+    { "id": "met.ok.completed", "base": "completed", "expect": "valid" },
+    { "id": "met.ok.hotline_blocked", "base": "hotline_blocked", "expect": "valid" },
+    { "id": "met.ok.would_be_3_detail", "base": "completed", "expect": "valid", "source": "clinical 4.5", "patch": [{ "op": "replace", "path": "/would_be_outcome_3", "value": "true" }, { "op": "add", "path": "/would_be_3_detail", "value": { "worry": true, "reassurance": false } }] },
+    { "id": "met.ok.scan_incomplete_flag", "base": "hotline_blocked", "expect": "valid", "source": "round 5", "patch": [{ "op": "add", "path": "/redflag_scan_incomplete", "value": true }] },
+
+    { "id": "met.45.detail_without_true", "base": "completed", "expect": "invalid", "error": "/would_be_outcome_3/const", "source": "clinical 4.5", "patch": [{ "op": "add", "path": "/would_be_3_detail", "value": { "worry": true, "reassurance": false } }] },
+    { "id": "met.45.detail_with_text", "base": "completed", "expect": "invalid", "error": "additionalProperties", "source": "security D-03 condition 1", "patch": [{ "op": "replace", "path": "/would_be_outcome_3", "value": "true" }, { "op": "add", "path": "/would_be_3_detail", "value": { "worry": true, "reassurance": false, "quote": "x" } }] },
+    { "id": "met.G1.hotline_tier_handed_off", "base": "hotline_blocked", "expect": "invalid", "error": "/handed_off/const", "source": "round 5: a hotline tier and a hand-off cannot coexist", "patch": [{ "op": "replace", "path": "/handed_off", "value": true }] },
+    { "id": "met.G1.no_form_id_copied_not_blocked", "base": "hotline_blocked", "expect": "invalid", "error": "/form_blocked/const", "source": "round 5: tier copied as urgent and form_blocked false; the id still decides", "patch": [{ "op": "replace", "path": "/red_flag/tiers", "value": ["urgent", "urgent"] }, { "op": "replace", "path": "/red_flag/form_blocked", "value": false }] },
+    { "id": "met.misc.cost_over_5", "base": "completed", "expect": "invalid", "error": "/est_cost_usd/maximum", "patch": [{ "op": "replace", "path": "/est_cost_usd", "value": 6 }] },
+    { "id": "met.misc.ui_event_not_listed", "base": "completed", "expect": "invalid", "error": "additionalProperties", "source": "security §ד (closed beacon list)", "patch": [{ "op": "add", "path": "/ui_events", "value": { "free_text": 1 } }] },
+    { "id": "met.misc.month_with_day", "base": "completed", "expect": "invalid", "error": "/month/pattern", "source": "no per-day key on a conversation record", "patch": [{ "op": "replace", "path": "/month", "value": "2026-10-05" }] }
+  ]
+}

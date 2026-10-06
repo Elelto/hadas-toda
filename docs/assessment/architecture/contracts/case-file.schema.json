@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://hadas-toda.co.il/schemas/intake/v1/case-file.schema.json",
   "title": "Case file (session state)",
-  "description": "The single source of truth for one conversation. Contains health data AND possibly identifiers in free text (SEC-07; Israeli ID, phone and email numbers are masked before storage). Owned only by engine code; encrypted in Netlify Blobs, CAS writes. Content is deleted (D-01): at 'סיום' and at restart (DELETE /api/intake/session); IN THE SAME REQUEST as a successful form submission (round 4, SEC-01/L-04: the record becomes a content-free tombstone with purge_at, then is deleted); at a routing stop (end of that turn); when a raised red flag blocks the form (content-free stub that only re-renders S6, purge_at = 24h); otherwise 24 hours after the last activity (absolute cap 72 hours). Only content-free metrics and consent records survive. The schema rejects a submitted or form-blocked case that still carries content.",
+  "description": "The single source of truth for one conversation. Contains health data AND possibly identifiers in free text (SEC-07; Israeli ID, phone and email numbers are masked before storage). Owned only by engine code; encrypted in Netlify Blobs, CAS writes. Content is deleted (D-01): at 'סיום' and at restart (DELETE /api/intake/session); IN THE SAME REQUEST as a successful form submission (round 4, SEC-01/L-04: the record becomes a content-free tombstone with purge_at, then is deleted); at a routing stop (end of that turn); when a raised red flag blocks the form (content-free stub that only re-renders S6, purge_at = 24h); otherwise 24 hours after the last activity (absolute cap 72 hours). Only content-free metrics and consent records survive. The schema rejects a submitted, form-blocked or routing-stopped case that still carries content (routing stop: round 5).",
   "type": "object",
   "required": [
     "schema_version",
@@ -298,8 +298,10 @@
               "extractor_signal",
               "condition",
               "unknown_after_confirm",
-              "doubt_condition"
-            ]
+              "doubt_condition",
+              "scan_incomplete"
+            ],
+            "description": "scan_incomplete (round 5, ReDoS fail-safe, ARCHITECTURE §1.5): the linear-time scan ran out of budget or failed before this flag's patterns were all evaluated, so the flag is raised as if matched. Round 6: also when identifier masking (which runs before the scan, in the same engine) did not complete; then every flag is raised and the text is neither scanned, stored nor sent."
           },
           "pattern_id": {
             "$ref": "common.schema.json#/$defs/entityId"
@@ -326,10 +328,59 @@
               "none",
               "secondary"
             ],
-            "description": "Effective form policy of this flag, copied from red-flags.json at raise time (doubt raise included). Any 'none' here blocks the form for the whole conversation (handoff.status = blocked)."
+            "description": "Effective form policy of this flag, copied from red-flags.json at raise time (doubt raise included). Any 'none' here blocks the form for the whole conversation (handoff.status = blocked). Round 5 (security ג.1): the copy is never trusted alone. The schema ties it to the tier and to the flag id (allOf below), the engine derives it again from red-flags.json at every read, and intake-handoff decides from the flag ids, not from this field (ARCHITECTURE §1.5, §13.1)."
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "description": "Round 5 (security ג.1(א)): a non-urgent tier never allows a form, whatever the copied policy says.",
+            "if": {
+              "type": "object",
+              "properties": {
+                "tier": {
+                  "enum": [
+                    "emergency",
+                    "hotline"
+                  ]
+                }
+              },
+              "required": [
+                "tier"
+              ]
+            },
+            "then": {
+              "type": "object",
+              "properties": {
+                "form_after_message": {
+                  "const": "none"
+                }
+              }
+            }
+          },
+          {
+            "description": "Round 5: the flag id itself binds the policy (covers a doubt raise recorded with an urgent tier, and a bug that copies both tier and policy wrong).",
+            "if": {
+              "type": "object",
+              "properties": {
+                "flag_id": {
+                  "$ref": "common.schema.json#/$defs/noFormFlagId"
+                }
+              },
+              "required": [
+                "flag_id"
+              ]
+            },
+            "then": {
+              "type": "object",
+              "properties": {
+                "form_after_message": {
+                  "const": "none"
+                }
+              }
+            }
+          }
+        ]
       }
     },
     "pending_confirmation": {
@@ -1130,7 +1181,7 @@
       }
     },
     {
-      "description": "Blocker 2 (SEC-11): one raised flag that allows no form blocks the form for the whole conversation; the content is deleted at the end of that turn.",
+      "description": "Blocker 2 (SEC-11): one raised flag that allows no form blocks the form for the whole conversation; the content is deleted at the end of that turn. Round 5 (security ג.1): fires on the copied policy OR the tier OR the flag id, so one copy bug cannot switch it off.",
       "if": {
         "type": "object",
         "properties": {
@@ -1138,13 +1189,43 @@
             "type": "array",
             "contains": {
               "type": "object",
-              "properties": {
-                "form_after_message": {
-                  "const": "none"
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "form_after_message": {
+                      "const": "none"
+                    }
+                  },
+                  "required": [
+                    "form_after_message"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "tier": {
+                      "enum": [
+                        "emergency",
+                        "hotline"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "tier"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "flag_id": {
+                      "$ref": "common.schema.json#/$defs/noFormFlagId"
+                    }
+                  },
+                  "required": [
+                    "flag_id"
+                  ]
                 }
-              },
-              "required": [
-                "form_after_message"
               ]
             }
           }
@@ -1188,7 +1269,7 @@
       }
     },
     {
-      "description": "A routing stop blocks any form (D-02).",
+      "description": "A routing stop blocks any form (D-02). Round 5: and, like a form-blocking flag, only the content-free stub is stored at the end of that turn (ARCHITECTURE §1.6, §6.1 step 12), with purge_at.",
       "if": {
         "type": "object",
         "properties": {
@@ -1201,20 +1282,31 @@
         ]
       },
       "then": {
-        "type": "object",
-        "properties": {
-          "handoff": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/contentFree"
+          },
+          {
             "type": "object",
             "properties": {
-              "status": {
-                "const": "blocked"
-              }
+              "handoff": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "const": "blocked"
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              },
+              "purge_at": true
             },
             "required": [
-              "status"
+              "purge_at"
             ]
           }
-        }
+        ]
       }
     }
   ]

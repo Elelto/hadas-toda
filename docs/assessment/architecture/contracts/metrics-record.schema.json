@@ -228,6 +228,10 @@
       "type": "integer",
       "minimum": 0,
       "description": "Turns over the soft cap (SEC-06): regex only, no model, nothing stored."
+    },
+    "redflag_scan_incomplete": {
+      "type": "boolean",
+      "description": "Round 5: the linear-time red-flag scan ran out of budget or failed in this conversation (flags raised as scan_incomplete, ARCHITECTURE §1.5). Should always be false; any true is a heartbeat code."
     }
   },
   "additionalProperties": false,
@@ -361,6 +365,72 @@
         "required": [
           "would_be_outcome_3"
         ]
+      }
+    },
+    {
+      "description": "Round 5 (security ג.1): a non-urgent tier or a no-form flag id means the form was blocked and nothing was handed off, whatever form_blocked was copied as.",
+      "if": {
+        "type": "object",
+        "properties": {
+          "red_flag": {
+            "type": "object",
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "tiers": {
+                    "type": "array",
+                    "contains": {
+                      "enum": [
+                        "emergency",
+                        "hotline"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "tiers"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "contains": {
+                      "$ref": "common.schema.json#/$defs/noFormFlagId"
+                    }
+                  }
+                },
+                "required": [
+                  "ids"
+                ]
+              }
+            ]
+          }
+        },
+        "required": [
+          "red_flag"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "handed_off": {
+            "const": false
+          },
+          "red_flag": {
+            "type": "object",
+            "properties": {
+              "form_blocked": {
+                "const": true
+              }
+            },
+            "required": [
+              "form_blocked"
+            ]
+          }
+        }
       }
     }
   ]

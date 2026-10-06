@@ -8,7 +8,8 @@
 //
 // Checks: fixed-texts.schema.json (Ajv 2020, strict) · output-rules.json against its schema · every
 // 'all'-scope forbidden rule against every fixed text · placeholders declared, never glued to a Hebrew
-// letter · variants share the base version · 101 where ARCHITECTURE §1.9 requires it.
+// letter · variants share the base version · 101 where ARCHITECTURE §1.9 requires it · every '<id>.a11y' opens
+// with the visible text of '<id>' (WCAG 2.5.3).
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -26,9 +27,9 @@ const CHECK = process.argv.includes('--check');
 const HEADER = {
   contract: 'fixed-texts',
   contract_version: '1.0.0',
-  version: '0.5.0',
+  version: '0.6.0',
   status: 'draft',
-  updated_at: '2026-10-05T21:00:00+03:00',
+  updated_at: '2026-10-06T03:30:00+03:00',
   approvals: [],
   changelog: [
     { version: '0.1.0', date: '2026-10-04', summary: 'טיוטה 1 של תפקיד 3 (רק ב-texts.he.md).' },
@@ -36,6 +37,7 @@ const HEADER = {
     { version: '0.3.0', date: '2026-10-05', summary: 'סבב 3: D-01–D-04, ביקורת משפטית §2, ביקורת אבטחה, UX טיוטה 3, פערי UI, תוכנית מטרות v2 (18 מטרות). נוסחי D-02, redflag.footer, וריאנטי וואטסאפ, ack.*, אימות בקוד. נגזר מ-texts.he.md בעזרת build_texts_json.mjs.' },
     { version: '0.4.0', date: '2026-10-05', summary: 'סבב 4 של הארכיטקט: נוסחי 32KB, בלי מודל, פרטיות באישור לפי מצב המסירה, שורת התוספת של document_request, D-13 (גיל + minor.self.before_text עם ער"ן וסה"ר); error.delete_failed "תוך כ-24 שעות"; יצאו משימוש redflag.cta.er ו-hadas.email.tag.possible_duplicate; שדה active; chat.*, resume.* ו-closed.keep_note בבאנדל.' },
     { version: '0.5.0', date: '2026-10-05', summary: 'תיקון זול לפני שער 1 (אימות משפטי, סבב 2): form.confirmation.privacy.both_pending (מסירה ומחיקה ממתינות), form.confirmation.title.pending ("בדרך", לא "נשלחו"), ו-form.confirmation.privacy.pending@v2 ("תוך כשבוע" במקום "לכל היותר 7 ימים", כי הניקוי השעתי יכול לחרוג בשעה).' },
+    { version: '0.6.0', date: '2026-10-06', summary: 'רשימה סגורה אחרי UX 4.1–4.2: S8 כשהמסירה ממתינה (what_now.pending, when.pending), redflag.after.no_form, redflag.form_not_sent, כותרות hotline לפי סוג (distress, child_safety), a11y.buttons_hint (בטיחות בהקשת הגיל), redflag.cta.call.a11y@v2 (WCAG 2.5.3). הממיר בודק שכל <מזהה>.a11y פותח בנוסח הבסיס. נוקתה הפניה שיורית ל-possible_duplicate (הנוסח יצא ב-0.4.0).' },
   ],
 };
 
@@ -52,13 +54,13 @@ const EXTRA_PLACEHOLDERS = [
 const BUNDLE = [
   /^menu\./, /^a11y\./, /^error\./, /^ui\./, /^dialog\./, /^system\.unavailable$/,
   /^chat\./, /^resume\./, /^closed\.keep_note$/,
-  /^fallback\.(title|whatsapp|whatsapp_prefill|phone|contact)$/,   // static S10 (fallback.saved is server-only)
+  /^fallback\.(title|static|whatsapp|whatsapp_prefill|phone|contact)$/,   // static S10 (fallback.saved is server-only)
   /^redflag\.(type|doubt|title)\./, /^redflag\.footer$/, /^redflag\.cta\.call/, /^nav\.back_to_site$/,
 ];
 
 // 101 is mandatory here (ARCHITECTURE §1.9).
 const NEEDS_101 = (id) =>
-  ['system.unavailable', 'language.unsupported', 'meta.too_long', 'meta.off_topic_end', 'outcome.extraction_gap', 'chat.input.too_long_block', 'system.model_free'].includes(id) ||
+  ['system.unavailable', 'fallback.static', 'language.unsupported', 'meta.too_long', 'meta.off_topic_end', 'outcome.extraction_gap', 'chat.input.too_long_block', 'system.model_free'].includes(id) ||
   /^media\./.test(id) ||
   /^minor\.self(\.|$)/.test(id) ||
   (/^wa\./.test(id) && !/^wa\.opening\.btn\./.test(id) && id !== 'wa.prefix');
@@ -241,6 +243,12 @@ function checkRules(json, rules) {
     for (const s of [t.text, ...Object.values(t.variants ?? {})]) {
       const plain = s.replace(/\{\{[a-z0-9_]+\}\}/g, '').replace(/\]\([^)]*\)/g, ']');
       for (const r of all) if (r.re.test(plain)) err(`${id}: forbidden '${r.id}' (applies_to=all)`);
+    }
+    // WCAG 2.5.3 (level A, label in name): an '<id>.a11y' aria-label must open with the visible text of '<id>'.
+    const lm = id.match(/^(.*)\.a11y$/);
+    if (lm && json.texts[lm[1]]) {
+      const norm = (x) => x.normalize('NFC').trim();
+      if (!norm(t.text).startsWith(norm(json.texts[lm[1]].text))) err(`${id}: accessible name must start with the visible text of ${lm[1]} (WCAG 2.5.3)`);
     }
     if (/^(goal|q|wrapup|ack)\./.test(id)) {
       for (const s of [t.text, ...Object.values(t.variants ?? {})]) {

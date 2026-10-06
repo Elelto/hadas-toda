@@ -2,9 +2,9 @@
   "header": {
     "contract": "fixed-texts",
     "contract_version": "1.0.0",
-    "version": "0.5.0",
+    "version": "0.6.0",
     "status": "draft",
-    "updated_at": "2026-10-05T21:00:00+03:00",
+    "updated_at": "2026-10-06T03:30:00+03:00",
     "approvals": [],
     "changelog": [
       {
@@ -31,6 +31,11 @@
         "version": "0.5.0",
         "date": "2026-10-05",
         "summary": "תיקון זול לפני שער 1 (אימות משפטי, סבב 2): form.confirmation.privacy.both_pending (מסירה ומחיקה ממתינות), form.confirmation.title.pending (\"בדרך\", לא \"נשלחו\"), ו-form.confirmation.privacy.pending@v2 (\"תוך כשבוע\" במקום \"לכל היותר 7 ימים\", כי הניקוי השעתי יכול לחרוג בשעה)."
+      },
+      {
+        "version": "0.6.0",
+        "date": "2026-10-06",
+        "summary": "רשימה סגורה אחרי UX 4.1–4.2: S8 כשהמסירה ממתינה (what_now.pending, when.pending), redflag.after.no_form, redflag.form_not_sent, כותרות hotline לפי סוג (distress, child_safety), a11y.buttons_hint (בטיחות בהקשת הגיל), redflag.cta.call.a11y@v2 (WCAG 2.5.3). הממיר בודק שכל <מזהה>.a11y פותח בנוסח הבסיס. נוקתה הפניה שיורית ל-possible_duplicate (הנוסח יצא ב-0.4.0)."
       }
     ]
   },
@@ -151,6 +156,14 @@
       "purpose_he": "תחתית S1 (גם intro.alt_contact של UX).",
       "legal_review": "not_required",
       "status": "draft"
+    },
+    "page.header.logo.a11y": {
+      "version": 1,
+      "text": "הדס תודה, דף הבית",
+      "purpose_he": "`aria-label` של קישור הלוגו בכותרת הכלי, אל דף הבית של האתר (UX 4.3, `page.header.*`).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: הלוגו הוא תמונה, והשם פותח בשם שבו, \"הדס תודה\", ואחריו היעד, \"דף הבית\" (WCAG 2.5.3, 2.4.4). קישור הלוגו, כמו \"חזרה לאתר\" (`page.header.back`), פותח את דיאלוג היציאה כשיש שיחה פתוחה. 4 מילים, נייטרלי מגדרית."
     },
     "intro.greeting": {
       "version": 1,
@@ -725,9 +738,30 @@
     "a11y.quick_replies": {
       "version": 1,
       "text": "אפשרויות תשובה",
-      "purpose_he": "שם קבוצת הכפתורים.",
+      "purpose_he": "שם קבוצת הכפתורים. בהקשת הגיל (D-13) שם הקבוצה הוא השאלה עצמה (`aria-labelledby` אל בועת השאלה), ולא הנוסח הזה (`consults/round2_accessibility.md` 4ד.1).",
       "legal_review": "not_required",
       "status": "draft",
+      "client_bundle": true
+    },
+    "a11y.buttons_hint": {
+      "version": 1,
+      "text": "יש אפשרויות לבחירה מתחת להודעה.",
+      "purpose_he": "רמז מוסתר חזותית, לקורא מסך, **בכל הודעה של העוזר שאחריה באים כפתורי בחירה**: בסוף ההכרזה, ובטקסט המוסתר של ההודעה (UX טיוטה 4.2, §0.4, §7.10; מבקר הנגישות §1 תנאי 5). פעם אחת בכל אחד משני המקומות. הכפתורים עצמם נשארים לפני שדה הקלט ב-DOM.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: משתמש קורא מסך שלא יודע שיש כפתורים יקליד תשובה, וקורא מסך לא מגלה כפתורים עד שמגיע אליהם. **בהקשת הגיל (D-13) זו שאלת בטיחות:** טקסט חופשי לא ברור נחשב בגיר, ולכן הרמז הוא תנאי בטיחות ולא נוחות (מבקר הנגישות 4ד.2), והנוסח ⚖️. בלי \"אפשר גם להקליד\", כי במצב בלי מודל (`system.model_free`) טקסט חופשי לא מעובד והנוסח היה שגוי. \"מתחת להודעה\" ולא \"למטה\": הכפתורים בסדר הקריאה מיד אחרי ההודעה. נייטרלי מגדרית (ט7), בלי שמות הכפתורים, כי הקורא מקריא אותם. **לבדיקה במכשיר:** איך הקולות העבריים מקריאים \"ל-18\" (מבקר הנגישות 4ד.3).",
+      "client_bundle": true
+    },
+    "a11y.call_hadas": {
+      "version": 1,
+      "text": "{{hadas_phone}}, התקשרות להדס",
+      "placeholders": [
+        "hadas_phone"
+      ],
+      "purpose_he": "`aria-label` של קישור הטלפון של הדס (`tel:`) בכל מקום שבו הוא מוצג: S13a, S13b ובכל מקום אחר שבו הטקסט הגלוי של הקישור הוא ספרות בלבד (UX §7.0, 2.4.4).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: השם נפתח בטקסט הגלוי של הקישור, מספר הטלפון, כדי שפקודת קול (\"לחץ על\" והמספר) תמצא אותו (WCAG 2.5.3, רמה A), ואחריו המילים שמסבירות מה הקישור עושה (2.4.4). \"התקשרות\" ולא פועל בגוף מסוים: נייטרלי מגדרית (ט7). הממיר לא בודק את זה אוטומטית, כי אין לטקסט הגלוי מזהה משלו. אם הקישור יוצג עם תווית במילים במקום מספר, יש לפתוח בה.",
       "client_bundle": true
     },
     "a11y.message_sent": {
@@ -2370,6 +2404,25 @@
       "purpose_he": "כותרת S6, דרגת hotline. מחליף את `redflag.title.helpline` (אותו טקסט).",
       "legal_review": "required",
       "status": "draft",
+      "notes": "הערה: h1 של **בלוק ראשי** מדרגת hotline. בלוק hotline משני נושא את הכותרת לפי סוג הדגל (שני הנוסחים הבאים), ולא את הזו.",
+      "client_bundle": true
+    },
+    "redflag.title.hotline.distress": {
+      "version": 1,
+      "text": "אם קשה עכשיו",
+      "purpose_he": "כותרת h2 של בלוק משני בדגל distress, במסך משולב (UX S6, טיוטה 4.1). בבלוק ראשי מדרגת hotline: `redflag.title.hotline`.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: נבדלת מ-`redflag.title.hotline` בכוונה: כשבלוק בטיחות ילד הוא הראשי, \"אפשר לדבר עם מישהו עכשיו\" כבר h1, ושני h2 כמעט זהים היו מבלבלים בניווט לפי כותרות. \"אם קשה עכשיו\" מנרמל ולא מניח מצוקה (כמו ב-`minor.self.before_text`), ונכון גם כשמישהו קרוב אמר את הדברים וגם כשהדברים של הפונה עצמו, ולכן אין וריאנטים. בלי שם של מצב, בלי \"מצוקה\" ובלי שם השירות. נכנסת לבאנדל (`redflag.title.*`).",
+      "client_bundle": true
+    },
+    "redflag.title.hotline.child_safety": {
+      "version": 1,
+      "text": "אם יש חשש לפגיעה בילד",
+      "purpose_he": "כותרת h2 של בלוק משני בדגל child_safety, במסך משולב (UX S6, טיוטה 4.1). בבלוק ראשי מדרגת hotline: `redflag.title.hotline`.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "סטטוס: טיוטה. לא להפעיל לפני תשובת עורך הדין על חובת דיווח ועל השאלה אם להציג טופס (שאלה 23), כמו `redflag.type.child_safety`. הערה: תנאי (\"אם יש חשש\") ולא קביעה: הכותרת לא אומרת שמשהו קרה ולא מייחסת דבר לפונה או למשפחה. \"פגיעה\" מופיעה רק בתוך החשש, כמו בגוף הנוסח; בלי \"הזנחה\" ובלי \"סכנה\" (הגוף מפרט). מכוונת לנושא הבלוק, כדי שלא תתבלבל עם הבלוק הרפואי שמעליו (\"חשש לילד\" לבדו היה נקרא כחשש התפתחותי). נכנסת לבאנדל (`redflag.title.*`).",
       "client_bundle": true
     },
     "redflag.footer": {
@@ -2436,11 +2489,12 @@
       "client_bundle": true
     },
     "redflag.cta.call.a11y": {
-      "version": 1,
-      "text": "חיוג למד\"א 101",
-      "purpose_he": "תווית נגישות לכפתור החיוג.",
-      "legal_review": "not_required",
+      "version": 2,
+      "text": "חיוג ל-101, מד\"א",
+      "purpose_he": "`aria-label` של כפתור 101 (`redflag.cta.call`), בכל מקום שהכפתור מופיע: בלוק ראשי בחירום, וגם בלוק משני בדגל distress.",
+      "legal_review": "required",
       "status": "draft",
+      "notes": "הערה: WCAG 2.5.3 (רמה A, `consults/round2_accessibility.md` 4ב.3): השם הנגיש חייב להכיל את הטקסט הגלוי. בגרסה 1 (\"חיוג למד\"א 101\") המילה \"למד\"א\" באה במקום המקף, והמחרוזת \"חיוג ל-101\" לא הופיעה בה, ולכן פקודת קול (\"לחץ על חיוג ל-101\") לא הייתה מוצאת את הכפתור. v2 **פותח בטקסט הגלוי בדיוק**, ואחריו שם הגורם. כפתור חירום, ולכן ⚖️. **הממיר בודק את זה:** כל `<מזהה>.a11y` שיש לו נוסח בסיס חייב להתחיל בו (`build_texts_json.mjs`). **→ UI:** `ui/mockup.html` מחזיק עותק של הנוסח הישן.",
       "client_bundle": true
     },
     "redflag.secondary.emergency": {
@@ -2511,16 +2565,36 @@
     "redflag.after": {
       "version": 2,
       "text": "אחרי הבדיקה הרפואית אפשר לחזור להדס, עם מה שנאמר בה. אפשר גם להשאיר פרטים כבר עכשיו, אבל לא לחכות לתשובה ממנה לפני הבדיקה.",
-      "purpose_he": "דרגת urgent בלבד, מעל `redflag.cta.form` המשני (D-04).",
+      "purpose_he": "דרגת urgent בלבד, מעל `redflag.cta.form` המשני (D-04). **רק כשהמעטפה נושאת `form: secondary`.** כשהטופס חסום (`form: none`): `redflag.after.no_form`.",
       "legal_review": "required",
-      "status": "draft"
+      "status": "draft",
+      "notes": "הערה: הנוסח מבטיח טופס (\"אפשר גם להשאיר פרטים כבר עכשיו\"), ולכן אסור להציג אותו בלי הכפתור שלו. השרת בוחר את המזהה לפי `form`, לא הממשק (UX S6, 4.1)."
+    },
+    "redflag.after.no_form": {
+      "version": 1,
+      "text": "אחרי הבדיקה הרפואית אפשר לפנות להדס: {{hadas_phone}}.",
+      "placeholders": [
+        "hadas_phone"
+      ],
+      "purpose_he": "S6, שורת הסגירה של בלוק `urgent` ראשי כש-`form: none` (דגל נוסף אוסר טופס, או שהדס לא אישרה טופס משני), במקום `redflag.after@v2`. אין כפתור. הטלפון כטקסט בלבד, לא קישור ולא כפתור, כדי שלא יתחרה בפעולה הרפואית (UX S6, 4.1).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: לא מזכיר טופס: בלי \"להשאיר פרטים\" ובלי \"כבר עכשיו\". הסדר (\"אחרי הבדיקה\") שומר את הרעיון של v2 שהבדיקה קודמת. \"לא לחכות לתשובה ממנה\" הוסר בכוונה, כי בלי טופס אין תשובה שמחכים לה, והמשפט היה רומז שתגיע. דומה בכוונה ל-`redflag.after.emergency`. **פתוח לעורך הדין:** אם מותר להציג את הטלפון של הדס ליד בלוק `child_safety` (שאלה 23, D-04). זו שורה אחת בבלוק הראשי בלבד, והיא אינה מופיעה בדרגת hotline."
     },
     "redflag.cta.form": {
       "version": 1,
       "text": "השארת פרטים להדס",
-      "purpose_he": "כפתור משני, רק בדרגת urgent (D-04).",
+      "purpose_he": "כפתור משני, רק בדרגת urgent (D-04), ורק כש-`form: secondary`.",
       "legal_review": "not_required",
       "status": "draft"
+    },
+    "redflag.form_not_sent": {
+      "version": 1,
+      "text": "הפרטים שמילאת בטופס לא נשלחו להדס.",
+      "purpose_he": "S6, **רק** כשהמסך מוצג אחרי 403 `form_blocked` על שליחת הטופס (למשל מלשונית ישנה, אחרי שעלה דגל שאוסר טופס). אחרי הבלוקים ולפני `redflag.footer`. לא חוסם: אפשר להסיר אם המשפטי חושב שמיותר (UX S6, 4.1). בשום כניסה אחרת למסך.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: הפונה זה עתה לחץ \"שליחה\" ועלול להאמין שהפנייה יצאה. כתוב רק מה שוודאי לפי ARCHITECTURE §1.5 ו-§13.1 (בלי פנייה ובלי מייל, כלום לא מגיע להדס): \"לא נשלחו\". **לא** כתוב \"נמחקו\" או \"לא נשמרו\", כי זה לא נבדק מול §9.1, ולא כתוב מה לעשות בהמשך, כי הבלוק הראשי כבר נושא את הפעולה. בלי \"תקלה\" ובלי האשמה. \"שמילאת\" נייטרלי בכתב (ט2)."
     },
     "redflag.type.distress": {
       "version": 3,
@@ -2546,6 +2620,7 @@
       "purpose_he": "כפתור ראשי בדגל distress, קישור tel:1201 (UI `rf.call_1201`). כמו כפתור 101: בלי עיכוב של GA.",
       "legal_review": "not_required",
       "status": "draft",
+      "notes": "הערה: אין לו תווית נגישות נפרדת: השם הנגיש הוא הטקסט הגלוי, ולכן 2.5.3 מתקיים. אם תתווסף אחת (`redflag.cta.call_1201.a11y`), היא חייבת להתחיל ב\"חיוג לער\"ן 1201\" (הממיר יבדוק).",
       "client_bundle": true
     },
     "redflag.type.child_safety": {
@@ -2661,6 +2736,19 @@
       "purpose_he": "כותרת S10.",
       "legal_review": "not_required",
       "status": "draft",
+      "client_bundle": true
+    },
+    "fallback.static": {
+      "version": 1,
+      "text": "אם העוזר הדיגיטלי לא נפתח כאן, אפשר לפנות להדס ישירות: בטלפון {{hadas_phone}}, או בוואטסאפ: {{hadas_whatsapp_link}}\nבמצב חירום: מד\"א 101.",
+      "placeholders": [
+        "hadas_phone",
+        "hadas_whatsapp_link"
+      ],
+      "purpose_he": "S10, וריאציה ד (UX): הבלוק הסטטי ב-`#root` של `intake/index.html`, שנוצר בזמן build. מוצג כש-JavaScript לא רץ, וגם בכל טעינה רגילה עד ש-React עולה (ARCHITECTURE §8.4.4). בבלוק יש גם כפתורי `tel:101` ו-`fallback.phone` / `fallback.whatsapp`.",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: הניסוח תנאי (\"אם העוזר לא נפתח כאן\") ולא קביעה, כדי שיהיה נכון בשני המצבים: הורה שרואה אותו לרגע בטעינה תקינה לא נבהל, והורה שהכלי לא עלה אצלו מקבל את הדרכים לפנות. בלי \"לא זמין כרגע\" (זה `fallback.title`, ל-`<noscript>`). טקסט רגיל בלבד, בלי קישורי `[תווית](url)` ובלי חלקים אינטראקטיביים: הוא חייב לעבוד בלי JS, והקישורים הם הכפתורים שבבלוק. הטלפון והקישור לוואטסאפ משתנים שמוטמעים בזמן build, כמו ב-`system.unavailable`. בלי טופס, כי בלי JS הוא לא קיים. 101 חובה.",
       "client_bundle": true
     },
     "fallback.saved": {
@@ -2956,7 +3044,7 @@
       "purpose_he": "כותרת S8, במקום `form.confirmation.title`, כש-`handoff_result.delivery = pending`: המייל לא נשלח בתוך הבקשה, וניסיונות חוזרים כל שעה (ARCHITECTURE §13.1).",
       "legal_review": "required",
       "status": "draft",
-      "notes": "הערה: \"בדרך\" ולא \"נשלחו\", וגם לא \"התקבלו\", שנקרא כאילו הדס כבר קיבלה. **פתוח → UX וארכיטקט:** `form.confirmation.what_now` ו-`form.confirmation.when` (\"הדס תקרא… חוזרת בדרך כלל {{response_time}}\") מניחים שהמסירה קרתה. במצב pending צריך להחליט אם הם נשארים."
+      "notes": "הערה: \"בדרך\" ולא \"נשלחו\", וגם לא \"התקבלו\", שנקרא כאילו הדס כבר קיבלה. **נסגר (UX 4.1):** `form.confirmation.what_now` ו-`form.confirmation.when` מניחים שהמסירה קרתה, ולכן במצב pending הם מוחלפים ב-`form.confirmation.what_now.pending` וב-`form.confirmation.when.pending`. שלושת הנוסחים מוצגים יחד."
     },
     "form.confirmation.redflag_reminder": {
       "version": 1,
@@ -2968,9 +3056,17 @@
     "form.confirmation.what_now": {
       "version": 1,
       "text": "הדס תקרא את הסיכום ותחזור אליך בעצמה. מכאן ממשיכים עם הדס, לא עם העוזר הדיגיטלי.",
-      "purpose_he": "S8.",
+      "purpose_he": "S8, כשהמסירה הצליחה (`handoff_result.delivery = delivered`). כש-`delivery = pending`: `form.confirmation.what_now.pending`.",
       "legal_review": "not_required",
       "status": "draft"
+    },
+    "form.confirmation.what_now.pending": {
+      "version": 1,
+      "text": "ההעברה להדס עוד לא הושלמה, והמערכת ממשיכה לנסות. כשהסיכום יגיע אליה, הדס תקרא ותחזור אליך בעצמה. מכאן ממשיכים עם הדס, לא עם העוזר הדיגיטלי.",
+      "purpose_he": "S8, במקום `form.confirmation.what_now`, כש-`handoff_result.delivery = pending` (גם כש-`content_deleted = false`): המייל לא נשלח בתוך הבקשה, וניסיונות חוזרים כל שעה עד 7 ימים (ARCHITECTURE §13.1). מוצג עם `form.confirmation.title.pending` ו-`form.confirmation.when.pending` (UX S8, 4.1).",
+      "legal_review": "required",
+      "status": "draft",
+      "notes": "הערה: ההעברה לא הושלמה, ולכן בלי \"נשלח\", \"התקבל\", \"הגיע\" ו\"תקלה\" (בלי האשמה). \"כשהסיכום יגיע אליה\" מעגן את הקריאה להגעה, ואינו הבטחה שתהיה: אם המסירה נתקעת, ההגנה היא `form.confirmation.fallback`, שנשארת ותמיד מוצגת. בלי הבטחת זמן (\"בתוך שעה\", \"היום\"), כי אין דרך לדעת מתי הניסיון יצליח. \"והמערכת ממשיכה לנסות\" אומר רק שהניסיונות נמשכים, לא שיצליחו. נשמר \"מכאן ממשיכים עם הדס\" מהנוסח הרגיל. בלי סמל הצלחה במסך (UX). 24 מילים (תקרה 30)."
     },
     "form.confirmation.when": {
       "version": 2,
@@ -2978,10 +3074,21 @@
       "placeholders": [
         "response_time"
       ],
-      "purpose_he": "S8.",
+      "purpose_he": "S8, כשהמסירה הצליחה. כש-`delivery = pending`: `form.confirmation.when.pending`.",
       "legal_review": "not_required",
       "status": "draft",
       "notes": "הערה: משפט ה\"אם לא חזרו\" עבר ל-`form.confirmation.fallback` (ARCHITECTURE §13.2). `response_time` צריך להיות מודע לשבת ולחג (\"עד סוף יום העבודה הבא\"); בחופשה המנוע מציב `response_time_away`. עובדה: כל הערכים מ-faq.json facts, באישור הדס."
+    },
+    "form.confirmation.when.pending": {
+      "version": 1,
+      "text": "אחרי שהסיכום יגיע אליה, הדס חוזרת בדרך כלל {{response_time}}.",
+      "placeholders": [
+        "response_time"
+      ],
+      "purpose_he": "S8, במקום `form.confirmation.when`, כש-`handoff_result.delivery = pending` (גם כש-`content_deleted = false`). מוצג אחרי `form.confirmation.what_now.pending` ולפני `form.confirmation.fallback` (UX S8, 4.1).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: הזמן מתחיל ברגע שהסיכום מגיע להדס ולא ברגע הלחיצה, ואין בנוסח הבטחה שהוא כבר הגיע. אותו `{{response_time}}` מדף העובדות, כולל המודעות לשבת ולחג. **נבדק (UX: \"לבדוק שגם `response_time_away` נקרא נכון\"):** הערך נכנס אחרי \"בדרך כלל\" בכל אחד משני המקרים, ומשפט העיגון בא לפניו ולא משנה את צורתו, לכן הוא נקרא נכון עם \"תוך יום עבודה\", עם \"עד סוף יום העבודה הבא\", ועם ערך חופשה באותה צורה (למשל \"מיום ראשון\"). **לאמת מול הערך האמיתי של `response_time_away` כשיוזן בדף העובדות.** גבול הזמן העליון של הפונה נשאר `form.confirmation.fallback` (\"עד {{followup_time}}\"), והוא נשאר כמו שהוא. 8 מילים קבועות ועוד הערך (תקרה 20). עובדה: כל הערכים מ-faq.json facts, באישור הדס."
     },
     "form.confirmation.from_number": {
       "version": 1,
@@ -3650,6 +3757,14 @@
       "purpose_he": "S13b, אחרי העתקה (מוכרז לקורא מסך).",
       "legal_review": "not_required",
       "status": "draft"
+    },
+    "reporter.copy_failed": {
+      "version": 1,
+      "text": "הפרטים לא הועתקו. הם מוצגים כאן כטקסט, ואפשר לסמן ולהעתיק אותם.",
+      "purpose_he": "S13b, כשההעתקה נכשלה (מוכרז ומוצג). הפרטים נחשפים בכרטיס כטקסט לבחירה ידנית (תוכן `reporter.copy_payload`). אסור להציג `reporter.copied` בלי הצלחה מאומתת (UX S13).",
+      "legal_review": "not_required",
+      "status": "draft",
+      "notes": "הערה: 11 מילים. בלי \"לא הצלחנו\" (VOICE 1.4) ובלי פנייה בלשון ממוגדרת."
     },
     "reporter.copy_payload": {
       "version": 1,

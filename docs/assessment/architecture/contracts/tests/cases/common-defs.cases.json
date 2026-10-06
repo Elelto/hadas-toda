@@ -1,0 +1,27 @@
+{
+  "schema": "common.schema.json",
+  "note": "Round 5. common.schema.json has no root document; its $defs (and two metrics $defs) are tested directly.",
+  "bases": {
+    "regex_rule": { "id": "slurred", "regex": "מדבר(?:ת)? (?:מעורפל|כבד)" },
+    "proximity_rule": { "id": "stopped_talking", "regex": "הפסיק(?:ה)?[^.!?\\n]{0,40}לדבר" },
+    "named_group_rule": { "id": "named", "regex": "(?<verb>הפסיק)" },
+    "daily_counters": { "day": "2026-10-05", "counts": { "intro_view": 12, "consent_declined": 1 } },
+    "condition_nested": { "all": [{ "slot": "core_relation", "op": "eq", "value": "child" }, { "not": { "red_flag": "swallowing" } }, { "any": [{ "ref": "wtc_voice_persisting" }, { "always": true }] }] }
+  },
+  "cases": [
+    { "id": "cd.ok.regex_rule", "schema": "common.schema.json#/$defs/regexRule", "base": "regex_rule", "expect": "valid" },
+    { "id": "cd.ok.proximity_bounded_class", "schema": "common.schema.json#/$defs/regexRule", "base": "proximity_rule", "expect": "valid", "source": "round 5: sanctioned proximity form" },
+    { "id": "cd.ok.named_group_is_not_lookbehind", "schema": "common.schema.json#/$defs/regexRule", "base": "named_group_rule", "expect": "valid", "source": "round 5: (?<name> must not trip the lookaround rule" },
+    { "id": "cd.ok.daily_counters", "schema": "metrics-record.schema.json#/$defs/dailyCounters", "base": "daily_counters", "expect": "valid" },
+    { "id": "cd.ok.condition_nested", "schema": "common.schema.json#/$defs/condition", "base": "condition_nested", "expect": "valid" },
+
+    { "id": "cd.RX.backref_digit", "schema": "common.schema.json#/$defs/regexRule", "base": "regex_rule", "expect": "invalid", "error": "/regex/not", "source": "round 5, P2", "patch": [{ "op": "replace", "path": "/regex", "value": "(א)\\1" }] },
+    { "id": "cd.RX.negative_lookahead", "schema": "common.schema.json#/$defs/regexRule", "base": "regex_rule", "expect": "invalid", "error": "/regex/not", "source": "round 5, P2", "patch": [{ "op": "replace", "path": "/regex", "value": "מדבר(?!ת)" }] },
+    { "id": "cd.RX.negative_lookbehind", "schema": "common.schema.json#/$defs/regexRule", "base": "regex_rule", "expect": "invalid", "error": "/regex/not", "source": "round 5, P2", "patch": [{ "op": "replace", "path": "/regex", "value": "(?<!ה)מדבר" }] },
+    { "id": "cd.RX.empty", "schema": "common.schema.json#/$defs/regexRule", "base": "regex_rule", "expect": "invalid", "error": "/regex/minLength", "patch": [{ "op": "replace", "path": "/regex", "value": "" }] },
+    { "id": "cd.RX.flags_field", "schema": "common.schema.json#/$defs/regexRule", "base": "regex_rule", "expect": "invalid", "error": "additionalProperties", "source": "flags are fixed by the engine", "patch": [{ "op": "add", "path": "/flags", "value": "gi" }] },
+    { "id": "cd.beacon.unknown_daily_counter", "schema": "metrics-record.schema.json#/$defs/dailyCounters", "base": "daily_counters", "expect": "invalid", "error": "additionalProperties", "source": "security §ד: closed list before consent", "patch": [{ "op": "add", "path": "/counts/user_agent", "value": 1 }] },
+    { "id": "cd.cond.empty_all", "schema": "common.schema.json#/$defs/condition", "base": "condition_nested", "expect": "invalid", "error": "minItems", "patch": [{ "op": "replace", "path": "/all", "value": [] }] },
+    { "id": "cd.cond.always_false", "schema": "common.schema.json#/$defs/condition", "base": "condition_nested", "expect": "invalid", "error": "const", "patch": [{ "op": "replace", "path": "/all/2/any/1/always", "value": false }] }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "schema": "slot-catalog.schema.json",
+  "note": "Reconstructed in round 5.",
+  "bases": {
+    "minimal": {
+      "header": { "contract": "slot-catalog", "contract_version": "1.0.0", "version": "2.0.0", "status": "draft", "updated_at": "2026-10-05T12:00:00+03:00", "approvals": [] },
+      "slots": [
+        { "id": "core_relation", "label_he": "על מי", "type": "enum", "critical": true, "inferred": false, "extractor_hint_he": "על מי הפנייה", "show_to_hadas": true,
+          "options": [{ "value": "self", "label_he": "על עצמי" }, { "value": "child", "label_he": "על ילד/ה" }, { "value": "other_adult", "label_he": "על מישהו אחר" }] },
+        { "id": "core_age", "label_he": "גיל", "type": "integer", "range": { "min": 0, "max": 120 }, "unit": "years", "critical": true, "inferred": false, "extractor_hint_he": "גיל", "show_to_hadas": true }
+      ],
+      "goals": [
+        { "id": "core_subject", "label_he": "על מי", "priority": 1000, "purpose": "routing", "slots": ["core_relation"], "turn_budget": 2,
+          "texts": { "ask": "goal.core_subject.ask", "clarify": "goal.core_subject.clarify", "rephrase": "goal.core_subject.rephrase" } }
+      ],
+      "limits": { "max_intake_turns": 6, "max_session_turns": 30, "max_notes": 10, "bare_answer_lexicon_he": ["כן", "לא", "אולי"], "max_faq_only_turns": 4, "max_summary_only_goals": 1 },
+      "bindings": {
+        "subject_type": { "slot": "core_relation", "variant_by_value": { "self": "self", "child": "child", "other_adult": "other" } },
+        "age": { "slot": "core_age", "unit": "years" },
+        "domains": { "slot": "domain" }
+      }
+    }
+  },
+  "cases": [
+    { "id": "sc.ok.minimal", "base": "minimal", "expect": "valid" },
+    { "id": "sc.ok.by_condition_texts", "base": "minimal", "expect": "valid", "source": "clinical §9.4(4)", "patch": [{ "op": "add", "path": "/goals/0/texts/by_condition", "value": [{ "when": { "channel": "whatsapp" }, "ask": "goal.core_subject.ask_wa" }] }] },
+    { "id": "sc.F6.max_intake_turns_too_low", "base": "minimal", "expect": "invalid", "error": "/max_intake_turns/minimum", "patch": [{ "op": "replace", "path": "/limits/max_intake_turns", "value": 2 }] },
+    { "id": "sc.F2.goal_without_purpose", "base": "minimal", "expect": "invalid", "error": "required", "source": "F2: every goal has a purpose", "patch": [{ "op": "remove", "path": "/goals/0/purpose" }] },
+    { "id": "sc.enum_slot_without_options", "base": "minimal", "expect": "invalid", "error": "required", "patch": [{ "op": "remove", "path": "/slots/0/options" }] },
+    { "id": "sc.integer_slot_without_range", "base": "minimal", "expect": "invalid", "error": "required", "patch": [{ "op": "remove", "path": "/slots/1/range" }] },
+    { "id": "sc.turn_budget_4", "base": "minimal", "expect": "invalid", "error": "/turn_budget/maximum", "patch": [{ "op": "replace", "path": "/goals/0/turn_budget", "value": 4 }] },
+    { "id": "sc.SEC02.subject_variant_other_adult", "base": "minimal", "expect": "invalid", "error": "enum", "source": "SEC-02(3): the enum value other_adult maps to the key 'other'", "patch": [{ "op": "replace", "path": "/bindings/subject_type/variant_by_value/other_adult", "value": "other_adult" }] }
+  ]
+}

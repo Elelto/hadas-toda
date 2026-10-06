@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://hadas-toda.co.il/schemas/intake/v1/red-flags.schema.json",
   "title": "Red flags",
-  "description": "Human-authored (clinical drafter drafts, Hadas approves). Evaluated by code on every turn, in every phase (including before consent, for immediate patterns only), independently of the current goal, on the FULL user text (there is no client-side truncation anywhere, SEC-06). Any raised flag -> outcome 5 with the flag's fixed message (never LLM text). A raised flag is never cancelled by a later retraction (REVIEW_FOR_HADAS rule 2). Trigger layers: (1) immediate regex on normalized text, runs before any LLM call and works when the LLM is down or the cost cap is hit; (2) extractor signal with a code-verified evidence quote; (3) slot condition. 'confirm' asks ONE fixed question when the case is ambiguous; afterwards an UNKNOWN condition raises the flag if raise_on_unknown_after_confirm (the clinical 'doubt rule'). test_phrases are compiled into unit tests at build: every positive must trigger, every negative must not. Flag ids follow REVIEW_FOR_HADAS section 3 and DRAFT_NOTES section 7 (sudden_onset, airway, swallowing, voice_risk, child_regression, sudden_hearing_loss, adult_new_change, distress, child_safety). Immediate patterns must never be a bare 'פתאום' (preschool stuttering is often described that way); sudden onset is judged by accompanying signs via condition. File: intake/content/red-flags.json.",
+  "description": "Human-authored (clinical drafter drafts, Hadas approves). Evaluated by code on every turn, in every phase (including before consent, for immediate patterns only), independently of the current goal, on the FULL user text (there is no client-side truncation anywhere, SEC-06). Any raised flag -> outcome 5 with the flag's fixed message (never LLM text). A raised flag is never cancelled by a later retraction (REVIEW_FOR_HADAS rule 2). Trigger layers: (1) immediate regex on normalized text, runs before any LLM call and works when the LLM is down or the cost cap is hit; executed only by the linear-time engine (re2js) within a scan budget, and a scan that runs out of budget or fails raises every flag it did not finish (source scan_incomplete), never skips it (round 5, ARCHITECTURE §1.5, pattern rules in common regexRule); (2) extractor signal with a code-verified evidence quote; (3) slot condition. 'confirm' asks ONE fixed question when the case is ambiguous; afterwards an UNKNOWN condition raises the flag if raise_on_unknown_after_confirm (the clinical 'doubt rule'). test_phrases are compiled into unit tests at build: every positive must trigger, every negative must not. Flag ids follow REVIEW_FOR_HADAS section 3 and DRAFT_NOTES section 7 (sudden_onset, airway, swallowing, voice_risk, child_regression, sudden_hearing_loss, adult_new_change, distress, child_safety). Immediate patterns must never be a bare 'פתאום' (preschool stuttering is often described that way); sudden onset is judged by accompanying signs via condition. File: intake/content/red-flags.json.",
   "type": "object",
   "required": [
     "header",
@@ -329,6 +329,28 @@
             },
             "required": [
               "doubt_tier"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "form_after_message": {
+                "const": "none"
+              }
+            }
+          }
+        },
+        {
+          "description": "Round 5 (security ג.1): the flag ids frozen in ARCHITECTURE §1.5 as no-form flags must carry 'none' here too, so content, case file, envelope and lead agree. The reverse (every 'none' flag is in common noFormFlagId) is checked by intake:check.",
+          "if": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "common.schema.json#/$defs/noFormFlagId"
+              }
+            },
+            "required": [
+              "id"
             ]
           },
           "then": {

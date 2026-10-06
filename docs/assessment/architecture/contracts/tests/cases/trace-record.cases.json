@@ -1,0 +1,56 @@
+{
+  "schema": "trace-record.schema.json",
+  "note": "Reconstructed in round 5.",
+  "bases": {
+    "prod_turn": {
+      "trace_version": "1.0", "session_id": "sess_AAAAAAAAAAAAAAAA", "seq": 4, "channel": "web", "at": "2026-10-05T10:04:00+03:00",
+      "delivery_mode": "live",
+      "content_versions": {
+        "slot_catalog": "2.0.0", "red_flags": "1.0.0", "decision_table": "1.0.0", "faq": "1.0.0",
+        "referrals": "1.0.0", "fixed_texts": "0.5.0", "output_rules": "1.0.0",
+        "prompts": { "extract": "extract.v1", "generate": "summarize.v1" }, "engine": "0.1.0"
+      },
+      "input": { "message_id": "m-0004", "kind": "text", "chars": 24, "masked": false, "mask": { "status": "complete", "ms": 0.3, "patterns_evaluated": 2 } },
+      "gate": "pass",
+      "redflag_immediate": { "matched": [], "scan": { "status": "complete", "ms": 1.4, "chars": 24, "patterns_evaluated": 6 } },
+      "extract": null,
+      "validation": [],
+      "redflag": { "raised": [], "confirm_requested": null },
+      "policy": { "phase_before": "intake", "phase_after": "intake", "goal_id": "core_concern", "move": "ask", "reasons": [] },
+      "outcome": null,
+      "generate": null,
+      "output": { "items": [{ "type": "text", "origin": "fixed" }] },
+      "state_hash_before": "0000000000000000000000000000000000000000000000000000000000000000",
+      "state_hash_after": "1111111111111111111111111111111111111111111111111111111111111111",
+      "timings_ms": { "total": 40 },
+      "usage": { "calls": 0, "input_tokens": 0, "output_tokens": 0, "est_cost_usd": 0 },
+      "errors": [],
+      "content_mode": "none",
+      "deploy_context": "production"
+    }
+  },
+  "cases": [
+    { "id": "tr.ok.production_no_content", "base": "prod_turn", "expect": "valid" },
+    { "id": "tr.ok.synthetic_preview_with_content", "base": "prod_turn", "expect": "valid", "source": "SEC-08", "patch": [{ "op": "replace", "path": "/deploy_context", "value": "deploy_preview" }, { "op": "replace", "path": "/content_mode", "value": "synthetic_full" }, { "op": "add", "path": "/content", "value": { "input_text": { "$repeat": ["א", 81920] } } }] },
+    { "id": "tr.ok.scan_budget_exceeded", "base": "prod_turn", "expect": "valid", "source": "round 5, ReDoS fail-safe", "patch": [
+      { "op": "replace", "path": "/redflag_immediate/scan", "value": { "status": "budget_exceeded", "ms": 501.2, "chars": 16000, "patterns_evaluated": 41, "unevaluated_flag_ids": ["child_safety", "distress"] } },
+      { "op": "replace", "path": "/redflag/raised", "value": [{ "flag_id": "child_safety", "source": "scan_incomplete" }, { "flag_id": "distress", "source": "scan_incomplete" }] }] },
+    { "id": "tr.ok.mask_incomplete", "base": "prod_turn", "expect": "valid", "source": "round 6, security round 3: masking fail-safe", "patch": [
+      { "op": "replace", "path": "/input/mask", "value": { "status": "pattern_slow", "ms": 61.0, "patterns_evaluated": 1 } },
+      { "op": "replace", "path": "/redflag_immediate/scan", "value": { "status": "mask_incomplete", "ms": 0, "chars": 16000, "patterns_evaluated": 0, "unevaluated_flag_ids": ["child_safety", "distress"] } },
+      { "op": "replace", "path": "/redflag/raised", "value": [{ "flag_id": "child_safety", "source": "scan_incomplete" }, { "flag_id": "distress", "source": "scan_incomplete" }] }] },
+
+    { "id": "tr.SEC08.production_with_synthetic_content", "base": "prod_turn", "expect": "invalid", "error": "/content_mode/const", "source": "SEC-08", "patch": [{ "op": "replace", "path": "/content_mode", "value": "synthetic_full" }, { "op": "add", "path": "/content", "value": { "input_text": "טקסט" } }] },
+    { "id": "tr.D07.content_field_with_mode_none", "base": "prod_turn", "expect": "invalid", "error": "/allOf/0/then/not", "source": "D-07", "patch": [{ "op": "add", "path": "/content", "value": {} }] },
+    { "id": "tr.SEC08.deploy_context_missing", "base": "prod_turn", "expect": "invalid", "error": "required", "source": "SEC-08", "patch": [{ "op": "remove", "path": "/deploy_context" }] },
+    { "id": "tr.B3.input_text_81921", "base": "prod_turn", "expect": "invalid", "error": "/input_text/maxLength", "source": "blocker 3", "patch": [{ "op": "replace", "path": "/deploy_context", "value": "test_runner" }, { "op": "replace", "path": "/content_mode", "value": "synthetic_full" }, { "op": "add", "path": "/content", "value": { "input_text": { "$repeat": ["a", 81921] } } }] },
+    { "id": "tr.RX.scan_status_unknown", "base": "prod_turn", "expect": "invalid", "error": "/status/enum", "source": "round 5", "patch": [{ "op": "replace", "path": "/redflag_immediate/scan/status", "value": "skipped" }] },
+    { "id": "tr.RX.mask_failed_but_scan_ran", "base": "prod_turn", "expect": "invalid", "error": "/allOf/2/then", "source": "round 6: no scan over unmasked text", "patch": [{ "op": "replace", "path": "/input/mask/status", "value": "budget_exceeded" }] },
+    { "id": "tr.RX.mask_incomplete_without_mask_failure", "base": "prod_turn", "expect": "invalid", "error": "/allOf/3/then", "source": "round 6", "patch": [{ "op": "replace", "path": "/redflag_immediate/scan/status", "value": "mask_incomplete" }] },
+    { "id": "tr.RX.mask_status_skipped", "base": "prod_turn", "expect": "invalid", "error": "/mask/status", "source": "round 6: masking is never skipped", "patch": [{ "op": "replace", "path": "/input/mask/status", "value": "skipped" }] },
+    { "id": "tr.RX.mask_carries_text", "base": "prod_turn", "expect": "invalid", "error": "/input/mask/additionalProperties", "source": "round 6: ids and numbers only", "patch": [{ "op": "add", "path": "/input/mask/sample", "value": "050-1234567" }] },
+    { "id": "tr.RX.scan_carries_text", "base": "prod_turn", "expect": "invalid", "error": "additionalProperties", "source": "round 5: ids and numbers only", "patch": [{ "op": "add", "path": "/redflag_immediate/scan/sample", "value": "טקסט" }] },
+    { "id": "tr.misc.bad_hash", "base": "prod_turn", "expect": "invalid", "error": "/state_hash_after/pattern", "patch": [{ "op": "replace", "path": "/state_hash_after", "value": "abc" }] },
+    { "id": "tr.misc.unknown_gate", "base": "prod_turn", "expect": "invalid", "error": "/gate/enum", "patch": [{ "op": "replace", "path": "/gate", "value": "ok" }] }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "schema": "consent-record.schema.json",
+  "note": "Reconstructed in round 5.",
+  "bases": {
+    "intake": {
+      "consent_version": "1.0", "record_id": "cons_AAAAAAAAAAAAAAAA", "session_id": "sess_AAAAAAAAAAAAAAAA", "channel": "web",
+      "scope": "intake_health_data", "accepted": true, "at": "2026-10-05T10:00:00+03:00", "method": "web_button",
+      "texts_shown": [
+        { "id": "intro.greeting", "version": 2, "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+        { "id": "consent.emergency", "version": 1, "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" }
+      ]
+    }
+  },
+  "cases": [
+    { "id": "cr.ok.intake", "base": "intake", "expect": "valid" },
+    { "id": "cr.L09.no_texts_shown", "base": "intake", "expect": "invalid", "error": "/texts_shown/minItems", "source": "L-09", "patch": [{ "op": "replace", "path": "/texts_shown", "value": [] }] },
+    { "id": "cr.text_without_hash", "base": "intake", "expect": "invalid", "error": "required", "source": "L-09/L-14", "patch": [{ "op": "remove", "path": "/texts_shown/0/sha256" }] },
+    { "id": "cr.ip_field", "base": "intake", "expect": "invalid", "error": "additionalProperties", "source": "no IP / user agent on the consent record", "patch": [{ "op": "add", "path": "/ip", "value": "1.2.3.4" }] },
+    { "id": "cr.unknown_method", "base": "intake", "expect": "invalid", "error": "/method/enum", "patch": [{ "op": "replace", "path": "/method", "value": "implied" }] }
+  ]
+}

@@ -362,7 +362,11 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 500,
-          "description": "ECMAScript regex source, matched against NORMALIZED text (NFC, niqqud removed, quote/geresh unified, whitespace collapsed). Flags are always 'u' (+ 'i' for Latin)."
+          "not": {
+            "type": "string",
+            "pattern": "\\\\[1-9]|\\\\k<|\\(\\?<?[=!]"
+          },
+          "description": "Regex source in the common subset of RE2 and ECMAScript 'u', matched against NORMALIZED text (NFC, niqqud removed, quote/geresh unified, whitespace collapsed). Flags are always 'u' (+ 'i' for Latin). Round 5 (ReDoS, ARCHITECTURE §1.5): executed at runtime ONLY by the linear-time engine (re2js), never by V8 on user text. The schema rejects backreferences and lookaround (rule P2); intake:check enforces the rest with architecture/contracts/tests/regex_safety.mjs: P1 compiles in both engines and agrees on every test phrase, P3 no nested quantifiers (a repeating quantifier never applies to a group containing a quantifier or '|'), P4 counted repeats <= 50, P6 adversarial 32KB timing within budget. Proximity is written as a bounded class, e.g. 'הפסיק[^.!?\\n]{0,40}לדבר'. Word boundaries as '(?:^|\\P{L})', not \\b (ASCII-only in both engines)."
         },
         "note_he": {
           "type": "string",
@@ -370,6 +374,15 @@
         }
       },
       "additionalProperties": false
+    },
+    "noFormFlagId": {
+      "description": "Round 5 (security round 2, ג.1): ids of the red flags whose form_after_message is 'none' (tier emergency or hotline, or a doubt_tier of either; ARCHITECTURE §1.5, ids frozen there). Contracts that record a raised flag bind the policy to the flag ID itself, so a bug that copies a wrong tier AND a wrong policy still cannot pass. intake:check fails unless this list equals exactly the set of flags with form_after_message 'none' in red-flags.json; adding such a flag is a contract change (role 6).",
+      "enum": [
+        "sudden_onset",
+        "airway",
+        "distress",
+        "child_safety"
+      ]
     },
     "condition": {
       "description": "Declarative condition over the case file, evaluated by code with three-valued (Kleene) logic: a slot predicate on a slot that is not 'filled' evaluates to UNKNOWN. all: FALSE if any FALSE, else UNKNOWN if any UNKNOWN, else TRUE. any: TRUE if any TRUE, else UNKNOWN if any UNKNOWN, else FALSE. not: swaps TRUE/FALSE, keeps UNKNOWN. status_in and red_flag are always TRUE/FALSE. Rules and goals fire only on TRUE. {\"ref\": id} evaluates a named derived condition from slot-catalog 'derived' (e.g. wtc_voice_persisting) with the same three-valued result; the content validator rejects unknown ids and cycles.",

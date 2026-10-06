@@ -1,0 +1,30 @@
+{
+  "schema": "extractor-output.schema.json",
+  "note": "Reconstructed in round 5. Model I/O contracts: extractor output (this file's default schema) and generator output (per-case schema).",
+  "bases": {
+    "extract": {
+      "slot_updates": [{ "slot_id": "core_age", "status": "filled", "values": ["4"], "evidence": { "seq": 2, "from": 3, "to": 5 }, "answers_last_question": true, "is_correction": false }],
+      "clarifications": [],
+      "red_flag_signals": [],
+      "user_questions": [{ "kind": "faq", "faq_id": "price_session", "evidence": { "seq": 2, "from": 7, "to": 10 } }],
+      "notes": [],
+      "signals": { "wants_to_end": false, "wants_human": false, "off_topic": false, "non_hebrew": false, "injection_suspected": false }
+    },
+    "summary": {
+      "move": "summary", "message": "כתבת שהבן שלך בן ארבע.", "question_count": 0, "target_slot_ids": [],
+      "summary_points": [{ "text": "בן ארבע", "slot_ids": ["core_age"] }]
+    }
+  },
+  "cases": [
+    { "id": "ex.ok.extract", "base": "extract", "expect": "valid" },
+    { "id": "ex.F7.free_text_quote_instead_of_span", "base": "extract", "expect": "invalid", "error": "additionalProperties", "source": "F7: evidence is a word span the code slices", "patch": [{ "op": "add", "path": "/slot_updates/0/evidence/quote", "value": "בן ארבע" }] },
+    { "id": "ex.status_conflicting_from_model", "base": "extract", "expect": "invalid", "error": "/status/enum", "source": "conflicts are marked by code, not by the model", "patch": [{ "op": "replace", "path": "/slot_updates/0/status", "value": "conflicting" }] },
+    { "id": "ex.injection_signal_missing", "base": "extract", "expect": "invalid", "error": "required", "patch": [{ "op": "remove", "path": "/signals/injection_suspected" }] },
+    { "id": "ex.red_flag_tier_from_model", "base": "extract", "expect": "invalid", "error": "additionalProperties", "source": "the model never decides a tier or a policy", "patch": [{ "op": "add", "path": "/red_flag_signals/-", "value": { "flag_id": "swallowing", "evidence": { "seq": 2, "from": 0, "to": 2 }, "tier": "urgent" } }] },
+
+    { "id": "gen.ok.summary", "schema": "generator-output.schema.json", "base": "summary", "expect": "valid" },
+    { "id": "gen.question_count_6", "schema": "generator-output.schema.json", "base": "summary", "expect": "invalid", "error": "/question_count/maximum", "patch": [{ "op": "replace", "path": "/question_count", "value": 6 }] },
+    { "id": "gen.point_without_slot", "schema": "generator-output.schema.json", "base": "summary", "expect": "invalid", "error": "minItems", "source": "summary_unbacked_slot", "patch": [{ "op": "replace", "path": "/summary_points/0/slot_ids", "value": [] }] },
+    { "id": "gen.unknown_move", "schema": "generator-output.schema.json", "base": "summary", "expect": "invalid", "error": "/move/enum", "patch": [{ "op": "replace", "path": "/move", "value": "diagnose" }] }
+  ]
+}

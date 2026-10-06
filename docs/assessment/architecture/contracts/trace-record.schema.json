@@ -104,6 +104,34 @@
         },
         "masked": {
           "type": "boolean"
+        },
+        "mask": {
+          "type": "object",
+          "required": [
+            "status",
+            "ms",
+            "patterns_evaluated"
+          ],
+          "description": "Round 6 (security round 3, ARCHITECTURE §1.5 item 7): how identifier masking went. Masking runs only in the linear-time engine (re2js), within its own budget, BEFORE the red-flag scan. Ids and numbers only, no text. Any status other than complete means the text was neither scanned, stored nor sent: every flag is raised as scan_incomplete and redflag_immediate.scan.status is mask_incomplete.",
+          "properties": {
+            "status": {
+              "enum": [
+                "complete",
+                "budget_exceeded",
+                "pattern_slow",
+                "engine_error"
+              ]
+            },
+            "ms": {
+              "type": "number",
+              "minimum": 0
+            },
+            "patterns_evaluated": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
@@ -158,6 +186,53 @@
             },
             "additionalProperties": false
           }
+        },
+        "scan": {
+          "type": "object",
+          "required": [
+            "status",
+            "ms",
+            "patterns_evaluated"
+          ],
+          "description": "Round 5 (ReDoS, ARCHITECTURE §1.5): how the linear-time scan went. Ids and numbers only, no text. status budget_exceeded / pattern_slow / engine_error raises every unfinished flag as scan_incomplete. Round 6: mask_incomplete = masking (input.mask) did not complete, so the scan did not run and every flag is raised as scan_incomplete.",
+          "properties": {
+            "status": {
+              "enum": [
+                "complete",
+                "budget_exceeded",
+                "pattern_slow",
+                "engine_error",
+                "mask_incomplete"
+              ]
+            },
+            "ms": {
+              "type": "number",
+              "minimum": 0
+            },
+            "chars": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "patterns_evaluated": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "unevaluated_flag_ids": {
+              "type": "array",
+              "maxItems": 60,
+              "items": {
+                "$ref": "common.schema.json#/$defs/entityId"
+              }
+            },
+            "slow_pattern_ids": {
+              "type": "array",
+              "maxItems": 60,
+              "items": {
+                "$ref": "common.schema.json#/$defs/entityId"
+              }
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
@@ -240,7 +315,8 @@
                   "extractor_signal",
                   "condition",
                   "unknown_after_confirm",
-                  "doubt_condition"
+                  "doubt_condition",
+                  "scan_incomplete"
                 ]
               }
             },
@@ -847,6 +923,128 @@
         },
         "required": [
           "content_mode"
+        ]
+      }
+    },
+    {
+      "description": "Round 6: masking that did not complete means the scan did not run (status mask_incomplete), never a scan over unmasked text.",
+      "if": {
+        "type": "object",
+        "properties": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "mask": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "budget_exceeded",
+                      "pattern_slow",
+                      "engine_error"
+                    ]
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              }
+            },
+            "required": [
+              "mask"
+            ]
+          }
+        },
+        "required": [
+          "input"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "redflag_immediate": {
+            "type": "object",
+            "properties": {
+              "scan": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "const": "mask_incomplete"
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              }
+            },
+            "required": [
+              "scan"
+            ]
+          }
+        },
+        "required": [
+          "redflag_immediate"
+        ]
+      }
+    },
+    {
+      "description": "Round 6: mask_incomplete only with a recorded masking failure.",
+      "if": {
+        "type": "object",
+        "properties": {
+          "redflag_immediate": {
+            "type": "object",
+            "properties": {
+              "scan": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "const": "mask_incomplete"
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              }
+            },
+            "required": [
+              "scan"
+            ]
+          }
+        },
+        "required": [
+          "redflag_immediate"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "mask": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "budget_exceeded",
+                      "pattern_slow",
+                      "engine_error"
+                    ]
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              }
+            },
+            "required": [
+              "mask"
+            ]
+          }
+        },
+        "required": [
+          "input"
         ]
       }
     }

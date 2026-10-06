@@ -1,0 +1,38 @@
+{
+  "schema": "faq.schema.json",
+  "note": "Reconstructed in round 5. Small content/eval contracts: faq (default), referrals and eval-gold-extract (per-case schema).",
+  "bases": {
+    "faq": {
+      "header": { "contract": "faq", "contract_version": "1.0.0", "version": "0.1.0", "status": "draft", "updated_at": "2026-10-05T12:00:00+03:00", "approvals": [] },
+      "entries": [{ "id": "price_session", "category": "price", "extractor_hint_he": "שאלה על מחיר", "example_questions_he": ["כמה עולה?", "מה המחיר?"], "answer_text_id": "faq.price_session", "facts_approved_at": "2026-10-01", "valid_until": "2027-01-01" }],
+      "fallback": { "unknown_text_id": "faq.unknown", "clinical_question_text_id": "faq.clinical", "off_topic_text_id": "faq.off_topic" },
+      "facts": { "price_session": { "value": "350 ש\"ח", "approved_at": "2026-10-01", "approved_by": "hadas" } }
+    },
+    "referrals": {
+      "header": { "contract": "referrals", "contract_version": "1.0.0", "version": "0.1.0", "status": "draft", "updated_at": "2026-10-05T12:00:00+03:00", "approvals": [] },
+      "referrals": [{ "id": "occupational_therapy", "label_he": "ריפוי בעיסוק", "kind": "profession", "text_id": "referral.occupational_therapy", "verified_at": "2026-10-01", "verified_by": "hadas",
+        "contacts": [{ "type": "url", "value": "https://example.org", "label_he": "אתר" }] }]
+    },
+    "gold": {
+      "case_id": "gold_red_flag_disguised_01", "tags": ["red_flag_disguised", "subject_child"], "source": "synthetic",
+      "content_versions": { "slot_catalog": "2.0.0", "red_flags": "1.0.0", "faq": "1.0.0" },
+      "input": { "last_assistant_message": null, "asked_slot_ids": [], "case_state": {}, "user_message": "מאז שאבא שלו מכה אותו הוא הפסיק לדבר" },
+      "expected": { "slot_updates": [], "must_not_fill": ["core_age"], "red_flag_ids": ["child_safety", "child_regression"], "must_not_flag": ["swallowing"] }
+    }
+  },
+  "cases": [
+    { "id": "faq.ok", "base": "faq", "expect": "valid" },
+    { "id": "faq.fact_without_approval", "base": "faq", "expect": "invalid", "error": "required", "source": "F15: every fact approved", "patch": [{ "op": "remove", "path": "/facts/price_session/approved_by" }] },
+    { "id": "faq.one_example_question", "base": "faq", "expect": "invalid", "error": "/example_questions_he/minItems", "patch": [{ "op": "replace", "path": "/entries/0/example_questions_he", "value": ["כמה?"] }] },
+    { "id": "faq.unknown_category", "base": "faq", "expect": "invalid", "error": "/category/enum", "patch": [{ "op": "replace", "path": "/entries/0/category", "value": "diagnosis" }] },
+
+    { "id": "ref.ok", "schema": "referrals.schema.json", "base": "referrals", "expect": "valid" },
+    { "id": "ref.unverified", "schema": "referrals.schema.json", "base": "referrals", "expect": "invalid", "error": "required", "patch": [{ "op": "remove", "path": "/referrals/0/verified_at" }] },
+    { "id": "ref.contact_email_type", "schema": "referrals.schema.json", "base": "referrals", "expect": "invalid", "error": "enum", "patch": [{ "op": "replace", "path": "/referrals/0/contacts/0/type", "value": "email" }] },
+
+    { "id": "gold.ok", "schema": "eval-gold-extract.schema.json", "base": "gold", "expect": "valid" },
+    { "id": "gold.real_source", "schema": "eval-gold-extract.schema.json", "base": "gold", "expect": "invalid", "error": "/source/enum", "source": "gold set is synthetic only (§16)", "patch": [{ "op": "replace", "path": "/source", "value": "production_log" }] },
+    { "id": "gold.no_tags", "schema": "eval-gold-extract.schema.json", "base": "gold", "expect": "invalid", "error": "/tags/minItems", "patch": [{ "op": "replace", "path": "/tags", "value": [] }] },
+    { "id": "gold.message_over_2000", "schema": "eval-gold-extract.schema.json", "base": "gold", "expect": "invalid", "error": "/user_message/maxLength", "patch": [{ "op": "replace", "path": "/input/user_message", "value": { "$repeat": ["א", 2001] } }] }
+  ]
+}

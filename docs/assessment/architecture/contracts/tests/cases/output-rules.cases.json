@@ -1,0 +1,11 @@
+{
+  "schema": "output-rules.schema.json",
+  "note": "Round 5. The positive case is the REAL content/output-rules.json; its regexes also go through the regex-safety suite (v8 mode).",
+  "cases": [
+    { "id": "or.ok.real_output_rules_json", "file": "../../../content/output-rules.json", "expect": "valid" },
+    { "id": "or.max_questions_2", "file": "../../../content/output-rules.json", "expect": "invalid", "error": "/max_questions/const", "patch": [{ "op": "replace", "path": "/limits/max_questions", "value": 2 }] },
+    { "id": "or.too_many_latin_exempt", "file": "../../../content/output-rules.json", "expect": "invalid", "error": "/latin_ratio_exempt_text_ids/maxItems", "patch": [{ "op": "replace", "path": "/latin_ratio_exempt_text_ids", "value": ["a.a", "a.b", "a.c", "a.d", "a.e", "a.f"] }] },
+    { "id": "or.rule_unknown_kind", "file": "../../../content/output-rules.json", "expect": "invalid", "error": "/kind/enum", "patch": [{ "op": "replace", "path": "/forbidden/0/kind", "value": "style" }] },
+    { "id": "or.phone_with_letters", "file": "../../../content/output-rules.json", "expect": "invalid", "error": "/allowed_phones/0/pattern", "patch": [{ "op": "add", "path": "/allowed_phones/0", "value": "call-me" }] }
+  ]
+}

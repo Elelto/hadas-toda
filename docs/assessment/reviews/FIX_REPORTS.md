@@ -164,3 +164,135 @@
 - **SEO (4) ו-Frontend (8):** בלי `maxlength`, ובדיקת גודל הגוף לפני שליחה; רינדור S8 מהתשובה, והסימון המקומי; הגדרת המרת Ads כשתופעל.
 - **אליה:** D-13; Deploy Previews מ-fork כבויים; תנאי EmailJS; שירות heartbeat עם 2FA; מסנן Gmail והתראה בטלפון של הדס, ובדיקה שלהם; D-10.
 - **מנהל (DECISIONS):** הצבעות הארכיטקט: D-13 ✔ (ענף א), D-09 ✔ (כל התנאים אומצו), D-12 ✔ (תנאי האבטחה אומצו), המרת Ads ✔ (כבויה בהשקה). שורה חדשה מוצעת: "התראה על כל פנייה = המייל + התראת Gmail, בלי ערוץ נוסף" (אליה והדס).
+
+## ארכיטקט — סבב 5 (ARCHITECTURE.md טיוטה 3.1)
+
+2026-10-06 · תפקיד 6, מופע חדש. התיקונים לאימות הסגירה של האבטחה, סבב 2 (`reviews/security_phase1.md`, ג.1–ג.6), ושלוש תוספות של המנהל. **כלל 9:** כל טענה כאן מגובה בפלט מריץ שכל אחד יכול להריץ שוב. אותו מריץ הוא שמראה את הפער בטיוטה 3.
+
+### מה תוקן
+
+| ממצא | סטטוס | מה ואיפה |
+|---|---|---|
+| **ג.6: 117 המקרים לא בריפו, ואין להם מריץ** | **תוקן** | `architecture/contracts/tests/`: `run.mjs`, `regex_safety.mjs`, ו-14 קבצי `cases/*.cases.json`. מה המריץ בודק: <br>• 17 schemas ב-Ajv 8.20 `strict: true`, וכל אזהרה מכשילה. <br>• מקרה שלילי חייב להיכשל **בנתיב שמוגדר לו**, והבסיס שלו חייב לעבור לבד. <br>• שני מקרים חיוביים הם קובצי התוכן האמיתיים (`texts.he.json`, `output-rules.json`). <br>**שחזור:** 117 המקרים של סבב 4 לא נשמרו, ולכן **כל המקרים נבנו מחדש**. אין כאן טענה שהם אותם מקרים. 183 מקרים: 42 חיוביים ו-141 שליליים |
+| ↳ 4 בדיקות הגישוש שעברו בטעות | **תוקן, ומכוסה** | `cf.G1.probe_hotline_copied_as_secondary`, `cf.G1.probe_emergency_copied_as_secondary`, `env.G2.probe_hotline_block_copied_as_secondary`, `lead.G3.probe_child_safety_without_tiers`. **מול החוזים של טיוטה 3 (`5831d7b`) המריץ נותן 137/183.** 24 מקרים שליליים עוברים שם בטעות, ובהם ארבעת אלה. עוד 15 לא רצים שם, כי הבסיס שלהם משתמש בשדה חדש. מול טיוטה 3.1: 183/183 |
+| **ג.1: השדה המועתק** | **תוקן** | **הכלל:** המדיניות נגזרת מהדגל עצמו. <br>• `formPolicy()` היא הקריאה היחידה למדיניות בקוד. <br>• `intake-handoff` מחליט לפי מזהי הדגלים מול `red-flags.json`, והמחמיר גובר. מזהה לא מוכר = חסום. <br>**ב-schema:** `common.noFormFlagId` (`sudden_onset`, `airway`, `distress`, `child_safety`). <br>• `case-file`: דרגה או מזהה מחייבים `none` בכל רשומה, וכלל השיחה נדלק גם לפיהם. <br>• `channel-envelope`: דרגת בלוק, `red_flag_tier`. <br>• `lead-record`: מזהה מהרשימה פסול; `red_flag_tiers` חובה עם מזהים. <br>• `metrics-record`, וגם `red-flags` (מזהה ⇒ `none`). <br>`intake:check` צעד 12: הרשימה שווה לדגלי `none` בתוכן. ARCH §1.5, §13.1 צעד 1 |
+| **ג.2: ReDoS** | **תוקן** | ביטויי הדגלים רצים **רק ב-re2js**, גרסה לינארית של RE2. V8 לא נעצר באמצע ביטוי, ולכן תקציב אמיתי אפשרי רק במנוע לינארי. <br>**כללים:** P1 שני המנועים מקמפלים ומסכימים. P2 בלי backreferences ובלי lookaround, וזה גם ב-schema. P3 **בלי כמתים מקוננים**. P4 חזרה עד 50. P5 ב-V8, לכל היותר כמת פתוח אחד. <br>**תקציב בזמן ריצה:** 50ms לביטוי ו-500ms לסריקה. ב-CI: 20/250ms. הנימוק למספרים: 60 ביטויים טיפוסיים על 16,000 תווים לקחו 65–90ms במדידה מקומית. <br>**כשל בטוח:** כל דגל שלא נבדק **עולה** (`scan_incomplete`), ואף פעם לא מדלגים עליו. נרשם ב-trace, במדדים ובקוד heartbeat `redflag_scan`. <br>**CI:** קלט זדוני של 16,000 תווי עברית ו-32,000 תווי ASCII. ביטויי `output-rules` נמדדים ב-worker עם timeout. <br>**נמדד:** `(א+)+ב` על 16,000 תווים לוקח ב-re2js כ-6ms, וב-V8 נהרג אחרי 2 שניות. ARCH §1.5, §6.1, §10.1 |
+| **ג.3: ה-cookie לא מתנקה** | **תוקן** | `Set-Cookie: __Host-intake_sid=; Path=/; Secure; HttpOnly; SameSite=Strict; Max-Age=0`, בלי `Domain`, כי `__Host-` אוסר אותו. ההגדרה והניקוי נבנים מאותו קבוע, ובדיקת יחידה משווה את התכונות. אותה כותרת ב-`DELETE` ובעצירה. בדיקת Playwright לפי `context.cookies()`, כי העוגייה HttpOnly. ARCH §8.2, §13.1 צעד 5, §16 |
+| **ג.4: כלל הקדימות ב-S8** (החלק של הארכיטקט) | **תוקן** | טבלה של 4 מצבים, `delivery` × `content_deleted`. הכותרת לפי המסירה (`title` / `title.pending`), ושורת הפרטיות לפי שני השדות, כולל `both_pending` של תפקיד 3. ARCH §13.1 |
+| **ג.5: הקבלה נכתבת אחרונה** | **תוקן** | קבלה עם `delivery: pending` נכתבת מיד אחרי הפנייה, לפני המחיקה, ומתעדכנת בסוף. אחרי שליחה הדפדפן מאפס את התמליל בזיכרון. ARCH §13.1 צעדים 2 ו-5, §16 |
+| עצירת ניתוב (נמצא בדרך) | **תוקן** | §6.1 צעד 12 אמר "בעצירה נשמר רק השלד", אבל ה-schema לא אכף את זה. עכשיו עצירה מחייבת `contentFree` ו-`purge_at`. 2 מקרים שליליים |
+| תוספת המנהל: כותרת לבלוק משני | **תוקן** | `red_flag_blocks[].title_text_ref`: חובה בבלוק משני, שהוא תמיד `hotline`, בתבנית `redflag.title.hotline.<flag_id>`. אסור בבלוק הראשי, כי הכותרת שלו היא `title` של התוצאה. `intake:check` צעד 14 בודק שהנוסח קיים לכל דגל `hotline`. מקרה חיובי ו-4 שליליים (`env.T.*`). ARCH §1.5, §1.10 |
+| תוספת המבקר: D-14 | **תוקן** | "החלטת הארכיטקט" → "D-14: מחליטה הדס; המלצת הארכיטקט". ARCH §13.2, §20 #31, §22. גם בסבב 4 כאן נכתב "הוחלט: כן". זו הייתה המלצה |
+| התייעצות E1 | **נענה** | `consults/round2_architect.md`: ⚠. הגבול כפי שנכתב לא ניתן לביצוע. ההצעה: רשימת נתיבים שמכונה בודקת, כולל קבצים שמפנים למזהים שהשתנו, ובדיקות ירוקות לפני הביקורת |
+
+**נדרש מאחרים:** תפקיד 7 מוסיף את `re2js` כתלות ישירה, ואת `ajv` ו-`re2js` כתלויות פיתוח. היום שתיהן מגיעות רק בעקיפין, דרך stylelint ו-firebase, ו-`npm prune` עלול להסיר אותן. תפקיד 7 גם מכניס את ביטויי המיסוך לסוויטה (ARCH §22). `about.data@v2` ("רישום טכני") נשאר אצל תפקיד 3.
+
+**שאר הבדיקות:** `node docs/assessment/content/build_texts_json.mjs --check` → `check: OK, texts.he.json matches texts.he.md`.
+
+### הפלט של המריץ (כמו שהוא)
+
+`node docs/assessment/architecture/contracts/tests/run.mjs` (exit 0), הריצה האחרונה על הקבצים הסופיים:
+
+```text
+schemas: 17/17 compile under Ajv 8.20.0 strict, 0 warnings
+cases: 183/183 as expected (42 valid, 141 invalid) in 14 files
+  case-file.schema.json              7 valid   28 invalid  ok
+  channel-envelope.schema.json       8 valid   20 invalid  ok
+  common.schema.json                 4 valid    7 invalid  ok
+  consent-record.schema.json         1 valid    4 invalid  ok
+  decision-table.schema.json         1 valid    9 invalid  ok
+  eval-gold-extract.schema.json      1 valid    3 invalid  ok
+  extractor-output.schema.json       1 valid    4 invalid  ok
+  faq.schema.json                    1 valid    3 invalid  ok
+  fixed-texts.schema.json            1 valid    6 invalid  ok
+  generator-output.schema.json       1 valid    3 invalid  ok
+  lead-record.schema.json            3 valid   11 invalid  ok
+  metrics-record.schema.json         5 valid    8 invalid  ok
+  output-rules.schema.json           1 valid    4 invalid  ok
+  red-flags.schema.json              1 valid   15 invalid  ok
+  referrals.schema.json              1 valid    2 invalid  ok
+  slot-catalog.schema.json           2 valid    6 invalid  ok
+  trace-record.schema.json           3 valid    8 invalid  ok
+regex lint self-test: 20/20 (known-bad rejected, known-good accepted)
+engine self-test: (א+)+ב on 16000 chars: linear engine 6.0 ms; V8 killed after 2000 ms (timeout)
+red-flag patterns (linear mode): 6/6 pass lint P1-P4
+engine agreement (re2js vs ECMAScript u): 108 pattern x phrase pairs checked
+red-flag timing (re2js, 16000 Hebrew / 32000 ASCII chars, 8-10 adversarial inputs each): worst single pattern 6.4 ms (sudden_onset/face_droop, 'digits'); worst whole-set 7.2 ms ('literal_near_miss'); budgets 20/250 ms
+output-rules.json (v8 mode, 3000 chars): 28/28 pass lint P1-P5; worst 0.17 ms (tips_word, 'aleph_run'), budget 5 ms
+
+ALL PASS
+```
+
+## ארכיטקט — סבב 6 (ARCHITECTURE.md טיוטה 3.2)
+
+2026-10-06 · תפקיד 6, מופע חדש. סבב קטן אחרון לפני שער 1. שלוש משימות: ההשלכות של התייעצות ה-Frontend, ה-ReDoS בביטויי המיסוך (אבטחה, אימות סגירה סבב 3, בינוני), ותשובה על שתי ההצעות של אחראי היעילות. **כלל 9:** כל טענה על המריץ מגובה בפלט שלמטה. הטענות על קוד האתר נבדקו מול הריפו (קבצים ושורות בטבלה). עמוד הכלי עצמו **לא נבנה**, ולכן תנאי הקבלה של §8.4.7 הם מפרט, לא תוצאה.
+
+### מה שונה
+
+| נושא | סטטוס | מה ואיפה |
+|---|---|---|
+| **Frontend §3: entry נפרד** | **נרשם** | ARCH §8.4.1. `intake/index.html`, מפתח שני ב-`rollupOptions.input`, `createRoot` משלו, בלי `lazy` למסכים הבטיחותיים, בלי inline, ותקציב חבילה אחרי הבנייה הראשונה. **אומת:** gtag ב-`<head>` הסטטי של `index.html` (שורות 5–30), ו-`input` כבר אובייקט (`main`) |
+| ↳ rewrite | **שונה** | ה-redirect של טיוטה 3.1 ("כמו `/landing/*`") בוטל. במקומו `/intake/* → /intake/index.html 200` לפני ה-catch-all. ל-`/intake/` הוא לא נחוץ, ובזה ה-Frontend צודק. בלעדיו, כל כתובת אחרת תחת `/intake/` מקבלת את ה-HTML של האתר עם gtag. כותרות ל-`/intake` ול-`/intake/*` (§8.4.5) |
+| **ממצא 1: Header/Footer** | **נרשם** | §8.4.2. chrome סטטי מ-`header.yml`/`footer.yml` בזמן build, וקישורים כ-`<a href>`. `no-restricted-imports` על firebase, yamlLoader, firebaseLoader, Header, Footer, SEOHead, GoogleAnalytics, react-helmet-async, aos ו-framer-motion. **אומת:** `Header.jsx:82` ו-`Footer.jsx` קוראים ל-`loadYamlContent`; `firebaseLoader.js:14,27` (`getDoc`/`setDoc`) |
+| **ממצא 2: גופנים** | **נרשם, ממתין לאליה** | §8.4.3. woff2 מקומיים (`@fontsource`), וה-`@import` עובר לקובץ שרק האתר טוען. החלופה אם אליה לא מאשרת: הכלי לא מייבא את `global.css`. **אומת:** `global.css:1`, שמיובא ב-`main.jsx:4` וב-`App.jsx:25` |
+| **ממצא 4: fallback סטטי** | **נרשם** | §8.4.4, §10.8. הבלוק ב-`#root` כולל 101 עם השם הנגיש, טלפון ווואטסאפ. הוא נוצר בזמן build מ-`texts.he.json`, ו-CI משווה אותו לקובץ. **תוספת שלי:** הבלוק מוצג בכל טעינה רגילה עד ש-React עולה, ולכן "לא זמין כרגע" היה מבהיל. ביקשתי מתפקיד 3 נוסח `fallback.static` שנכון בשני המצבים, ו-`system.unavailable` נשאר ל-`<noscript>`. נוסף Error Boundary עליון, וה-announcer הסטטי מחוץ ל-`#root` |
+| **Frontend §3: צנרת ה-SEO** | **נרשם** | §8.4.6. **אומת:** `vitePrerender.routes`, `PAGE_META` (לולאה רק עליו, `inject-seo-meta.js:277`) ו-`staticPages` (`generate-sitemap.js:38`) הם רשימות מפורשות. `fix-landing-paths.js` עובד רק על `public/landing`, ו-`sync-content.js` רק מעתיק תוכן. אין שינוי |
+| **CSP** | **נוסף, ממתין לאבטחה** | `base-uri 'none'`, `object-src 'none'`, `form-action 'self'` (§8.4.5) |
+| **אבטחה סבב 3: מיסוך ב-V8** | **תוקן** | §1.5 פריטים 6–7, §6.1 צעדים 1–2, התרשים ב-§6, §10.1, §1.11 צעד 13. **המיסוך רץ רק ב-re2js:** אותם כללים (P1–P4 במצב `linear`), אותם תקציבים (50/500ms בזמן ריצה, 20/250ms ב-CI, נפרדים מתקציב הסריקה), ואותו כשל בטוח: מיסוך שלא הושלם → הטקסט לא נסרק, לא נשמר ולא נשלח, כל הדגלים עולים (`scan_incomplete`), ו-S6. אף פעם לא מדלגים. **הנרמול** שנשאר ב-V8 מוגבל למחלקת תו אחת בלי כמת. **החלופה שנדחתה:** סריקת הדגלים על הטקסט הלא ממוסך בזיכרון. היא מוסיפה מסלול שלישי, לאירוע ש-CI אמור למנוע |
+| ↳ חוזה | **שונה** | `trace-record`: `input.mask` (`status`, `ms`, `patterns_evaluated`, בלי טקסט), ו-`scan.status: mask_incomplete`. שני כללי `allOf` קושרים ביניהם בשני הכיוונים. `case-file`: התיאור של `scan_incomplete`. 5 מקרים חדשים: חיובי אחד ו-4 שליליים (`tr.ok.mask_incomplete`, `tr.RX.mask_failed_but_scan_ran`, `tr.RX.mask_incomplete_without_mask_failure`, `tr.RX.mask_status_skipped`, `tr.RX.mask_carries_text`) |
+| ↳ מריץ | **נוסף** | `regex_safety.mjs`: `MASK_REFERENCE` (סט לדוגמה: `number_run` ו-`email`, שמוצאים מועמדים; הסיווג בקוד), `maskInputs` (שמונת הקלטים הקיימים ועוד 10 בצורת מזהים), `timeMask` (find-all), ובדיקה עצמית עם ביטוי הגישוש של האבטחה. **בדיקת מוטציה (ידנית, בלי קובץ):** הוספתי לסט המיסוך את ביטוי הגישוש, ביטוי עם lookaround, ו-`\d`. הסוויטה נכשלה על שלושתם: תקציב (233ms), lint (P1/P2), ו"מצא מועמד" ב-6 משפטי "לא מועמד" |
+
+### התייעצות E1 (`consults/round2_architect.md`, סבב 6)
+
+- **(א) אסקלציה לכתיבה ב-Opus אחרי שתי ביקורות כושלות: ✔ בתנאים.** "נכשל" = ממצא חוסם, לכל מודול ולכל פריט עבודה. קודם בודקים אם הבעיה בחוזה (אם כן, היא עולה אליי ולא לכותב חדש). הכותב החדש הוא מופע Opus חדש ולא המבקר (E8), והשער הירוק נשאר. אחרי שני כשלונות של Opus עוצרים ומעלים אליי.
+- **(ב1) סט הזהב ברשימה הסגורה: ✔.** הוא שומר: הוא מחליף מדגם (D-01), ממנו נבחר הספק, ובו נבדקת שכבה 2 של הדגלים. `intake:check` סופר מקרים, אבל לא בודק תוויות. הנתיבים: `intake/eval/**`. תווית של דגל, שער ניתוב או קטין היא החלטה קלינית.
+- **(ב2) קוד ההמרה מצד השרת ברשימה הסגורה: ✔.** זה הגבול של D-06, ושבעת האינווריאנטים של §13.4 הם באגים שקטים. מודול יחיד `intake/notify/adsConversion*` (§19), עם בדיקה סטטית ובדיקה של מפתחות המטען.
+- **תוספת:** `intake/index.html`, תוסף ה-build של הבלוק הסטטי, והבלוקים של `/intake` ב-`netlify.toml` נכנסים לרשימת הנתיבים.
+
+**נדרש מאחרים:**
+- **תפקיד 7:** ביטויי המיסוך דרך re2js, עם `timeMask` ב-`intake:check` (§22).
+- **תפקיד 8:** §8.4.
+- **תפקיד 4:** לא לגעת ב-prerender, ב-`PAGE_META` וב-sitemap, וה-`<head>` של הכלי.
+- **תפקיד 3:** הנוסח `fallback.static`.
+- **אבטחה:** אישור ה-CSP, ה-rewrite והמיסוך.
+- **אליה:** הגופנים, המבנה של עמוד הכלי, ושינוי ב-`global.css`.
+
+**שאר הבדיקות:** `node docs/assessment/content/build_texts_json.mjs --check` → `check: OK, texts.he.json matches texts.he.md`.
+
+### הפלט של המריץ (כמו שהוא)
+
+`node docs/assessment/architecture/contracts/tests/run.mjs` (exit 0), הריצה האחרונה על הקבצים הסופיים:
+
+```text
+schemas: 17/17 compile under Ajv 8.20.0 strict, 0 warnings
+cases: 188/188 as expected (43 valid, 145 invalid) in 14 files
+  case-file.schema.json              7 valid   28 invalid  ok
+  channel-envelope.schema.json       8 valid   20 invalid  ok
+  common.schema.json                 4 valid    7 invalid  ok
+  consent-record.schema.json         1 valid    4 invalid  ok
+  decision-table.schema.json         1 valid    9 invalid  ok
+  eval-gold-extract.schema.json      1 valid    3 invalid  ok
+  extractor-output.schema.json       1 valid    4 invalid  ok
+  faq.schema.json                    1 valid    3 invalid  ok
+  fixed-texts.schema.json            1 valid    6 invalid  ok
+  generator-output.schema.json       1 valid    3 invalid  ok
+  lead-record.schema.json            3 valid   11 invalid  ok
+  metrics-record.schema.json         5 valid    8 invalid  ok
+  output-rules.schema.json           1 valid    4 invalid  ok
+  red-flags.schema.json              1 valid   15 invalid  ok
+  referrals.schema.json              1 valid    2 invalid  ok
+  slot-catalog.schema.json           2 valid    6 invalid  ok
+  trace-record.schema.json           4 valid   12 invalid  ok
+regex lint self-test: 20/20 (known-bad rejected, known-good accepted)
+engine self-test: (א+)+ב on 16000 chars: linear engine 5.6 ms; V8 killed after 2000 ms (timeout)
+red-flag patterns (linear mode): 6/6 pass lint P1-P4
+engine agreement (re2js vs ECMAScript u): 108 pattern x phrase pairs checked
+red-flag timing (re2js, 16000 Hebrew / 32000 ASCII chars, 8-10 adversarial inputs each): worst single pattern 6.2 ms (sudden_onset/face_droop, 'digits'); worst whole-set 7.1 ms ('literal_near_miss'); budgets 20/250 ms
+masking patterns (linear mode, reference set): 2/2 pass lint P1-P4
+masking engine agreement (every match, re2js vs ECMAScript u): 26 pattern x phrase pairs; expectations 13/13 (7 candidate, 6 none)
+masking timing (re2js find-all, 16000 Hebrew / 32000 ASCII chars, 18 adversarial inputs each): worst single pattern 8.4 ms (email, 'email_run'); worst whole-set 13.1 ms ('email_run'); budgets 20/250 ms
+masking timing-net self-test (security probe \d{1,50}[- ]?\d{1,50}[- ]?\d{1,50}[- ]?\d{1,50}x): lint passes it (P1-P5); re2js 252.3 ms on 'digits_open' vs budget 20 ms -> caught; V8 on 200 digits killed after 1000 ms (timeout)
+output-rules.json (v8 mode, 3000 chars): 28/28 pass lint P1-P5; worst 0.19 ms (tips_word, 'aleph_run'), budget 5 ms
+
+ALL PASS
+```

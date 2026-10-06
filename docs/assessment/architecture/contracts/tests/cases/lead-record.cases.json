@@ -1,0 +1,56 @@
+{
+  "schema": "lead-record.schema.json",
+  "note": "Reconstructed in round 5.",
+  "bases": {
+    "urgent_lead_pending": {
+      "lead_version": "1.0",
+      "lead_id": "lead_AAAAAAAAAAAAAAAA",
+      "session_id": "sess_AAAAAAAAAAAAAAAA",
+      "created_at": "2026-10-05T10:09:00+03:00",
+      "channel": "web",
+      "contact": { "name": "דנה", "phone_e164": "+972501234567", "preferred_channel": "whatsapp", "preferred_time": "evening" },
+      "handoff_consent": { "record_id": "cons_HHHHHHHHHHHHHHHH", "text_ref": { "id": "form.consent.checkbox", "version": 3 }, "at": "2026-10-05T10:09:00+03:00" },
+      "system": {
+        "outcome": 5, "reason_code": "red_flag_urgent", "rule_id": null, "decision_table_version": "1.0.0",
+        "red_flag_ids": ["swallowing"], "red_flag_tiers": ["urgent"],
+        "content_versions": {
+          "slot_catalog": "2.0.0", "red_flags": "1.0.0", "decision_table": "1.0.0", "faq": "1.0.0",
+          "referrals": "1.0.0", "fixed_texts": "0.5.0", "output_rules": "1.0.0",
+          "prompts": { "extract": "extract.v1", "generate": "summarize.v1" }, "engine": "0.1.0"
+        },
+        "would_be_outcome_3": "false"
+      },
+      "summary": {
+        "slots": [{ "slot_id": "core_relation", "label_he": "על מי", "status": "filled", "display_value": "אבא" }],
+        "notes": [], "unresolved": [], "generated_text": "כתבת ש...", "generated_origin": "template_fallback",
+        "header_text_ref": { "id": "hadas_summary.header", "version": 1 }, "missing": [], "questions_asked": [],
+        "tags": ["red_flag"], "outcome_reason_he": "דגל דחוף: בליעה"
+      },
+      "delivery": { "status": "pending", "transport": "emailjs_rest", "attempts": 1, "last_attempt_at": "2026-10-05T10:09:05+03:00" },
+      "feedback": { "triage": null, "summary_rating": null, "first_call": null },
+      "retention": { "purge_content_by": "2026-10-12T10:09:00+03:00", "delete_record_after": "2028-10-05" },
+      "lead_ref": "K7Q-3F",
+      "session_purged_at": "2026-10-05T10:09:02+03:00"
+    }
+  },
+  "cases": [
+    { "id": "lead.ok.urgent_pending", "base": "urgent_lead_pending", "expect": "valid" },
+    { "id": "lead.ok.no_flags", "base": "urgent_lead_pending", "expect": "valid", "patch": [{ "op": "replace", "path": "/system/red_flag_ids", "value": [] }, { "op": "remove", "path": "/system/red_flag_tiers" }, { "op": "replace", "path": "/system/outcome", "value": 2 }] },
+    { "id": "lead.ok.delete_failed_null_purged_at", "base": "urgent_lead_pending", "expect": "valid", "source": "blocker 1: purge retried by the hourly job", "patch": [{ "op": "replace", "path": "/session_purged_at", "value": null }] },
+
+    { "id": "lead.G3.probe_child_safety_without_tiers", "base": "urgent_lead_pending", "expect": "invalid", "error": "/system/allOf/0/then/required", "source": "security round 2, gap probe 3 (wrongly passed in draft 3): red_flag_ids ['child_safety'] without red_flag_tiers",
+      "patch": [{ "op": "replace", "path": "/system/red_flag_ids", "value": ["child_safety"] }, { "op": "remove", "path": "/system/red_flag_tiers" }] },
+    { "id": "lead.G3.ids_without_tiers_any_flag", "base": "urgent_lead_pending", "expect": "invalid", "error": "/system/allOf/0/then/required", "source": "round 5", "patch": [{ "op": "remove", "path": "/system/red_flag_tiers" }] },
+    { "id": "lead.G3.child_safety_with_copied_urgent_tier", "base": "urgent_lead_pending", "expect": "invalid", "error": "/items/allOf/1/not", "source": "round 5: tier copied wrong as urgent; the id itself rejects the lead",
+      "patch": [{ "op": "replace", "path": "/system/red_flag_ids", "value": ["swallowing", "child_safety"] }, { "op": "replace", "path": "/system/red_flag_tiers", "value": ["urgent", "urgent"] }] },
+    { "id": "lead.G3.empty_tiers_with_ids", "base": "urgent_lead_pending", "expect": "invalid", "error": "minItems", "source": "round 5", "patch": [{ "op": "replace", "path": "/system/red_flag_tiers", "value": [] }] },
+    { "id": "lead.B2.hotline_tier", "base": "urgent_lead_pending", "expect": "invalid", "error": "/red_flag_tiers/items/const", "source": "blocker 2", "patch": [{ "op": "replace", "path": "/system/red_flag_tiers", "value": ["hotline"] }] },
+
+    { "id": "lead.F8.feedback_reason_field", "base": "urgent_lead_pending", "expect": "invalid", "error": "additionalProperties", "source": "planning critic 8 (UX draft 3: no reason tags)", "patch": [{ "op": "add", "path": "/feedback/reason", "value": "x" }] },
+    { "id": "lead.F8.first_call_happened_without_outcome", "base": "urgent_lead_pending", "expect": "invalid", "error": "required", "source": "planning critic 8", "patch": [{ "op": "replace", "path": "/feedback/first_call", "value": { "happened": true, "at": "2026-10-20T10:00:00+03:00" } }] },
+    { "id": "lead.F8.lead_ref_missing", "base": "urgent_lead_pending", "expect": "invalid", "error": "required", "source": "planning critic 8 / L-26", "patch": [{ "op": "remove", "path": "/lead_ref" }] },
+    { "id": "lead.misc.possible_duplicate_tag", "base": "urgent_lead_pending", "expect": "invalid", "error": "/tags/items/enum", "source": "planning critic contradiction 6", "patch": [{ "op": "replace", "path": "/summary/tags", "value": ["possible_duplicate"] }] },
+    { "id": "lead.misc.phone_not_e164", "base": "urgent_lead_pending", "expect": "invalid", "error": "/phone_e164/pattern", "patch": [{ "op": "replace", "path": "/contact/phone_e164", "value": "050-1234567" }] },
+    { "id": "lead.misc.session_purged_at_missing", "base": "urgent_lead_pending", "expect": "invalid", "error": "required", "source": "blocker 1", "patch": [{ "op": "remove", "path": "/session_purged_at" }] }
+  ]
+}

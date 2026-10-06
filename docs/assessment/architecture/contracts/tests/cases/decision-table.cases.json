@@ -1,0 +1,43 @@
+{
+  "schema": "decision-table.schema.json",
+  "note": "Reconstructed in round 5.",
+  "bases": {
+    "minimal": {
+      "header": { "contract": "decision-table", "contract_version": "1.0.0", "version": "0.1.0", "status": "draft", "updated_at": "2026-10-05T12:00:00+03:00", "approvals": [] },
+      "outcome3_enabled": false,
+      "outcome3_exclusions": [{ "id": "any_worry", "label_he": "דאגה", "when": { "slot": "core_worry", "op": "eq", "value": true } }],
+      "rules": [
+        { "id": "r_scope_child_speech", "order": 100, "when": { "all": [{ "slot": "core_relation", "op": "eq", "value": "child" }, { "slot": "domain", "op": "in", "value": ["speech", "language"] }] }, "outcome": 1, "reason_code": "in_scope_child", "reason_label_he": "בתחום" },
+        { "id": "r_referral_ot", "order": 50, "when": { "slot": "domain", "op": "eq", "value": "motor" }, "outcome": 4, "referral_id": "occupational_therapy", "reason_code": "out_of_scope_motor", "reason_label_he": "מחוץ לתחום" }
+      ],
+      "default": { "outcome": 2, "reason_code": "default_consult", "reason_label_he": "ברירת מחדל" },
+      "presentation": {
+        "1": { "title_text_id": "outcome.1.title", "body_text_id": "outcome.1.body", "disclaimer_text_id": "outcome.disclaimer", "form": "primary" },
+        "2": { "title_text_id": "outcome.2.title", "body_text_id": "outcome.2.body", "disclaimer_text_id": "outcome.disclaimer", "form": "primary" },
+        "3": { "title_text_id": "outcome.3.title", "body_text_id": "outcome.3.body", "disclaimer_text_id": "outcome.disclaimer", "form": "secondary", "return_signs_text_id": "outcome.3.when_to_contact" },
+        "4": { "title_text_id": "outcome.4.title", "body_text_id": "outcome.4.body", "disclaimer_text_id": "outcome.disclaimer", "form": "secondary" },
+        "5": { "title_text_id": "redflag.title.urgent", "body_text_id": "redflag.after", "disclaimer_text_id": "redflag.footer", "form": "none" }
+      },
+      "addenda": [{ "id": "document_request", "when": { "slot": "document_request", "op": "eq", "value": true }, "outcomes": [1, 2, 4], "audience": "user", "text_id": "addendum.document_request", "label_he": "בקשת מסמך" }],
+      "outcome4_requirements": { "require_domain_confirmed": true, "by_domain": [{ "id": "neuro_adult", "when": { "slot": "domain", "op": "eq", "value": "neuro" }, "answered_slots": ["screen_neuro_any", "screen_swallow"], "if_applicable_slots": ["screen_swallow"] }] },
+      "routing_stops": [
+        { "id": "minor_self", "when": { "slot": "self_declared_minor", "op": "eq", "value": true }, "text_id": "minor.self", "label_he": "קטין על עצמו", "end_reason": "minor_self",
+          "message_variants": [{ "when": { "slot": "core_concern_text", "status_in": ["missing"] }, "text_id": "minor.self.before_text" }] },
+        { "id": "non_parent_reporter", "when": { "ref": "non_parent_reporter" }, "text_id": "reporter.not_parent", "label_he": "מדווח שאינו הורה", "end_reason": "non_parent_reporter" }
+      ],
+      "engine_texts": { "extraction_gap_text_id": "outcome.extraction_gap" }
+    }
+  },
+  "cases": [
+    { "id": "dt.ok.minimal", "base": "minimal", "expect": "valid" },
+    { "id": "dt.SEC02.routing_stops_empty", "base": "minimal", "expect": "invalid", "error": "/routing_stops/minItems", "source": "SEC-02(4)", "patch": [{ "op": "replace", "path": "/routing_stops", "value": [] }] },
+    { "id": "dt.SEC02.minor_self_stop_missing", "base": "minimal", "expect": "invalid", "error": "/routing_stops/allOf/0/contains", "source": "SEC-02(4)", "patch": [{ "op": "replace", "path": "/routing_stops/0/end_reason", "value": "other_stop" }] },
+    { "id": "dt.F5.outcome4_rule_without_referral", "base": "minimal", "expect": "invalid", "error": "required", "patch": [{ "op": "remove", "path": "/rules/1/referral_id" }] },
+    { "id": "dt.default_not_2", "base": "minimal", "expect": "invalid", "error": "/default/properties/outcome/const", "source": "default outcome 2, enforced by schema (§20 #5)", "patch": [{ "op": "replace", "path": "/default/outcome", "value": 3 }] },
+    { "id": "dt.D04.outcome5_with_form", "base": "minimal", "expect": "invalid", "error": "/form/const", "source": "D-04 / SEC-11", "patch": [{ "op": "replace", "path": "/presentation/5/form", "value": "secondary" }] },
+    { "id": "dt.rule_outcome_5", "base": "minimal", "expect": "invalid", "error": "/outcome/enum", "source": "outcome 5 only from red flags", "patch": [{ "op": "replace", "path": "/rules/0/outcome", "value": 5 }] },
+    { "id": "dt.outcome3_without_return_signs", "base": "minimal", "expect": "invalid", "error": "required", "patch": [{ "op": "remove", "path": "/presentation/3/return_signs_text_id" }] },
+    { "id": "dt.user_addendum_without_text", "base": "minimal", "expect": "invalid", "error": "required", "source": "L-15", "patch": [{ "op": "remove", "path": "/addenda/0/text_id" }] },
+    { "id": "dt.condition_unknown_op", "base": "minimal", "expect": "invalid", "error": "oneOf", "patch": [{ "op": "replace", "path": "/rules/1/when", "value": { "slot": "domain", "op": "like", "value": "motor" } }] }
+  ]
+}

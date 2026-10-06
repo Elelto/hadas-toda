@@ -1,0 +1,565 @@
+{
+  "schema": "channel-envelope.schema.json",
+  "note": "Reconstructed in round 5. Validated against the root (oneOf inbound | outbound).",
+  "bases": {
+    "inbound_text": {
+      "envelope_version": "1",
+      "direction": "inbound",
+      "channel": "web",
+      "conversation_key": "web:AAAAAAAAAAAAAAAA",
+      "message_id": "m-00000001",
+      "expected_seq": 3,
+      "received_at": "2026-10-05T10:00:00+03:00",
+      "kind": "text",
+      "text": "הבן שלי בן ארבע ומגמגם",
+      "delivery_mode": "live",
+      "capabilities": {
+        "rich_cards": true,
+        "forms": true,
+        "max_buttons": 6,
+        "max_list_rows": 10,
+        "max_text_chars": 3000,
+        "knows_contact_phone": false,
+        "synchronous": true
+      }
+    },
+    "s6_urgent_with_form": {
+      "envelope_version": "1",
+      "direction": "outbound",
+      "channel": "web",
+      "conversation_key": "web:AAAAAAAAAAAAAAAA",
+      "in_reply_to": "m-00000005",
+      "seq": 6,
+      "phase": "outcome",
+      "delivery_mode": "live",
+      "ends_conversation": false,
+      "input_hint": "form",
+      "items": [
+        {
+          "type": "outcome",
+          "outcome": 5,
+          "title": "קודם כול, בדיקה רפואית",
+          "body": "נוסח קבוע",
+          "disclaimer": "הודעה קבועה",
+          "text_refs": [
+            {
+              "id": "redflag.type.swallowing",
+              "version": 2
+            }
+          ],
+          "form": "secondary",
+          "disclaimer_text_ref": {
+            "id": "redflag.footer",
+            "version": 1
+          },
+          "red_flag_tier": "urgent",
+          "red_flag_blocks": [
+            {
+              "role": "primary",
+              "tier": "urgent",
+              "text_ref": {
+                "id": "redflag.type.swallowing",
+                "version": 2
+              },
+              "form_after_message": "secondary"
+            }
+          ]
+        },
+        {
+          "type": "form_request",
+          "fields": [
+            "name",
+            "phone"
+          ],
+          "consent_text_ref": {
+            "id": "form.consent.checkbox",
+            "version": 3
+          }
+        }
+      ]
+    },
+    "s6_combined_no_form": {
+      "envelope_version": "1",
+      "direction": "outbound",
+      "channel": "web",
+      "conversation_key": "web:AAAAAAAAAAAAAAAA",
+      "in_reply_to": "m-00000002",
+      "seq": 3,
+      "phase": "outcome",
+      "delivery_mode": "live",
+      "ends_conversation": false,
+      "input_hint": "none",
+      "items": [
+        {
+          "type": "outcome",
+          "outcome": 5,
+          "title": "קודם כול, בדיקה רפואית",
+          "body": "נוסח קבוע",
+          "disclaimer": "הודעה קבועה",
+          "text_refs": [
+            {
+              "id": "redflag.type.child_regression",
+              "version": 1
+            },
+            {
+              "id": "redflag.type.child_safety",
+              "version": 3
+            }
+          ],
+          "form": "none",
+          "disclaimer_text_ref": {
+            "id": "redflag.footer",
+            "version": 1
+          },
+          "red_flag_tier": "urgent",
+          "red_flag_blocks": [
+            {
+              "role": "primary",
+              "tier": "urgent",
+              "text_ref": {
+                "id": "redflag.type.child_regression",
+                "version": 1
+              },
+              "form_after_message": "secondary"
+            },
+            {
+              "role": "secondary",
+              "tier": "hotline",
+              "text_ref": {
+                "id": "redflag.type.child_safety",
+                "version": 3
+              },
+              "form_after_message": "none",
+              "title_text_ref": {
+                "id": "redflag.title.hotline.child_safety",
+                "version": 1
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "handoff_result": {
+      "envelope_version": "1",
+      "direction": "outbound",
+      "channel": "web",
+      "conversation_key": "web:AAAAAAAAAAAAAAAA",
+      "in_reply_to": "m-00000009",
+      "seq": 10,
+      "phase": "closed",
+      "delivery_mode": "live",
+      "ends_conversation": true,
+      "input_hint": "none",
+      "handoff_result": {
+        "status": "submitted",
+        "submitted_on": "2026-10-05",
+        "delivery": "pending",
+        "content_deleted": true,
+        "clear_cookie": true
+      },
+      "items": [
+        {
+          "type": "text",
+          "text": "הפרטים בדרך להדס",
+          "origin": "fixed",
+          "text_refs": [
+            {
+              "id": "form.confirmation.title.pending",
+              "version": 1
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "cases": [
+    {
+      "id": "env.ok.inbound_text",
+      "base": "inbound_text",
+      "expect": "valid"
+    },
+    {
+      "id": "env.ok.s6_urgent_with_secondary_form",
+      "base": "s6_urgent_with_form",
+      "expect": "valid"
+    },
+    {
+      "id": "env.ok.s6_combined_no_form",
+      "base": "s6_combined_no_form",
+      "expect": "valid"
+    },
+    {
+      "id": "env.ok.handoff_result",
+      "base": "handoff_result",
+      "expect": "valid"
+    },
+    {
+      "id": "env.ok.B3.text_10000",
+      "base": "inbound_text",
+      "expect": "valid",
+      "source": "blocker 3 (TX-03)",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/text",
+          "value": {
+            "$repeat": [
+              "א",
+              10000
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "env.ok.B3.text_32000",
+      "base": "inbound_text",
+      "expect": "valid",
+      "source": "blocker 3",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/text",
+          "value": {
+            "$repeat": [
+              "a",
+              32000
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "env.ok.B3.text_81920",
+      "base": "inbound_text",
+      "expect": "valid",
+      "source": "blocker 3 (20 x 4,096, WhatsApp burst)",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/text",
+          "value": {
+            "$repeat": [
+              "a",
+              81920
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "env.B3.text_81921",
+      "base": "inbound_text",
+      "expect": "invalid",
+      "error": "/text/maxLength",
+      "source": "blocker 3",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/text",
+          "value": {
+            "$repeat": [
+              "a",
+              81921
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "env.misc.text_kind_without_text",
+      "base": "inbound_text",
+      "expect": "invalid",
+      "error": "required",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/text"
+        }
+      ]
+    },
+    {
+      "id": "env.misc.bad_conversation_key",
+      "base": "inbound_text",
+      "expect": "invalid",
+      "error": "/conversation_key/pattern",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/conversation_key",
+          "value": "sms:AAAAAAAAAAAAAAAA"
+        }
+      ]
+    },
+    {
+      "id": "env.misc.form_field_preferred_time_note",
+      "base": "s6_urgent_with_form",
+      "expect": "invalid",
+      "error": "/fields/items/enum",
+      "source": "SEC-17(5)",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/items/1/fields",
+          "value": [
+            "name",
+            "phone",
+            "preferred_time_note"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "env.B2.none_block_with_secondary_form",
+      "base": "s6_combined_no_form",
+      "expect": "invalid",
+      "error": "/form/const",
+      "source": "blocker 2",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/items/0/form",
+          "value": "secondary"
+        }
+      ]
+    },
+    {
+      "id": "env.B2.no_form_card_with_form_request",
+      "base": "s6_combined_no_form",
+      "expect": "invalid",
+      "error": "/then/properties/items/not",
+      "source": "blocker 2",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/items/-",
+          "value": {
+            "type": "form_request",
+            "fields": [
+              "name",
+              "phone"
+            ],
+            "consent_text_ref": {
+              "id": "form.consent.checkbox",
+              "version": 3
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "env.B2.no_form_card_with_form_hint",
+      "base": "s6_combined_no_form",
+      "expect": "invalid",
+      "error": "/input_hint/not",
+      "source": "blocker 2",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/input_hint",
+          "value": "form"
+        }
+      ]
+    },
+    {
+      "id": "env.B2.outcome5_form_primary",
+      "base": "s6_urgent_with_form",
+      "expect": "invalid",
+      "error": "/form/enum",
+      "source": "D-04",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/items/0/form",
+          "value": "primary"
+        }
+      ]
+    },
+    {
+      "id": "env.B2.outcome5_without_blocks",
+      "base": "s6_urgent_with_form",
+      "expect": "invalid",
+      "error": "required",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/items/0/red_flag_blocks"
+        }
+      ]
+    },
+    {
+      "id": "env.G2.probe_hotline_block_copied_as_secondary",
+      "base": "s6_urgent_with_form",
+      "expect": "invalid",
+      "error": "/red_flag_blocks/items/allOf/0/then",
+      "source": "security round 2, gap probe 2 (wrongly passed in draft 3): hotline block marked secondary, form_request in the same envelope",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/items/0/red_flag_blocks/-",
+          "value": {
+            "role": "secondary",
+            "tier": "hotline",
+            "text_ref": {
+              "id": "redflag.type.distress",
+              "version": 3
+            },
+            "form_after_message": "secondary"
+          }
+        }
+      ]
+    },
+    {
+      "id": "env.G2.primary_tier_hotline_form_secondary",
+      "base": "s6_urgent_with_form",
+      "expect": "invalid",
+      "error": "/allOf/2/then/properties/form/const",
+      "source": "round 5: red_flag_tier alone forces form none",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/items/0/red_flag_tier",
+          "value": "hotline"
+        }
+      ]
+    },
+    {
+      "id": "env.G2.emergency_block_copied_as_secondary",
+      "base": "s6_urgent_with_form",
+      "expect": "invalid",
+      "error": "/red_flag_blocks/items/allOf/0/then",
+      "source": "round 5",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/items/0/red_flag_blocks/0/tier",
+          "value": "emergency"
+        }
+      ]
+    },
+    {
+      "id": "env.B1.handoff_result_phase_not_closed",
+      "base": "handoff_result",
+      "expect": "invalid",
+      "error": "/phase/const",
+      "source": "blocker 1",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/phase",
+          "value": "handoff"
+        }
+      ]
+    },
+    {
+      "id": "env.B1.handoff_result_conversation_continues",
+      "base": "handoff_result",
+      "expect": "invalid",
+      "error": "/ends_conversation/const",
+      "source": "blocker 1",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/ends_conversation",
+          "value": false
+        }
+      ]
+    },
+    {
+      "id": "env.B1.handoff_result_keeps_cookie",
+      "base": "handoff_result",
+      "expect": "invalid",
+      "error": "/clear_cookie/const",
+      "source": "blocker 1 / §13.1 step 5",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/handoff_result/clear_cookie",
+          "value": false
+        }
+      ]
+    },
+    {
+      "id": "env.B1.handoff_result_unknown_delivery",
+      "base": "handoff_result",
+      "expect": "invalid",
+      "error": "/delivery/enum",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/handoff_result/delivery",
+          "value": "sent"
+        }
+      ]
+    },
+    {
+      "id": "env.T.ok.secondary_block_per_type_title",
+      "base": "s6_combined_no_form",
+      "expect": "valid",
+      "source": "round 5: secondary block heading = redflag.title.hotline.<flag_id> (base carries it)"
+    },
+    {
+      "id": "env.T.secondary_block_without_title",
+      "base": "s6_combined_no_form",
+      "expect": "invalid",
+      "error": "/red_flag_blocks/items/allOf/1/then/required",
+      "source": "round 5: conversation designer per-type hotline titles",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/items/0/red_flag_blocks/1/title_text_ref"
+        }
+      ]
+    },
+    {
+      "id": "env.T.secondary_block_generic_or_wrong_title",
+      "base": "s6_combined_no_form",
+      "expect": "invalid",
+      "error": "/title_text_ref/properties/id/pattern",
+      "source": "round 5",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/items/0/red_flag_blocks/1/title_text_ref/id",
+          "value": "redflag.title.urgent"
+        }
+      ]
+    },
+    {
+      "id": "env.T.secondary_block_urgent_tier",
+      "base": "s6_combined_no_form",
+      "expect": "invalid",
+      "error": "/tier/const",
+      "source": "§1.5: urgent is never a secondary block",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/items/0/red_flag_blocks/1/tier",
+          "value": "urgent"
+        },
+        {
+          "op": "replace",
+          "path": "/items/0/red_flag_blocks/1/form_after_message",
+          "value": "secondary"
+        }
+      ]
+    },
+    {
+      "id": "env.T.primary_block_with_own_title",
+      "base": "s6_combined_no_form",
+      "expect": "invalid",
+      "error": "/red_flag_blocks/items/allOf/2/then/not",
+      "source": "round 5: one source for the primary heading",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/items/0/red_flag_blocks/0/title_text_ref",
+          "value": {
+            "id": "redflag.title.urgent",
+            "version": 1
+          }
+        }
+      ]
+    }
+  ]
+}

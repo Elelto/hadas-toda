@@ -873,7 +873,7 @@
               "type": "array",
               "minItems": 1,
               "maxItems": 3,
-              "description": "Outcome 5 only (SEC-11): the primary block (highest tier) first, then one block per other raised hotline-tier flag. If ANY block has form_after_message none, form must be none and the envelope carries no form_request.",
+              "description": "Outcome 5 only (SEC-11): the primary block (highest tier) first, then one block per other raised hotline-tier flag. If ANY block has form_after_message none, form must be none and the envelope carries no form_request. Round 5 (security ג.1): a block's form_after_message is a copy, so the schema also ties it to the block's tier, and the item's form to both the tier of every block and red_flag_tier.",
               "items": {
                 "type": "object",
                 "required": [
@@ -904,9 +904,98 @@
                       "none",
                       "secondary"
                     ]
+                  },
+                  "title_text_ref": {
+                    "$ref": "common.schema.json#/$defs/textRef",
+                    "description": "Round 5: the heading of a SECONDARY block. The engine fills it as redflag.title.hotline.<flag_id> (e.g. redflag.title.hotline.child_safety); intake:check fails if that text is missing or not in the client bundle for any hotline flag in red-flags.json, so there is no runtime fallback. The primary block has no own title: its heading is the outcome item's title (redflag.title.<tier>)."
                   }
                 },
-                "additionalProperties": false
+                "additionalProperties": false,
+                "allOf": [
+                  {
+                    "if": {
+                      "type": "object",
+                      "properties": {
+                        "tier": {
+                          "enum": [
+                            "emergency",
+                            "hotline"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "tier"
+                      ]
+                    },
+                    "then": {
+                      "type": "object",
+                      "properties": {
+                        "form_after_message": {
+                          "const": "none"
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "description": "Round 5: a secondary block is always a hotline flag (§1.5) and carries its per-type title.",
+                    "if": {
+                      "type": "object",
+                      "properties": {
+                        "role": {
+                          "const": "secondary"
+                        }
+                      },
+                      "required": [
+                        "role"
+                      ]
+                    },
+                    "then": {
+                      "type": "object",
+                      "properties": {
+                        "tier": {
+                          "const": "hotline"
+                        },
+                        "title_text_ref": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "pattern": "^redflag\\.title\\.hotline\\.[a-z0-9_]+$"
+                            }
+                          }
+                        }
+                      },
+                      "required": [
+                        "title_text_ref"
+                      ]
+                    }
+                  },
+                  {
+                    "description": "Round 5: the primary block takes its heading from the outcome item's title, not from a block field.",
+                    "if": {
+                      "type": "object",
+                      "properties": {
+                        "role": {
+                          "const": "primary"
+                        }
+                      },
+                      "required": [
+                        "role"
+                      ]
+                    },
+                    "then": {
+                      "not": {
+                        "type": "object",
+                        "required": [
+                          "title_text_ref"
+                        ],
+                        "properties": {
+                          "title_text_ref": true
+                        }
+                      }
+                    }
+                  }
+                ]
               }
             }
           },
@@ -950,19 +1039,64 @@
                     "type": "array",
                     "contains": {
                       "type": "object",
-                      "properties": {
-                        "form_after_message": {
-                          "const": "none"
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "form_after_message": {
+                              "const": "none"
+                            }
+                          },
+                          "required": [
+                            "form_after_message"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "tier": {
+                              "enum": [
+                                "emergency",
+                                "hotline"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "tier"
+                          ]
                         }
-                      },
-                      "required": [
-                        "form_after_message"
                       ]
                     }
                   }
                 },
                 "required": [
                   "red_flag_blocks"
+                ]
+              },
+              "then": {
+                "type": "object",
+                "properties": {
+                  "form": {
+                    "const": "none"
+                  }
+                }
+              },
+              "description": "Any block that allows no form (by copied policy OR by tier) forces form none (round 5)."
+            },
+            {
+              "description": "Round 5: the primary tier alone also forces form none.",
+              "if": {
+                "type": "object",
+                "properties": {
+                  "red_flag_tier": {
+                    "enum": [
+                      "emergency",
+                      "hotline"
+                    ]
+                  }
+                },
+                "required": [
+                  "red_flag_tier"
                 ]
               },
               "then": {

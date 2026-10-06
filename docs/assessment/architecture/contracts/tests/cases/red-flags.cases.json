@@ -1,0 +1,61 @@
+{
+  "schema": "red-flags.schema.json",
+  "note": "Reconstructed in round 5. The patterns here are ILLUSTRATIONS written to the round-5 pattern rules (not clinical content); run.mjs also feeds them to the regex-safety suite (lint + adversarial timing).",
+  "bases": {
+    "three_tiers": {
+      "header": { "contract": "red-flags", "contract_version": "1.0.0", "version": "0.1.0", "status": "draft", "updated_at": "2026-10-05T12:00:00+03:00", "approvals": [] },
+      "flags": [
+        {
+          "id": "sudden_onset", "label_he": "שינוי פתאומי", "tier": "emergency", "form_after_message": "none",
+          "doubt_tier": "urgent", "doubt_message_text_id": "redflag.doubt.sudden_onset",
+          "message_text_id": "redflag.type.sudden_onset",
+          "triggers": {
+            "immediate_patterns": [
+              { "id": "face_droop", "regex": "(?:^|\\P{L})[והשבכלמ]{0,2}צניחת פנים" },
+              { "id": "limb_weakness", "regex": "חולשה (?:פתאומית )?ב(?:יד|רגל)" },
+              { "id": "slurred", "regex": "מדבר(?:ת)? (?:מעורפל|כבד)" }
+            ],
+            "extractor_signal": true,
+            "confirm": { "slot": "core_sudden_evaluated", "question_text_id": "redflag.confirm.sudden_onset",
+              "patterns": [{ "id": "stopped_suddenly", "regex": "הפסיק(?:ה)?[^.!?\\n]{0,40}(?:לדבר|לדבר פתאום)" }] }
+          },
+          "extractor_hint_he": "שינוי חדש בדיבור עם סימנים נוספים",
+          "test_phrases_he": { "positive": ["יש לו צניחת פנים מאתמול", "חולשה פתאומית ביד ימין", "מדבר מעורפל מהבוקר"], "negative": ["הוא מגמגם פתאום כשהוא נרגש", "הפנים שלו רגילות", "חלש במתמטיקה"] }
+        },
+        {
+          "id": "child_safety", "label_he": "חשש לפגיעה בילד", "tier": "hotline", "form_after_message": "none",
+          "message_text_id": "redflag.type.child_safety",
+          "triggers": { "immediate_patterns": [{ "id": "hits_child", "regex": "(?:מכה|מרביץ|מרביצה) (?:אותו|אותה|לו|לה)" }] },
+          "test_phrases_he": { "positive": ["אבא שלו מכה אותו", "היא מרביצה לו", "מרביץ לה כל הזמן"], "negative": ["הוא מרביץ בגן לילדים אחרים בכדור", "מכה בתוף", "הכה גלים"] }
+        },
+        {
+          "id": "swallowing", "label_he": "קושי בבליעה", "tier": "urgent", "form_after_message": "secondary",
+          "message_text_id": "redflag.type.swallowing",
+          "triggers": { "immediate_patterns": [{ "id": "swallow_cough_meals", "regex": "משתעל(?:ת)?[^.!?\\n]{0,20}(?:ארוחה|ארוחות|אוכל)" }] },
+          "test_phrases_he": { "positive": ["משתעל בכל ארוחה", "משתעלת כשהיא אוכלת אוכל", "הוא משתעל אחרי ארוחות"], "negative": ["משתעל בלילה", "אוכל טוב", "שיעול קל"] }
+        }
+      ]
+    }
+  },
+  "cases": [
+    { "id": "rf.ok.three_tiers", "base": "three_tiers", "expect": "valid" },
+
+    { "id": "rf.D04.emergency_secondary", "base": "three_tiers", "expect": "invalid", "error": "/allOf/1/then/properties/form_after_message/const", "source": "D-04", "patch": [{ "op": "replace", "path": "/flags/0/form_after_message", "value": "secondary" }] },
+    { "id": "rf.D04.hotline_secondary", "base": "three_tiers", "expect": "invalid", "error": "/allOf/1/then/properties/form_after_message/const", "source": "D-04", "patch": [{ "op": "replace", "path": "/flags/1/form_after_message", "value": "secondary" }] },
+    { "id": "rf.D04.doubt_tier_hotline_secondary", "base": "three_tiers", "expect": "invalid", "error": "/allOf/2/then/properties/form_after_message/const", "source": "D-04 doubt tier", "patch": [{ "op": "add", "path": "/flags/2/doubt_tier", "value": "hotline" }] },
+    { "id": "rf.D04.primary_form", "base": "three_tiers", "expect": "invalid", "error": "/form_after_message/enum", "source": "D-04", "patch": [{ "op": "replace", "path": "/flags/2/form_after_message", "value": "primary" }] },
+    { "id": "rf.G1.no_form_id_with_urgent_tier", "base": "three_tiers", "expect": "invalid", "error": "/allOf/3/then/properties/form_after_message/const", "source": "round 5: child_safety mis-tiered as urgent in content still cannot allow a form", "patch": [{ "op": "replace", "path": "/flags/1/tier", "value": "urgent" }, { "op": "replace", "path": "/flags/1/form_after_message", "value": "secondary" }] },
+
+    { "id": "rf.RX.backreference", "base": "three_tiers", "expect": "invalid", "error": "/regex/not", "source": "round 5, ReDoS rule P2", "patch": [{ "op": "replace", "path": "/flags/2/triggers/immediate_patterns/0/regex", "value": "(משתעל)\\1" }] },
+    { "id": "rf.RX.named_backreference", "base": "three_tiers", "expect": "invalid", "error": "/regex/not", "source": "round 5, P2", "patch": [{ "op": "replace", "path": "/flags/2/triggers/immediate_patterns/0/regex", "value": "(?<w>משתעל)\\k<w>" }] },
+    { "id": "rf.RX.lookbehind", "base": "three_tiers", "expect": "invalid", "error": "/regex/not", "source": "round 5, P2 (RE2 has no lookaround)", "patch": [{ "op": "replace", "path": "/flags/2/triggers/immediate_patterns/0/regex", "value": "(?<!\\p{L})משתעל" }] },
+    { "id": "rf.RX.lookahead_in_confirm", "base": "three_tiers", "expect": "invalid", "error": "/regex/not", "source": "round 5, P2", "patch": [{ "op": "replace", "path": "/flags/0/triggers/confirm/patterns/0/regex", "value": "הפסיק(?=\\s)" }] },
+    { "id": "rf.RX.too_long", "base": "three_tiers", "expect": "invalid", "error": "/regex/maxLength", "patch": [{ "op": "replace", "path": "/flags/2/triggers/immediate_patterns/0/regex", "value": { "$repeat": ["א", 501] } }] },
+
+    { "id": "rf.misc.extractor_signal_without_hint", "base": "three_tiers", "expect": "invalid", "error": "required", "patch": [{ "op": "remove", "path": "/flags/0/extractor_hint_he" }] },
+    { "id": "rf.misc.two_positive_phrases", "base": "three_tiers", "expect": "invalid", "error": "/positive/minItems", "patch": [{ "op": "replace", "path": "/flags/2/test_phrases_he/positive", "value": ["משתעל בכל ארוחה", "משתעלת באוכל"] }] },
+    { "id": "rf.misc.no_trigger", "base": "three_tiers", "expect": "invalid", "error": "anyOf", "patch": [{ "op": "replace", "path": "/flags/1/triggers", "value": {} }] },
+    { "id": "rf.misc.old_tier_name", "base": "three_tiers", "expect": "invalid", "error": "/tier/enum", "source": "§1.5: no medical/helpline", "patch": [{ "op": "replace", "path": "/flags/2/tier", "value": "medical" }] },
+    { "id": "rf.misc.flag_id_any", "base": "three_tiers", "expect": "invalid", "error": "not", "patch": [{ "op": "replace", "path": "/flags/2/id", "value": "any" }] }
+  ]
+}
