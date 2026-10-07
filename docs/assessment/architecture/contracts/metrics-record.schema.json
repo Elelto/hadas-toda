@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://hadas-toda.co.il/schemas/intake/v1/metrics-record.schema.json",
   "title": "Session metrics record (content-free)",
-  "description": "D-01: the ONLY thing that survives a session's deletion. No text, no quotes, no slot values, no domain, no contact, no session id: a separate random metrics_id that appears nowhere else (SEC-27). Kept 24 months. Feeds the success metrics that do not depend on Hadas (critic F8), the availability counter and the cost record (D-09: estimated cost, no content). Browser-only funnel events arrive by beacon as counts from a closed list (ui_events, UX 6.2, SEC conditions: enum names only, joined to the session only through the cookie, no GA ids). Before consent only anonymous daily sums exist ($defs/dailyCounters: no IP, no user agent).",
+  "description": "D-01: the ONLY thing that survives a session's deletion. No text, no quotes, no slot values, no domain, no contact, no session id: a separate random metrics_id that appears nowhere else (SEC-27). Kept 24 months. Feeds the success metrics that do not depend on Hadas (critic F8), the availability counter and the cost record (D-09: estimated cost, no content). Browser-only funnel events arrive by beacon as counts from a closed list (ui_events, UX 6.2, SEC conditions: enum names only, joined to the session only through the cookie, no GA ids). Before consent only anonymous daily sums exist ($defs/dailyCounters: no IP, no user agent). Draft 3.4 (SEC5-12, CR5-07, aligned with UX §6.2): the per-conversation record carries NO keep field (deleted{from: finish} is the same with and without a kept copy); the keep outcome is three anonymous daily counters in $defs/dailyCounters (keep_saved, keep_declined, keep_failed).",
   "type": "object",
   "required": [
     "metrics_version",
@@ -117,9 +117,41 @@
         "form_blocked": {
           "type": "boolean",
           "description": "A raised flag with form_after_message none blocked the form (SEC-11)."
+        },
+        "form_block_reason": {
+          "enum": [
+            "flag_no_form",
+            "routing_stop_under_flag",
+            "routing_unsettled_under_flag"
+          ],
+          "description": "Draft 3.4: why the form was blocked in a flag conversation (flag_no_form = SEC-11; routing_stop_under_flag / routing_unsettled_under_flag = SEC5-01)."
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "type": "object",
+            "required": [
+              "form_block_reason"
+            ],
+            "properties": {
+              "form_block_reason": true
+            }
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "form_blocked": {
+                "const": true
+              }
+            },
+            "required": [
+              "form_blocked"
+            ]
+          }
+        }
+      ]
     },
     "routing_stop": {
       "anyOf": [
@@ -198,7 +230,8 @@
         "none",
         "llm_down",
         "cost_cap",
-        "ip_budget"
+        "ip_budget",
+        "edge_unverified"
       ],
       "description": "D-09 / F2: the session continued without the model (button screens and conditions only)."
     },
@@ -233,17 +266,18 @@
       "type": "boolean",
       "description": "Round 5: the linear-time red-flag scan ran out of budget or failed in this conversation (flags raised as scan_incomplete, ARCHITECTURE §1.5). Should always be false; any true is a heartbeat code."
     },
-    "keep_result": {
-      "enum": [
-        "not_offered",
-        "declined",
-        "kept",
-        "consent_mismatch",
-        "not_eligible",
-        "mask_failed",
-        "store_failed"
-      ],
-      "description": "Draft 3.3, D-01b: what happened to the opt-in keep box. not_offered = keep_offer_eligible was false at the end (or the session ended without 'סיום'); declined = offered, left unticked; the rest mirror the envelope's keep_result. A count only: no kept_id, nothing that links this record to intake-kept."
+    "stop_under_flag": {
+      "type": "array",
+      "maxItems": 3,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "minor_self",
+          "non_parent_reporter",
+          "other_stop"
+        ]
+      },
+      "description": "Draft 3.4 (SEC5-01): stop conditions met in a flag turn (the screen was S6, the form was blocked). Enums only."
     }
   },
   "additionalProperties": false,
@@ -316,7 +350,7 @@
       "additionalProperties": false
     },
     "dailyCounters": {
-      "description": "Anonymous daily sums before any session exists (UX 6.1). Store intake-metrics, key d/<YYYY-MM-DD>. No IP, no user agent, no ids.",
+      "description": "Anonymous daily sums before any session exists (UX 6.1). Store intake-metrics, key d/<YYYY-MM-DD>. No IP, no user agent, no ids. Draft 3.4 (D-01b, SEC5-12, CR5-07): also the keep counters, a day bucket only (no IP, user agent, entry_point or ids): keep_saved (a copy was written), keep_declined (finish from an eligible S5 without the box ticked), keep_failed (a keep request that kept nothing, any reason).",
       "type": "object",
       "required": [
         "day",
@@ -346,6 +380,18 @@
               "minimum": 0
             },
             "input_too_large_pre": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "keep_saved": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "keep_declined": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "keep_failed": {
               "type": "integer",
               "minimum": 0
             }
@@ -446,76 +492,6 @@
       }
     },
     {
-      "description": "D-01b: no keep box after a red flag of any tier, a routing stop, a lead, or outside the web.",
-      "if": {
-        "type": "object",
-        "anyOf": [
-          {
-            "type": "object",
-            "properties": {
-              "red_flag": {
-                "type": "object",
-                "properties": {
-                  "raised": {
-                    "const": true
-                  }
-                },
-                "required": [
-                  "raised"
-                ]
-              }
-            },
-            "required": [
-              "red_flag"
-            ]
-          },
-          {
-            "type": "object",
-            "properties": {
-              "routing_stop": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "routing_stop"
-            ]
-          },
-          {
-            "type": "object",
-            "properties": {
-              "handed_off": {
-                "const": true
-              }
-            },
-            "required": [
-              "handed_off"
-            ]
-          },
-          {
-            "type": "object",
-            "properties": {
-              "channel": {
-                "not": {
-                  "const": "web"
-                }
-              }
-            },
-            "required": [
-              "channel"
-            ]
-          }
-        ]
-      },
-      "then": {
-        "type": "object",
-        "properties": {
-          "keep_result": {
-            "const": "not_offered"
-          }
-        }
-      }
-    },
-    {
       "description": "D-02 (draft 3.3): red flags are checked before routing stops in every turn and a stop closes the conversation, so a stopped conversation never has a raised flag (a flag on a minor or non-parent path ends in S6, not S13).",
       "if": {
         "type": "object",
@@ -558,6 +534,81 @@
                 "const": false
               }
             }
+          }
+        }
+      }
+    },
+    {
+      "description": "SEC5-01 (draft 3.4): a stop met under a flag means a raised flag, a blocked form, no lead, and no S13 stop.",
+      "if": {
+        "type": "object",
+        "properties": {
+          "stop_under_flag": {
+            "type": "array",
+            "minItems": 1
+          }
+        },
+        "required": [
+          "stop_under_flag"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "handed_off": {
+            "const": false
+          },
+          "routing_stop": {
+            "type": "null"
+          },
+          "red_flag": {
+            "type": "object",
+            "properties": {
+              "raised": {
+                "const": true
+              },
+              "form_blocked": {
+                "const": true
+              }
+            },
+            "required": [
+              "raised",
+              "form_blocked"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "description": "SEC5-01 (draft 3.4): a flag-turn form block leaves nothing handed off.",
+      "if": {
+        "type": "object",
+        "properties": {
+          "red_flag": {
+            "type": "object",
+            "properties": {
+              "form_block_reason": {
+                "enum": [
+                  "flag_no_form",
+                  "routing_stop_under_flag",
+                  "routing_unsettled_under_flag"
+                ]
+              }
+            },
+            "required": [
+              "form_block_reason"
+            ]
+          }
+        },
+        "required": [
+          "red_flag"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "handed_off": {
+            "const": false
           }
         }
       }

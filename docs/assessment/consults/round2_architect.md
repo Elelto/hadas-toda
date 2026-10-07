@@ -64,3 +64,11 @@
 - **הבלוקים של `/intake` ב-`netlify.toml`:** CSP ו-rewrite. CODEOWNERS לא בוחר בלוק בתוך קובץ, ולכן בדיקת CI מסמנת diff שנוגע בשורה עם `/intake`.
 
 מה שהיה ברשימה, כמו `intake/engine/normalize*` (המיסוך), נשאר. מסבב 6 הוא כולל גם את עטיפת re2js של המיסוך.
+
+### תוספת משער 1 (טיוטה 3.3, D-01b): שמירה מרצון
+
+נכנסים לרשימת הנתיבים, כי זו מחיקה ושמירה, וגם החלטה על קטינים ודגלים (ARCH §11.1.1, §19):
+- **`intake/engine/keep*`:** `keepOfferEligible` (הבדיקה היחידה של הזכאות, שמונה תנאים) ו-`maskNames` (re2js בלבד, כשל בטוח).
+- **`intake/store/kept*`:** הקורא היחיד של `INTAKE_KEPT_KEY`. בדיקה סטטית: אף מודול ב-`intake/llm/` לא מייבא אותו.
+- **`netlify/functions/intake-kept-viewer.mjs`:** 2FA, יומן גישה לפני תוכן, בלי ייצוא.
+- המחיקה אחרי 180 יום ב-`intake-scheduled.mjs` (כבר ברשימה).

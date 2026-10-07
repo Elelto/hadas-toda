@@ -153,7 +153,7 @@
       }
     },
     {
-      "description": "D-01b: the keep consent has no session_id (no link back), names its kept record, is web-only in v1, a checkbox, and records both keep texts.",
+      "description": "D-01b: the keep consent has no session_id (no link back), names its kept record, is web-only in v1, a checkbox, and records both keep texts. Draft 3.4: its time is truncated to the UTC day (SEC5-11).",
       "if": {
         "type": "object",
         "properties": {
@@ -212,6 +212,11 @@
                 }
               }
             ]
+          },
+          "at": {
+            "type": "string",
+            "pattern": "T00:00:00(\\.0+)?(Z|\\+00:00)$",
+            "description": "Draft 3.4 (SEC5-11): truncated to the UTC day, like kept-conversation.consented_on, so the keep consent cannot be matched to infrastructure logs by the second."
           }
         },
         "not": {

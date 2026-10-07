@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://hadas-toda.co.il/schemas/intake/v1/decision-table.schema.json",
   "title": "Outcome decision table",
-  "description": "Human-authored (clinical drafter drafts, Hadas approves; outcome texts pass the lawyer). Evaluated by code. Order each turn: (1) red flags -> 5. (2) routing_stops (D-02: minor writing about self, non-parent reporting on a child, incl. a minor subject reached via 'someone else') -> fixed text, no form, no contact collected, content deleted. Both D-02 stops are mandatory (schema). Any form is blocked after a stop and after any red flag whose form_after_message is none (SEC-11). At the end of intake: (3) first rule by 'order' whose 'when' is TRUE; UNKNOWN never fires. (4) Guards: outcome 3 -> 2 unless outcome3_enabled (D-03: false at launch), no exclusion TRUE/UNKNOWN, every applicable critical slot filled, no conflict, every user message extracted at least once. Outcome 4 is NOT gated by critical slots (critic F5): it requires the domain filled and confirmed in the recap, no flag, and the outcome4_requirements of the domain answered (filled or unknown) - the policy asks those before deciding. (5) No rule -> default (always 2). would_be_outcome_3 (true/false/undetermined) is always computed and logged. Addenda attach extra lines. Outcome 5 cannot come from a rule.",
+  "description": "Human-authored (clinical drafter drafts, Hadas approves; outcome texts pass the lawyer). Evaluated by code. Order each turn: (1) red flags -> 5. (2) routing_stops (draft 3.4: evaluated in a flag turn too, where a TRUE stop or an unsettled flag_form_gate blocks the form while the screen stays S6; immediate_patterns run deterministically at step 2) (D-02: minor writing about self, non-parent reporting on a child, incl. a minor subject reached via 'someone else') -> fixed text, no form, no contact collected, content deleted. Both D-02 stops are mandatory (schema). Any form is blocked after a stop and after any red flag whose form_after_message is none (SEC-11). At the end of intake: (3) first rule by 'order' whose 'when' is TRUE; UNKNOWN never fires. (4) Guards: outcome 3 -> 2 unless outcome3_enabled (D-03: false at launch), no exclusion TRUE/UNKNOWN, every applicable critical slot filled, no conflict, every user message extracted at least once. Outcome 4 is NOT gated by critical slots (critic F5): it requires the domain filled and confirmed in the recap, no flag, and the outcome4_requirements of the domain answered (filled or unknown) - the policy asks those before deciding. (5) No rule -> default (always 2). would_be_outcome_3 (true/false/undetermined) is always computed and logged. Addenda attach extra lines. Outcome 5 cannot come from a rule.",
   "type": "object",
   "required": [
     "header",
@@ -14,7 +14,8 @@
     "addenda",
     "outcome4_requirements",
     "routing_stops",
-    "engine_texts"
+    "engine_texts",
+    "flag_form_gate"
   ],
   "properties": {
     "header": {
@@ -321,7 +322,7 @@
           "message_variants": {
             "type": "array",
             "maxItems": 4,
-            "description": "First whose 'when' is TRUE replaces text_id. Draft 3.3: D-02 (gate 1) removed 101 and the helplines from every fixed minor / non-parent text (minor.self*, reporter.not_parent); an emergency message appears only when a red flag is raised, and flags are checked before stops in every turn, so such a turn ends in S6, never in the stop. D-13 branch B: no age buttons, so a minor_self stop happens only after free text that the regex and the extractor already scanned; the before-text variant (minor.self.before_text) is used only with an ACTIVE self_age_band goal (branch A) and intake:check fails if a variant points to it while that goal is inactive.",
+            "description": "First whose 'when' is TRUE replaces text_id. Draft 3.3: D-02 (gate 1) removed 101 and the helplines from the fixed minor texts (minor.self*; whether reporter.not_parent follows is open for Eliya); an emergency message appears only when a red flag is raised, and flags are checked before stops in every turn, so such a turn ends in S6, never in the stop. D-13 branch B: no age buttons, so a minor_self stop happens only after free text that the regex and the extractor already scanned; the before-text variant (minor.self.before_text) is used only with an ACTIVE self_age_band goal (branch A) and intake:check fails if a variant points to it while that goal is inactive.",
             "items": {
               "type": "object",
               "required": [
@@ -338,9 +339,95 @@
               },
               "additionalProperties": false
             }
+          },
+          "immediate_patterns": {
+            "type": "array",
+            "maxItems": 40,
+            "items": {
+              "$ref": "common.schema.json#/$defs/regexRule"
+            },
+            "description": "Draft 3.4 (SEC5-08, SEC5-01): deterministic routing net. Runs at step 2 of every turn together with the red-flag scan, in the linear engine (re2js), under the same rules P1-P4 and inside the same 50/500 ms budget, on the masked text, with or without the model (also in degraded mode, where the extractor does not run, and in a turn whose flag came from an immediate pattern, where the text is not extracted). A match makes this stop's condition TRUE (source: pattern): S13 when no flag is raised, otherwise stop_conditions_met under S6 (no form). Only first-person, high-specificity statements; a false positive only removes the form (fail closed). Authored by the clinical drafter (5), approved by Hadas; the test fixture holds placeholders only."
+          },
+          "test_phrases_he": {
+            "type": "object",
+            "required": [
+              "positive",
+              "negative"
+            ],
+            "properties": {
+              "positive": {
+                "type": "array",
+                "minItems": 3,
+                "items": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 300
+                }
+              },
+              "negative": {
+                "type": "array",
+                "minItems": 3,
+                "items": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 300
+                }
+              }
+            },
+            "additionalProperties": false,
+            "description": "Required with immediate_patterns, as for a red flag: positives must match, negatives must not (intake:check step 6)."
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "description": "SEC5-08 (draft 3.4): the minor_self stop must carry the deterministic net, so a minor who states their age is stopped also without the model (D-13 branch B has no age buttons).",
+            "if": {
+              "type": "object",
+              "properties": {
+                "end_reason": {
+                  "const": "minor_self"
+                }
+              },
+              "required": [
+                "end_reason"
+              ]
+            },
+            "then": {
+              "type": "object",
+              "required": [
+                "immediate_patterns"
+              ],
+              "properties": {
+                "immediate_patterns": {
+                  "type": "array",
+                  "minItems": 1
+                }
+              }
+            }
+          },
+          {
+            "description": "Draft 3.4: patterns come with their test phrases.",
+            "if": {
+              "type": "object",
+              "required": [
+                "immediate_patterns"
+              ],
+              "properties": {
+                "immediate_patterns": true
+              }
+            },
+            "then": {
+              "type": "object",
+              "required": [
+                "test_phrases_he"
+              ],
+              "properties": {
+                "test_phrases_he": true
+              }
+            }
+          }
+        ]
       },
       "minItems": 2,
       "allOf": [
@@ -386,6 +473,29 @@
         }
       },
       "additionalProperties": false
+    },
+    "flag_form_gate": {
+      "type": "object",
+      "required": [
+        "when",
+        "label_he"
+      ],
+      "properties": {
+        "when": {
+          "$ref": "common.schema.json#/$defs/condition"
+        },
+        "label_he": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "note_he": {
+          "type": "string",
+          "maxLength": 300
+        }
+      },
+      "additionalProperties": false,
+      "description": "Draft 3.4 (SEC5-01): after a red flag the conversation cannot continue, so routing gates that were still open (who writes about whom, the subject's age) will never be asked. The secondary form after an urgent-only flag is offered ONLY if this condition is TRUE (three-valued: UNKNOWN or FALSE = no form, blocked_reason routing_unsettled_under_flag), in addition to every flag allowing a form and no stop condition being TRUE. Mechanism: architect (closed list, engine/routingStops flagFormGate). Condition: clinical drafter (5), approved by Hadas. Architect's proposal: TRUE for core_relation self (self_declared_minor missing or false), for core_relation child with reporter_role parent, and for core_relation other_adult with subject_adult TRUE or core_age not applicable."
     }
   },
   "additionalProperties": false,

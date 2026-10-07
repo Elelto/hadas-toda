@@ -589,7 +589,7 @@
         },
         "keep_offer_eligible": {
           "type": "boolean",
-          "description": "Draft 3.3, D-01b: computed in code by keepOfferEligible(case) on every outbound envelope (absent = false). TRUE only if: web; relation self_adult or parent_of_child; no red flag of any tier (incl. doubt and scan_incomplete, so never after mask_incomplete); no lead sent; no routing stop (S13). The end dialog shows the unticked keep box only when the LAST envelope said true; DELETE re-checks on the server."
+          "description": "Draft 3.3, D-01b: computed in code by keepOfferEligible(case) on every outbound envelope (absent = false). TRUE only if: web; phase outcome with outcome 1-4 (S5, UX draft 4.4: the box sits right before the finish link, one tap, no dialog; leaving by the close button offers nothing); relation self_adult or parent_of_child; no red flag of any tier (incl. doubt and scan_incomplete, so never after mask_incomplete); no lead sent; no routing stop (S13). S5 shows the unticked box only when its envelope said true; DELETE re-checks on the server."
         },
         "keep_result": {
           "type": "object",
@@ -617,7 +617,24 @@
             }
           },
           "additionalProperties": false,
-          "description": "Draft 3.3, D-01b: answer to a finish that carried a keep consent. The UI shows keep.saved_note only when kept is true, so it never says 'saved' for something that was not."
+          "description": "Draft 3.3, D-01b: answer to a finish that carried a keep consent. Draft 3.4: always together with finish_result. The UI shows keep.saved_note (keep.saved_note.delete_pending when finish_result.content_deleted is false) only when kept is true, and keep.not_saved_note (or error.delete_failed when the delete also failed) when kept is false, so no screen says 'saved' for something that was not."
+        },
+        "finish_result": {
+          "type": "object",
+          "required": [
+            "content_deleted",
+            "clear_cookie"
+          ],
+          "description": "Draft 3.4 (SEC5-14): every answer to 'סיום' (DELETE /api/intake/session), with or without a keep. content_deleted false = the explicit delete failed (the case is purged after expires_at by the hourly job). clear_cookie is true whenever the delete succeeded or a copy was kept (a kept conversation is never reachable again from this browser, so no retry can keep a second copy); false only for a failed delete without a kept copy, so the retry of error.delete_failed can work. Texts (ARCHITECTURE §11.1.1(5)): deleted + kept -> keep.saved_note; deleted + not kept after a keep request -> keep.not_saved_note; not deleted + kept -> keep.saved_note.delete_pending (instead of error.delete_failed); not deleted + not kept -> error.delete_failed; no keep request -> chat.delete.done or error.delete_failed.",
+          "properties": {
+            "content_deleted": {
+              "type": "boolean"
+            },
+            "clear_cookie": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false,
@@ -706,7 +723,7 @@
           }
         },
         {
-          "description": "D-01b: the keep box is never offered on WhatsApp, after a red flag (outcome 5), after a routing stop (S13) or after a lead was sent.",
+          "description": "D-01b: the keep box is offered only on S5 (phase outcome, UX draft 4.4), never on WhatsApp, after a red flag (outcome 5), after a routing stop (S13) or after a lead was sent.",
           "if": {
             "type": "object",
             "properties": {
@@ -769,6 +786,9 @@
                     ]
                   }
                 }
+              },
+              "phase": {
+                "const": "outcome"
               }
             },
             "not": {
@@ -854,7 +874,7 @@
           }
         },
         {
-          "description": "D-02 (draft 3.3): a routing stop and a red-flag card never share a reply. Red flags are checked first in every turn, so a flag raised on a minor or non-parent path yields S6 (its own fixed texts, 101 in the emergency tier), never the stop text, which no longer carries 101.",
+          "description": "D-02 (draft 3.3): a routing stop and a red-flag card never share a reply. Red flags are checked first in every turn, so a flag raised on a minor or non-parent path yields S6 (its own fixed texts, 101 in the emergency tier), never the stop text (minor.self no longer carries 101; whether reporter.not_parent does is open for Eliya).",
           "if": {
             "type": "object",
             "properties": {
@@ -902,6 +922,120 @@
                     "required": [
                       "type"
                     ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "description": "SEC5-14 (draft 3.4): a finish answer closes the conversation.",
+          "if": {
+            "type": "object",
+            "required": [
+              "finish_result"
+            ],
+            "properties": {
+              "finish_result": true
+            }
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "phase": {
+                "const": "closed"
+              },
+              "ends_conversation": {
+                "const": true
+              }
+            }
+          }
+        },
+        {
+          "description": "SEC5-14 (draft 3.4): a keep result always rides with the finish result, so the deleted/kept combination is explicit.",
+          "if": {
+            "type": "object",
+            "required": [
+              "keep_result"
+            ],
+            "properties": {
+              "keep_result": true
+            }
+          },
+          "then": {
+            "type": "object",
+            "required": [
+              "finish_result"
+            ],
+            "properties": {
+              "finish_result": true
+            }
+          }
+        },
+        {
+          "description": "SEC5-14 (draft 3.4): the cookie is cleared after a successful delete.",
+          "if": {
+            "type": "object",
+            "properties": {
+              "finish_result": {
+                "type": "object",
+                "properties": {
+                  "content_deleted": {
+                    "const": true
+                  }
+                },
+                "required": [
+                  "content_deleted"
+                ]
+              }
+            },
+            "required": [
+              "finish_result"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "finish_result": {
+                "type": "object",
+                "properties": {
+                  "clear_cookie": {
+                    "const": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "description": "SEC5-14 (draft 3.4): after a kept copy the cookie is always cleared, even when the delete failed, so no retry can keep a second copy.",
+          "if": {
+            "type": "object",
+            "properties": {
+              "keep_result": {
+                "type": "object",
+                "properties": {
+                  "kept": {
+                    "const": true
+                  }
+                },
+                "required": [
+                  "kept"
+                ]
+              }
+            },
+            "required": [
+              "keep_result"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "finish_result": {
+                "type": "object",
+                "properties": {
+                  "clear_cookie": {
+                    "const": true
                   }
                 }
               }
@@ -1286,6 +1420,14 @@
                   }
                 ]
               }
+            },
+            "form_block_reason": {
+              "enum": [
+                "flag_no_form",
+                "routing_stop_under_flag",
+                "routing_unsettled_under_flag"
+              ],
+              "description": "Draft 3.4 (SEC5-01): why an outcome-5 card carries no form. flag_no_form = a raised flag allows none (SEC-11); routing_stop_under_flag = a minor or non-parent stop condition was met in the flag turn; routing_unsettled_under_flag = urgent flags only, but flag_form_gate was not TRUE. The server picks redflag.after.no_form for every value."
             }
           },
           "additionalProperties": false,
@@ -1395,6 +1537,33 @@
                     "const": "none"
                   }
                 }
+              }
+            },
+            {
+              "description": "SEC5-01 (draft 3.4): a form block reason exists only on an outcome-5 card and forces form none (and, through the outbound Blocker-2 rule, no form_request).",
+              "if": {
+                "type": "object",
+                "required": [
+                  "form_block_reason"
+                ],
+                "properties": {
+                  "form_block_reason": true
+                }
+              },
+              "then": {
+                "type": "object",
+                "properties": {
+                  "outcome": {
+                    "const": 5
+                  },
+                  "form": {
+                    "const": "none"
+                  }
+                },
+                "required": [
+                  "outcome",
+                  "form"
+                ]
               }
             }
           ]

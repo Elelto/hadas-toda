@@ -6,8 +6,8 @@
       "kept_version": "1.0",
       "kept_id": "kept_KKKKKKKKKKKKKKKKKKKKKK",
       "consent_record_id": "cons_KKKKKKKKKKKKKKKK",
-      "consented_at": "2026-10-05T10:20:00+03:00",
-      "purge_at": "2027-04-03T10:20:00+03:00",
+      "consented_on": "2026-10-05",
+      "purge_on": "2027-04-03",
       "channel": "web",
       "relation": "parent_of_child",
       "content_versions": {
@@ -86,7 +86,7 @@
   },
   "cases": [
     { "id": "kc.ok.kept", "base": "kept", "expect": "valid", "source": "D-01b, gate 1 (draft 3.3)" },
-    { "id": "kc.ok.self_adult_ended_before_outcome", "base": "kept", "expect": "valid", "source": "D-01b, gate 1 (draft 3.3)", "patch": [{ "op": "replace", "path": "/relation", "value": "self_adult" }, { "op": "replace", "path": "/outcome", "value": null }] },
+    { "id": "kc.ok.self_adult_outcome_1", "base": "kept", "expect": "valid", "source": "D-01b, gate 1 (draft 3.3)", "patch": [{ "op": "replace", "path": "/relation", "value": "self_adult" }, { "op": "replace", "path": "/outcome", "value": 1 }] },
     { "id": "kc.ok.access_log_view", "schema": "kept-conversation.schema.json#/$defs/accessLogEntry", "base": "access_view", "expect": "valid", "source": "D-01b, gate 1 (draft 3.3): access log + 2FA" },
     { "id": "kc.ok.access_log_failed_login", "schema": "kept-conversation.schema.json#/$defs/accessLogEntry", "base": "access_view", "expect": "valid", "source": "D-01b, gate 1 (draft 3.3)", "patch": [{ "op": "replace", "path": "/action", "value": "login_failed" }, { "op": "remove", "path": "/kept_id" }, { "op": "replace", "path": "/second_factor", "value": "totp_failed" }] },
     { "id": "kc.D01b.session_id", "base": "kept", "expect": "invalid", "error": "additionalProperties", "source": "D-01b, gate 1 (draft 3.3): no linking ids", "patch": [{ "op": "add", "path": "/session_id", "value": "sess_AAAAAAAAAAAAAAAA" }] },
@@ -105,6 +105,18 @@
     { "id": "kc.D01b.no_turns", "base": "kept", "expect": "invalid", "error": "/turns/minItems", "source": "D-01b, gate 1 (draft 3.3)", "patch": [{ "op": "replace", "path": "/turns", "value": [] }] },
     { "id": "kc.D01b.view_without_second_factor", "schema": "kept-conversation.schema.json#/$defs/accessLogEntry", "base": "access_view", "expect": "invalid", "error": "/second_factor/const", "source": "D-01b, gate 1 (draft 3.3): 2FA before any content", "patch": [{ "op": "replace", "path": "/second_factor", "value": "totp_failed" }] },
     { "id": "kc.D01b.view_without_kept_id", "schema": "kept-conversation.schema.json#/$defs/accessLogEntry", "base": "access_view", "expect": "invalid", "error": "required", "source": "D-01b, gate 1 (draft 3.3): every view names what was read", "patch": [{ "op": "remove", "path": "/kept_id" }] },
-    { "id": "kc.D01b.ai_reader", "schema": "kept-conversation.schema.json#/$defs/accessLogEntry", "base": "access_view", "expect": "invalid", "error": "/reader/enum", "source": "D-01b, gate 1 (draft 3.3) + D-07: no model and no AI assistant reads kept conversations", "patch": [{ "op": "replace", "path": "/reader", "value": "ai_assistant" }] }
+    { "id": "kc.D01b.ai_reader", "schema": "kept-conversation.schema.json#/$defs/accessLogEntry", "base": "access_view", "expect": "invalid", "error": "/reader/enum", "source": "D-01b, gate 1 (draft 3.3) + D-07: no model and no AI assistant reads kept conversations", "patch": [{ "op": "replace", "path": "/reader", "value": "ai_assistant" }] },
+    { "id": "kc.D01b.no_outcome", "base": "kept", "expect": "invalid", "error": "/outcome/type", "source": "D-01b + UX draft 4.4: offered only on S5, so there is always an outcome", "patch": [{ "op": "replace", "path": "/outcome", "value": null }] },
+    {"id": "kc.SEC511.timestamp_field", "base": "kept", "expect": "invalid", "error": "additionalProperties", "source": "SEC5-11, round-5 fix (draft 3.4): dates only, no second-level link to infrastructure logs", "patch": [{"op": "add", "path": "/consented_at", "value": "2026-10-05T10:20:00+03:00"}]},
+    {"id": "kc.SEC511.consented_on_with_time", "base": "kept", "expect": "invalid", "error": "/consented_on", "source": "SEC5-11, round-5 fix (draft 3.4): dates only, no second-level link to infrastructure logs", "patch": [{"op": "replace", "path": "/consented_on", "value": "2026-10-05T10:20:00+03:00"}]},
+    {"id": "kc.ok.SEC510.unknown_user_attempt", "schema": "kept-conversation.schema.json#/$defs/accessLogEntry", "base": "access_view", "expect": "valid", "source": "SEC5-10, round-5 fix (draft 3.4)", "patch": [{"op": "replace", "path": "/reader", "value": "unknown"}, {"op": "replace", "path": "/action", "value": "login_failed"}, {"op": "remove", "path": "/kept_id"}, {"op": "replace", "path": "/second_factor", "value": "not_reached"}]},
+    {"id": "kc.ok.SEC506.locked", "schema": "kept-conversation.schema.json#/$defs/accessLogEntry", "base": "access_view", "expect": "valid", "source": "SEC5-06, round-5 fix (draft 3.4): lockout after 5 failures", "patch": [{"op": "replace", "path": "/action", "value": "locked"}, {"op": "remove", "path": "/kept_id"}, {"op": "replace", "path": "/second_factor", "value": "not_reached"}]},
+    {"id": "kc.ok.SEC505.delete_with_reason", "schema": "kept-conversation.schema.json#/$defs/accessLogEntry", "base": "access_view", "expect": "valid", "source": "SEC5-05, round-5 fix (draft 3.4)", "patch": [{"op": "replace", "path": "/action", "value": "delete"}, {"op": "add", "path": "/reason", "value": "identifiable"}]},
+    {"id": "kc.SEC505.delete_without_reason", "schema": "kept-conversation.schema.json#/$defs/accessLogEntry", "base": "access_view", "expect": "invalid", "error": "/allOf/2/then/required", "source": "SEC5-05, round-5 fix (draft 3.4)", "patch": [{"op": "replace", "path": "/action", "value": "delete"}]},
+    {"id": "kc.SEC505.delete_without_totp", "schema": "kept-conversation.schema.json#/$defs/accessLogEntry", "base": "access_view", "expect": "invalid", "error": "/allOf/2/then/properties/second_factor/const", "source": "SEC5-05, round-5 fix (draft 3.4)", "patch": [{"op": "replace", "path": "/action", "value": "delete"}, {"op": "add", "path": "/reason", "value": "request"}, {"op": "replace", "path": "/second_factor", "value": "totp_failed"}]},
+    {"id": "kc.SEC505.delete_without_kept_id", "schema": "kept-conversation.schema.json#/$defs/accessLogEntry", "base": "access_view", "expect": "invalid", "error": "/allOf/2/then/required", "source": "SEC5-05, round-5 fix (draft 3.4)", "patch": [{"op": "replace", "path": "/action", "value": "delete"}, {"op": "add", "path": "/reason", "value": "request"}, {"op": "remove", "path": "/kept_id"}]},
+    {"id": "kc.SEC505.reason_on_view", "schema": "kept-conversation.schema.json#/$defs/accessLogEntry", "base": "access_view", "expect": "invalid", "error": "/allOf/3/then/properties/action/const", "source": "SEC5-05, round-5 fix (draft 3.4)", "patch": [{"op": "add", "path": "/reason", "value": "other"}]},
+    {"id": "kc.SEC510.unknown_reader_views", "schema": "kept-conversation.schema.json#/$defs/accessLogEntry", "base": "access_view", "expect": "invalid", "error": "/allOf/4/then/properties/action/const", "source": "SEC5-10, round-5 fix (draft 3.4)", "patch": [{"op": "replace", "path": "/reader", "value": "unknown"}]},
+    {"id": "kc.SEC510.not_reached_on_list", "schema": "kept-conversation.schema.json#/$defs/accessLogEntry", "base": "access_view", "expect": "invalid", "error": "/allOf/5/then/properties/action/enum", "source": "SEC5-10, round-5 fix (draft 3.4)", "patch": [{"op": "replace", "path": "/action", "value": "list"}, {"op": "remove", "path": "/kept_id"}, {"op": "replace", "path": "/second_factor", "value": "not_reached"}]}
   ]
 }

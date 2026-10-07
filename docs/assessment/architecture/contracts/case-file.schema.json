@@ -643,8 +643,11 @@
         "blocked_reason": {
           "enum": [
             "red_flag_no_form",
-            "routing_stop"
-          ]
+            "routing_stop",
+            "routing_stop_under_flag",
+            "routing_unsettled_under_flag"
+          ],
+          "description": "red_flag_no_form = a raised flag allows no form (SEC-11). routing_stop = S13 (D-02). routing_stop_under_flag = a stop condition was TRUE in a flag turn (SEC5-01, draft 3.4). routing_unsettled_under_flag = urgent flags only, but the decision table's flag_form_gate was not TRUE: who writes about whom was not settled when the conversation ended at S6 (fail closed, draft 3.4)."
         }
       },
       "additionalProperties": false,
@@ -957,12 +960,51 @@
       "enum": [
         "llm_failures",
         "cost_cap",
-        "ip_budget"
+        "ip_budget",
+        "edge_unverified"
       ],
-      "description": "status=degraded = model-free mode: regex, button screens and conditions only; then outcome with extraction_gap, 101 and the form (D-09, F2)."
+      "description": "status=degraded = model-free mode: regex, button screens and conditions only; then outcome with extraction_gap, 101 and the form (D-09, F2). edge_unverified (draft 3.4, SEC5-07): a production request without the Cloudflare edge secret header, i.e. a direct-to-origin request whose CF-Connecting-IP cannot be trusted."
     },
     "ui_events": {
       "$ref": "metrics-record.schema.json#/$defs/uiEvents"
+    },
+    "stop_conditions_met": {
+      "type": "array",
+      "maxItems": 3,
+      "description": "Draft 3.4 (SEC5-01): routing stops whose condition was TRUE in a turn where a red flag won the screen. Flags are still checked first and decide the SCREEN (S6, never S13), but the stops are evaluated in that same turn too (on the slots and on the routing patterns, decision-table routing_stops[].immediate_patterns) and decide the FORM: any entry here means handoff blocked (blocked_reason routing_stop_under_flag unless a no-form flag already blocked it), no form_request, and the content deleted at the end of that turn (S6 stub, like a no-form flag). routing_stop stays null (the screen is S6). Absent = empty. intake-handoff recomputes the stops from the case and refuses independently of this field (ARCHITECTURE §1.6, §13.1).",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "end_reason",
+          "seq",
+          "source"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/entityId"
+          },
+          "end_reason": {
+            "enum": [
+              "minor_self",
+              "non_parent_reporter",
+              "other_stop"
+            ]
+          },
+          "seq": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "source": {
+            "enum": [
+              "condition",
+              "pattern"
+            ],
+            "description": "condition = the stop's 'when' was TRUE; pattern = one of its immediate_patterns matched the masked text (deterministic, runs with or without the model, SEC5-08)."
+          }
+        },
+        "additionalProperties": false
+      }
     }
   },
   "additionalProperties": false,
@@ -1330,6 +1372,146 @@
             "maxItems": 0
           }
         }
+      }
+    },
+    {
+      "description": "SEC5-01 (draft 3.4): a stop condition met under a red flag blocks the form and deletes the content at the end of that turn; it only exists together with a raised flag and never with an S13 stop.",
+      "if": {
+        "type": "object",
+        "properties": {
+          "stop_conditions_met": {
+            "type": "array",
+            "minItems": 1
+          }
+        },
+        "required": [
+          "stop_conditions_met"
+        ]
+      },
+      "then": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/contentFree"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "handoff": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "const": "blocked"
+                  },
+                  "blocked_reason": {
+                    "enum": [
+                      "red_flag_no_form",
+                      "routing_stop_under_flag"
+                    ]
+                  }
+                },
+                "required": [
+                  "status",
+                  "blocked_reason"
+                ]
+              },
+              "red_flags": {
+                "type": "array",
+                "minItems": 1
+              },
+              "routing_stop": {
+                "type": "null"
+              },
+              "purge_at": true
+            },
+            "required": [
+              "purge_at",
+              "red_flags"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "SEC5-01 (draft 3.4): the two flag-turn form blocks need a raised flag, no S13 stop, and leave only the S6 stub.",
+      "if": {
+        "type": "object",
+        "properties": {
+          "handoff": {
+            "type": "object",
+            "properties": {
+              "blocked_reason": {
+                "enum": [
+                  "routing_stop_under_flag",
+                  "routing_unsettled_under_flag"
+                ]
+              }
+            },
+            "required": [
+              "blocked_reason"
+            ]
+          }
+        },
+        "required": [
+          "handoff"
+        ]
+      },
+      "then": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/contentFree"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "red_flags": {
+                "type": "array",
+                "minItems": 1
+              },
+              "routing_stop": {
+                "type": "null"
+              },
+              "purge_at": true
+            },
+            "required": [
+              "red_flags",
+              "purge_at"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "SEC5-01 (draft 3.4): routing_stop_under_flag always names the stop(s).",
+      "if": {
+        "type": "object",
+        "properties": {
+          "handoff": {
+            "type": "object",
+            "properties": {
+              "blocked_reason": {
+                "const": "routing_stop_under_flag"
+              }
+            },
+            "required": [
+              "blocked_reason"
+            ]
+          }
+        },
+        "required": [
+          "handoff"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "stop_conditions_met": {
+            "type": "array",
+            "minItems": 1
+          }
+        },
+        "required": [
+          "stop_conditions_met"
+        ]
       }
     }
   ]

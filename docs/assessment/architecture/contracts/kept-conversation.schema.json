@@ -2,14 +2,14 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://hadas-toda.co.il/schemas/intake/v1/kept-conversation.schema.json",
   "title": "Kept conversation (opt-in, D-01b)",
-  "description": "Draft 3.3 (gate 1, D-01b + D-01b'). The ONLY conversation content that outlives 'סיום', and only when the user ticked the unticked keep box (consent scope keep_for_improvement) AND keepOfferEligible(case) was true on the server at DELETE time. Store intake-kept, key k/<purge day>/<kept_id>, encrypted with its own key (INTAKE_KEPT_KEY, not derived from INTAKE_MASTER_SECRET). No linking ids: no session_id, lead_id, lead_ref, metrics_id, cookie, IP or user agent; per-turn timestamps are dropped. User text is the already identifier-masked text (SEC-07) after a second pass of name masking (reasonable effort); masking that did not complete means nothing is written (fail-safe), so name_mask.status can only be 'complete'. purge_at = consented_at + 180 days; the hourly job deletes it (purge_failed heartbeat); a viewer read after purge_at deletes it on the spot. No withdrawal code (D-01b': accepted risk, chosen by Eliya against the security recommendation). Read only through intake-kept-viewer (2FA, access log, no export); never by a model or an AI assistant. Never written for WhatsApp in v1, after any red flag, after a routing stop, or after a lead was sent.",
+  "description": "Draft 3.3 (gate 1, D-01b + D-01b'). The ONLY conversation content that outlives 'סיום', and only when the user ticked the unticked keep box (consent scope keep_for_improvement) AND keepOfferEligible(case) was true on the server at DELETE time. Store intake-kept, key k/<purge day>/<kept_id>, encrypted with its own key (INTAKE_KEPT_KEY, not derived from INTAKE_MASTER_SECRET). No linking ids: no session_id, lead_id, lead_ref, metrics_id, cookie, IP or user agent; per-turn timestamps are dropped. User text is the already identifier-masked text (SEC-07) after a second pass of name masking (reasonable effort); masking that did not complete means nothing is written (fail-safe), so name_mask.status can only be 'complete'. Draft 3.4 (SEC5-11): dates only, consented_on and purge_on = consented_on + 180 days; the hourly job deletes it (purge_failed heartbeat); a viewer read on or after purge_on deletes it on the spot. A reader may also delete it earlier (SEC5-05, logged first). User messages in a case are at most 800 characters (longer text gets meta.too_long and is never stored, ARCHITECTURE §6.1), so the 3000-character turn limit is not reached by real text; if it were, the write fails this schema and ends as store_failed (fail-safe, never a silent cut). No withdrawal code (D-01b': accepted risk, chosen by Eliya against the security recommendation). Read only through intake-kept-viewer (2FA, access log, no export); never by a model or an AI assistant. Never written for WhatsApp in v1, after any red flag, after a routing stop, or after a lead was sent.",
   "type": "object",
   "required": [
     "kept_version",
     "kept_id",
     "consent_record_id",
-    "consented_at",
-    "purge_at",
+    "consented_on",
+    "purge_on",
     "channel",
     "relation",
     "content_versions",
@@ -31,13 +31,13 @@
       "pattern": "^[A-Za-z0-9_-]{16,64}$",
       "description": "record_id of the keep_for_improvement consent record (which has no session_id)."
     },
-    "consented_at": {
-      "$ref": "common.schema.json#/$defs/isoDateTime",
-      "description": "Server time of the keep consent. The 180-day clock starts here (D-01b), not at the first message."
+    "consented_on": {
+      "$ref": "common.schema.json#/$defs/isoDate",
+      "description": "Draft 3.4 (SEC5-11): the DAY of the keep consent only (UTC), so the record cannot be matched to infrastructure logs (Cloudflare, Netlify) by the second. The 180-day clock starts on this day (D-01b)."
     },
-    "purge_at": {
-      "$ref": "common.schema.json#/$defs/isoDateTime",
-      "description": "consented_at + 180 days, a code constant (not configuration: the consent text promises it). Checked by unit test, not by this schema."
+    "purge_on": {
+      "$ref": "common.schema.json#/$defs/isoDate",
+      "description": "consented_on + 180 days, a code constant (the consent text promises 'up to 6 months'). The hourly job deletes the record on this day (purge_failed heartbeat). Checked by unit test, not by this schema."
     },
     "channel": {
       "const": "web",
@@ -54,17 +54,10 @@
       "$ref": "common.schema.json#/$defs/contentVersions"
     },
     "outcome": {
-      "anyOf": [
-        {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 4
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "description": "Null if the user ended before an outcome. Never 5: a raised red flag (any tier) makes the conversation ineligible."
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4,
+      "description": "Always 1-4: the box is offered only on S5 (UX draft 4.4), and never after a red flag (outcome 5)."
     },
     "would_be_outcome_3": {
       "enum": [
@@ -346,18 +339,22 @@
         "reader": {
           "enum": [
             "eliya",
-            "hadas"
+            "hadas",
+            "unknown"
           ],
-          "description": "D-01b: only Eliya and Hadas read kept conversations. No service account, no model, no AI assistant."
+          "description": "D-01b: only Eliya and Hadas read kept conversations. No service account, no model, no AI assistant. Draft 3.4 (SEC5-10): 'unknown' records an attempt with an unrecognised user name (login_failed only). No raw IP is stored."
         },
         "action": {
           "enum": [
             "login",
             "login_failed",
+            "locked",
             "list",
             "view",
-            "purged_on_read"
-          ]
+            "purged_on_read",
+            "delete"
+          ],
+          "description": "Draft 3.4: locked = an attempt refused during the 15-minute lockout after 5 failures (SEC5-06); delete = a reader deleted a kept conversation before its purge day (SEC5-05), logged BEFORE the deletion, with a closed-list reason."
         },
         "kept_id": {
           "type": "string",
@@ -366,9 +363,19 @@
         "second_factor": {
           "enum": [
             "totp_ok",
-            "totp_failed"
+            "totp_failed",
+            "not_reached"
           ],
-          "description": "2FA (SEC-24) on every session; content is served only after totp_ok."
+          "description": "2FA (SEC-24) on every session; content is served only after totp_ok. not_reached (draft 3.4, SEC5-10): the attempt failed before the TOTP step (unknown user, wrong password, lockout)."
+        },
+        "reason": {
+          "enum": [
+            "identifiable",
+            "disclosure",
+            "request",
+            "other"
+          ],
+          "description": "Draft 3.4 (SEC5-05): delete only. identifiable = masking missed identifying details; disclosure = a disclosure the flags did not catch (legal Q23); request = a deletion request recognised by its content via privacy_contact; other."
         }
       },
       "additionalProperties": false,
@@ -418,6 +425,110 @@
             "properties": {
               "second_factor": {
                 "const": "totp_ok"
+              }
+            }
+          }
+        },
+        {
+          "description": "SEC5-05 (draft 3.4): a delete names the record and the reason, by a known reader, after TOTP.",
+          "if": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "const": "delete"
+              }
+            },
+            "required": [
+              "action"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "required": [
+              "kept_id",
+              "reason"
+            ],
+            "properties": {
+              "kept_id": true,
+              "reason": true,
+              "second_factor": {
+                "const": "totp_ok"
+              },
+              "reader": {
+                "enum": [
+                  "eliya",
+                  "hadas"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "description": "SEC5-05 (draft 3.4): a reason only on a delete.",
+          "if": {
+            "type": "object",
+            "required": [
+              "reason"
+            ],
+            "properties": {
+              "reason": true
+            }
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "const": "delete"
+              }
+            }
+          }
+        },
+        {
+          "description": "SEC5-10 (draft 3.4): an unknown reader can only be a failed login that never reached TOTP.",
+          "if": {
+            "type": "object",
+            "properties": {
+              "reader": {
+                "const": "unknown"
+              }
+            },
+            "required": [
+              "reader"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "const": "login_failed"
+              },
+              "second_factor": {
+                "const": "not_reached"
+              }
+            }
+          }
+        },
+        {
+          "description": "SEC5-10 (draft 3.4): not_reached only on a failed or locked login.",
+          "if": {
+            "type": "object",
+            "properties": {
+              "second_factor": {
+                "const": "not_reached"
+              }
+            },
+            "required": [
+              "second_factor"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "enum": [
+                  "login_failed",
+                  "locked"
+                ]
               }
             }
           }

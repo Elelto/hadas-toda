@@ -28,9 +28,9 @@ const CHECK = process.argv.includes('--check');
 const HEADER = {
   contract: 'fixed-texts',
   contract_version: '1.0.0',
-  version: '0.7.0',
+  version: '0.7.1',
   status: 'draft',
-  updated_at: '2026-10-06T14:00:00+03:00',
+  updated_at: '2026-10-07T12:00:00+03:00',
   approvals: [],
   changelog: [
     { version: '0.1.0', date: '2026-10-04', summary: 'טיוטה 1 של תפקיד 3 (רק ב-texts.he.md).' },
@@ -40,6 +40,7 @@ const HEADER = {
     { version: '0.5.0', date: '2026-10-05', summary: 'תיקון זול לפני שער 1 (אימות משפטי, סבב 2): form.confirmation.privacy.both_pending (מסירה ומחיקה ממתינות), form.confirmation.title.pending ("בדרך", לא "נשלחו"), ו-form.confirmation.privacy.pending@v2 ("תוך כשבוע" במקום "לכל היותר 7 ימים", כי הניקוי השעתי יכול לחרוג בשעה).' },
     { version: '0.6.0', date: '2026-10-06', summary: 'רשימה סגורה אחרי UX 4.1–4.2: S8 כשהמסירה ממתינה (what_now.pending, when.pending), redflag.after.no_form, redflag.form_not_sent, כותרות hotline לפי סוג (distress, child_safety), a11y.buttons_hint (בטיחות בהקשת הגיל), redflag.cta.call.a11y@v2 (WCAG 2.5.3). הממיר בודק שכל <מזהה>.a11y פותח בנוסח הבסיס. נוקתה הפניה שיורית ל-possible_duplicate (הנוסח יצא ב-0.4.0).' },
     { version: '0.7.0', date: '2026-10-06', summary: 'סבב 5, שער 1 — הכרעות אליה: שמירה מרצון בסוף השיחה (keep.optin.checkbox, keep.optin.note, keep.saved_note, chat.end.leave_keep; D-01b ו-D-01b׳); consent.checkbox@v3 עם הצהרת גיל ו-.ack@v2 (D-13 ענף ב׳), goal.self_age_band.* ו-q.self_age_band.opt.* לא פעילים; minor.self, minor.self.before_text ו-reporter.not_parent בלי 101 וקווי סיוע (D-02), עם החרגה לפי מזהה ב-NEEDS_101 ובדיקה שנוסחי הדגל שומרים על 101; about.data@v3 ו-meta.who_sees@v3 עם Cloudflare ו-Netlify (D-07 + D-12).' },
+    { version: '0.7.1', date: '2026-10-07', summary: 'תיקון סבב 5: reporter.not_parent@v3 עם 101 עד הכרעת אליה (ב-NEEDS_101); minor.self.before_text לא פעיל; חדשים keep.not_saved_note, keep.saved_note.delete_pending, keep.addendum.about_data/who_sees (מותנים במתג, CR5-03); about.data@v4 ו-meta.who_sees@v4 בלי השמירה; keep.optin.note@v2 (45 מילים), keep.saved_note@v2, consent.disclaimer@v4, closed.keep_note@v2, form.privacy_note@v3, error.session_expired@v4 (+101). הממיר: 101 כמספר שלם, error.* מפורשים, REDFLAG_KEEPS_101 פעילים ובבאנדל.' },
   ],
 };
 
@@ -64,7 +65,9 @@ const BUNDLE = [
 // Exception, D-02 (Eliya, 2026-10-06): the fixed S13a cards for a minor carry no 101 and no hotlines; the emergency
 // message reaches a minor only through the red-flag mechanism (S6), which always runs first. Narrow, per text ID:
 // every other NEEDS_101 rule still applies, and an exempt ID that no longer exists is an error (no silent leftovers).
-// reporter.not_parent loses 101 under the same ruling, but was never in NEEDS_101, so it needs no entry here.
+// reporter.not_parent (S13b) is NOT exempt: round-5 fix (L5-01/SEC5-02/CR5-01/CL5-01) keeps 101 there until Eliya decides,
+// because S13b can stop on taps alone, before any text, so no red flag can lead to 101. It is enforced in NEEDS_101 below.
+// If Eliya rules "no 101", it moves here with its reason and date.
 const NEEDS_101_EXEMPT = {
   'minor.self': 'D-02, אליה 2026-10-06',
   'minor.self.before_text': 'D-02, אליה 2026-10-06',
@@ -76,8 +79,13 @@ const REDFLAG_KEEPS_101 = [
   'redflag.type.voice_risk', 'redflag.type.child_regression', 'redflag.type.adult_new_change', 'redflag.type.distress',
   'redflag.cta.call', 'redflag.cta.call.a11y',
 ];
+// SEC5-09: 101 as a whole number ("1010" or "21012" do not count). V8 on a fixed text, not user input.
+const HAS_101 = /(^|[^0-9])101([^0-9]|$)/;
 const NEEDS_101 = (id) => !Object.hasOwn(NEEDS_101_EXEMPT, id) && (
   ['system.unavailable', 'fallback.static', 'language.unsupported', 'meta.too_long', 'meta.off_topic_end', 'outcome.extraction_gap', 'chat.input.too_long_block', 'system.model_free'].includes(id) ||
+  // the error.* texts that end a conversation or stop the user (ARCH §1.9 "error.* שמסיימים שיחה", made explicit, CR5-14)
+  ['error.rate_limit', 'error.form_send_repeat', 'error.session_expired'].includes(id) ||
+  id === 'reporter.not_parent' ||   // until Eliya decides (see above)
   /^media\./.test(id) ||
   /^minor\.self(\.|$)/.test(id) ||
   (/^wa\./.test(id) && !/^wa\.opening\.btn\./.test(id) && id !== 'wa.prefix'));
@@ -222,8 +230,8 @@ function build({ entries, declared }) {
       }
     }
     for (const p of ph) if (!placeholderOk(p)) warn(`${id}: placeholder {{${p}}} is not in the variables table`);
-    if (NEEDS_101(id)) for (const s of all) if (!s.includes('101')) err(`${id}: 101 is mandatory (ARCHITECTURE §1.9)`);
-    if (REDFLAG_KEEPS_101.includes(id)) for (const s of all) if (!s.includes('101')) err(`${id}: 101 is mandatory (D-02 guard: the red-flag route is the only one to 101 for a minor)`);
+    if (NEEDS_101(id)) for (const s of all) if (!HAS_101.test(s)) err(`${id}: 101 is mandatory (ARCHITECTURE §1.9)`);
+    if (REDFLAG_KEEPS_101.includes(id)) for (const s of all) if (!HAS_101.test(s)) err(`${id}: 101 is mandatory (D-02 guard: the red-flag route is the only one to 101 for a minor)`);
     const notes = t._notes.join(' ');
     const o = { version: t.version, text: t.text };
     if (ph.length) o.placeholders = ph;
@@ -239,7 +247,13 @@ function build({ entries, declared }) {
     out[id] = o;
   }
   for (const id of Object.keys(NEEDS_101_EXEMPT)) if (!out[id]) err(`NEEDS_101_EXEMPT: ${id} is not in texts.he.md (remove the exemption)`);
-  for (const id of REDFLAG_KEEPS_101) if (!out[id]) err(`REDFLAG_KEEPS_101: ${id} is not in texts.he.md`);
+  // SEC5-09: the guarded texts must also be active and in the client bundle, or the offline S6 would show nothing.
+  // The list stays explicit: there is no red-flags.json data file yet to derive it from (→ architect, §1.11).
+  for (const id of REDFLAG_KEEPS_101) {
+    if (!out[id]) { err(`REDFLAG_KEEPS_101: ${id} is not in texts.he.md`); continue; }
+    if (out[id].active === false) err(`REDFLAG_KEEPS_101: ${id} must be active`);
+    if (!out[id].client_bundle) err(`REDFLAG_KEEPS_101: ${id} must be in client_bundle`);
+  }
   return { header: HEADER, locale: 'he', texts: out };
 }
 

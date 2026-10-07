@@ -3,7 +3,7 @@
 //   node docs/assessment/architecture/contracts/tests/run.mjs            # all
 //   node docs/assessment/architecture/contracts/tests/run.mjs --verbose  # list every case
 //
-// 1. Compiles all 17 schemas in ONE Ajv 2020 registry, strict: true (every strict rule is an error; the
+// 1. Compiles all 18 schemas in ONE Ajv 2020 registry, strict: true (every strict rule is an error; the
 //    logger also fails the run on any warning).
 // 2. Runs every case in cases/*.cases.json. A case is a base document (or a real content file) plus an
 //    optional JSON-Patch (add / replace / remove). 'valid' cases must pass. 'invalid' cases must fail,
@@ -122,6 +122,7 @@ for (const cf of caseFiles) {
     try {
       const base = loadBase(c);
       if (spec.schema === 'red-flags.schema.json') collectPatterns(base, regexPatterns, testPhrases);
+      if (spec.schema === 'decision-table.schema.json' && !c.patch) collectStopPatterns(base, regexPatterns, testPhrases);
       const doc = c.patch ? applyPatch(base, c.patch) : base;
       // a case may target a $defs entry, e.g. "common.schema.json#/$defs/regexRule"
       const v = c.schema ? ajv.getSchema(c.schema) : validate;
@@ -180,6 +181,17 @@ function collectPatterns(doc, out, phrases) {
     phrases.push(...(flag.test_phrases_he?.positive ?? []), ...(flag.test_phrases_he?.negative ?? []));
     for (const r of flag.triggers?.immediate_patterns ?? []) out.push({ flag: flag.id, id: r.id, regex: r.regex });
     for (const r of flag.triggers?.confirm?.patterns ?? []) out.push({ flag: flag.id, id: r.id, regex: r.regex });
+  }
+}
+// Draft 3.4 (SEC5-08): routing-stop patterns run in the same linear scan as the red flags (ARCHITECTURE §1.6),
+// so they get the same lint, engine agreement and adversarial timing. Taken from unpatched decision-table bases.
+function collectStopPatterns(doc, out, phrases) {
+  const seenStops = (collectStopPatterns.seen ??= new Set());
+  for (const st of doc.routing_stops ?? []) {
+    if (seenStops.has(st.id)) continue;
+    seenStops.add(st.id);
+    phrases.push(...(st.test_phrases_he?.positive ?? []), ...(st.test_phrases_he?.negative ?? []));
+    for (const r of st.immediate_patterns ?? []) out.push({ flag: `stop:${st.id}`, id: r.id, regex: r.regex });
   }
 }
 function ajvVersion() {
