@@ -1,9 +1,8 @@
-import io, json, re, sys
+import io, json, os, re, sys
 
-import os
 base = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
-J = json.load(io.open(base + r'\content\texts.he.json', encoding='utf-8'))['texts']
-p = base + r'\ui\mockup.html'
+J = json.load(io.open(os.path.join(base, 'content', 'texts.he.json'), encoding='utf-8'))['texts']
+p = os.path.join(base, 'ui', 'mockup.html')
 s = io.open(p, encoding='utf-8').read()
 print('loaded', len(J), len(s), flush=True)
 
